@@ -1,0 +1,124 @@
+<?php 
+
+// Zugzwang Project
+// deutsche-schachjugend.de
+// Copyright (c) 2012-2015, 2017, 2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Skript: Paarungen
+
+
+$zz['title'] = 'Paarungen';
+$zz['table'] = 'paarungen';
+
+if (!isset($values['where'])) $values['where'] = '';
+
+$zz['fields'][1]['title'] = 'ID';
+$zz['fields'][1]['field_name'] = 'paarung_id';
+$zz['fields'][1]['type'] = 'id';
+
+$zz['fields'][2]['title'] = 'Termin';
+$zz['fields'][2]['field_name'] = 'termin_id';
+$zz['fields'][2]['type'] = 'select';
+$zz['fields'][2]['sql'] = 'SELECT termin_id, termin
+	FROM termine
+	WHERE ISNULL(haupt_termin_id)
+	ORDER BY beginn, kennung';
+$zz['fields'][2]['key_field_name'] = 'termine.termin_id';
+$zz['fields'][2]['display_field'] = 'termin';
+$zz['fields'][2]['if']['where']['hide_in_list'] = true;
+$zz['fields'][2]['if']['where']['hide_in_form'] = true;
+
+$zz['fields'][15]['title'] = 'Runde';
+$zz['fields'][15]['title_tab'] = 'Rd.';
+$zz['fields'][15]['field_name'] = 'runde_no';
+$zz['fields'][15]['type'] = 'number';
+$zz['fields'][15]['if']['where']['hide_in_list'] = true;
+$zz['fields'][15]['if']['where']['hide_in_form'] = true;
+
+$zz['fields'][3]['title'] = 'Ort';
+$zz['fields'][3]['field_name'] = 'place_contact_id';
+$zz['fields'][3]['type'] = 'select';
+$zz['fields'][3]['sql'] = sprintf('SELECT contact_id, contact
+	FROM contacts
+	WHERE contact_category_id = %d', $zz_setting['category_ids']['kontakte']['veranstaltungsort']);
+$zz['fields'][3]['key_field_name'] = 'contact_id';
+$zz['fields'][3]['type'] = 'select';
+$zz['fields'][3]['hide_in_list'] = true;
+
+$zz['fields'][4]['field_name'] = 'spielbeginn';
+$zz['fields'][4]['type'] = 'time';
+$zz['fields'][4]['hide_in_list'] = true;
+
+$zz['fields'][5]['title'] = 'Tisch';
+$zz['fields'][5]['field_name'] = 'tisch_no';
+$zz['fields'][5]['type'] = 'number';
+$zz['fields'][5]['auto_value'] = 'increment';
+
+$zz['fields'][6]['title'] = 'Heimteam';
+$zz['fields'][6]['field_name'] = 'heim_team_id';
+$zz['fields'][6]['type'] = 'select';
+$zz['fields'][6]['sql'] = 'SELECT team_id, CONCAT(termin, ": ") AS termin
+		, CONCAT(team, IFNULL(CONCAT(" ", team_no),"")) AS team
+	FROM teams
+	LEFT JOIN termine USING (termin_id)
+	'.$values['where'].'
+	ORDER BY team_id';
+if ($values['where']) $zz['fields'][6]['sql_ignore'] = 'termin';
+$zz['fields'][6]['display_field'] = 'heimteam';
+$zz['fields'][6]['search'] = 'heimteams.kennung';
+
+$zz['fields'][7]['title'] = 'Auswärtsteam';
+$zz['fields'][7]['field_name'] = 'auswaerts_team_id';
+$zz['fields'][7]['type'] = 'select';
+$zz['fields'][7]['sql'] = 'SELECT team_id, CONCAT(termin, ": ") AS termin
+		, CONCAT(team, IFNULL(CONCAT(" ", team_no),"")) AS team
+	FROM teams
+	LEFT JOIN termine USING (termin_id)
+	'.$values['where'].'
+	ORDER BY team_id';
+if ($values['where']) $zz['fields'][7]['sql_ignore'] = 'termin';
+$zz['fields'][7]['display_field'] = 'auswaertsteam';
+$zz['fields'][7]['search'] = 'auswaertsteams.kennung';
+
+$zz['fields'][8]['field_name'] = 'kommentar';
+$zz['fields'][8]['type'] = 'memo';
+$zz['fields'][8]['hide_in_list'] = true;
+$zz['fields'][8]['separator'] = true;
+
+$zz['fields'][20]['title'] = 'Stand';
+$zz['fields'][20]['field_name'] = 'letzte_aenderung';
+$zz['fields'][20]['type'] = 'timestamp';
+$zz['fields'][20]['hide_in_list'] = true;
+
+
+$zz['sql'] = 'SELECT paarungen.*
+		, termine.termin
+		, termine.kennung AS termin_kennung
+		, CONCAT(heimteams.team, IFNULL(CONCAT(" ", heimteams.team_no), "")) AS heimteam
+		, CONCAT(auswaertsteams.team, IFNULL(CONCAT(" ", auswaertsteams.team_no), "")) AS auswaertsteam
+	FROM paarungen
+	LEFT JOIN termine USING (termin_id)
+	LEFT JOIN teams heimteams
+		ON heimteams.team_id = paarungen.heim_team_id
+	LEFT JOIN teams auswaertsteams
+		ON auswaertsteams.team_id = paarungen.auswaerts_team_id
+	ORDER BY termine.beginn, termine.kennung, paarungen.runde_no, tisch_no
+';
+
+$zz['subtitle']['termin_id']['sql'] = 'SELECT termin FROM termine';
+$zz['subtitle']['termin_id']['var'] = ['termin'];
+
+$zz['subtitle']['runde_no']['value'] = true;
+$zz['subtitle']['runde_no']['prefix'] = 'Runde ';
+
+$zz_conf['details'] = ['Partien'];
+$zz_conf['details_url'] = [
+	0 => ['field1' => 'termin_kennung', 'string1' => '/runde/', 
+	'field2' => 'runde_no', 'string2' => '/', 'field3' => 'tisch_no',
+	'string3' => '/']
+];
+$zz_conf['details_base'] = [
+	'/intern/termine/'
+];
+$zz_conf['details_referer'] = false;
+
+$zz['hooks']['after_delete'] = 'my_tabellenstand_aktualisieren';
