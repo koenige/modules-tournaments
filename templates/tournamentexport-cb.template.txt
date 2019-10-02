@@ -1,0 +1,11 @@
+# Zugzwang Project
+# deutsche-schachjugend.de
+# Copyright (c) 2019 Gustaf Mossakowski <gustaf@koenige.org>
+# Turnierexport für ChessBase
+#
+%%% loop start %%%
+%%% item code %%%=%%% item team %%%%%% item team_no " %s" %%% 
+%%% loop players %%%
+%%% item code %%%%%% item board %%%=%%% item player %%% 
+%%% loop end %%%
+%%% loop end %%%
