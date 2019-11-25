@@ -8,7 +8,6 @@
 
 $termin = my_event($brick['vars'][0], $brick['vars'][1]);
 if (!$termin) wrap_quit(404);
-$zz['where']['termin_id'] = $termin['termin_id'];
 
 if (intval($brick['vars'][2]).'' !== $brick['vars'][2]) wrap_quit(404);
 $sql = 'SELECT runde_no FROM termine
@@ -32,6 +31,7 @@ if (count($brick['vars']) === 4) {
 }
 
 $zz = zzform_include_table('partien', $values);
+$zz['where']['termin_id'] = $termin['termin_id'];
 $zz['where']['runde_no'] = $runde_no;
 if (count($brick['vars']) === 4) {
 	$zz['where']['paarung_id'] = $paarung['paarung_id'];
