@@ -110,15 +110,12 @@ $zz['subtitle']['termin_id']['var'] = ['termin'];
 $zz['subtitle']['runde_no']['value'] = true;
 $zz['subtitle']['runde_no']['prefix'] = 'Runde ';
 
-$zz_conf['details'] = ['Partien'];
-$zz_conf['details_url'] = [
-	0 => ['field1' => 'termin_kennung', 'string1' => '/runde/', 
-	'field2' => 'runde_no', 'string2' => '/', 'field3' => 'tisch_no',
-	'string3' => '/']
+$zz['details'][0]['title'] = 'Partien';
+$zz['details'][0]['link'] = [
+	'string1' => '/intern/termine/', 'field1' => 'termin_kennung',
+	'string2' => '/runde/', 'field2' => 'runde_no',
+	'string3' => '/', 'field3' => 'tisch_no',
+	'string4' => '/'
 ];
-$zz_conf['details_base'] = [
-	'/intern/termine/'
-];
-$zz_conf['details_referer'] = false;
 
 $zz['hooks']['after_delete'] = 'my_tabellenstand_aktualisieren';
