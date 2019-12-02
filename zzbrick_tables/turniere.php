@@ -185,13 +185,13 @@ $zz['fields'][25]['title'] = 'PGN-Datei';
 $zz['fields'][25]['field_name'] = 'pgnfile';
 $zz['fields'][25]['dont_show_missing'] = true;
 $zz['fields'][25]['type'] = 'upload_image';
-$zz['fields'][25]['path'] = array (
+$zz['fields'][25]['path'] = [
 	'root' => $zz_setting['media_folder'].'/pgn/',
 	'webroot' => '/intern/dateien/pgn/',
 	'field1' => 'termin_kennung',
 	'string2' => '/gesamt',
 	'string3' => '.pgn'
-);
+];
 $zz['fields'][25]['input_filetypes'] = ['pgn'];
 $zz['fields'][25]['link'] = [
 	'string1' => '/intern/dateien/pgn/',
