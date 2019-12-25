@@ -34,7 +34,7 @@ $zz_sub['fields'][3]['show_hierarchy'] = 'main_category_id';
 $zz_sub['fields'][3]['display_field'] = 'category';
 $zz_sub['fields'][3]['show_hierarchy_subtree'] = $zz_setting['category_ids']['turnierwertungen'][0];
 
-$zz_sub['unique'][] = array('tabellenstand_id', 'wertung_category_id');
+$zz_sub['unique'][] = ['tabellenstand_id', 'wertung_category_id'];
 
 $zz_sub['sql'] = 'SELECT tabellenstaende_wertungen.*
 		, category
