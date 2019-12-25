@@ -124,6 +124,10 @@ $zz['fields'][11]['prefix'] = ' – ';
 $zz['fields'][11]['list_prefix'] = ' – ';
 $zz['fields'][11]['hide_in_list'] = true;
 
+$zz['fields'][53]['field_name'] = 'ratings_updated';
+$zz['fields'][53]['type'] = 'date';
+$zz['fields'][53]['hide_in_list'] = true;
+
 $zz['fields'][21] = zzform_include_table('turniere-wertungen');
 $zz['fields'][21]['title'] = 'Wertungen';
 $zz['fields'][21]['type'] = 'subtable';

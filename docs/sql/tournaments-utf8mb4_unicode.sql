@@ -306,6 +306,7 @@ CREATE TABLE `turniere` (
   `elo_min` smallint(5) unsigned DEFAULT NULL,
   `elo_max` smallint(5) unsigned DEFAULT NULL,
   `pseudo_dwz` smallint(4) unsigned DEFAULT NULL,
+  `ratings_updated` date DEFAULT NULL,
   `teams_max` smallint(5) unsigned DEFAULT NULL,
   `wertung_spielfrei` enum('Sieg','Unentschieden','keine') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'Sieg',
   `hinweis_aufstellung` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
