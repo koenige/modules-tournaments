@@ -17,7 +17,7 @@ function mod_tournaments_turnierzahlen($vars) {
 	global $zz_setting;
 	global $zz_conf;
 
-	$sql = 'SELECT termin_id
+	$sql = 'SELECT termin_id, turnier_id
 			, IF(!ISNULL(termine.ende),
 				IF(termine.ende < CURDATE(), 1, NULL),
 				IF(termine.beginn < CURDATE(), 1, NULL)
@@ -25,6 +25,7 @@ function mod_tournaments_turnierzahlen($vars) {
 			, YEAR(beginn) AS jahr
 			, termin, kennung
 		FROM termine
+		LEFT JOIN turniere USING (termin_id)
 		WHERE kennung = "%s"';
 	$sql = sprintf($sql, wrap_db_escape(implode('/', $vars)));
 	$termin = wrap_db_fetch($sql);
@@ -108,6 +109,7 @@ function mod_tournaments_turnierzahlen($vars) {
 	require_once $zz_conf['dir'].'/zzform.php';
 	$zz_conf['user'] = 'Turnierzahlen '.implode('/', $vars);
 
+	$updated = false;
 	foreach ($teilnahmen as $teilnahme_id => $teilnahme) {
 		$values = [];
 		$values['POST']['teilnahme_id'] = $teilnahme_id;
@@ -143,6 +145,17 @@ function mod_tournaments_turnierzahlen($vars) {
 		$values['action'] = 'update';
 		if (!$data['testlauf']) {
 			$ops = zzform_multi('teilnahmen', $values);
+			if (!$updated AND $ops['result'] === 'successful_update') $updated = true;
+		}
+	}
+	if ($updated) {
+		$values = [];
+		$values['action'] = 'update';
+		$values['POST']['turnier_id'] = $termin['turnier_id'];
+		$values['POST']['ratings_updated'] = date('Y-m-d');
+		$ops = zzform_multi('turniere', $values);
+		if (empty($ops['id'])) {
+			wrap_error(sprintf('Unable to set `ratings_updated` for tournament %s', $termin['kennung']));
 		}
 	}
 	$page['text'] = wrap_template('turnierzahlen', $data);
