@@ -1,0 +1,51 @@
+# Zugzwang Project
+# deutsche-schachjugend.de
+# Copyright (c) 2015-2017 Gustaf Mossakowski <gustaf@koenige.org>
+# HTML-Ausgabe: Turnierzahlen
+#
+<h1>Aktualisierung der Wertungszahlen
+<br>%%% item termin %%% %%% item jahr %%%</h1>
+
+%%% condition if termin_vergangen %%%
+<p>Turnierzahlen können für Turniere, die in der Vergangenheit liegen, nicht 
+mehr geändert werden.</p>
+
+%%% condition else  %%%
+
+%%% condition if meldezahlen_gespeichert %%%
+<p>Turnierzahlen wurden bereits einmal aktualisiert und die bisherigen Zahlen 
+als Meldezahlen gespeichert.</p>
+%%% condition endif %%%
+
+%%% condition if testlauf %%%
+<h2>Testlauf</h2>
+<p>Ggf. wenn sich ZPS-No.
+geändert haben, ist es einfacher, diese in der Personen-Tabelle einzutragen
+und dann die Daten direkt aus der DWZ-Datenbank zu bekommen.</p>
+
+%%% condition endif %%%
+
+%%% loop fehler %%%
+<p class="error">Keinen Eintrag in DWZ-Datenbank für %%% item person %%%
+ (ZPS-No: %%% item zps_code %%%) gefunden.</p>
+%%% loop end %%%
+
+%%% condition if abweichungen %%%
+<ul>
+%%% loop abweichungen %%%
+<li><strong>Hinweis:</strong> Abweichender Name für %%% item person %%%
+ (ZPS-No: %%% item zps_code %%%) gefunden: %%% item spielername %%%.</li>
+%%% loop end %%%
+</ul>
+%%% condition endif %%%
+
+%%% condition if testlauf %%%
+<form method="POST" action="">
+<input type="submit" name="update" value="Turnierzahlen schreiben">
+</form>
+
+%%% condition else %%%
+<p><strong>Aktualisierung der Wertungszahlen erfolgt.</strong></p>
+
+%%% condition endif %%%
+%%% condition endif %%%
