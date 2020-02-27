@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Export tournament data for ChessBase
 
 
@@ -36,7 +36,7 @@ function mod_tournaments_tournamentexport_cb($params) {
 			, CONCAT(t_nachname, ",", t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), "")) AS player
 			, brett_no AS board
 		FROM teilnahmen
-		WHERE team_id IN (%s) AND !ISNULL(brett_no)
+		WHERE team_id IN (%s) AND NOT ISNULL(brett_no)
 		AND teilnahme_status = "Teilnehmer"
 		ORDER BY team_id, brett_no';
 	$sql = sprintf($sql, implode(',', array_keys($teams)));

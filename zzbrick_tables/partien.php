@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2012-2015, 2017-2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2012-2015, 2017-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Partien
 
 
@@ -58,7 +58,7 @@ $zz['fields'][6]['sql'] = sprintf('SELECT person_id, brett_no
 	, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
 	FROM teilnahmen
 	LEFT JOIN teams USING (team_id)
-	WHERE gruppe_id = %d AND !ISNULL(brett_no)
+	WHERE gruppe_id = %d AND NOT ISNULL(brett_no)
 	'.$values['where_teams'].'
 	ORDER BY team, brett_no, t_nachname, t_vorname', $zz_setting['gruppen_ids']['spieler']);
 $zz['fields'][6]['group'] = 'team';
@@ -86,7 +86,7 @@ $zz['fields'][8]['sql'] = sprintf('SELECT person_id, brett_no
 	, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
 	FROM teilnahmen
 	LEFT JOIN teams USING (team_id)
-	WHERE gruppe_id = %d AND !ISNULL(brett_no)
+	WHERE gruppe_id = %d AND NOT ISNULL(brett_no)
 	'.$values['where_teams'].'
 	ORDER BY team, brett_no, t_nachname, t_vorname', $zz_setting['gruppen_ids']['spieler']);
 $zz['fields'][8]['group'] = 'team';

@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2012-2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2012-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Turniere
 
 
@@ -469,7 +469,7 @@ $zz['filter'][2]['sql'] = 'SELECT DISTINCT hauptreihen.category_id
 		ON termine.reihe_category_id = reihen.category_id
 	LEFT JOIN categories hauptreihen
 		ON reihen.main_category_id = hauptreihen.category_id
-	WHERE !ISNULL(hauptreihen.category_id)
+	WHERE NOT ISNULL(hauptreihen.category_id)
 	ORDER BY beginn DESC';
 $zz['filter'][2]['title'] = 'Reihe';
 $zz['filter'][2]['identifier'] = 'reihe';

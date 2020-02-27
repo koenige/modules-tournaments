@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2012-2017, 2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2012-2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Aktualisierung der Turnierwertungszahlen kurz vor Turnierbeginn
 
 
@@ -18,7 +18,7 @@ function mod_tournaments_turnierzahlen($vars) {
 	global $zz_conf;
 
 	$sql = 'SELECT termin_id, turnier_id
-			, IF(!ISNULL(termine.ende),
+			, IF(NOT ISNULL(termine.ende),
 				IF(termine.ende < CURDATE(), 1, NULL),
 				IF(termine.beginn < CURDATE(), 1, NULL)
 			) AS termin_vergangen
