@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2012, 2014, 2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2012, 2014, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Tabellenstände/Wertungen
 
 
@@ -32,7 +32,7 @@ $zz_sub['fields'][3]['sql'] = 'SELECT category_id, category, main_category_id
 	ORDER BY sequence, category';
 $zz_sub['fields'][3]['show_hierarchy'] = 'main_category_id';
 $zz_sub['fields'][3]['display_field'] = 'category';
-$zz_sub['fields'][3]['show_hierarchy_subtree'] = $zz_setting['category_ids']['turnierwertungen'][0];
+$zz_sub['fields'][3]['show_hierarchy_subtree'] = wrap_category_id('turnierwertungen');
 
 $zz_sub['unique'][] = ['tabellenstand_id', 'wertung_category_id'];
 

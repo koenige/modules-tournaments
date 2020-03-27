@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2014-2015, 2017, 2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2014-2015, 2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Tabellenstände zu einem Turnier
 
 
@@ -23,7 +23,7 @@ $zz = zzform_include_table('tabellenstaende');
 $zz['where']['termin_id'] = $termin['termin_id'];
 $zz['where']['runde_no'] = $brick['vars'][2];
 
-if ($termin['turnierform'] === 'einzel') {
+if ($termin['turnierform'] === 'e') {
 	unset($zz['filter'][1]);
 	unset($zz['fields'][11]); // platz_brett_no
 	unset($zz['fields'][4]); // Team
@@ -51,10 +51,10 @@ $zz['fields'][5]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 $zz['fields'][6]['auto_value'] = 'increment';
 
 if (!isset($_GET['filter']['typ'])) {
-	if ($termin['turnierform'] !== 'einzel') {
+	if ($termin['turnierform'] !== 'e') {
 		$zz['fields'][5]['hide_in_form'] = true; // Spieler
 	}
-	if ($termin['turnierform'] !== 'einzel') {
+	if ($termin['turnierform'] !== 'e') {
 		$zz['fields'][11]['hide_in_form'] = true; // Spieler-Platz
 	}
 	$zz['fields'][10]['min_records'] =

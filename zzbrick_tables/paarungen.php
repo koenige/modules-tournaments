@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2012-2015, 2017, 2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2012-2015, 2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Paarungen
 
 
@@ -39,7 +39,7 @@ $zz['fields'][3]['field_name'] = 'place_contact_id';
 $zz['fields'][3]['type'] = 'select';
 $zz['fields'][3]['sql'] = sprintf('SELECT contact_id, contact
 	FROM contacts
-	WHERE contact_category_id = %d', $zz_setting['category_ids']['kontakte']['veranstaltungsort']);
+	WHERE contact_category_id = %d', wrap_category_id('kontakte/veranstaltungsort'));
 $zz['fields'][3]['key_field_name'] = 'contact_id';
 $zz['fields'][3]['type'] = 'select';
 $zz['fields'][3]['hide_in_list'] = true;

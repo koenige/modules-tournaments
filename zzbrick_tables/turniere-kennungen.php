@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2014-2015, 2017-2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2014-2015, 2017-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Turnierkennungen
 
 
@@ -32,7 +32,7 @@ $zz_sub['fields'][4]['type'] = 'select';
 $zz_sub['fields'][4]['sql'] = sprintf('SELECT category_id, category
 	FROM categories
 	WHERE main_category_id = %d
-	AND parameters LIKE "%%turnier=1%%"', $zz_setting['category_ids']['kennungen'][0]);
+	AND parameters LIKE "%%turnier=1%%"', wrap_category_id('kennungen'));
 $zz_sub['fields'][4]['display_field'] = 'category';
 $zz_sub['fields'][4]['key_field_name'] = 'category_id';
 $zz_sub['fields'][4]['def_val_ignore'] = true;

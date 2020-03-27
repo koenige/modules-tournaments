@@ -118,7 +118,7 @@ $zz['fields'][13]['sql'] = 'SELECT category_id, category, main_category_id
 $zz['fields'][13]['display_field'] = 'category';
 $zz['fields'][13]['key_field_name'] = 'category_id';
 $zz['fields'][13]['show_hierarchy'] = 'main_category_id';
-$zz['fields'][13]['show_hierarchy_subtree'] = $zz_setting['category_ids']['partiestatus'][0];
+$zz['fields'][13]['show_hierarchy_subtree'] = wrap_category_id('partiestatus');
 
 $zz['fields'][15]['title'] = 'PGN';
 $zz['fields'][15]['field_name'] = 'pgn';

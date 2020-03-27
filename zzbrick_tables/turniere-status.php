@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2014, 2017, 2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2014, 2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Turnierstatus
 
 
@@ -28,7 +28,7 @@ $zz_sub['fields'][4]['field_name'] = 'status_category_id';
 $zz_sub['fields'][4]['type'] = 'select';
 $zz_sub['fields'][4]['sql'] = sprintf('SELECT category_id, category
 	FROM categories
-	WHERE main_category_id = %d', $zz_setting['category_ids']['turnierstatus'][0]);
+	WHERE main_category_id = %d', wrap_category_id('turnierstatus'));
 $zz_sub['fields'][4]['display_field'] = 'category';
 $zz_sub['fields'][4]['key_field_name'] = 'category_id';
 

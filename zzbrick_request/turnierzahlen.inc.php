@@ -89,7 +89,7 @@ function mod_tournaments_turnierzahlen($vars) {
 		AND gruppe_id = %d
 	';
 	$sql = sprintf($sql,
-		$zz_setting['category_ids']['kennungen']['zps-code'],
+		wrap_category_id('kennungen/zps'),
 		$termin['termin_id'],
 		$zz_setting['gruppen_ids']['spieler']
 	);

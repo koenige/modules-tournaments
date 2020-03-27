@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2014-2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2014-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Partien eines Turniers
 
 
@@ -37,7 +37,7 @@ if (count($brick['vars']) === 4) {
 	$zz['where']['paarung_id'] = $paarung['paarung_id'];
 }
 
-$zz['fields'][13]['default'] = $zz_setting['category_ids']['partiestatus']['normal'];
+$zz['fields'][13]['default'] = wrap_category_id('partiestatus/normal');
 
 if (count($brick['vars']) === 3) {
 	// Einzelturnier

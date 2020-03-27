@@ -47,7 +47,7 @@ $zz['fields'][3]['if'][2]['sql'] = 'SELECT category_id, category, main_category_
 	WHERE parameters LIKE "%team=0%"
 	ORDER BY category';
 $zz['fields'][3]['show_hierarchy'] = 'main_category_id';
-$zz['fields'][3]['show_hierarchy_subtree'] = $zz_setting['category_ids']['turnierformen'][0];
+$zz['fields'][3]['show_hierarchy_subtree'] = wrap_category_id('turnierformen');
 $zz['fields'][3]['display_field'] = 'turnierform';
 $zz['fields'][3]['search'] = 'turnierformen.category_short';
 
@@ -63,7 +63,7 @@ $zz['fields'][4]['sql'] = 'SELECT category_id, category, main_category_id
 	FROM categories
 	ORDER BY category';
 $zz['fields'][4]['show_hierarchy'] = 'main_category_id';
-$zz['fields'][4]['show_hierarchy_subtree'] = $zz_setting['category_ids']['turniermodi'][0];
+$zz['fields'][4]['show_hierarchy_subtree'] = wrap_category_id('turniermodi');
 $zz['fields'][4]['display_field'] = 'modus';
 $zz['fields'][4]['search'] = 'modus.category_short';
 
@@ -493,12 +493,12 @@ $zz['filter'][1]['depends_on'] = 2;
 
 $zz['conditions'][1]['scope'] = 'record';
 $zz['conditions'][1]['where'] = sprintf(
-	'termine.termin_category_id = %d', $zz_setting['category_ids']['termine']['mannschaft']
+	'termine.termin_category_id = %d', wrap_category_id('termine/mannschaft')
 );
 
 $zz['conditions'][2]['scope'] = 'record';
 $zz['conditions'][2]['where'] = sprintf(
-	'termine.termin_category_id = %d', $zz_setting['category_ids']['termine']['einzel.2']
+	'termine.termin_category_id = %d', wrap_category_id('termine/einzel')
 );
 
 $zz_conf['copy'] = true;
