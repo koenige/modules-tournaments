@@ -86,7 +86,7 @@ function mod_tournaments_turnierzahlen($vars) {
 			AND contacts_identifiers.current = "yes"
 			AND contacts_identifiers.identifier_category_id = %d
 		WHERE termin_id = %d
-		AND gruppe_id = %d
+		AND usergroup_id = %d
 	';
 	$sql = sprintf($sql,
 		wrap_category_id('kennungen/zps'),

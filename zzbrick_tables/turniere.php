@@ -437,7 +437,7 @@ $zz['sql'] = 'SELECT turniere.*
 		, (SELECT COUNT(teilnahme_id) FROM teilnahmen
 			WHERE teilnahmen.termin_id = turniere.termin_id
 			AND teilnahme_status = "Teilnehmer"
-			AND gruppe_id = %d
+			AND usergroup_id = %d
 		) AS spieler
 	FROM turniere
 	LEFT JOIN termine USING (termin_id)

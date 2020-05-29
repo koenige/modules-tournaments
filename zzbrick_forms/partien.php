@@ -53,7 +53,7 @@ if (count($brick['vars']) === 3) {
 	$zz['fields'][8]['sql'] = sprintf('SELECT person_id
 		, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 		FROM teilnahmen
-		WHERE gruppe_id = %d
+		WHERE usergroup_id = %d
 		AND termin_id = %d
 		ORDER BY t_nachname, t_vorname', $zz_setting['gruppen_ids']['spieler'], $termin['termin_id']);
  	// Gruppierung nach Team entfernen

@@ -139,7 +139,7 @@ function mod_tournaments_startrangliste_einzel($termin) {
 		LEFT JOIN categories hauptreihen
 			ON reihen.main_category_id = hauptreihen.category_id
 		WHERE termin_id = %d
-		AND gruppe_id = %d
+		AND usergroup_id = %d
 		AND teilnahme_status IN (%s"Teilnehmer", "disqualifiziert", "geblockt")
 		ORDER BY setzliste_no, IFNULL(t_dwz, t_elo) DESC, t_elo DESC, t_nachname, t_vorname';
 	$sql = sprintf($sql

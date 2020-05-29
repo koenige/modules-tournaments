@@ -42,7 +42,7 @@ $zz['fields'][5]['sql'] = 'SELECT person_id
 	FROM personen
 	LEFT JOIN teilnahmen USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
-	WHERE teilnahmen.gruppe_id = %d
+	WHERE teilnahmen.usergroup_id = %d
 	AND termin_id = %d
 	ORDER BY nachname, vorname, YEAR(geburtsdatum), identifier';
 $zz['fields'][5]['sql'] = sprintf($zz['fields'][5]['sql'], $zz_setting['gruppen_ids']['spieler'], $termin['termin_id']);
