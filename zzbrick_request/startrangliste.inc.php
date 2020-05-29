@@ -16,7 +16,7 @@ function mod_tournaments_startrangliste($vars) {
 	
 	$sql = 'SELECT termine.termin_id, termin
 			, CONCAT(beginn, IFNULL(CONCAT("/", ende), "")) AS dauer
-			, YEAR(beginn) AS jahr, ende
+			, YEAR(beginn) AS jahr, IFNULL(ende, beginn) AS ende
 			, places.contact AS veranstaltungsort
 			, address, postcode, place, places.description
 			, latitude, longitude
@@ -243,7 +243,6 @@ function mod_tournaments_startrangliste_mannschaft($termin) {
 	foreach ($termin['teams'] AS $key => $row) {
 		if ($termin['meldeliste']) $termin['teams'][$key]['meldeliste'] = true;
 		if ($dwz_sortierung) {
-		// Sortierung wg. Jacob-Nörgelbacke nach DWZ-Schnitt
 			$teamname[$key] = $row['place'];
 			$verband[$key] = $row['country'];
 			$schnitt[$key] = $row['dwz_schnitt'];
