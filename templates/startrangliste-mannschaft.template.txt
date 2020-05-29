@@ -1,0 +1,86 @@
+# Zugzwang Project
+# deutsche-schachjugend.de
+# Copyright (c) 2012-2014, 2016, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
+# HTML-Ausgabe: Startrangliste für Mannschaftsturniere
+#
+# termin, dauer, veranstaltungsort, address, postcode,
+# place, description, latitude, longitude
+#
+<h1>Startrangliste
+<br><a href="../">%%% item termin %%% %%% item dauer wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
+
+%%% condition if map %%%
+<div class="infocol">
+%%% condition endif %%%
+<div class="results">
+<table>
+<thead>
+<tr class="sortable"><th>Nr.</th>
+<th>%%% condition if m-a %%%Land
+%%% condition elseif m-v %%%Verein
+%%% condition elseif m-s %%%Schule
+%%% condition endif %%%
+%%% condition unless m-a %%%%%% condition if country %%%<th>Land</th>%%% condition endif %%%%%% condition endif %%%
+%%% condition if dwz_schnitt %%%<th>Ø&nbsp;DWZ</th>%%% condition endif %%%
+%%% condition if meldeliste %%%
+<th>Meldung</th>
+%%% condition endif %%%
+</tr>
+</thead>
+<tbody id="teams">
+%%% loop teams %%%
+<tr class='%%% loopposition uneven "un" %%%even' id="%%% item team_kennung_kurz %%%">
+<td>%%% item setzliste_no %%%</td>
+<td>%%% condition if kennung %%%<a href="../../../%%% item kennung %%%/">%%% condition endif %%%
+%%% item team %%% %%% item team_no %%%%%% condition if kennung %%%</a>%%% condition endif %%%</td>
+%%% condition unless m-a %%%
+%%% condition if country %%%
+<td>%%% condition if hauptreihe_kennung & lv_kennung %%%
+<a href="../../%%% item hauptreihe_kennung %%%/lv/%%% item lv_kennung %%%/">
+%%% condition endif %%%
+<span class="short"><abbr title="%%% item country %%%">%%% item lv_kurz %%%</abbr></span>
+<span class="long">%%% item country %%%</span>
+%%% condition if hauptreihe_kennung & lv_kennung %%%
+</a>
+%%% condition endif %%%
+</td>
+%%% condition endif %%%
+%%% condition endif %%%
+%%% condition if dwz_schnitt %%%
+<td class="number">%%% item dwz_schnitt %%%</td>
+%%% condition endif %%%
+%%% condition if meldeliste %%%
+<td class="meldung">%%% item eintrag_datum %%%</td>
+%%% condition endif %%%
+</tr>
+%%% loop end %%%
+</tbody>
+</table>
+</div>
+%%% condition if dwz_schnitt %%%
+<p>DWZ-Schnitt der ersten %%% item bretter_min %%% Bretter aller Teams: <strong>%%% item dwz_schnitt %%%</strong>
+%%% condition if pseudo_dwz %%%
+ <br><em>(unter Berücksichtigung einer Pseudo-DWZ von %%% item pseudo_dwz %%% für Spieler ohne DWZ)</em>
+%%% condition endif %%%
+</p>
+%%% condition endif %%%
+
+%%% condition if map %%%
+</div>
+<div class="infocol">
+<h2>Karte</h2>
+<div class="map">
+%%% item map %%%
+</div>
+<p>(Rot: Veranstaltungsort; blau: Teilnehmer)</p>
+</div>
+%%% condition endif %%%
+<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/core.js"></script>
+<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/widgets/sortable.js"></script>
+<script type="text/javascript">
+	var sortTableObject = vxJS.widget.sorTable(document.getElementById('teams'), {
+		columnFormat: ["float", null, null, %%% condition if meldeliste %%%null%%% condition else %%%"float"
+%%% condition endif %%%
+]
+	});
+</script>

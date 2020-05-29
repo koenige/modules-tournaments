@@ -1,0 +1,114 @@
+# Zugzwang Project
+# deutsche-schachjugend.de
+# Copyright (c) 2012-2017, 2019 Gustaf Mossakowski <gustaf@koenige.org>
+# HTML-Ausgabe: Startrangliste für Einzelturniere
+#
+# termin, dauer, veranstaltungsort, address, postcode,
+# place, description, latitude, longitude
+#
+<h1>%%% condition if meldeliste %%%Meldeliste%%% condition else %%%Startrangliste%%% condition endif %%%
+<br><a href="../">%%% item termin %%% %%% item dauer wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
+
+<div class="datenspalte">
+<div class="results">
+<table>
+<thead>
+<tr class="sortable">
+%%% condition unless meldeliste %%%
+<th>Nr.</th>
+%%% condition endif %%%
+%%% condition if zeige_titel %%%
+<th class="longer"><abbr title="FIDE-Titel">Tit.</abbr></th>
+%%% condition endif %%%
+<th class="person">Spieler</th><th class="verein">Verein</th><th>Land</th>
+%%% condition if zeige_dwz %%%
+<th><abbr title="Deutsche Wertungszahl">DWZ</abbr></th>
+%%% condition endif %%%
+%%% condition if zeige_elo %%%
+<th ><abbr title="Elo-Wertungszahl des Weltschachbunds FIDE">Elo</abbr></th>
+%%% condition endif %%%
+%%% condition if meldeliste %%%
+<th>Meldung</th>
+%%% condition endif %%%
+</tr>
+</thead>
+<tbody id="spieler">
+%%% loop spieler %%%
+<tr class='%%% loopposition uneven "un" %%%even'%%% item setzliste_no " id='s%s'"%%%>
+%%% condition unless meldeliste %%%
+<td class="tz">%%% item setzliste_no %%%</td>
+%%% condition endif %%%
+%%% condition if zeige_titel %%%
+<td class="number longer">%%% item fidetitel_lang "<abbr title='%s'>" %%%%%% item t_fidetitel "%s" %%%%%% item fidetitel_lang "</abbr>" %%%</td>
+%%% condition endif %%%
+<td class="person">
+<span class="sortonly">%%% item nachname_vorname %%%</span>
+<span class="shorter">%%% item fidetitel_lang "<abbr title='%s'>" %%%%%% item t_fidetitel "%s" %%%%%% item fidetitel_lang "</abbr>" %%%</span> 
+%%% condition if setzliste_no %%%<a href="../spieler/%%% item setzliste_no %%%/">%%% condition endif %%%
+%%% item person %%%
+%%% condition if setzliste_no %%%</a>%%% condition endif %%% %%% item t_extra "(%s)" %%%</td>
+<td class="verein">%%% item t_verein %%%</td>
+<td>
+%%% condition if hauptreihe_kennung & lv_kennung %%%
+<a href="../../%%% item hauptreihe_kennung %%%/lv/%%% item lv_kennung %%%/">
+%%% condition endif %%%
+<span class="short"><abbr title="%%% item country %%%">%%% item lv_kurz %%%</abbr></span>
+<span class="long">%%% item country %%%</span>
+%%% condition if hauptreihe_kennung & lv_kennung %%%
+</a>
+%%% condition endif %%%
+</td>
+%%% condition if zeige_dwz %%%
+<td class="number">%%% comment condition if zps_code <a href="http://www.schachbund.de/spieler.html?zps=%/%% item zps_code %/%%">%%%
+%%% comment condition endif %%%
+%%% item t_dwz %%%%%% comment item zps_code "</a>" %%%</td>
+%%% condition endif %%%
+%%% condition if zeige_elo %%%
+<td class="number">
+%%% condition if fide_id %%%
+<a href="http://ratings.fide.com/card.phtml?event=%%% item fide_id %%%">
+%%% condition endif %%%
+%%% item t_elo %%%
+%%% item fide_id "</a>" %%%</td>
+%%% condition endif %%%
+%%% condition if meldeliste %%%
+<td class="meldung">%%% item eintrag_datum %%%</td>
+%%% condition endif %%%
+</tr>
+%%% loop end %%%
+</tbody>
+</table>
+</div>
+%%% condition if dwz_schnitt %%%
+<p>DWZ-Schnitt: <strong>%%% item dwz_schnitt %%%</strong>
+%%% condition if pseudo_dwz %%%
+ <br><em>(unter Berücksichtigung einer Pseudo-DWZ von %%% item pseudo_dwz %%% für Spieler ohne DWZ)</em>
+%%% condition endif %%%
+</p>
+%%% condition endif %%%
+%%% condition if meldungen %%%
+<p>%%% item meldungen %%% Anmeldungen</p>
+%%% condition endif %%%
+</div>
+
+%%% condition if map %%%
+<div class="kartenspalte">
+<h2>Karte</h2>
+<div class="map">
+%%% item map %%%
+</div>
+<p>(Rot: Veranstaltungsort; blau: Teilnehmer)</p>
+</div>
+%%% condition endif %%%
+<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/core.js"></script>
+<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/widgets/sortable.js"></script>
+<script type="text/javascript">
+	var sortTableObject = vxJS.widget.sorTable(document.getElementById('spieler'), {
+		columnFormat: [%%% condition unless meldeliste %%%null, %%% condition endif %%%
+%%% condition if zeige_titel %%%null, %%% condition endif %%% null, null, null
+%%% condition if zeige_dwz %%%, "float" %%% condition endif %%%
+%%% condition if zeige_elo %%%, "float" %%% condition endif %%%
+%%% condition if meldeliste %%%, "date_de" %%% condition endif %%%]
+	});
+</script>
+
