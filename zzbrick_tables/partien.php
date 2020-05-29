@@ -60,7 +60,7 @@ $zz['fields'][6]['sql'] = sprintf('SELECT person_id, brett_no
 	LEFT JOIN teams USING (team_id)
 	WHERE usergroup_id = %d AND NOT ISNULL(brett_no)
 	'.$values['where_teams'].'
-	ORDER BY team, brett_no, t_nachname, t_vorname', $zz_setting['gruppen_ids']['spieler']);
+	ORDER BY team, brett_no, t_nachname, t_vorname', wrap_id('usergroups', 'spieler'));
 $zz['fields'][6]['group'] = 'team';
 $zz['fields'][6]['search'] = 'CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname)';
 
@@ -88,7 +88,7 @@ $zz['fields'][8]['sql'] = sprintf('SELECT person_id, brett_no
 	LEFT JOIN teams USING (team_id)
 	WHERE usergroup_id = %d AND NOT ISNULL(brett_no)
 	'.$values['where_teams'].'
-	ORDER BY team, brett_no, t_nachname, t_vorname', $zz_setting['gruppen_ids']['spieler']);
+	ORDER BY team, brett_no, t_nachname, t_vorname', wrap_id('usergroups', 'spieler'));
 $zz['fields'][8]['group'] = 'team';
 $zz['fields'][8]['search'] = 'CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname)';
 
@@ -261,7 +261,7 @@ $zz['sql'] = sprintf('SELECT partien.*
 		AND schwarz.termin_id = partien.termin_id
 		AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", paarungen.heim_team_id, paarungen.auswaerts_team_id))
 		AND schwarz.usergroup_id = %d
-', $zz_setting['gruppen_ids']['spieler'], $zz_setting['gruppen_ids']['spieler']);
+', wrap_id('usergroups', 'spieler'), wrap_id('usergroups', 'spieler'));
 
 $zz['sqlorder'] = ' ORDER BY termine.beginn, termine.kennung, runde_no, brett_no';
 

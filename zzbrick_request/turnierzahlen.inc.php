@@ -14,7 +14,6 @@
  * @return array $page
  */
 function mod_tournaments_turnierzahlen($vars) {
-	global $zz_setting;
 	global $zz_conf;
 
 	$sql = 'SELECT termin_id, turnier_id
@@ -91,7 +90,7 @@ function mod_tournaments_turnierzahlen($vars) {
 	$sql = sprintf($sql,
 		wrap_category_id('kennungen/zps'),
 		$termin['termin_id'],
-		$zz_setting['gruppen_ids']['spieler']
+		wrap_id('usergroups', 'spieler')
 	);
 	$teilnahmen = wrap_db_fetch($sql, 'teilnahme_id');
 	$zps_codes = [];

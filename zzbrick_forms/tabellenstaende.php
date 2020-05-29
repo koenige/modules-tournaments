@@ -45,7 +45,7 @@ $zz['fields'][5]['sql'] = 'SELECT person_id
 	WHERE teilnahmen.usergroup_id = %d
 	AND termin_id = %d
 	ORDER BY nachname, vorname, YEAR(geburtsdatum), identifier';
-$zz['fields'][5]['sql'] = sprintf($zz['fields'][5]['sql'], $zz_setting['gruppen_ids']['spieler'], $termin['termin_id']);
+$zz['fields'][5]['sql'] = sprintf($zz['fields'][5]['sql'], wrap_id('usergroups', 'spieler'), $termin['termin_id']);
 $zz['fields'][5]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 
 $zz['fields'][6]['auto_value'] = 'increment';

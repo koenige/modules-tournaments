@@ -449,7 +449,7 @@ $zz['sql'] = 'SELECT turniere.*
 		ON turniere.turnierform_category_id = turnierformen.category_id
 	LEFT JOIN urkunden USING (urkunde_id)
 ';
-$zz['sql'] = sprintf($zz['sql'], $zz_setting['gruppen_ids']['spieler']);
+$zz['sql'] = sprintf($zz['sql'], wrap_id('usergroups', 'spieler'));
 $zz['sqlorder'] = ' ORDER BY termine.beginn DESC, termine.uhrzeit_beginn DESC,
 	termine.kennung';
 

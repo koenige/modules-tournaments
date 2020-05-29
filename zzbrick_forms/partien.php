@@ -55,7 +55,7 @@ if (count($brick['vars']) === 3) {
 		FROM teilnahmen
 		WHERE usergroup_id = %d
 		AND termin_id = %d
-		ORDER BY t_nachname, t_vorname', $zz_setting['gruppen_ids']['spieler'], $termin['termin_id']);
+		ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'), $termin['termin_id']);
  	// Gruppierung nach Team entfernen
  	unset($zz['fields'][6]['group']);
 	unset($zz['fields'][8]['group']);
