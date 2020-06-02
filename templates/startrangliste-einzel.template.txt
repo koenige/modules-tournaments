@@ -72,7 +72,7 @@
 %%% item fide_id "</a>" %%%</td>
 %%% condition endif %%%
 %%% condition if meldeliste %%%
-<td class="meldung">%%% item eintrag_datum %%%</td>
+<td class="meldung"><span class="sortonly">%%% item eintrag_datum_raw %%%</span>%%% item eintrag_datum %%%</td>
 %%% condition endif %%%
 </tr>
 %%% loop end %%%
