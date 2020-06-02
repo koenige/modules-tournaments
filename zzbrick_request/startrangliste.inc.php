@@ -111,6 +111,7 @@ function mod_tournaments_startrangliste_einzel($termin) {
 			, IF(LENGTH(hauptreihen.path) > 7, SUBSTRING_INDEX(hauptreihen.path, "/", -1), NULL) AS hauptreihe_kennung
 			, teilnahme_status
 			, DATE_FORMAT(eintrag_datum, "%%d.%%m %%H:%%i") AS eintrag_datum
+			, eintrag_datum AS eintrag_datum_raw
 		FROM teilnahmen
 		JOIN personen USING (person_id)
 		LEFT JOIN organisationen
