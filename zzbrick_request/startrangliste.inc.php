@@ -147,7 +147,7 @@ function mod_tournaments_startrangliste_einzel($termin) {
 		, $zz_setting['org_ids']['dsb']
 		, $termin['termin_id']
 		, wrap_id('usergroups', 'spieler')
-		, $termin['ende'] > date('Y-m-d') ? '"angemeldet", ' : ''
+		, ($termin['ende'] >= date('Y-m-d')) ? '"angemeldet", ' : ''
 	);
 	$termin['spieler'] = wrap_db_fetch($sql, 'person_id');
 	$termin['spieler'] = my_get_personen_kennungen($termin['spieler'], ['fide-id', 'zps']);
