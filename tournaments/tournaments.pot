@@ -30,10 +30,14 @@ msgstr ""
 msgid "URL under which the current DWZ data of the German Chess Federation is available in SQL format"
 msgstr ""
 
-#: zzbrick_make/ratingdownload.inc.php
+#: zzbrick_make/ratings.inc.php
+msgid "Error while unpacking file %s, Code %s"
+msgstr ""
+
+#: zzbrick_make/ratings-download.inc.php
 msgid "Failed to download rating file for %s."
 msgstr ""
 
-#: zzbrick_make/ratingdownload.inc.php
+#: zzbrick_make/ratings-download.inc.php
 msgid "File path for downloaded rating file for %s is wrong: %s/%s."
 msgstr ""
