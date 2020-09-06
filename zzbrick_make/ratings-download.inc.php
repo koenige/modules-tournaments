@@ -16,8 +16,6 @@
  */
 function mod_tournaments_make_ratings_download($params) {
 	global $zz_setting;
-	// @todo show webpage with possible downloads if there are no parameters,
-	// allow to trigger downloads
 	if (count($params) !== 1) return false;
 	
 	$data = [];
@@ -27,9 +25,6 @@ function mod_tournaments_make_ratings_download($params) {
 	if (!array_key_exists($data['rating'], $zz_setting['rating_download'])) return false; // @todo log error
 	$data['url'] = $zz_setting['rating_download'][$data['rating']];
 	if (!$data['url']) return false;
-
-	// @todo show webpage form that allows to trigger download for this rating file
-	if ($_SERVER['REQUEST_METHOD'] !== 'POST') return false;
 
 	// fetches the rating file from the server
 	// might take a little longer, but if possible, If-Modified-Since and 304s
