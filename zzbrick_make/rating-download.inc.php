@@ -14,7 +14,7 @@
  * @param string $rating
  * @return array $data
  */
-function mod_tournaments_make_ratingdownload($params) {
+function mod_tournaments_make_rating_download($params) {
 	global $zz_setting;
 	// @todo show webpage with possible downloads if there are no parameters,
 	// allow to trigger downloads
