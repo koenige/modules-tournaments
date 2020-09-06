@@ -22,6 +22,16 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.12\n"
 
+#: docs/sql/settings.cfg
+msgid "URL under which the current FIDE Elo data is available in TXT format"
+msgstr "URL, unter der die aktuellen FIDE-Elo-Daten im TXT-Format vorliegen"
+
+#: docs/sql/settings.cfg
+msgid ""
+"URL under which the current DWZ data of the German Chess Federation is "
+"available in SQL format"
+msgstr "URL, unter der die aktuellen DSB-DWZ-Daten im SQL-Format vorliegen"
+
 #: zzbrick_make/ratingdownload.inc.php
 msgid "Failed to download rating file for %s."
 msgstr "Herunterladen der Rating-Datei für %s fehlgeschlagen."
