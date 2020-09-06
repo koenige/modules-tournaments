@@ -30,6 +30,14 @@ msgstr ""
 msgid "URL under which the current DWZ data of the German Chess Federation is available in SQL format"
 msgstr ""
 
+#: docs/sql/settings.cfg
+msgid "Last imported status of the FIDE Elo database"
+msgstr ""
+
+#: docs/sql/settings.cfg
+msgid "Last imported status of the German DWZ database"
+msgstr ""
+
 #: zzbrick_make/ratings.inc.php
 msgid "Error while unpacking file %s, Code %s"
 msgstr ""

@@ -32,6 +32,14 @@ msgid ""
 "available in SQL format"
 msgstr "URL, unter der die aktuellen DSB-DWZ-Daten im SQL-Format vorliegen"
 
+#: docs/sql/settings.cfg
+msgid "Last imported status of the FIDE Elo database"
+msgstr "Letzter importierter Stand der FIDE-Elo-Datenbank"
+
+#: docs/sql/settings.cfg
+msgid "Last imported status of the German DWZ database"
+msgstr "Letzter importierter Stand der DSB-DWZ-Datenbank"
+
 #: zzbrick_make/ratings.inc.php
 msgid "Error while unpacking file %s, Code %s"
 msgstr "Fehler beim entpacken der Datei %s, Code %s"
