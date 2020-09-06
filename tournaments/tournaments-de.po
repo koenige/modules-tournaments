@@ -43,3 +43,7 @@ msgstr "Herunterladen der Rating-Datei für %s fehlgeschlagen."
 #: zzbrick_make/ratings-download.inc.php
 msgid "File path for downloaded rating file for %s is wrong: %s/%s."
 msgstr "Dateipfad für die Rating-Datei %s ist falsch: %s/%s."
+
+#: zzbrick_make/ratings-import-dwz.inc.php
+msgid "File not found for rating import: %s"
+msgstr "Datei %s für den Rating-Import nicht gefunden."
