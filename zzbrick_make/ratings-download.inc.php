@@ -4,17 +4,17 @@
 // deutsche-schachjugend.de
 // Copyright (c) .... Jacob Roggon
 // Copyright (c) 2013-2014, 2016-2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
-// Import rating data from other server
+// download rating data from other server
 
 
 /**
- * import rating data from other server
+ * download rating data from other server
  * download as a ZIP file
  *
  * @param string $rating
  * @return array $data
  */
-function mod_tournaments_make_rating_download($params) {
+function mod_tournaments_make_ratings_download($params) {
 	global $zz_setting;
 	// @todo show webpage with possible downloads if there are no parameters,
 	// allow to trigger downloads
