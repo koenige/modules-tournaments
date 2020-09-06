@@ -33,7 +33,7 @@ function mod_tournaments_make_ratings_import($params) {
 	$data = $function([$dest_folder]);
 	if (empty($data)) {
 		rmdir($dest_folder);
-		wrap_setting_write('rating_status['.$path.']', $dl['date']);
+		wrap_setting_write('rating_status['.$params[0].']', $dl['date']);
 		$data['import_successful'] = true;
 	}
 	$page['text'] = json_encode($data);
