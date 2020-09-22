@@ -37,7 +37,7 @@ function mod_tournaments_make_ratings_download($params) {
 	// save metadata
 	$meta = $rating_data['_'];
 
-	// move current rating file into /_files/[path] folder unless already done
+	// move current rating file into /files/[path] folder unless already done
 	// 1. create folder
 	$year = date('Y', strtotime($meta['Last-Modified']));
 	$destination_folder = sprintf($zz_setting['media_folder'].'/'.$data['path'].'/%d', $year);
