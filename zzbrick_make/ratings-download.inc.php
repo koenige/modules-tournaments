@@ -55,13 +55,13 @@ function mod_tournaments_make_ratings_download($params) {
 	$filename = sprintf('%s-%s', $data['date'], $filename);
 
 	// 3. archive file
-	$destination_folder = realpath($destination_folder);
-	if (!$destination_folder) {
+	$destination = realpath($destination_folder);
+	if (!$destination) {
 		wrap_error(sprintf(
-			wrap_text('File path for downloaded rating file for %s is wrong: %s/%s.'), $rating, $destination_folder, $filename
+			wrap_text('File path for downloaded rating file for %s is wrong: %s/%s.'), $data['rating'], $destination_folder, $filename
 		), E_USER_ERROR);
 	}
-	$data['filename'] = $destination_folder.'/'.$filename;
+	$data['filename'] = $destination.'/'.$filename;
 	if (!file_exists($data['filename'])) {
 		copy($meta['filename'], $data['filename']);
 	}
