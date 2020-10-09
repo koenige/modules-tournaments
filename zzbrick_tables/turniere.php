@@ -50,6 +50,7 @@ $zz['fields'][3]['show_hierarchy'] = 'main_category_id';
 $zz['fields'][3]['show_hierarchy_subtree'] = wrap_category_id('turnierformen');
 $zz['fields'][3]['display_field'] = 'turnierform';
 $zz['fields'][3]['search'] = 'turnierformen.category_short';
+$zz['fields'][3]['character_set'] = 'utf8';
 
 $zz['fields'][20]['title_tab'] = 'Rd.';
 $zz['fields'][20]['title'] = 'Runden';
@@ -66,6 +67,7 @@ $zz['fields'][4]['show_hierarchy'] = 'main_category_id';
 $zz['fields'][4]['show_hierarchy_subtree'] = wrap_category_id('turniermodi');
 $zz['fields'][4]['display_field'] = 'modus';
 $zz['fields'][4]['search'] = 'modus.category_short';
+$zz['fields'][4]['character_set'] = 'utf8';
 
 $zz['fields'][49] = zzform_include_table('turniere-bedenkzeiten');
 $zz['fields'][49]['title'] = 'Bedenkzeit';
