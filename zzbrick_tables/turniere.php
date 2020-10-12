@@ -13,12 +13,12 @@ $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'turnier_id';
 $zz['fields'][1]['type'] = 'id';
 
-$zz['fields'][2]['field_name'] = 'termin_id';
+$zz['fields'][2]['field_name'] = 'event_id';
 $zz['fields'][2]['type'] = 'write_once';
 $zz['fields'][2]['type_detail'] = 'select';
-$zz['fields'][2]['sql'] = 'SELECT termin_id, beginn, termin
+$zz['fields'][2]['sql'] = 'SELECT event_id, beginn, termin
 	FROM termine
-	WHERE ISNULL(haupt_termin_id)
+	WHERE ISNULL(haupt_event_id)
 	ORDER BY termin';
 $zz['fields'][2]['display_field'] = 'turnier';
 $zz['fields'][2]['search'] = 'CONCAT(termine.termin, " ", YEAR(beginn))';
@@ -432,17 +432,17 @@ $zz['sql'] = 'SELECT turniere.*
 		, urkunden.urkunde_titel
 		, termine.kennung
 		, (SELECT COUNT(team_id) FROM teams
-			WHERE teams.termin_id = turniere.termin_id
+			WHERE teams.event_id = turniere.event_id
 			AND team_status = "Teilnehmer"
 			AND spielfrei = "nein"
 		) AS teams
 		, (SELECT COUNT(teilnahme_id) FROM teilnahmen
-			WHERE teilnahmen.termin_id = turniere.termin_id
+			WHERE teilnahmen.event_id = turniere.event_id
 			AND teilnahme_status = "Teilnehmer"
 			AND usergroup_id = %d
 		) AS spieler
 	FROM turniere
-	LEFT JOIN termine USING (termin_id)
+	LEFT JOIN termine USING (event_id)
 	LEFT JOIN categories reihen
 		ON termine.reihe_category_id = reihen.category_id
 	LEFT JOIN categories modus
@@ -455,18 +455,18 @@ $zz['sql'] = sprintf($zz['sql'], wrap_id('usergroups', 'spieler'));
 $zz['sqlorder'] = ' ORDER BY termine.beginn DESC, termine.uhrzeit_beginn DESC,
 	termine.kennung';
 
-$zz['subtitle']['termin_id']['sql'] = 'SELECT termin
+$zz['subtitle']['event_id']['sql'] = 'SELECT termin
 	, CONCAT(termine.beginn, IFNULL(CONCAT("/", termine.ende), "")) AS dauer
 	FROM termine';
-$zz['subtitle']['termin_id']['var'] = ['termin', 'dauer'];
-$zz['subtitle']['termin_id']['format'][1] = 'wrap_date';
-$zz['subtitle']['termin_id']['link'] = '../';
-$zz['subtitle']['termin_id']['link_no_append'] = true;
+$zz['subtitle']['event_id']['var'] = ['termin', 'dauer'];
+$zz['subtitle']['event_id']['format'][1] = 'wrap_date';
+$zz['subtitle']['event_id']['link'] = '../';
+$zz['subtitle']['event_id']['link_no_append'] = true;
 
 $zz['filter'][2]['sql'] = 'SELECT DISTINCT hauptreihen.category_id
 		, hauptreihen.category_short, beginn
 	FROM turniere
-	LEFT JOIN termine USING (termin_id)
+	LEFT JOIN termine USING (event_id)
 	LEFT JOIN categories reihen
 		ON termine.reihe_category_id = reihen.category_id
 	LEFT JOIN categories hauptreihen
@@ -481,7 +481,7 @@ $zz['filter'][2]['where'] = 'reihen.main_category_id';
 $zz['filter'][1]['sql'] = 'SELECT DISTINCT YEAR(beginn) AS jahr_idf
 		, YEAR(beginn) AS jahr
 	FROM turniere
-	LEFT JOIN termine USING (termin_id)
+	LEFT JOIN termine USING (event_id)
 	LEFT JOIN categories reihen
 		ON termine.reihe_category_id = reihen.category_id
 	LEFT JOIN categories hauptreihen

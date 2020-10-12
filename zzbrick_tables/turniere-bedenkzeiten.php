@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2015, 2017 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2015, 2017, 2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Turniere/Bedenkzeit
 
 
@@ -17,7 +17,7 @@ $zz_sub['fields'][2]['field_name'] = 'turnier_id';
 $zz_sub['fields'][2]['type'] = 'select';
 $zz_sub['fields'][2]['sql'] = 'SELECT turnier_id, termin
 	FROM turniere
-	LEFT JOIN termine USING (termin_id)
+	LEFT JOIN termine USING (event_id)
 	ORDER BY beginn, kennung DESC';
 $zz_sub['fields'][2]['display_field'] = 'termin';
 
@@ -46,6 +46,6 @@ $zz_sub['sql'] = 'SELECT turniere_bedenkzeiten.*
 		, termin
 	FROM turniere_bedenkzeiten
 	LEFT JOIN turniere USING (turnier_id)
-	LEFT JOIN termine USING (termin_id)
+	LEFT JOIN termine USING (event_id)
 ';
 $zz_sub['sqlorder'] = ' ORDER BY termine.beginn, phase';

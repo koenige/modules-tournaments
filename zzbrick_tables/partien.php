@@ -24,14 +24,14 @@ $zz['fields'][2]['if']['where']['hide_in_list'] = true;
 $zz['fields'][2]['if']['where']['hide_in_form'] = true;
 
 $zz['fields'][3]['title'] = 'Termin';
-$zz['fields'][3]['field_name'] = 'termin_id';
+$zz['fields'][3]['field_name'] = 'event_id';
 $zz['fields'][3]['type'] = 'write_once';
 $zz['fields'][3]['type_detail'] = 'select';
-$zz['fields'][3]['sql'] = 'SELECT termin_id, termin, YEAR(beginn)
+$zz['fields'][3]['sql'] = 'SELECT event_id, termin, YEAR(beginn)
 	FROM termine
-	WHERE ISNULL(haupt_termin_id)
+	WHERE ISNULL(haupt_event_id)
 	ORDER BY beginn, kennung';
-$zz['fields'][3]['key_field_name'] = 'termine.termin_id';
+$zz['fields'][3]['key_field_name'] = 'termine.event_id';
 $zz['fields'][3]['display_field'] = 'termin';
 $zz['fields'][3]['if']['where']['hide_in_list'] = true;
 $zz['fields'][3]['if']['where']['hide_in_form'] = true;
@@ -247,26 +247,26 @@ $zz['sql'] = sprintf('SELECT partien.*
 		, CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname) AS schwarz
 		, category
 	FROM partien
-	LEFT JOIN termine USING (termin_id)
+	LEFT JOIN termine USING (event_id)
 	LEFT JOIN paarungen USING (paarung_id)
 	LEFT JOIN categories
 		ON categories.category_id = partien.partiestatus_category_id
 	LEFT JOIN teilnahmen weiss
 		ON weiss.person_id = partien.weiss_person_id
-		AND weiss.termin_id = partien.termin_id
+		AND weiss.event_id = partien.event_id
 		AND (ISNULL(weiss.team_id) OR weiss.team_id = IF(heim_spieler_farbe = "schwarz", paarungen.auswaerts_team_id, paarungen.heim_team_id))
 		AND weiss.usergroup_id = %d
 	LEFT JOIN teilnahmen schwarz
 		ON schwarz.person_id = partien.schwarz_person_id
-		AND schwarz.termin_id = partien.termin_id
+		AND schwarz.event_id = partien.event_id
 		AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", paarungen.heim_team_id, paarungen.auswaerts_team_id))
 		AND schwarz.usergroup_id = %d
 ', wrap_id('usergroups', 'spieler'), wrap_id('usergroups', 'spieler'));
 
 $zz['sqlorder'] = ' ORDER BY termine.beginn, termine.kennung, runde_no, brett_no';
 
-$zz['subtitle']['termin_id']['sql'] = 'SELECT termin FROM termine';
-$zz['subtitle']['termin_id']['var'] = ['termin'];
+$zz['subtitle']['event_id']['sql'] = 'SELECT termin FROM termine';
+$zz['subtitle']['event_id']['var'] = ['termin'];
 
 $zz['subtitle']['runde_no']['value'] = true;
 $zz['subtitle']['runde_no']['prefix'] = 'Runde ';

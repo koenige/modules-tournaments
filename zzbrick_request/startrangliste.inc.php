@@ -14,7 +14,7 @@ function mod_tournaments_startrangliste($vars) {
 		unset($vars[2]);
 	if (count($vars) !== 2) return false;
 	
-	$sql = 'SELECT termine.termin_id, termin
+	$sql = 'SELECT termine.event_id, termin
 			, CONCAT(beginn, IFNULL(CONCAT("/", ende), "")) AS dauer
 			, YEAR(beginn) AS jahr, IFNULL(ende, beginn) AS ende
 			, places.contact AS veranstaltungsort
@@ -32,9 +32,9 @@ function mod_tournaments_startrangliste($vars) {
 			ON termine.reihe_category_id = reihen.category_id
 		LEFT JOIN categories hauptreihen
 			ON hauptreihen.category_id = reihen.main_category_id
-		LEFT JOIN turniere USING (termin_id)
+		LEFT JOIN turniere USING (event_id)
 		JOIN termine_websites
-			ON termine_websites.termin_id = termine.termin_id
+			ON termine_websites.event_id = termine.event_id
 			AND termine_websites.website_id = %d
 		LEFT JOIN categories turnierformen
 			ON turniere.turnierform_category_id = turnierformen.category_id
@@ -134,18 +134,18 @@ function mod_tournaments_startrangliste_einzel($termin) {
 			ON organisationen_orte.main_contact_id = places.contact_id
 		LEFT JOIN addresses
 			ON places.contact_id = addresses.contact_id
-		LEFT JOIN termine USING (termin_id)
+		LEFT JOIN termine USING (event_id)
 		LEFT JOIN categories reihen
 			ON termine.reihe_category_id = reihen.category_id
 		LEFT JOIN categories hauptreihen
 			ON reihen.main_category_id = hauptreihen.category_id
-		WHERE termin_id = %d
+		WHERE event_id = %d
 		AND usergroup_id = %d
 		AND teilnahme_status IN (%s"Teilnehmer", "disqualifiziert", "geblockt")
 		ORDER BY setzliste_no, IFNULL(t_dwz, t_elo) DESC, t_elo DESC, t_nachname, t_vorname';
 	$sql = sprintf($sql
 		, $zz_setting['org_ids']['dsb']
-		, $termin['termin_id']
+		, $termin['event_id']
 		, wrap_id('usergroups', 'spieler')
 		, ($termin['ende'] >= date('Y-m-d')) ? '"angemeldet", ' : ''
 	);
@@ -205,12 +205,12 @@ function mod_tournaments_startrangliste_mannschaft($termin) {
 			ON organisationen_orte.main_contact_id = places.contact_id
 		LEFT JOIN addresses
 			ON places.contact_id = addresses.contact_id
-		LEFT JOIN termine USING (termin_id)
+		LEFT JOIN termine USING (event_id)
 		LEFT JOIN categories reihen
 			ON termine.reihe_category_id = reihen.category_id
 		LEFT JOIN categories hauptreihen
 			ON reihen.main_category_id = hauptreihen.category_id
-		WHERE termin_id = %d
+		WHERE event_id = %d
 		AND team_status = "Teilnehmer"
 		AND spielfrei = "nein"
 		ORDER BY setzliste_no, place, team';
@@ -218,7 +218,7 @@ function mod_tournaments_startrangliste_mannschaft($termin) {
 		, $zz_setting['org_ids']['dsb']
 		, wrap_category_id('organisationen/verband')
 		, $zz_setting['org_ids']['dsb']
-		, $termin['termin_id']
+		, $termin['event_id']
 	);
 	// @todo Klären, was passiert wenn mehr als 1 Ort zu Verein in Datenbank! (Reihenfolge-Feld einführen)
 	$termin['teams'] = wrap_db_fetch($sql, 'team_id');
@@ -238,7 +238,7 @@ function mod_tournaments_startrangliste_mannschaft($termin) {
 		if ($erstes_team['setzliste_no']) $dwz_sortierung = false;
 
 		list($termin['dwz_schnitt'], $termin['teams']) 
-			= my_dwz_schnitt_teams($termin['termin_id'], $termin['teams'], $termin['bretter_min'], $termin['pseudo_dwz']);
+			= my_dwz_schnitt_teams($termin['event_id'], $termin['teams'], $termin['bretter_min'], $termin['pseudo_dwz']);
 	}
 
 	foreach ($termin['teams'] AS $key => $row) {

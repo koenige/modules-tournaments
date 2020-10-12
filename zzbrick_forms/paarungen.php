@@ -2,16 +2,16 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2014, 2017, 2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2014, 2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Paarungen eines Turniers
 
 
 $termin = my_event($brick['vars'][0], $brick['vars'][1]);
 if (!$termin) wrap_quit(404);
 
-$values['where'] = sprintf('WHERE termin_id = %d', $termin['termin_id']);
+$values['where'] = sprintf('WHERE event_id = %d', $termin['event_id']);
 $zz = zzform_include_table('paarungen', $values);
-$zz['where']['termin_id'] = $termin['termin_id'];
+$zz['where']['event_id'] = $termin['event_id'];
 $zz['where']['runde_no'] = $brick['vars'][2];
 
 my_event_breadcrumbs($termin);

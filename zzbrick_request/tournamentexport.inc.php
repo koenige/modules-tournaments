@@ -22,9 +22,9 @@ function mod_tournaments_tournamentexport_cb($params) {
 	$code = '';
 	$sql = 'SELECT team_id, team, team_no
 		FROM teams
-		WHERE termin_id = %d AND team_status = "Teilnehmer"
+		WHERE event_id = %d AND team_status = "Teilnehmer"
 		ORDER BY setzliste_no, team, team_no';
-	$sql = sprintf($sql, $event['termin_id']);
+	$sql = sprintf($sql, $event['event_id']);
 	$teams = wrap_db_fetch($sql, 'team_id');
 	foreach ($teams as $team_id => $team) {
 		if (!$code) $code = 'AAA';

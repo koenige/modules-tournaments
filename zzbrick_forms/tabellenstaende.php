@@ -13,14 +13,14 @@ if (!$termin) wrap_quit(404);
 $sql = 'SELECT wertung_category_id
 	FROM turniere_wertungen
 	LEFT JOIN turniere USING (turnier_id)
-	WHERE turniere.termin_id = %d
+	WHERE turniere.event_id = %d
 	ORDER BY reihenfolge';
-$sql = sprintf($sql, $termin['termin_id']);
+$sql = sprintf($sql, $termin['event_id']);
 $wertungen = wrap_db_fetch($sql, 'wertung_category_id', 'single value');
 
 $zz = zzform_include_table('tabellenstaende');
 
-$zz['where']['termin_id'] = $termin['termin_id'];
+$zz['where']['event_id'] = $termin['event_id'];
 $zz['where']['runde_no'] = $brick['vars'][2];
 
 if ($termin['turnierform'] === 'e') {
@@ -31,8 +31,8 @@ if ($termin['turnierform'] === 'e') {
 	$zz['fields'][4]['sql'] = sprintf('SELECT team_id
 			, CONCAT(team, IFNULL(CONCAT(" ", team_no),"")) AS team
 		FROM teams
-		WHERE termin_id = %d
-		ORDER BY team, team_no', $termin['termin_id']);
+		WHERE event_id = %d
+		ORDER BY team, team_no', $termin['event_id']);
 }
 
 $zz['fields'][5]['sql'] = 'SELECT person_id
@@ -43,9 +43,9 @@ $zz['fields'][5]['sql'] = 'SELECT person_id
 	LEFT JOIN teilnahmen USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
 	WHERE teilnahmen.usergroup_id = %d
-	AND termin_id = %d
+	AND event_id = %d
 	ORDER BY nachname, vorname, YEAR(geburtsdatum), identifier';
-$zz['fields'][5]['sql'] = sprintf($zz['fields'][5]['sql'], wrap_id('usergroups', 'spieler'), $termin['termin_id']);
+$zz['fields'][5]['sql'] = sprintf($zz['fields'][5]['sql'], wrap_id('usergroups', 'spieler'), $termin['event_id']);
 $zz['fields'][5]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 
 $zz['fields'][6]['auto_value'] = 'increment';

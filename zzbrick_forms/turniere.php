@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2014-2015, 2017, 2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2014-2015, 2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Turnierdetails
 
 
@@ -13,12 +13,12 @@ $zz = zzform_include_table('turniere');
 
 $sql = 'SELECT turnier_id
 	FROM turniere
-	LEFT JOIN termine USING (termin_id)
+	LEFT JOIN termine USING (event_id)
 	WHERE reihe_category_id = %d
-	AND termin_id != %d
+	AND event_id != %d
 	ORDER BY beginn DESC
 	LIMIT 1';
-$sql = sprintf($sql, $termin['reihe_category_id'], $termin['termin_id']);
+$sql = sprintf($sql, $termin['reihe_category_id'], $termin['event_id']);
 $data = wrap_db_fetch($sql, 'turnier_id');
 $termin['letztes_turnier_id'] = wrap_db_fetch($sql, '', 'single value');
 
@@ -32,7 +32,7 @@ if ($termin['letztes_turnier_id']) {
 $zz['fields'][25]['explanation'] = 'Hier bitte nur Gesamtdateien hochladen.
 <br>Für Runden gibt es die Möglichkeit zum Upload bei der <a href="../runde/">Rundenübersicht</a>.';
 
-$zz['where']['termin_id'] = $termin['termin_id'];
+$zz['where']['event_id'] = $termin['event_id'];
 $zz['access'] = 'add_then_edit';
 $zz['add_from_source_id'] = true;
 

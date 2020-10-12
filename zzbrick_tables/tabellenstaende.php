@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2012-2015, 2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2012-2015, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Tabellenstände
 
 
@@ -14,11 +14,11 @@ $zz['fields'][1]['field_name'] = 'tabellenstand_id';
 $zz['fields'][1]['type'] = 'id';
 
 $zz['fields'][2]['title'] = 'Termin';
-$zz['fields'][2]['field_name'] = 'termin_id';
+$zz['fields'][2]['field_name'] = 'event_id';
 $zz['fields'][2]['type'] = 'select';
-$zz['fields'][2]['sql'] = 'SELECT termin_id, termin, kennung
+$zz['fields'][2]['sql'] = 'SELECT event_id, termin, kennung
 	FROM termine
-	WHERE ISNULL(haupt_termin_id)
+	WHERE ISNULL(haupt_event_id)
 	ORDER BY beginn, kennung
 ';
 $zz['fields'][2]['display_field'] = 'termin';
@@ -51,7 +51,7 @@ $zz['fields'][4]['type'] = 'select';
 $zz['fields'][4]['sql'] = 'SELECT team_id, CONCAT(termin, ": ") AS termin
 		, CONCAT(team, IFNULL(CONCAT(" ", team_no),"")) AS team
 	FROM teams
-	LEFT JOIN termine USING (termin_id)
+	LEFT JOIN termine USING (event_id)
 	ORDER BY team, team_no';
 $zz['fields'][4]['display_field'] = 'team';
 $zz['fields'][4]['search'] = 'teams.kennung';
@@ -104,14 +104,14 @@ $zz['sql'] = 'SELECT tabellenstaende.*
 		, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
 		, CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname) AS person
 	FROM tabellenstaende
-	LEFT JOIN termine USING (termin_id)
+	LEFT JOIN termine USING (event_id)
 	LEFT JOIN teams USING (team_id)
 	LEFT JOIN personen USING (person_id)
 ';
 $zz['sqlorder'] = ' ORDER BY termine.beginn, termine.kennung, runde_no, platz_no';
 
-$zz['subtitle']['termin_id']['sql'] = 'SELECT termin FROM termine';
-$zz['subtitle']['termin_id']['var'] = ['termin'];
+$zz['subtitle']['event_id']['sql'] = 'SELECT termin FROM termine';
+$zz['subtitle']['event_id']['var'] = ['termin'];
 
 $zz['subtitle']['runde_no']['value'] = true;
 $zz['subtitle']['runde_no']['prefix'] = 'Runde ';

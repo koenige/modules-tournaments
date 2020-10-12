@@ -11,8 +11,8 @@ if (!$termin) wrap_quit(404);
 
 if (intval($brick['vars'][2]).'' !== $brick['vars'][2]) wrap_quit(404);
 $sql = 'SELECT runde_no FROM termine
-	WHERE haupt_termin_id = %d AND runde_no = "%s"';
-$sql = sprintf($sql, $termin['termin_id'], $brick['vars'][2]);
+	WHERE haupt_event_id = %d AND runde_no = "%s"';
+$sql = sprintf($sql, $termin['event_id'], $brick['vars'][2]);
 $runde_no = wrap_db_fetch($sql, '', 'single value');
 if (!$runde_no) wrap_quit(404);
 
@@ -20,9 +20,9 @@ $values = [];
 if (count($brick['vars']) === 4) {
 	$sql = 'SELECT paarung_id, heim_team_id, auswaerts_team_id
 			, (SELECT COUNT(partie_id) FROM partien WHERE partien.paarung_id = paarungen.paarung_id) AS partien
-		FROM paarungen WHERE termin_id = %d
+		FROM paarungen WHERE event_id = %d
 		AND runde_no = %d AND tisch_no = %d';
-	$sql = sprintf($sql, $termin['termin_id'], $brick['vars'][2], $brick['vars'][3]);
+	$sql = sprintf($sql, $termin['event_id'], $brick['vars'][2], $brick['vars'][3]);
 	$paarung = wrap_db_fetch($sql);
 	if (!$paarung) wrap_quit(404);
 
@@ -31,7 +31,7 @@ if (count($brick['vars']) === 4) {
 }
 
 $zz = zzform_include_table('partien', $values);
-$zz['where']['termin_id'] = $termin['termin_id'];
+$zz['where']['event_id'] = $termin['event_id'];
 $zz['where']['runde_no'] = $runde_no;
 if (count($brick['vars']) === 4) {
 	$zz['where']['paarung_id'] = $paarung['paarung_id'];
@@ -54,8 +54,8 @@ if (count($brick['vars']) === 3) {
 		, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 		FROM teilnahmen
 		WHERE usergroup_id = %d
-		AND termin_id = %d
-		ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'), $termin['termin_id']);
+		AND event_id = %d
+		ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'), $termin['event_id']);
  	// Gruppierung nach Team entfernen
  	unset($zz['fields'][6]['group']);
 	unset($zz['fields'][8]['group']);
@@ -83,8 +83,8 @@ if (count($brick['vars']) === 4) {
 	];
 	$zz_conf['breadcrumbs'][] = ['linktext' => 'Tisch '.$brick['vars'][3]];
 
-	$sql = 'SELECT COUNT(paarung_id) FROM paarungen WHERE termin_id = %d AND runde_no = %d';
-	$sql = sprintf($sql, $termin['termin_id'], $brick['vars'][2]);
+	$sql = 'SELECT COUNT(paarung_id) FROM paarungen WHERE event_id = %d AND runde_no = %d';
+	$sql = sprintf($sql, $termin['event_id'], $brick['vars'][2]);
 	$tische_max = wrap_db_fetch($sql, '', 'single value');
 
 	if ($brick['vars'][3] < $tische_max) {

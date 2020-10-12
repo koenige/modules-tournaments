@@ -26,7 +26,7 @@ SET @saved_cs_client     = @@character_set_client;
 /*!50001 CREATE VIEW `buchholz_einzel_mit_kampflosen_view` AS SELECT 
  1 AS `partiestatus_category_id`,
  1 AS `runde_no`,
- 1 AS `termin_id`,
+ 1 AS `event_id`,
  1 AS `person_id`,
  1 AS `gegner_id`,
  1 AS `punkte`,
@@ -42,7 +42,7 @@ DROP TABLE IF EXISTS `buchholz_mit_kampflosen_view`;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
 /*!50001 CREATE VIEW `buchholz_mit_kampflosen_view` AS SELECT 
- 1 AS `termin_id`,
+ 1 AS `event_id`,
  1 AS `runde_no`,
  1 AS `team_id`,
  1 AS `buchholz_mit_korrektur`,
@@ -58,7 +58,7 @@ DROP TABLE IF EXISTS `buchholz_view`;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
 /*!50001 CREATE VIEW `buchholz_view` AS SELECT 
- 1 AS `termin_id`,
+ 1 AS `event_id`,
  1 AS `team_id`,
  1 AS `runde_no`,
  1 AS `buchholz_mit_korrektur`,
@@ -74,7 +74,7 @@ DROP TABLE IF EXISTS `paarungen`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `paarungen` (
   `paarung_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `termin_id` int(10) unsigned NOT NULL,
+  `event_id` int(10) unsigned NOT NULL,
   `runde_no` tinyint(3) unsigned NOT NULL,
   `place_contact_id` int(10) unsigned DEFAULT NULL,
   `spielbeginn` time DEFAULT NULL,
@@ -84,8 +84,8 @@ CREATE TABLE `paarungen` (
   `kommentar` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `letzte_aenderung` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`paarung_id`),
-  UNIQUE KEY `runde_no` (`termin_id`,`runde_no`,`tisch_no`),
-  UNIQUE KEY `runde_termin_id` (`termin_id`,`heim_team_id`,`auswaerts_team_id`),
+  UNIQUE KEY `runde_no` (`event_id`,`runde_no`,`tisch_no`),
+  UNIQUE KEY `runde_event_id` (`event_id`,`heim_team_id`,`auswaerts_team_id`),
   KEY `ort_id` (`place_contact_id`),
   KEY `heim_team_id` (`heim_team_id`),
   KEY `auswaerts_team_id` (`auswaerts_team_id`)
@@ -101,7 +101,7 @@ DROP TABLE IF EXISTS `paarungen_ergebnisse_view`;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
 /*!50001 CREATE VIEW `paarungen_ergebnisse_view` AS SELECT 
- 1 AS `termin_id`,
+ 1 AS `event_id`,
  1 AS `team_id`,
  1 AS `gegner_team_id`,
  1 AS `runde_no`,
@@ -121,7 +121,7 @@ DROP TABLE IF EXISTS `partien`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `partien` (
   `partie_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `termin_id` int(10) unsigned NOT NULL,
+  `event_id` int(10) unsigned NOT NULL,
   `runde_no` tinyint(3) unsigned NOT NULL,
   `paarung_id` int(10) unsigned DEFAULT NULL,
   `brett_no` tinyint(3) unsigned DEFAULT NULL,
@@ -145,7 +145,7 @@ CREATE TABLE `partien` (
   `letzte_aenderung` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`partie_id`),
   KEY `paarung_id` (`paarung_id`),
-  KEY `termin_id` (`termin_id`),
+  KEY `event_id` (`event_id`),
   KEY `weiss_person_id` (`weiss_person_id`),
   KEY `schwarz_person_id` (`schwarz_person_id`),
   KEY `partiestatus_kategorie_id` (`partiestatus_category_id`)
@@ -163,7 +163,7 @@ SET @saved_cs_client     = @@character_set_client;
 /*!50001 CREATE VIEW `partien_einzelergebnisse` AS SELECT 
  1 AS `partie_id`,
  1 AS `partiestatus_category_id`,
- 1 AS `termin_id`,
+ 1 AS `event_id`,
  1 AS `runde_no`,
  1 AS `person_id`,
  1 AS `gegner_id`,
@@ -180,7 +180,7 @@ DROP TABLE IF EXISTS `partien_ergebnisse_view`;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
 /*!50001 CREATE VIEW `partien_ergebnisse_view` AS SELECT 
- 1 AS `termin_id`,
+ 1 AS `event_id`,
  1 AS `team_id`,
  1 AS `gegner_team_id`,
  1 AS `runde_no`,
@@ -199,7 +199,7 @@ DROP TABLE IF EXISTS `tabellenstaende`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tabellenstaende` (
   `tabellenstand_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `termin_id` int(10) unsigned NOT NULL,
+  `event_id` int(10) unsigned NOT NULL,
   `runde_no` tinyint(3) unsigned NOT NULL,
   `team_id` int(10) unsigned DEFAULT NULL,
   `person_id` int(10) unsigned DEFAULT NULL,
@@ -210,9 +210,9 @@ CREATE TABLE `tabellenstaende` (
   `spiele_v` tinyint(3) unsigned DEFAULT NULL,
   `letzte_aenderung` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`tabellenstand_id`),
-  UNIQUE KEY `team_id_termin_id_runde_no` (`team_id`,`termin_id`,`runde_no`),
-  UNIQUE KEY `person_id_termin_id_runde_no` (`person_id`,`termin_id`,`runde_no`),
-  KEY `termin_id` (`termin_id`)
+  UNIQUE KEY `team_id_event_id_runde_no` (`team_id`,`event_id`,`runde_no`),
+  UNIQUE KEY `person_id_event_id_runde_no` (`person_id`,`event_id`,`runde_no`),
+  KEY `event_id` (`event_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -225,7 +225,7 @@ DROP TABLE IF EXISTS `tabellenstaende_guv_view`;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
 /*!50001 CREATE VIEW `tabellenstaende_guv_view` AS SELECT 
- 1 AS `termin_id`,
+ 1 AS `event_id`,
  1 AS `runde_no`,
  1 AS `team_id`,
  1 AS `gewonnen`,
@@ -242,7 +242,7 @@ DROP TABLE IF EXISTS `tabellenstaende_termine_view`;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
 /*!50001 CREATE VIEW `tabellenstaende_termine_view` AS SELECT 
- 1 AS `termin_id`,
+ 1 AS `event_id`,
  1 AS `runde_no`,
  1 AS `team_id`*/;
 SET character_set_client = @saved_cs_client;
@@ -256,7 +256,7 @@ DROP TABLE IF EXISTS `tabellenstaende_view`;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
 /*!50001 CREATE VIEW `tabellenstaende_view` AS SELECT 
- 1 AS `termin_id`,
+ 1 AS `event_id`,
  1 AS `runde_no`,
  1 AS `team_id`,
  1 AS `reihenfolge`,
@@ -291,7 +291,7 @@ DROP TABLE IF EXISTS `turniere`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `turniere` (
   `turnier_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `termin_id` int(10) unsigned NOT NULL,
+  `event_id` int(10) unsigned NOT NULL,
   `turnierform_category_id` int(10) unsigned NOT NULL,
   `bretter_min` tinyint(3) unsigned DEFAULT NULL,
   `bretter_max` tinyint(4) DEFAULT NULL,
@@ -330,7 +330,7 @@ CREATE TABLE `turniere` (
   `tabellenstaende` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tabellenstand_runde_no` tinyint(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`turnier_id`),
-  UNIQUE KEY `termin_id` (`termin_id`),
+  UNIQUE KEY `event_id` (`event_id`),
   KEY `modus_kategorie_id` (`modus_category_id`),
   KEY `turnierform_kategorie_id` (`turnierform_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -429,7 +429,7 @@ CREATE TABLE `turniere_wertungen` (
 --
 -- Dumping routines for database 'tournaments'
 --
-/*!50003 DROP FUNCTION IF EXISTS `termin_id` */;
+/*!50003 DROP FUNCTION IF EXISTS `event_id` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -439,10 +439,10 @@ CREATE TABLE `turniere_wertungen` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` FUNCTION `termin_id`() RETURNS int(11)
+CREATE DEFINER=`root`@`localhost` FUNCTION `event_id`() RETURNS int(11)
     NO SQL
     DETERMINISTIC
-return @termin_id ;;
+return @event_id ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -462,7 +462,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `buchholz_einzel_mit_kampflosen_view` AS select `ergebnisse_gegner`.`partiestatus_category_id` AS `partiestatus_category_id`,`ergebnisse`.`runde_no` AS `runde_no`,`ergebnisse`.`termin_id` AS `termin_id`,`ergebnisse`.`person_id` AS `person_id`,`ergebnisse`.`gegner_id` AS `gegner_id`,`ergebnisse_gegner`.`ergebnis` AS `punkte`,`ergebnisse_gegner`.`runde_no` AS `runde_gegner` from (`partien_einzelergebnisse` `ergebnisse` join `partien_einzelergebnisse` `ergebnisse_gegner` on(((`ergebnisse`.`termin_id` = `ergebnisse_gegner`.`termin_id`) and (`ergebnisse`.`gegner_id` = `ergebnisse_gegner`.`person_id`)))) order by `ergebnisse`.`person_id`,`ergebnisse`.`gegner_id` */;
+/*!50001 VIEW `buchholz_einzel_mit_kampflosen_view` AS select `ergebnisse_gegner`.`partiestatus_category_id` AS `partiestatus_category_id`,`ergebnisse`.`runde_no` AS `runde_no`,`ergebnisse`.`event_id` AS `event_id`,`ergebnisse`.`person_id` AS `person_id`,`ergebnisse`.`gegner_id` AS `gegner_id`,`ergebnisse_gegner`.`ergebnis` AS `punkte`,`ergebnisse_gegner`.`runde_no` AS `runde_gegner` from (`partien_einzelergebnisse` `ergebnisse` join `partien_einzelergebnisse` `ergebnisse_gegner` on(((`ergebnisse`.`event_id` = `ergebnisse_gegner`.`event_id`) and (`ergebnisse`.`gegner_id` = `ergebnisse_gegner`.`person_id`)))) order by `ergebnisse`.`person_id`,`ergebnisse`.`gegner_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -480,7 +480,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `buchholz_mit_kampflosen_view` AS select `tabellenstaende_termine_view`.`termin_id` AS `termin_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,sum(if((`gegners_paarungen`.`kampflos` = 1),1,`gegners_paarungen`.`mannschaftspunkte`)) AS `buchholz_mit_korrektur`,sum(`gegners_paarungen`.`mannschaftspunkte`) AS `buchholz` from ((`paarungen_ergebnisse_view` left join `tabellenstaende_termine_view` on(((`paarungen_ergebnisse_view`.`termin_id` = `tabellenstaende_termine_view`.`termin_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) left join `paarungen_ergebnisse_view` `gegners_paarungen` on(((`gegners_paarungen`.`team_id` = `paarungen_ergebnisse_view`.`gegner_team_id`) and (`gegners_paarungen`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) group by `tabellenstaende_termine_view`.`termin_id`,`tabellenstaende_termine_view`.`team_id`,`tabellenstaende_termine_view`.`runde_no` union select `tabellenstaende_termine_view`.`termin_id` AS `termin_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,(sum(`bisherige_paarungen`.`mannschaftspunkte`) + (`tabellenstaende_termine_view`.`runde_no` - `paarungen_ergebnisse_view`.`runde_no`)) AS `buchholz_kampflos_mit_korrektur`,0 AS `buchholz_kampflos` from (`paarungen_ergebnisse_view` `bisherige_paarungen` left join (`paarungen_ergebnisse_view` left join `tabellenstaende_termine_view` on(((`paarungen_ergebnisse_view`.`termin_id` = `tabellenstaende_termine_view`.`termin_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) on(((`bisherige_paarungen`.`termin_id` = `paarungen_ergebnisse_view`.`termin_id`) and (`bisherige_paarungen`.`team_id` = `paarungen_ergebnisse_view`.`team_id`) and (`bisherige_paarungen`.`runde_no` < `paarungen_ergebnisse_view`.`runde_no`)))) where (`paarungen_ergebnisse_view`.`kampflos` = 1) group by `tabellenstaende_termine_view`.`termin_id`,`tabellenstaende_termine_view`.`team_id`,`tabellenstaende_termine_view`.`runde_no`,`paarungen_ergebnisse_view`.`runde_no` union select `tabellenstaende_termine_view`.`termin_id` AS `termin_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,(`tabellenstaende_termine_view`.`runde_no` - `paarungen_ergebnisse_view`.`runde_no`) AS `buchholz_kampflos_mit_korrektur`,0 AS `buchholz_kampflos` from (`tabellenstaende_termine_view` join `paarungen_ergebnisse_view` on(((`paarungen_ergebnisse_view`.`termin_id` = `tabellenstaende_termine_view`.`termin_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` = 1) and (`paarungen_ergebnisse_view`.`kampflos` = 1)))) */;
+/*!50001 VIEW `buchholz_mit_kampflosen_view` AS select `tabellenstaende_termine_view`.`event_id` AS `event_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,sum(if((`gegners_paarungen`.`kampflos` = 1),1,`gegners_paarungen`.`mannschaftspunkte`)) AS `buchholz_mit_korrektur`,sum(`gegners_paarungen`.`mannschaftspunkte`) AS `buchholz` from ((`paarungen_ergebnisse_view` left join `tabellenstaende_termine_view` on(((`paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) left join `paarungen_ergebnisse_view` `gegners_paarungen` on(((`gegners_paarungen`.`team_id` = `paarungen_ergebnisse_view`.`gegner_team_id`) and (`gegners_paarungen`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) group by `tabellenstaende_termine_view`.`event_id`,`tabellenstaende_termine_view`.`team_id`,`tabellenstaende_termine_view`.`runde_no` union select `tabellenstaende_termine_view`.`event_id` AS `event_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,(sum(`bisherige_paarungen`.`mannschaftspunkte`) + (`tabellenstaende_termine_view`.`runde_no` - `paarungen_ergebnisse_view`.`runde_no`)) AS `buchholz_kampflos_mit_korrektur`,0 AS `buchholz_kampflos` from (`paarungen_ergebnisse_view` `bisherige_paarungen` left join (`paarungen_ergebnisse_view` left join `tabellenstaende_termine_view` on(((`paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) on(((`bisherige_paarungen`.`event_id` = `paarungen_ergebnisse_view`.`event_id`) and (`bisherige_paarungen`.`team_id` = `paarungen_ergebnisse_view`.`team_id`) and (`bisherige_paarungen`.`runde_no` < `paarungen_ergebnisse_view`.`runde_no`)))) where (`paarungen_ergebnisse_view`.`kampflos` = 1) group by `tabellenstaende_termine_view`.`event_id`,`tabellenstaende_termine_view`.`team_id`,`tabellenstaende_termine_view`.`runde_no`,`paarungen_ergebnisse_view`.`runde_no` union select `tabellenstaende_termine_view`.`event_id` AS `event_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,(`tabellenstaende_termine_view`.`runde_no` - `paarungen_ergebnisse_view`.`runde_no`) AS `buchholz_kampflos_mit_korrektur`,0 AS `buchholz_kampflos` from (`tabellenstaende_termine_view` join `paarungen_ergebnisse_view` on(((`paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` = 1) and (`paarungen_ergebnisse_view`.`kampflos` = 1)))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -498,7 +498,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `buchholz_view` AS select `buchholz_mit_kampflosen_view`.`termin_id` AS `termin_id`,`buchholz_mit_kampflosen_view`.`team_id` AS `team_id`,`buchholz_mit_kampflosen_view`.`runde_no` AS `runde_no`,ifnull(sum(`buchholz_mit_kampflosen_view`.`buchholz_mit_korrektur`),0) AS `buchholz_mit_korrektur`,ifnull(sum(`buchholz_mit_kampflosen_view`.`buchholz`),0) AS `buchholz` from `buchholz_mit_kampflosen_view` group by `buchholz_mit_kampflosen_view`.`termin_id`,`buchholz_mit_kampflosen_view`.`team_id`,`buchholz_mit_kampflosen_view`.`runde_no` */;
+/*!50001 VIEW `buchholz_view` AS select `buchholz_mit_kampflosen_view`.`event_id` AS `event_id`,`buchholz_mit_kampflosen_view`.`team_id` AS `team_id`,`buchholz_mit_kampflosen_view`.`runde_no` AS `runde_no`,ifnull(sum(`buchholz_mit_kampflosen_view`.`buchholz_mit_korrektur`),0) AS `buchholz_mit_korrektur`,ifnull(sum(`buchholz_mit_kampflosen_view`.`buchholz`),0) AS `buchholz` from `buchholz_mit_kampflosen_view` group by `buchholz_mit_kampflosen_view`.`event_id`,`buchholz_mit_kampflosen_view`.`team_id`,`buchholz_mit_kampflosen_view`.`runde_no` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -516,7 +516,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `paarungen_ergebnisse_view` AS select `partien_ergebnisse_view`.`termin_id` AS `termin_id`,`partien_ergebnisse_view`.`team_id` AS `team_id`,`partien_ergebnisse_view`.`gegner_team_id` AS `gegner_team_id`,`partien_ergebnisse_view`.`runde_no` AS `runde_no`,0 AS `kampflos`,sum(`partien_ergebnisse_view`.`ergebnis`) AS `brettpunkte`,sum(`partien_ergebnisse_view`.`ergebnis_gegner`) AS `brettpunkte_gegner`,(case when (sum(`partien_ergebnisse_view`.`ergebnis`) < sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 0 when (sum(`partien_ergebnisse_view`.`ergebnis`) > sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 2 when (sum(`partien_ergebnisse_view`.`ergebnis`) = sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 1 end) AS `mannschaftspunkte`,(case when (sum(`partien_ergebnisse_view`.`ergebnis`) < sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 2 when (sum(`partien_ergebnisse_view`.`ergebnis`) > sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 0 when (sum(`partien_ergebnisse_view`.`ergebnis`) = sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 1 end) AS `mannschaftspunkte_gegner` from `partien_ergebnisse_view` where (`partien_ergebnisse_view`.`termin_id` = `termin_id`()) group by `partien_ergebnisse_view`.`termin_id`,`partien_ergebnisse_view`.`team_id`,`partien_ergebnisse_view`.`runde_no`,`partien_ergebnisse_view`.`gegner_team_id` union select `paarungen`.`termin_id` AS `termin_id`,`paarungen`.`heim_team_id` AS `team_id`,`teams`.`team_id` AS `gegner_team_id`,`paarungen`.`runde_no` AS `runde_no`,1 AS `kampflos`,`turniere`.`bretter_min` AS `brettpunkte`,0 AS `brettpunkte_gegner`,2 AS `mannschaftspunkte`,0 AS `mannschaftspunkte_gegner` from ((`paarungen` join `teams` on(((`teams`.`team_id` = `paarungen`.`auswaerts_team_id`) and (`teams`.`spielfrei` = 'ja')))) join `turniere` on((`turniere`.`termin_id` = `paarungen`.`termin_id`))) where (`paarungen`.`termin_id` = `termin_id`()) union select `paarungen`.`termin_id` AS `termin_id`,`paarungen`.`auswaerts_team_id` AS `team_id`,`teams`.`team_id` AS `gegner_team_id`,`paarungen`.`runde_no` AS `runde_no`,1 AS `kampflos`,`turniere`.`bretter_min` AS `brettpunkte`,0 AS `brettpunkte_gegner`,2 AS `mannschaftspunkte`,0 AS `mannschaftspunkte_gegner` from ((`paarungen` join `teams` on(((`teams`.`team_id` = `paarungen`.`heim_team_id`) and (`teams`.`spielfrei` = 'ja')))) join `turniere` on((`turniere`.`termin_id` = `paarungen`.`termin_id`))) where (`paarungen`.`termin_id` = `termin_id`()) */;
+/*!50001 VIEW `paarungen_ergebnisse_view` AS select `partien_ergebnisse_view`.`event_id` AS `event_id`,`partien_ergebnisse_view`.`team_id` AS `team_id`,`partien_ergebnisse_view`.`gegner_team_id` AS `gegner_team_id`,`partien_ergebnisse_view`.`runde_no` AS `runde_no`,0 AS `kampflos`,sum(`partien_ergebnisse_view`.`ergebnis`) AS `brettpunkte`,sum(`partien_ergebnisse_view`.`ergebnis_gegner`) AS `brettpunkte_gegner`,(case when (sum(`partien_ergebnisse_view`.`ergebnis`) < sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 0 when (sum(`partien_ergebnisse_view`.`ergebnis`) > sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 2 when (sum(`partien_ergebnisse_view`.`ergebnis`) = sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 1 end) AS `mannschaftspunkte`,(case when (sum(`partien_ergebnisse_view`.`ergebnis`) < sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 2 when (sum(`partien_ergebnisse_view`.`ergebnis`) > sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 0 when (sum(`partien_ergebnisse_view`.`ergebnis`) = sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 1 end) AS `mannschaftspunkte_gegner` from `partien_ergebnisse_view` where (`partien_ergebnisse_view`.`event_id` = `event_id`()) group by `partien_ergebnisse_view`.`event_id`,`partien_ergebnisse_view`.`team_id`,`partien_ergebnisse_view`.`runde_no`,`partien_ergebnisse_view`.`gegner_team_id` union select `paarungen`.`event_id` AS `event_id`,`paarungen`.`heim_team_id` AS `team_id`,`teams`.`team_id` AS `gegner_team_id`,`paarungen`.`runde_no` AS `runde_no`,1 AS `kampflos`,`turniere`.`bretter_min` AS `brettpunkte`,0 AS `brettpunkte_gegner`,2 AS `mannschaftspunkte`,0 AS `mannschaftspunkte_gegner` from ((`paarungen` join `teams` on(((`teams`.`team_id` = `paarungen`.`auswaerts_team_id`) and (`teams`.`spielfrei` = 'ja')))) join `turniere` on((`turniere`.`event_id` = `paarungen`.`event_id`))) where (`paarungen`.`event_id` = `event_id`()) union select `paarungen`.`event_id` AS `event_id`,`paarungen`.`auswaerts_team_id` AS `team_id`,`teams`.`team_id` AS `gegner_team_id`,`paarungen`.`runde_no` AS `runde_no`,1 AS `kampflos`,`turniere`.`bretter_min` AS `brettpunkte`,0 AS `brettpunkte_gegner`,2 AS `mannschaftspunkte`,0 AS `mannschaftspunkte_gegner` from ((`paarungen` join `teams` on(((`teams`.`team_id` = `paarungen`.`heim_team_id`) and (`teams`.`spielfrei` = 'ja')))) join `turniere` on((`turniere`.`event_id` = `paarungen`.`event_id`))) where (`paarungen`.`event_id` = `event_id`()) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -534,7 +534,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `partien_einzelergebnisse` AS select `partien`.`partie_id` AS `partie_id`,`partien`.`partiestatus_category_id` AS `partiestatus_category_id`,`partien`.`termin_id` AS `termin_id`,`partien`.`runde_no` AS `runde_no`,`partien`.`weiss_person_id` AS `person_id`,`partien`.`schwarz_person_id` AS `gegner_id`,`partien`.`weiss_ergebnis` AS `ergebnis`,`partien`.`brett_no` AS `brett_no` from `partien` where (`partien`.`termin_id` = `termin_id`()) union all select `partien`.`partie_id` AS `partie_id`,`partien`.`partiestatus_category_id` AS `partiestatus_category_id`,`partien`.`termin_id` AS `termin_id`,`partien`.`runde_no` AS `runde_no`,`partien`.`schwarz_person_id` AS `person_id`,`partien`.`weiss_person_id` AS `gegner_id`,`partien`.`schwarz_ergebnis` AS `ergebnis`,`partien`.`brett_no` AS `brett_no` from `partien` where (`partien`.`termin_id` = `termin_id`()) */;
+/*!50001 VIEW `partien_einzelergebnisse` AS select `partien`.`partie_id` AS `partie_id`,`partien`.`partiestatus_category_id` AS `partiestatus_category_id`,`partien`.`event_id` AS `event_id`,`partien`.`runde_no` AS `runde_no`,`partien`.`weiss_person_id` AS `person_id`,`partien`.`schwarz_person_id` AS `gegner_id`,`partien`.`weiss_ergebnis` AS `ergebnis`,`partien`.`brett_no` AS `brett_no` from `partien` where (`partien`.`event_id` = `event_id`()) union all select `partien`.`partie_id` AS `partie_id`,`partien`.`partiestatus_category_id` AS `partiestatus_category_id`,`partien`.`event_id` AS `event_id`,`partien`.`runde_no` AS `runde_no`,`partien`.`schwarz_person_id` AS `person_id`,`partien`.`weiss_person_id` AS `gegner_id`,`partien`.`schwarz_ergebnis` AS `ergebnis`,`partien`.`brett_no` AS `brett_no` from `partien` where (`partien`.`event_id` = `event_id`()) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -552,7 +552,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `partien_ergebnisse_view` AS select `partien`.`termin_id` AS `termin_id`,`paarungen`.`heim_team_id` AS `team_id`,`paarungen`.`auswaerts_team_id` AS `gegner_team_id`,`partien`.`runde_no` AS `runde_no`,`partien`.`brett_no` AS `brett_no`,`partien`.`partie_id` AS `partie_id`,`partien`.`heim_wertung` AS `ergebnis`,`partien`.`auswaerts_wertung` AS `ergebnis_gegner` from (`paarungen` left join `partien` on((`paarungen`.`paarung_id` = `partien`.`paarung_id`))) where (`partien`.`termin_id` = `termin_id`()) union select `partien`.`termin_id` AS `termin_id`,`paarungen`.`auswaerts_team_id` AS `team_id`,`paarungen`.`heim_team_id` AS `gegner_team_id`,`partien`.`runde_no` AS `runde_no`,`partien`.`brett_no` AS `brett_no`,`partien`.`partie_id` AS `partie_id`,`partien`.`auswaerts_wertung` AS `ergebnis`,`partien`.`heim_wertung` AS `ergebnis_gegner` from (`paarungen` left join `partien` on((`paarungen`.`paarung_id` = `partien`.`paarung_id`))) where (`partien`.`termin_id` = `termin_id`()) */;
+/*!50001 VIEW `partien_ergebnisse_view` AS select `partien`.`event_id` AS `event_id`,`paarungen`.`heim_team_id` AS `team_id`,`paarungen`.`auswaerts_team_id` AS `gegner_team_id`,`partien`.`runde_no` AS `runde_no`,`partien`.`brett_no` AS `brett_no`,`partien`.`partie_id` AS `partie_id`,`partien`.`heim_wertung` AS `ergebnis`,`partien`.`auswaerts_wertung` AS `ergebnis_gegner` from (`paarungen` left join `partien` on((`paarungen`.`paarung_id` = `partien`.`paarung_id`))) where (`partien`.`event_id` = `event_id`()) union select `partien`.`event_id` AS `event_id`,`paarungen`.`auswaerts_team_id` AS `team_id`,`paarungen`.`heim_team_id` AS `gegner_team_id`,`partien`.`runde_no` AS `runde_no`,`partien`.`brett_no` AS `brett_no`,`partien`.`partie_id` AS `partie_id`,`partien`.`auswaerts_wertung` AS `ergebnis`,`partien`.`heim_wertung` AS `ergebnis_gegner` from (`paarungen` left join `partien` on((`paarungen`.`paarung_id` = `partien`.`paarung_id`))) where (`partien`.`event_id` = `event_id`()) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -570,7 +570,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `tabellenstaende_guv_view` AS select `tabellenstaende_termine_view`.`termin_id` AS `termin_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,sum(if((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 2),1,0)) AS `gewonnen`,sum(if((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 1),1,0)) AS `unentschieden`,sum(if((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 0),1,0)) AS `verloren` from (`tabellenstaende_termine_view` left join `paarungen_ergebnisse_view` on(((`paarungen_ergebnisse_view`.`termin_id` = `tabellenstaende_termine_view`.`termin_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) group by `tabellenstaende_termine_view`.`termin_id`,`tabellenstaende_termine_view`.`runde_no`,`tabellenstaende_termine_view`.`team_id` */;
+/*!50001 VIEW `tabellenstaende_guv_view` AS select `tabellenstaende_termine_view`.`event_id` AS `event_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,sum(if((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 2),1,0)) AS `gewonnen`,sum(if((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 1),1,0)) AS `unentschieden`,sum(if((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 0),1,0)) AS `verloren` from (`tabellenstaende_termine_view` left join `paarungen_ergebnisse_view` on(((`paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) group by `tabellenstaende_termine_view`.`event_id`,`tabellenstaende_termine_view`.`runde_no`,`tabellenstaende_termine_view`.`team_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -588,7 +588,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `tabellenstaende_termine_view` AS select `teams`.`termin_id` AS `termin_id`,`paarungen`.`runde_no` AS `runde_no`,`teams`.`team_id` AS `team_id` from (`paarungen` left join `teams` on((`paarungen`.`termin_id` = `teams`.`termin_id`))) where (`paarungen`.`termin_id` = `termin_id`()) group by `teams`.`termin_id`,`paarungen`.`runde_no`,`teams`.`team_id` */;
+/*!50001 VIEW `tabellenstaende_termine_view` AS select `teams`.`event_id` AS `event_id`,`paarungen`.`runde_no` AS `runde_no`,`teams`.`team_id` AS `team_id` from (`paarungen` left join `teams` on((`paarungen`.`event_id` = `teams`.`event_id`))) where (`paarungen`.`event_id` = `event_id`()) group by `teams`.`event_id`,`paarungen`.`runde_no`,`teams`.`team_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -606,7 +606,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `tabellenstaende_view` AS select `tabellenstaende_termine_view`.`termin_id` AS `termin_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,`turniere_wertungen`.`reihenfolge` AS `reihenfolge`,`turniere_wertungen`.`wertung_category_id` AS `wertung_category_id`,(case `turniere_wertungen`.`wertung_category_id` when 144 then sum(`paarungen_ergebnisse_view`.`mannschaftspunkte`) when 145 then sum(`paarungen_ergebnisse_view`.`brettpunkte`) when 146 then (select `buchholz_view`.`buchholz_mit_korrektur` from `buchholz_view` where ((`buchholz_view`.`termin_id` = `tabellenstaende_termine_view`.`termin_id`) and (`buchholz_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`buchholz_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`))) when 215 then (select `buchholz_view`.`buchholz` from `buchholz_view` where ((`buchholz_view`.`termin_id` = `tabellenstaende_termine_view`.`termin_id`) and (`buchholz_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`buchholz_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`))) when 147 then (select sum((case `partien_ergebnisse_view`.`ergebnis` when 1 then ((1 + `turniere`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) when 0.5 then (((1 + `turniere`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) / 2) when 0 then 0 end)) AS `berliner_wertung` from `partien_ergebnisse_view` where ((`partien_ergebnisse_view`.`termin_id` = `tabellenstaende_termine_view`.`termin_id`) and (`partien_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`) and (`partien_ergebnisse_view`.`team_id` = `paarungen_ergebnisse_view`.`team_id`))) when 150 then (select `tabellenstaende_guv_view`.`gewonnen` from `tabellenstaende_guv_view` where ((`tabellenstaende_guv_view`.`termin_id` = `tabellenstaende_termine_view`.`termin_id`) and (`tabellenstaende_guv_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`tabellenstaende_guv_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`))) end) AS `wertung` from (`paarungen_ergebnisse_view` left join (`turniere_wertungen` left join (`turniere` left join `tabellenstaende_termine_view` on((`turniere`.`termin_id` = `tabellenstaende_termine_view`.`termin_id`))) on((`turniere_wertungen`.`turnier_id` = `turniere`.`turnier_id`))) on(((`paarungen_ergebnisse_view`.`termin_id` = `tabellenstaende_termine_view`.`termin_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) group by `tabellenstaende_termine_view`.`termin_id`,`tabellenstaende_termine_view`.`runde_no`,`tabellenstaende_termine_view`.`team_id`,`turniere_wertungen`.`reihenfolge`,`turniere_wertungen`.`wertung_category_id`,`paarungen_ergebnisse_view`.`team_id` */;
+/*!50001 VIEW `tabellenstaende_view` AS select `tabellenstaende_termine_view`.`event_id` AS `event_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,`turniere_wertungen`.`reihenfolge` AS `reihenfolge`,`turniere_wertungen`.`wertung_category_id` AS `wertung_category_id`,(case `turniere_wertungen`.`wertung_category_id` when 144 then sum(`paarungen_ergebnisse_view`.`mannschaftspunkte`) when 145 then sum(`paarungen_ergebnisse_view`.`brettpunkte`) when 146 then (select `buchholz_view`.`buchholz_mit_korrektur` from `buchholz_view` where ((`buchholz_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`buchholz_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`buchholz_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`))) when 215 then (select `buchholz_view`.`buchholz` from `buchholz_view` where ((`buchholz_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`buchholz_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`buchholz_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`))) when 147 then (select sum((case `partien_ergebnisse_view`.`ergebnis` when 1 then ((1 + `turniere`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) when 0.5 then (((1 + `turniere`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) / 2) when 0 then 0 end)) AS `berliner_wertung` from `partien_ergebnisse_view` where ((`partien_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`partien_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`) and (`partien_ergebnisse_view`.`team_id` = `paarungen_ergebnisse_view`.`team_id`))) when 150 then (select `tabellenstaende_guv_view`.`gewonnen` from `tabellenstaende_guv_view` where ((`tabellenstaende_guv_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`tabellenstaende_guv_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`tabellenstaende_guv_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`))) end) AS `wertung` from (`paarungen_ergebnisse_view` left join (`turniere_wertungen` left join (`turniere` left join `tabellenstaende_termine_view` on((`turniere`.`event_id` = `tabellenstaende_termine_view`.`event_id`))) on((`turniere_wertungen`.`turnier_id` = `turniere`.`turnier_id`))) on(((`paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) group by `tabellenstaende_termine_view`.`event_id`,`tabellenstaende_termine_view`.`runde_no`,`tabellenstaende_termine_view`.`team_id`,`turniere_wertungen`.`reihenfolge`,`turniere_wertungen`.`wertung_category_id`,`paarungen_ergebnisse_view`.`team_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;

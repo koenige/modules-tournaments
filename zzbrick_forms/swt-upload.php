@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2014-2015, 2017, 2019 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2014-2015, 2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Turnierdetails, nur SWT-Upload
 
 
@@ -12,7 +12,7 @@ if (!$termin) wrap_quit(404);
 $zz = zzform_include_table('turniere');
 
 $zz['title'] = 'SWT-Upload';
-$zz['where']['termin_id'] = $termin['termin_id'];
+$zz['where']['event_id'] = $termin['event_id'];
 $zz['access'] = 'add_then_edit';
 
 $zz_conf['referer'] = '../';

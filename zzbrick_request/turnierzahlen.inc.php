@@ -16,7 +16,7 @@
 function mod_tournaments_turnierzahlen($vars) {
 	global $zz_conf;
 
-	$sql = 'SELECT termin_id, turnier_id
+	$sql = 'SELECT event_id, turnier_id
 			, IF(NOT ISNULL(termine.ende),
 				IF(termine.ende < CURDATE(), 1, NULL),
 				IF(termine.beginn < CURDATE(), 1, NULL)
@@ -24,7 +24,7 @@ function mod_tournaments_turnierzahlen($vars) {
 			, YEAR(beginn) AS jahr
 			, termin, kennung
 		FROM termine
-		LEFT JOIN turniere USING (termin_id)
+		LEFT JOIN turniere USING (event_id)
 		WHERE kennung = "%s"';
 	$sql = sprintf($sql, wrap_db_escape(implode('/', $vars)));
 	$termin = wrap_db_fetch($sql);
@@ -58,8 +58,8 @@ function mod_tournaments_turnierzahlen($vars) {
 
 	$sql = 'SELECT DISTINCT m_dwz, m_elo
 		FROM teilnahmen
-		WHERE termin_id = %d';
-	$sql = sprintf($sql, $termin['termin_id']);
+		WHERE event_id = %d';
+	$sql = sprintf($sql, $termin['event_id']);
 	$meldezahlen = wrap_db_fetch($sql);
 	if (!$meldezahlen) {
 		// $meldezahlen ergibt exakt einen Datensatz zurück, wenn es
@@ -84,12 +84,12 @@ function mod_tournaments_turnierzahlen($vars) {
 			ON personen.contact_id = contacts_identifiers.contact_id
 			AND contacts_identifiers.current = "yes"
 			AND contacts_identifiers.identifier_category_id = %d
-		WHERE termin_id = %d
+		WHERE event_id = %d
 		AND usergroup_id = %d
 	';
 	$sql = sprintf($sql,
 		wrap_category_id('kennungen/zps'),
-		$termin['termin_id'],
+		$termin['event_id'],
 		wrap_id('usergroups', 'spieler')
 	);
 	$teilnahmen = wrap_db_fetch($sql, 'teilnahme_id');
