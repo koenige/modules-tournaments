@@ -20,7 +20,7 @@ $zz['fields'][2]['field_name'] = 'event_id';
 $zz['fields'][2]['type'] = 'select';
 $zz['fields'][2]['sql'] = 'SELECT event_id, termin
 	FROM termine
-	WHERE ISNULL(haupt_event_id)
+	WHERE ISNULL(main_event_id)
 	ORDER BY beginn, kennung';
 $zz['fields'][2]['key_field_name'] = 'termine.event_id';
 $zz['fields'][2]['display_field'] = 'termin';

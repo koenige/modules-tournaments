@@ -29,7 +29,7 @@ $zz['fields'][3]['type'] = 'write_once';
 $zz['fields'][3]['type_detail'] = 'select';
 $zz['fields'][3]['sql'] = 'SELECT event_id, termin, YEAR(beginn)
 	FROM termine
-	WHERE ISNULL(haupt_event_id)
+	WHERE ISNULL(main_event_id)
 	ORDER BY beginn, kennung';
 $zz['fields'][3]['key_field_name'] = 'termine.event_id';
 $zz['fields'][3]['display_field'] = 'termin';

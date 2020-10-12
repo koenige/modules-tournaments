@@ -18,7 +18,7 @@ $zz['fields'][2]['type'] = 'write_once';
 $zz['fields'][2]['type_detail'] = 'select';
 $zz['fields'][2]['sql'] = 'SELECT event_id, beginn, termin
 	FROM termine
-	WHERE ISNULL(haupt_event_id)
+	WHERE ISNULL(main_event_id)
 	ORDER BY termin';
 $zz['fields'][2]['display_field'] = 'turnier';
 $zz['fields'][2]['search'] = 'CONCAT(termine.termin, " ", YEAR(beginn))';
