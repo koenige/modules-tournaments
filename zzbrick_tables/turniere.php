@@ -495,12 +495,12 @@ $zz['filter'][1]['depends_on'] = 2;
 
 $zz['conditions'][1]['scope'] = 'record';
 $zz['conditions'][1]['where'] = sprintf(
-	'termine.termin_category_id = %d', wrap_category_id('termine/mannschaft')
+	'termine.event_category_id = %d', wrap_category_id('termine/mannschaft')
 );
 
 $zz['conditions'][2]['scope'] = 'record';
 $zz['conditions'][2]['where'] = sprintf(
-	'termine.termin_category_id = %d', wrap_category_id('termine/einzel')
+	'termine.event_category_id = %d', wrap_category_id('termine/einzel')
 );
 
 $zz_conf['copy'] = true;
