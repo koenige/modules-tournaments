@@ -33,9 +33,9 @@ function mod_tournaments_startrangliste($vars) {
 		LEFT JOIN categories hauptreihen
 			ON hauptreihen.category_id = reihen.main_category_id
 		LEFT JOIN turniere USING (event_id)
-		JOIN termine_websites
-			ON termine_websites.event_id = termine.event_id
-			AND termine_websites.website_id = %d
+		JOIN events_websites
+			ON events_websites.event_id = termine.event_id
+			AND events_websites.website_id = %d
 		LEFT JOIN categories turnierformen
 			ON turniere.turnierform_category_id = turnierformen.category_id
 		LEFT JOIN contacts places
