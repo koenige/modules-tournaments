@@ -236,8 +236,7 @@ $zz['fields'][98]['type'] = 'hidden';
 $zz['fields'][98]['type_detail'] = 'datetime';
 $zz['fields'][98]['hide_in_list'] = true;
 
-$zz['fields'][99]['title'] = 'Stand';
-$zz['fields'][99]['field_name'] = 'letzte_aenderung';
+$zz['fields'][99]['field_name'] = 'last_update';
 $zz['fields'][99]['type'] = 'timestamp';
 $zz['fields'][99]['hide_in_list'] = true;
 

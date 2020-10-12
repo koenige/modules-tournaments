@@ -37,8 +37,7 @@ $zz_sub['fields'][4]['display_field'] = 'category';
 $zz_sub['fields'][4]['key_field_name'] = 'category_id';
 $zz_sub['fields'][4]['def_val_ignore'] = true;
 
-$zz_sub['fields'][20]['title'] = 'Stand';
-$zz_sub['fields'][20]['field_name'] = 'letzte_aenderung';
+$zz_sub['fields'][20]['field_name'] = 'last_update';
 $zz_sub['fields'][20]['type'] = 'timestamp';
 $zz_sub['fields'][20]['hide_in_list'] = true;
 

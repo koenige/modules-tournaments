@@ -84,8 +84,7 @@ $zz['fields'][8]['type'] = 'memo';
 $zz['fields'][8]['hide_in_list'] = true;
 $zz['fields'][8]['separator'] = true;
 
-$zz['fields'][20]['title'] = 'Stand';
-$zz['fields'][20]['field_name'] = 'letzte_aenderung';
+$zz['fields'][20]['field_name'] = 'last_update';
 $zz['fields'][20]['type'] = 'timestamp';
 $zz['fields'][20]['hide_in_list'] = true;
 
