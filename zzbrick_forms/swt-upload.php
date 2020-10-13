@@ -6,18 +6,18 @@
 // Skript: Turnierdetails, nur SWT-Upload
 
 
-$termin = my_event($brick['vars'][0], $brick['vars'][1]);
-if (!$termin) wrap_quit(404);
+$event = my_event($brick['vars'][0], $brick['vars'][1]);
+if (!$event) wrap_quit(404);
 
 $zz = zzform_include_table('turniere');
 
 $zz['title'] = 'SWT-Upload';
-$zz['where']['event_id'] = $termin['event_id'];
+$zz['where']['event_id'] = $event['event_id'];
 $zz['access'] = 'add_then_edit';
 
 $zz_conf['referer'] = '../';
 
-my_event_breadcrumbs($termin);
+my_event_breadcrumbs($event);
 $zz_conf['breadcrumbs'][] = ['linktext' => $zz['title']];
 
 unset($zz['fields'][25]);
@@ -45,4 +45,4 @@ $zz_conf['footer_text'] = '<p><strong>Achtung:</strong> Nach Hinzufügen, Lösch
 jede Spielerin und jeder Spieler entweder eine ZPS-Nummer, eine FIDE-ID oder eine DSB-Personenkennziffer hat, sinnvoll, die
 Personen-IDs aus der Datenbank als Identifikation in die SWT-Datei zurückzuschreiben (Feld Info4). Das geht automatisch über:</p>
 
-<p><a href="/intern/swtwriter/'.$termin['kennung'].'/">Personen-IDs in SwissChess-Datei schreiben und herunterladen</a> (Verfügbar erst kurze Zeit nach Upload)</p>';
+<p><a href="/intern/swtwriter/'.$event['kennung'].'/">Personen-IDs in SwissChess-Datei schreiben und herunterladen</a> (Verfügbar erst kurze Zeit nach Upload)</p>';

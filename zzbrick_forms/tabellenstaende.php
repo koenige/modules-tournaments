@@ -6,8 +6,8 @@
 // Skript: Tabellenstände zu einem Turnier
 
 
-$termin = my_event($brick['vars'][0], $brick['vars'][1]);
-if (!$termin) wrap_quit(404);
+$event = my_event($brick['vars'][0], $brick['vars'][1]);
+if (!$event) wrap_quit(404);
 
 // Wertungen
 $sql = 'SELECT wertung_category_id
@@ -15,15 +15,15 @@ $sql = 'SELECT wertung_category_id
 	LEFT JOIN turniere USING (turnier_id)
 	WHERE turniere.event_id = %d
 	ORDER BY reihenfolge';
-$sql = sprintf($sql, $termin['event_id']);
+$sql = sprintf($sql, $event['event_id']);
 $wertungen = wrap_db_fetch($sql, 'wertung_category_id', 'single value');
 
 $zz = zzform_include_table('tabellenstaende');
 
-$zz['where']['event_id'] = $termin['event_id'];
+$zz['where']['event_id'] = $event['event_id'];
 $zz['where']['runde_no'] = $brick['vars'][2];
 
-if ($termin['turnierform'] === 'e') {
+if ($event['turnierform'] === 'e') {
 	unset($zz['filter'][1]);
 	unset($zz['fields'][11]); // platz_brett_no
 	unset($zz['fields'][4]); // Team
@@ -32,7 +32,7 @@ if ($termin['turnierform'] === 'e') {
 			, CONCAT(team, IFNULL(CONCAT(" ", team_no),"")) AS team
 		FROM teams
 		WHERE event_id = %d
-		ORDER BY team, team_no', $termin['event_id']);
+		ORDER BY team, team_no', $event['event_id']);
 }
 
 $zz['fields'][5]['sql'] = 'SELECT person_id
@@ -45,16 +45,16 @@ $zz['fields'][5]['sql'] = 'SELECT person_id
 	WHERE teilnahmen.usergroup_id = %d
 	AND event_id = %d
 	ORDER BY nachname, vorname, YEAR(geburtsdatum), identifier';
-$zz['fields'][5]['sql'] = sprintf($zz['fields'][5]['sql'], wrap_id('usergroups', 'spieler'), $termin['event_id']);
+$zz['fields'][5]['sql'] = sprintf($zz['fields'][5]['sql'], wrap_id('usergroups', 'spieler'), $event['event_id']);
 $zz['fields'][5]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 
 $zz['fields'][6]['auto_value'] = 'increment';
 
 if (!isset($_GET['filter']['typ'])) {
-	if ($termin['turnierform'] !== 'e') {
+	if ($event['turnierform'] !== 'e') {
 		$zz['fields'][5]['hide_in_form'] = true; // Spieler
 	}
-	if ($termin['turnierform'] !== 'e') {
+	if ($event['turnierform'] !== 'e') {
 		$zz['fields'][11]['hide_in_form'] = true; // Spieler-Platz
 	}
 	$zz['fields'][10]['min_records'] =
@@ -71,9 +71,9 @@ if (!isset($_GET['filter']['typ'])) {
 	$zz['fields'][6]['hide_in_form'] = true; // Platz
 }
 
-my_event_breadcrumbs($termin);
+my_event_breadcrumbs($event);
 $zz_conf['breadcrumbs'][] = [
 	'linktext' => 'Runden',
-	'url' => '/intern/termine/'.$termin['kennung'].'/runde/'
+	'url' => '/intern/termine/'.$event['kennung'].'/runde/'
 ];
 $zz_conf['breadcrumbs'][] = ['linktext' => 'Tabelle '.$brick['vars'][2].'. Runde'];

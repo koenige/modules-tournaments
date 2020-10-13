@@ -27,30 +27,30 @@ function mod_tournaments_turnierzahlen($vars) {
 		LEFT JOIN turniere USING (event_id)
 		WHERE kennung = "%s"';
 	$sql = sprintf($sql, wrap_db_escape(implode('/', $vars)));
-	$termin = wrap_db_fetch($sql);
-	if (!$termin) return false;
+	$event = wrap_db_fetch($sql);
+	if (!$event) return false;
 
 	$data['abweichungen'] = [];
 	$data['fehler'] = [];
-	$data['termin'] = $termin['termin'];
-	$data['jahr'] = $termin['jahr'];
+	$data['termin'] = $event['termin'];
+	$data['jahr'] = $event['jahr'];
 	$data['testlauf'] = true;
 	if (!empty($_POST['update'])) $data['testlauf'] = false;
 
 	$page['breadcrumbs'][] = '<a href="/intern/termine/">Termine</a>';
 	$page['breadcrumbs'][] = sprintf(
 		'<a href="/intern/termine/%d/">%d</a>',
-		$termin['jahr'], $termin['jahr']
+		$event['jahr'], $event['jahr']
 	);
 	$page['breadcrumbs'][] = sprintf(
 		'<a href="/intern/termine/%s/">%s</a>',
-		$termin['kennung'], $termin['termin']
+		$event['kennung'], $event['termin']
 	);
 	$page['breadcrumbs'][] = 'Turnierzahlen';
-	$page['title'] = sprintf('Aktualisierung der Wertungszahlen für %s %s', $termin['termin'], $termin['jahr']);
+	$page['title'] = sprintf('Aktualisierung der Wertungszahlen für %s %s', $event['termin'], $event['jahr']);
 	$page['dont_show_h1'] = true;
 
-	if ($termin['termin_vergangen']) {
+	if ($event['termin_vergangen']) {
 		$data['termin_vergangen'] = true;
 		$page['text'] = wrap_template('turnierzahlen', $data);
 		return $page;
@@ -59,7 +59,7 @@ function mod_tournaments_turnierzahlen($vars) {
 	$sql = 'SELECT DISTINCT m_dwz, m_elo
 		FROM teilnahmen
 		WHERE event_id = %d';
-	$sql = sprintf($sql, $termin['event_id']);
+	$sql = sprintf($sql, $event['event_id']);
 	$meldezahlen = wrap_db_fetch($sql);
 	if (!$meldezahlen) {
 		// $meldezahlen ergibt exakt einen Datensatz zurück, wenn es
@@ -89,7 +89,7 @@ function mod_tournaments_turnierzahlen($vars) {
 	';
 	$sql = sprintf($sql,
 		wrap_category_id('kennungen/zps'),
-		$termin['event_id'],
+		$event['event_id'],
 		wrap_id('usergroups', 'spieler')
 	);
 	$teilnahmen = wrap_db_fetch($sql, 'teilnahme_id');
@@ -150,11 +150,11 @@ function mod_tournaments_turnierzahlen($vars) {
 	if ($updated) {
 		$values = [];
 		$values['action'] = 'update';
-		$values['POST']['turnier_id'] = $termin['turnier_id'];
+		$values['POST']['turnier_id'] = $event['turnier_id'];
 		$values['POST']['ratings_updated'] = date('Y-m-d');
 		$ops = zzform_multi('turniere', $values);
 		if (empty($ops['id'])) {
-			wrap_error(sprintf('Unable to set `ratings_updated` for tournament %s', $termin['kennung']));
+			wrap_error(sprintf('Unable to set `ratings_updated` for tournament %s', $event['kennung']));
 		}
 	}
 	$page['text'] = wrap_template('turnierzahlen', $data);

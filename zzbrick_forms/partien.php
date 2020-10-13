@@ -6,13 +6,13 @@
 // Skript: Partien eines Turniers
 
 
-$termin = my_event($brick['vars'][0], $brick['vars'][1]);
-if (!$termin) wrap_quit(404);
+$event = my_event($brick['vars'][0], $brick['vars'][1]);
+if (!$event) wrap_quit(404);
 
 if (intval($brick['vars'][2]).'' !== $brick['vars'][2]) wrap_quit(404);
 $sql = 'SELECT runde_no FROM events
 	WHERE main_event_id = %d AND runde_no = "%s"';
-$sql = sprintf($sql, $termin['event_id'], $brick['vars'][2]);
+$sql = sprintf($sql, $event['event_id'], $brick['vars'][2]);
 $runde_no = wrap_db_fetch($sql, '', 'single value');
 if (!$runde_no) wrap_quit(404);
 
@@ -22,7 +22,7 @@ if (count($brick['vars']) === 4) {
 			, (SELECT COUNT(partie_id) FROM partien WHERE partien.paarung_id = paarungen.paarung_id) AS partien
 		FROM paarungen WHERE event_id = %d
 		AND runde_no = %d AND tisch_no = %d';
-	$sql = sprintf($sql, $termin['event_id'], $brick['vars'][2], $brick['vars'][3]);
+	$sql = sprintf($sql, $event['event_id'], $brick['vars'][2], $brick['vars'][3]);
 	$paarung = wrap_db_fetch($sql);
 	if (!$paarung) wrap_quit(404);
 
@@ -31,7 +31,7 @@ if (count($brick['vars']) === 4) {
 }
 
 $zz = zzform_include_table('partien', $values);
-$zz['where']['event_id'] = $termin['event_id'];
+$zz['where']['event_id'] = $event['event_id'];
 $zz['where']['runde_no'] = $runde_no;
 if (count($brick['vars']) === 4) {
 	$zz['where']['paarung_id'] = $paarung['paarung_id'];
@@ -55,7 +55,7 @@ if (count($brick['vars']) === 3) {
 		FROM teilnahmen
 		WHERE usergroup_id = %d
 		AND event_id = %d
-		ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'), $termin['event_id']);
+		ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'), $event['event_id']);
  	// Gruppierung nach Team entfernen
  	unset($zz['fields'][6]['group']);
 	unset($zz['fields'][8]['group']);
@@ -65,26 +65,26 @@ if (count($brick['vars']) === 4) {
 	$zz['fields'][6]['if']['add']['default'] = my_get_paarung_spieler($paarung, 'weiss');
 	$zz['fields'][8]['if']['add']['default'] = my_get_paarung_spieler($paarung, 'schwarz');
 	$zz['fields'][10]['if']['add']['default'] = my_get_paarung_spieler($paarung, 'farbe');
-	if ($paarung['partien'] + 1 < $termin['bretter_min']) {
+	if ($paarung['partien'] + 1 < $event['bretter_min']) {
 		$url_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 		$zz_conf['redirect']['successful_insert'] = $url_path.'?add';
 	}
 }
 
-my_event_breadcrumbs($termin);
+my_event_breadcrumbs($event);
 $zz_conf['breadcrumbs'][] = [
 	'linktext' => 'Runden',
-	'url' => '/intern/termine/'.$termin['kennung'].'/runde/'
+	'url' => '/intern/termine/'.$event['kennung'].'/runde/'
 ];
 if (count($brick['vars']) === 4) {
 	$zz_conf['breadcrumbs'][] = [
 		'linktext' => $zz['where']['runde_no'],
-		'url' => '/intern/termine/'.$termin['kennung'].'/runde/'.$zz['where']['runde_no'].'/'
+		'url' => '/intern/termine/'.$event['kennung'].'/runde/'.$zz['where']['runde_no'].'/'
 	];
 	$zz_conf['breadcrumbs'][] = ['linktext' => 'Tisch '.$brick['vars'][3]];
 
 	$sql = 'SELECT COUNT(paarung_id) FROM paarungen WHERE event_id = %d AND runde_no = %d';
-	$sql = sprintf($sql, $termin['event_id'], $brick['vars'][2]);
+	$sql = sprintf($sql, $event['event_id'], $brick['vars'][2]);
 	$tische_max = wrap_db_fetch($sql, '', 'single value');
 
 	if ($brick['vars'][3] < $tische_max) {
@@ -105,7 +105,7 @@ if (count($brick['vars']) === 3) {
 	// Einzelturnier
 	$zz_conf['export'][] = 'PDF Ergebniszettel';
 	// @todo anders übergeben
-	$zz_conf['termin'] = $termin;
+	$zz_conf['termin'] = $event;
 }
 
 function my_get_paarung_spieler($paarung, $farbe) {

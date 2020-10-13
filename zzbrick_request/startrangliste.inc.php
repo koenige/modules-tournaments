@@ -43,57 +43,57 @@ function mod_tournaments_startrangliste($vars) {
 		LEFT JOIN addresses USING (contact_id)
 		WHERE events.kennung = "%s"';
 	$sql = sprintf($sql, $zz_setting['website_id'], wrap_db_escape(implode('/', $vars)));
-	$termin = wrap_db_fetch($sql);
-	if (!$termin) return false;
-	$termin[str_replace('-', '_', $termin['turnierform'])] = true;
+	$event = wrap_db_fetch($sql);
+	if (!$event) return false;
+	$event[str_replace('-', '_', $event['turnierform'])] = true;
 
-	$page['breadcrumbs'][] = '<a href="../../">'.$termin['jahr'].'</a>';
-	if ($termin['main_series']) {
-		$page['breadcrumbs'][] = '<a href="../../'.$termin['main_series_path'].'/">'.$termin['main_series'].'</a>';
+	$page['breadcrumbs'][] = '<a href="../../">'.$event['jahr'].'</a>';
+	if ($event['main_series']) {
+		$page['breadcrumbs'][] = '<a href="../../'.$event['main_series_path'].'/">'.$event['main_series'].'</a>';
 	}
-	$page['breadcrumbs'][] = '<a href="../">'.$termin['termin'].'</a>';
+	$page['breadcrumbs'][] = '<a href="../">'.$event['termin'].'</a>';
 	$page['extra']['realm'] = 'sports';
 	$page['dont_show_h1'] = true;
 
 	$meldeliste = false;
-	if ($termin['turnierform'] === 'e') {
-		$termin = mod_tournaments_startrangliste_einzel($termin);
-		foreach ($termin['spieler'] as $spieler) {
+	if ($event['turnierform'] === 'e') {
+		$event = mod_tournaments_startrangliste_einzel($event);
+		foreach ($event['spieler'] as $spieler) {
 			if ($spieler['teilnahme_status'] !== 'angemeldet') continue;
 			$meldeliste = true;
 			break;
 		}
 		if ($meldeliste) {
-			foreach (array_keys($termin['spieler']) as $person_id) {
-				$termin['spieler'][$person_id]['meldeliste'] = true;
+			foreach (array_keys($event['spieler']) as $person_id) {
+				$event['spieler'][$person_id]['meldeliste'] = true;
 			}
 		}
-		if ($termin['latitude']) {
+		if ($event['latitude']) {
 			$page['head'] = wrap_template('termin-map-head');
-			$termin['map'] = my_teilnehmerkarte($termin);
+			$event['map'] = my_teilnehmerkarte($event);
 		}
 	} else {
-		$termin = mod_tournaments_startrangliste_mannschaft($termin);
+		$event = mod_tournaments_startrangliste_mannschaft($event);
 	}
 	if ($meldeliste) {
-		$page['title'] = $termin['termin'].' '.$termin['jahr'].': Meldeliste';
+		$page['title'] = $event['termin'].' '.$event['jahr'].': Meldeliste';
 		$page['breadcrumbs'][] = 'Meldeliste';
-		$termin['meldeliste'] = true;
-		$termin['meldungen'] = !empty($termin['spieler']) ? count($termin['spieler']) : count($termin['teams']);
+		$event['meldeliste'] = true;
+		$event['meldungen'] = !empty($event['spieler']) ? count($event['spieler']) : count($event['teams']);
 	} else {
-		$page['title'] = $termin['termin'].' '.$termin['jahr'].': Startrangliste';
+		$page['title'] = $event['termin'].' '.$event['jahr'].': Startrangliste';
 		$page['breadcrumbs'][] = 'Startrangliste';
 	}
 
-	if ($termin['turnierform'] === 'e') {
-		$page['text'] = wrap_template('startrangliste-einzel', $termin);
+	if ($event['turnierform'] === 'e') {
+		$page['text'] = wrap_template('startrangliste-einzel', $event);
 	} else {
-		$page['text'] = wrap_template('startrangliste-mannschaft', $termin);
+		$page['text'] = wrap_template('startrangliste-mannschaft', $event);
 	}
 	return $page;
 }
 
-function mod_tournaments_startrangliste_einzel($termin) {
+function mod_tournaments_startrangliste_einzel($event) {
 	global $zz_setting;
 
 	// @todo Sortierung nach DWZ oder Elo, je nach Turniereinstellung
@@ -145,31 +145,31 @@ function mod_tournaments_startrangliste_einzel($termin) {
 		ORDER BY setzliste_no, IFNULL(t_dwz, t_elo) DESC, t_elo DESC, t_nachname, t_vorname';
 	$sql = sprintf($sql
 		, $zz_setting['org_ids']['dsb']
-		, $termin['event_id']
+		, $event['event_id']
 		, wrap_id('usergroups', 'spieler')
-		, ($termin['ende'] >= date('Y-m-d')) ? '"angemeldet", ' : ''
+		, ($event['ende'] >= date('Y-m-d')) ? '"angemeldet", ' : ''
 	);
-	$termin['spieler'] = wrap_db_fetch($sql, 'person_id');
-	$termin['spieler'] = my_get_personen_kennungen($termin['spieler'], ['fide-id', 'zps']);
-	$termin['zeige_dwz'] = false;
-	$termin['zeige_elo'] = false;
-	$termin['zeige_titel'] = false;
-	foreach ($termin['spieler'] as $person_id => $spieler) {
-		if ($spieler['t_fidetitel']) $termin['zeige_titel'] = true;
-		if ($spieler['t_elo']) $termin['zeige_elo'] = true;
-		if ($spieler['t_dwz']) $termin['zeige_dwz'] = true;
+	$event['spieler'] = wrap_db_fetch($sql, 'person_id');
+	$event['spieler'] = my_get_personen_kennungen($event['spieler'], ['fide-id', 'zps']);
+	$event['zeige_dwz'] = false;
+	$event['zeige_elo'] = false;
+	$event['zeige_titel'] = false;
+	foreach ($event['spieler'] as $person_id => $spieler) {
+		if ($spieler['t_fidetitel']) $event['zeige_titel'] = true;
+		if ($spieler['t_elo']) $event['zeige_elo'] = true;
+		if ($spieler['t_dwz']) $event['zeige_dwz'] = true;
 		if (!$spieler['t_fidetitel']) continue;
-		$termin['spieler'][$person_id]['fidetitel_lang'] = my_fidetitel($spieler['t_fidetitel']);
+		$event['spieler'][$person_id]['fidetitel_lang'] = my_fidetitel($spieler['t_fidetitel']);
 	}
-	foreach ($termin['spieler'] as $person_id => $spieler) {
-		if ($termin['zeige_dwz']) $termin['spieler'][$person_id]['zeige_dwz'] = true;
-		if ($termin['zeige_elo']) $termin['spieler'][$person_id]['zeige_elo'] = true;
-		if ($termin['zeige_titel']) $termin['spieler'][$person_id]['zeige_titel'] = true;
+	foreach ($event['spieler'] as $person_id => $spieler) {
+		if ($event['zeige_dwz']) $event['spieler'][$person_id]['zeige_dwz'] = true;
+		if ($event['zeige_elo']) $event['spieler'][$person_id]['zeige_elo'] = true;
+		if ($event['zeige_titel']) $event['spieler'][$person_id]['zeige_titel'] = true;
 	}
-	return $termin;
+	return $event;
 }
 	
-function mod_tournaments_startrangliste_mannschaft($termin) {
+function mod_tournaments_startrangliste_mannschaft($event) {
 	global $zz_setting;
 
 	$sql = 'SELECT team_id
@@ -218,42 +218,42 @@ function mod_tournaments_startrangliste_mannschaft($termin) {
 		, $zz_setting['org_ids']['dsb']
 		, wrap_category_id('organisationen/verband')
 		, $zz_setting['org_ids']['dsb']
-		, $termin['event_id']
+		, $event['event_id']
 	);
 	// @todo Klären, was passiert wenn mehr als 1 Ort zu Verein in Datenbank! (Reihenfolge-Feld einführen)
-	$termin['teams'] = wrap_db_fetch($sql, 'team_id');
-	if (!$termin['teams']) wrap_quit(404); // es liegt noch keine Rangliste vor.
-	$termin['meldeliste'] = false;
-	foreach (array_keys($termin['teams']) AS $team_id) {
+	$event['teams'] = wrap_db_fetch($sql, 'team_id');
+	if (!$event['teams']) wrap_quit(404); // es liegt noch keine Rangliste vor.
+	$event['meldeliste'] = false;
+	foreach (array_keys($event['teams']) AS $team_id) {
 		// Meldelistestatus nur bei Terminen, die noch nicht zuende sind
-		if (empty($termin['teams'][$team_id]['setzliste_no']) AND $termin['ende'] > date('Y-m-d')) $termin['meldeliste'] = true;
-		$termin['teams'][$team_id][str_replace('-', '_', $termin['turnierform'])] = true;
-		if ($termin['teams'][$team_id]['country']) $termin['country'] = true;
+		if (empty($event['teams'][$team_id]['setzliste_no']) AND $event['ende'] > date('Y-m-d')) $event['meldeliste'] = true;
+		$event['teams'][$team_id][str_replace('-', '_', $event['turnierform'])] = true;
+		if ($event['teams'][$team_id]['country']) $event['country'] = true;
 	}
 
 	$dwz_sortierung = false;
-	if ($termin['teilnehmerliste']) {
+	if ($event['teilnehmerliste']) {
 		$dwz_sortierung = true;
-		$erstes_team = current($termin['teams']);
+		$erstes_team = current($event['teams']);
 		if ($erstes_team['setzliste_no']) $dwz_sortierung = false;
 
-		list($termin['dwz_schnitt'], $termin['teams']) 
-			= my_dwz_schnitt_teams($termin['event_id'], $termin['teams'], $termin['bretter_min'], $termin['pseudo_dwz']);
+		list($event['dwz_schnitt'], $event['teams']) 
+			= my_dwz_schnitt_teams($event['event_id'], $event['teams'], $event['bretter_min'], $event['pseudo_dwz']);
 	}
 
-	foreach ($termin['teams'] AS $key => $row) {
-		if ($termin['meldeliste']) $termin['teams'][$key]['meldeliste'] = true;
+	foreach ($event['teams'] AS $key => $row) {
+		if ($event['meldeliste']) $event['teams'][$key]['meldeliste'] = true;
 		if ($dwz_sortierung) {
 			$teamname[$key] = $row['place'];
 			$verband[$key] = $row['country'];
 			$schnitt[$key] = $row['dwz_schnitt'];
-			if ($row['dwz_schnitt']) $termin['dwz_schnitt'] = true;
+			if ($row['dwz_schnitt']) $event['dwz_schnitt'] = true;
 		}
 	}
 	if ($dwz_sortierung) {
 		//Nach DWZ-Schnitt absteigend, danach nach Teamname aufsteigend sortieren
-		array_multisort($schnitt, SORT_DESC, $teamname, SORT_ASC, $termin['teams']);
+		array_multisort($schnitt, SORT_DESC, $teamname, SORT_ASC, $event['teams']);
 	}
 
-	return $termin;
+	return $event;
 }
