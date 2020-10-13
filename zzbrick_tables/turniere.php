@@ -443,8 +443,8 @@ $zz['sql'] = 'SELECT turniere.*
 		) AS spieler
 	FROM turniere
 	LEFT JOIN events USING (event_id)
-	LEFT JOIN categories reihen
-		ON events.series_category_id = reihen.category_id
+	LEFT JOIN categories series
+		ON events.series_category_id = series.category_id
 	LEFT JOIN categories modus
 		ON turniere.modus_category_id = modus.category_id
 	LEFT JOIN categories turnierformen
@@ -463,29 +463,29 @@ $zz['subtitle']['event_id']['format'][1] = 'wrap_date';
 $zz['subtitle']['event_id']['link'] = '../';
 $zz['subtitle']['event_id']['link_no_append'] = true;
 
-$zz['filter'][2]['sql'] = 'SELECT DISTINCT hauptreihen.category_id
-		, hauptreihen.category_short, beginn
+$zz['filter'][2]['sql'] = 'SELECT DISTINCT main_series.category_id
+		, main_series.category_short, beginn
 	FROM turniere
 	LEFT JOIN events USING (event_id)
-	LEFT JOIN categories reihen
-		ON events.series_category_id = reihen.category_id
-	LEFT JOIN categories hauptreihen
-		ON reihen.main_category_id = hauptreihen.category_id
-	WHERE NOT ISNULL(hauptreihen.category_id)
+	LEFT JOIN categories series
+		ON events.series_category_id = series.category_id
+	LEFT JOIN categories main_series
+		ON series.main_category_id = main_series.category_id
+	WHERE NOT ISNULL(main_series.category_id)
 	ORDER BY beginn DESC';
 $zz['filter'][2]['title'] = 'Reihe';
 $zz['filter'][2]['identifier'] = 'reihe';
 $zz['filter'][2]['type'] = 'list';
-$zz['filter'][2]['where'] = 'reihen.main_category_id';
+$zz['filter'][2]['where'] = 'series.main_category_id';
 
 $zz['filter'][1]['sql'] = 'SELECT DISTINCT YEAR(beginn) AS jahr_idf
 		, YEAR(beginn) AS jahr
 	FROM turniere
 	LEFT JOIN events USING (event_id)
-	LEFT JOIN categories reihen
-		ON events.series_category_id = reihen.category_id
-	LEFT JOIN categories hauptreihen
-		ON reihen.main_category_id = hauptreihen.category_id
+	LEFT JOIN categories series
+		ON events.series_category_id = series.category_id
+	LEFT JOIN categories main_series
+		ON series.main_category_id = main_series.category_id
 	ORDER BY YEAR(beginn) DESC';
 $zz['filter'][1]['title'] = 'Jahr';
 $zz['filter'][1]['identifier'] = 'jahr';

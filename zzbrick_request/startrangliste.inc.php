@@ -25,13 +25,13 @@ function mod_tournaments_startrangliste($vars) {
 			, IFNULL(place, places.contact) AS turnierort
 			, pseudo_dwz, bretter_min
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
-			, IF(LENGTH(hauptreihen.path) > 7, SUBSTRING_INDEX(hauptreihen.path, "/", -1), NULL) AS hauptreihe_kennung
-			, hauptreihen.category_short AS hauptreihe
+			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
+			, main_series.category_short AS main_series
 		FROM events
-		LEFT JOIN categories reihen
-			ON events.series_category_id = reihen.category_id
-		LEFT JOIN categories hauptreihen
-			ON hauptreihen.category_id = reihen.main_category_id
+		LEFT JOIN categories series
+			ON events.series_category_id = series.category_id
+		LEFT JOIN categories main_series
+			ON main_series.category_id = series.main_category_id
 		LEFT JOIN turniere USING (event_id)
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
@@ -48,8 +48,8 @@ function mod_tournaments_startrangliste($vars) {
 	$termin[str_replace('-', '_', $termin['turnierform'])] = true;
 
 	$page['breadcrumbs'][] = '<a href="../../">'.$termin['jahr'].'</a>';
-	if ($termin['hauptreihe']) {
-		$page['breadcrumbs'][] = '<a href="../../'.$termin['hauptreihe_kennung'].'/">'.$termin['hauptreihe'].'</a>';
+	if ($termin['main_series']) {
+		$page['breadcrumbs'][] = '<a href="../../'.$termin['main_series_path'].'/">'.$termin['main_series'].'</a>';
 	}
 	$page['breadcrumbs'][] = '<a href="../">'.$termin['termin'].'</a>';
 	$page['extra']['realm'] = 'sports';
@@ -108,7 +108,7 @@ function mod_tournaments_startrangliste_einzel($termin) {
 			, places.contact AS veranstaltungsort, place, latitude, longitude
 			, landesverbaende.kennung AS lv_kennung
 			, landesverbaende.org_abk AS lv_kurz
-			, IF(LENGTH(hauptreihen.path) > 7, SUBSTRING_INDEX(hauptreihen.path, "/", -1), NULL) AS hauptreihe_kennung
+			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, teilnahme_status
 			, DATE_FORMAT(eintrag_datum, "%%d.%%m %%H:%%i") AS eintrag_datum
 			, eintrag_datum AS eintrag_datum_raw
@@ -135,10 +135,10 @@ function mod_tournaments_startrangliste_einzel($termin) {
 		LEFT JOIN addresses
 			ON places.contact_id = addresses.contact_id
 		LEFT JOIN events USING (event_id)
-		LEFT JOIN categories reihen
-			ON events.series_category_id = reihen.category_id
-		LEFT JOIN categories hauptreihen
-			ON reihen.main_category_id = hauptreihen.category_id
+		LEFT JOIN categories series
+			ON events.series_category_id = series.category_id
+		LEFT JOIN categories main_series
+			ON series.main_category_id = main_series.category_id
 		WHERE event_id = %d
 		AND usergroup_id = %d
 		AND teilnahme_status IN (%s"Teilnehmer", "disqualifiziert", "geblockt")
@@ -179,7 +179,7 @@ function mod_tournaments_startrangliste_mannschaft($termin) {
 			, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
 			, IFNULL(landesverbaende.kennung, landesverbaende_rueckwaerts.kennung) AS lv_kennung
 			, IFNULL(landesverbaende.org_abk, landesverbaende_rueckwaerts.org_abk) AS lv_kurz
-			, IF(LENGTH(hauptreihen.path) > 7, SUBSTRING_INDEX(hauptreihen.path, "/", -1), NULL) AS hauptreihe_kennung
+			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, eintrag_datum
 		FROM teams
 		LEFT JOIN organisationen
@@ -206,10 +206,10 @@ function mod_tournaments_startrangliste_mannschaft($termin) {
 		LEFT JOIN addresses
 			ON places.contact_id = addresses.contact_id
 		LEFT JOIN events USING (event_id)
-		LEFT JOIN categories reihen
-			ON events.series_category_id = reihen.category_id
-		LEFT JOIN categories hauptreihen
-			ON reihen.main_category_id = hauptreihen.category_id
+		LEFT JOIN categories series
+			ON events.series_category_id = series.category_id
+		LEFT JOIN categories main_series
+			ON series.main_category_id = main_series.category_id
 		WHERE event_id = %d
 		AND team_status = "Teilnehmer"
 		AND spielfrei = "nein"
