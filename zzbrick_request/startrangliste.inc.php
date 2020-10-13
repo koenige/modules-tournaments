@@ -29,7 +29,7 @@ function mod_tournaments_startrangliste($vars) {
 			, hauptreihen.category_short AS hauptreihe
 		FROM events
 		LEFT JOIN categories reihen
-			ON events.reihe_category_id = reihen.category_id
+			ON events.series_category_id = reihen.category_id
 		LEFT JOIN categories hauptreihen
 			ON hauptreihen.category_id = reihen.main_category_id
 		LEFT JOIN turniere USING (event_id)
@@ -136,7 +136,7 @@ function mod_tournaments_startrangliste_einzel($termin) {
 			ON places.contact_id = addresses.contact_id
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories reihen
-			ON events.reihe_category_id = reihen.category_id
+			ON events.series_category_id = reihen.category_id
 		LEFT JOIN categories hauptreihen
 			ON reihen.main_category_id = hauptreihen.category_id
 		WHERE event_id = %d
@@ -207,7 +207,7 @@ function mod_tournaments_startrangliste_mannschaft($termin) {
 			ON places.contact_id = addresses.contact_id
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories reihen
-			ON events.reihe_category_id = reihen.category_id
+			ON events.series_category_id = reihen.category_id
 		LEFT JOIN categories hauptreihen
 			ON reihen.main_category_id = hauptreihen.category_id
 		WHERE event_id = %d

@@ -444,7 +444,7 @@ $zz['sql'] = 'SELECT turniere.*
 	FROM turniere
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories reihen
-		ON events.reihe_category_id = reihen.category_id
+		ON events.series_category_id = reihen.category_id
 	LEFT JOIN categories modus
 		ON turniere.modus_category_id = modus.category_id
 	LEFT JOIN categories turnierformen
@@ -468,7 +468,7 @@ $zz['filter'][2]['sql'] = 'SELECT DISTINCT hauptreihen.category_id
 	FROM turniere
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories reihen
-		ON events.reihe_category_id = reihen.category_id
+		ON events.series_category_id = reihen.category_id
 	LEFT JOIN categories hauptreihen
 		ON reihen.main_category_id = hauptreihen.category_id
 	WHERE NOT ISNULL(hauptreihen.category_id)
@@ -483,7 +483,7 @@ $zz['filter'][1]['sql'] = 'SELECT DISTINCT YEAR(beginn) AS jahr_idf
 	FROM turniere
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories reihen
-		ON events.reihe_category_id = reihen.category_id
+		ON events.series_category_id = reihen.category_id
 	LEFT JOIN categories hauptreihen
 		ON reihen.main_category_id = hauptreihen.category_id
 	ORDER BY YEAR(beginn) DESC';

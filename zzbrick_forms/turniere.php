@@ -14,11 +14,11 @@ $zz = zzform_include_table('turniere');
 $sql = 'SELECT turnier_id
 	FROM turniere
 	LEFT JOIN events USING (event_id)
-	WHERE reihe_category_id = %d
+	WHERE series_category_id = %d
 	AND event_id != %d
 	ORDER BY beginn DESC
 	LIMIT 1';
-$sql = sprintf($sql, $termin['reihe_category_id'], $termin['event_id']);
+$sql = sprintf($sql, $termin['series_category_id'], $termin['event_id']);
 $data = wrap_db_fetch($sql, 'turnier_id');
 $termin['letztes_turnier_id'] = wrap_db_fetch($sql, '', 'single value');
 
