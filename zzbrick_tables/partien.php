@@ -28,10 +28,10 @@ $zz['fields'][3]['field_name'] = 'event_id';
 $zz['fields'][3]['type'] = 'write_once';
 $zz['fields'][3]['type_detail'] = 'select';
 $zz['fields'][3]['sql'] = 'SELECT event_id, termin, YEAR(beginn)
-	FROM termine
+	FROM events
 	WHERE ISNULL(main_event_id)
 	ORDER BY beginn, kennung';
-$zz['fields'][3]['key_field_name'] = 'termine.event_id';
+$zz['fields'][3]['key_field_name'] = 'events.event_id';
 $zz['fields'][3]['display_field'] = 'termin';
 $zz['fields'][3]['if']['where']['hide_in_list'] = true;
 $zz['fields'][3]['if']['where']['hide_in_form'] = true;
@@ -241,12 +241,12 @@ $zz['fields'][99]['type'] = 'timestamp';
 $zz['fields'][99]['hide_in_list'] = true;
 
 $zz['sql'] = sprintf('SELECT partien.*
-		, termin, termine.kennung AS termin_kennung, paarungen.tisch_no
+		, termin, events.kennung AS termin_kennung, paarungen.tisch_no
 		, CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname) AS weiss
 		, CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname) AS schwarz
 		, category
 	FROM partien
-	LEFT JOIN termine USING (event_id)
+	LEFT JOIN events USING (event_id)
 	LEFT JOIN paarungen USING (paarung_id)
 	LEFT JOIN categories
 		ON categories.category_id = partien.partiestatus_category_id
@@ -262,9 +262,9 @@ $zz['sql'] = sprintf('SELECT partien.*
 		AND schwarz.usergroup_id = %d
 ', wrap_id('usergroups', 'spieler'), wrap_id('usergroups', 'spieler'));
 
-$zz['sqlorder'] = ' ORDER BY termine.beginn, termine.kennung, runde_no, brett_no';
+$zz['sqlorder'] = ' ORDER BY events.beginn, events.kennung, runde_no, brett_no';
 
-$zz['subtitle']['event_id']['sql'] = 'SELECT termin FROM termine';
+$zz['subtitle']['event_id']['sql'] = 'SELECT termin FROM events';
 $zz['subtitle']['event_id']['var'] = ['termin'];
 
 $zz['subtitle']['runde_no']['value'] = true;

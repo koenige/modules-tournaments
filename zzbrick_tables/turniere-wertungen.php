@@ -18,7 +18,7 @@ $zz_sub['fields'][2]['type'] = 'select';
 $zz_sub['fields'][2]['sql'] = 'SELECT turnier_id
 		, CONCAT(termin, " ", YEAR(beginn)) AS turnier
 	FROM turniere
-	LEFT JOIN termine USING (event_id)
+	LEFT JOIN events USING (event_id)
 	ORDER BY beginn, kennung DESC';
 $zz_sub['fields'][2]['display_field'] = 'turnier';
 $zz_sub['fields'][2]['search'] = 'CONCAT(termin, " ", YEAR(beginn))';
@@ -48,15 +48,15 @@ $zz_sub['fields'][5]['default'] = 'immer';
 $zz_sub['fields'][5]['def_val_ignore'] = true;
 
 $zz_sub['sql'] = 'SELECT turniere_wertungen.*
-		, CONCAT(termine.termin, " ", YEAR(beginn)) AS turnier
+		, CONCAT(events.termin, " ", YEAR(beginn)) AS turnier
 		, category
 	FROM turniere_wertungen
 	LEFT JOIN turniere USING (turnier_id)
-	LEFT JOIN termine USING (event_id)
+	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories
 		ON categories.category_id = turniere_wertungen.wertung_category_id
 ';
-$zz_sub['sqlorder'] = ' ORDER BY termine.beginn, turniere_wertungen.reihenfolge, category';
+$zz_sub['sqlorder'] = ' ORDER BY events.beginn, turniere_wertungen.reihenfolge, category';
 
 $zz_sub['hooks']['after_insert'] = 
 $zz_sub['hooks']['after_update'] = 

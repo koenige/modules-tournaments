@@ -18,7 +18,7 @@ $zz_sub['fields'][2]['type'] = 'select';
 $zz_sub['fields'][2]['sql'] = 'SELECT turnier_id
 		, CONCAT(termin, " ", YEAR(beginn)) AS turnier
 	FROM turniere
-	LEFT JOIN termine USING (event_id)
+	LEFT JOIN events USING (event_id)
 	ORDER BY beginn, kennung DESC';
 $zz_sub['fields'][2]['display_field'] = 'turnier';
 $zz_sub['fields'][2]['search'] = 'CONCAT(termin, " ", YEAR(beginn))';
@@ -32,7 +32,7 @@ $zz_sub['sql'] = 'SELECT turniere_partien.*
 		, CONCAT(termin, " ", YEAR(beginn)) AS turnier
 	FROM turniere_partien
 	LEFT JOIN turniere USING (turnier_id)
-	LEFT JOIN termine USING (event_id)
+	LEFT JOIN events USING (event_id)
 ';
 $zz_sub['sqlorder'] = ' ORDER BY beginn, termin ASC';
 

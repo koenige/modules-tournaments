@@ -13,7 +13,7 @@ $zz = zzform_include_table('turniere');
 
 $sql = 'SELECT turnier_id
 	FROM turniere
-	LEFT JOIN termine USING (event_id)
+	LEFT JOIN events USING (event_id)
 	WHERE reihe_category_id = %d
 	AND event_id != %d
 	ORDER BY beginn DESC

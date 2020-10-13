@@ -17,13 +17,13 @@ function mod_tournaments_turnierzahlen($vars) {
 	global $zz_conf;
 
 	$sql = 'SELECT event_id, turnier_id
-			, IF(NOT ISNULL(termine.ende),
-				IF(termine.ende < CURDATE(), 1, NULL),
-				IF(termine.beginn < CURDATE(), 1, NULL)
+			, IF(NOT ISNULL(events.ende),
+				IF(events.ende < CURDATE(), 1, NULL),
+				IF(events.beginn < CURDATE(), 1, NULL)
 			) AS termin_vergangen
 			, YEAR(beginn) AS jahr
 			, termin, kennung
-		FROM termine
+		FROM events
 		LEFT JOIN turniere USING (event_id)
 		WHERE kennung = "%s"';
 	$sql = sprintf($sql, wrap_db_escape(implode('/', $vars)));

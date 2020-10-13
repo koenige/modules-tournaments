@@ -14,34 +14,34 @@ function mod_tournaments_startrangliste($vars) {
 		unset($vars[2]);
 	if (count($vars) !== 2) return false;
 	
-	$sql = 'SELECT termine.event_id, termin
+	$sql = 'SELECT events.event_id, termin
 			, CONCAT(beginn, IFNULL(CONCAT("/", ende), "")) AS dauer
 			, YEAR(beginn) AS jahr, IFNULL(ende, beginn) AS ende
 			, places.contact AS veranstaltungsort
 			, address, postcode, place, places.description
 			, latitude, longitude
-			, termine.kennung
+			, events.kennung
 			, IF(teilnehmerliste = "ja", 1, 0) AS teilnehmerliste
 			, IFNULL(place, places.contact) AS turnierort
 			, pseudo_dwz, bretter_min
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, IF(LENGTH(hauptreihen.path) > 7, SUBSTRING_INDEX(hauptreihen.path, "/", -1), NULL) AS hauptreihe_kennung
 			, hauptreihen.category_short AS hauptreihe
-		FROM termine
+		FROM events
 		LEFT JOIN categories reihen
-			ON termine.reihe_category_id = reihen.category_id
+			ON events.reihe_category_id = reihen.category_id
 		LEFT JOIN categories hauptreihen
 			ON hauptreihen.category_id = reihen.main_category_id
 		LEFT JOIN turniere USING (event_id)
 		JOIN events_websites
-			ON events_websites.event_id = termine.event_id
+			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = %d
 		LEFT JOIN categories turnierformen
 			ON turniere.turnierform_category_id = turnierformen.category_id
 		LEFT JOIN contacts places
-			ON termine.place_contact_id = places.contact_id
+			ON events.place_contact_id = places.contact_id
 		LEFT JOIN addresses USING (contact_id)
-		WHERE termine.kennung = "%s"';
+		WHERE events.kennung = "%s"';
 	$sql = sprintf($sql, $zz_setting['website_id'], wrap_db_escape(implode('/', $vars)));
 	$termin = wrap_db_fetch($sql);
 	if (!$termin) return false;
@@ -134,9 +134,9 @@ function mod_tournaments_startrangliste_einzel($termin) {
 			ON organisationen_orte.main_contact_id = places.contact_id
 		LEFT JOIN addresses
 			ON places.contact_id = addresses.contact_id
-		LEFT JOIN termine USING (event_id)
+		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories reihen
-			ON termine.reihe_category_id = reihen.category_id
+			ON events.reihe_category_id = reihen.category_id
 		LEFT JOIN categories hauptreihen
 			ON reihen.main_category_id = hauptreihen.category_id
 		WHERE event_id = %d
@@ -205,9 +205,9 @@ function mod_tournaments_startrangliste_mannschaft($termin) {
 			ON organisationen_orte.main_contact_id = places.contact_id
 		LEFT JOIN addresses
 			ON places.contact_id = addresses.contact_id
-		LEFT JOIN termine USING (event_id)
+		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories reihen
-			ON termine.reihe_category_id = reihen.category_id
+			ON events.reihe_category_id = reihen.category_id
 		LEFT JOIN categories hauptreihen
 			ON reihen.main_category_id = hauptreihen.category_id
 		WHERE event_id = %d

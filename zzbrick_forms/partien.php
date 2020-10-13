@@ -10,7 +10,7 @@ $termin = my_event($brick['vars'][0], $brick['vars'][1]);
 if (!$termin) wrap_quit(404);
 
 if (intval($brick['vars'][2]).'' !== $brick['vars'][2]) wrap_quit(404);
-$sql = 'SELECT runde_no FROM termine
+$sql = 'SELECT runde_no FROM events
 	WHERE main_event_id = %d AND runde_no = "%s"';
 $sql = sprintf($sql, $termin['event_id'], $brick['vars'][2]);
 $runde_no = wrap_db_fetch($sql, '', 'single value');
