@@ -29,7 +29,7 @@
 </thead>
 <tbody id="teams">
 %%% loop teams %%%
-<tr class='%%% loopposition uneven "un" %%%even' id="%%% item team_kennung_kurz %%%">
+<tr class='%%% loopposition uneven "un" %%%even' id="%%% item team_identifier_short %%%">
 <td>%%% item setzliste_no %%%</td>
 <td>%%% condition if kennung %%%<a href="../../../%%% item kennung %%%/">%%% condition endif %%%
 %%% item team %%% %%% item team_no %%%%%% condition if kennung %%%</a>%%% condition endif %%%</td>

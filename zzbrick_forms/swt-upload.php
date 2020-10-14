@@ -45,4 +45,4 @@ $zz_conf['footer_text'] = '<p><strong>Achtung:</strong> Nach Hinzufügen, Lösch
 jede Spielerin und jeder Spieler entweder eine ZPS-Nummer, eine FIDE-ID oder eine DSB-Personenkennziffer hat, sinnvoll, die
 Personen-IDs aus der Datenbank als Identifikation in die SWT-Datei zurückzuschreiben (Feld Info4). Das geht automatisch über:</p>
 
-<p><a href="/intern/swtwriter/'.$event['kennung'].'/">Personen-IDs in SwissChess-Datei schreiben und herunterladen</a> (Verfügbar erst kurze Zeit nach Upload)</p>';
+<p><a href="/intern/swtwriter/'.$event['identifier'].'/">Personen-IDs in SwissChess-Datei schreiben und herunterladen</a> (Verfügbar erst kurze Zeit nach Upload)</p>';

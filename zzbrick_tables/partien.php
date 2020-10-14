@@ -30,7 +30,7 @@ $zz['fields'][3]['type_detail'] = 'select';
 $zz['fields'][3]['sql'] = 'SELECT event_id, termin, YEAR(beginn)
 	FROM events
 	WHERE ISNULL(main_event_id)
-	ORDER BY beginn, kennung';
+	ORDER BY beginn, identifier';
 $zz['fields'][3]['key_field_name'] = 'events.event_id';
 $zz['fields'][3]['display_field'] = 'termin';
 $zz['fields'][3]['if']['where']['hide_in_list'] = true;
@@ -177,7 +177,7 @@ $zz['fields'][23]['type'] = 'upload_image';
 $zz['fields'][23]['path'] = [
 	'root' => $zz_setting['media_folder'].'/pgn/',
 	'webroot' => '/intern/dateien/pgn/',
-	'field1' => 'termin_kennung', 
+	'field1' => 'event_identifier', 
 	'string2' => '/',
 	'field2' => 'runde_no',
 	'string3' => '-',
@@ -189,7 +189,7 @@ $zz['fields'][23]['path'] = [
 $zz['fields'][23]['if'][1]['path'] = [
 	'root' => $zz_setting['media_folder'].'/pgn/',
 	'webroot' => '/intern/dateien/pgn/',
-	'field1' => 'termin_kennung', 
+	'field1' => 'event_identifier', 
 	'string2' => '/',
 	'field2' => 'runde_no',
 	'string3' => '-',
@@ -201,7 +201,7 @@ $zz['fields'][23]['if'][1]['path'] = [
 $zz['fields'][23]['input_filetypes'] = ['pgn'];
 $zz['fields'][23]['link'] = [
 	'string1' => '/intern/dateien/pgn/',
-	'field1' => 'termin_kennung',
+	'field1' => 'event_identifier',
 	'string2' => '/',
 	'field2' => 'runde_no',
 	'string3' => '-',
@@ -212,7 +212,7 @@ $zz['fields'][23]['link'] = [
 ];
 $zz['fields'][23]['if'][1]['link'] = [
 	'string1' => '/intern/dateien/pgn/',
-	'field1' => 'termin_kennung',
+	'field1' => 'event_identifier',
 	'string2' => '/',
 	'field2' => 'runde_no',
 	'string3' => '-',
@@ -241,7 +241,7 @@ $zz['fields'][99]['type'] = 'timestamp';
 $zz['fields'][99]['hide_in_list'] = true;
 
 $zz['sql'] = sprintf('SELECT partien.*
-		, termin, events.kennung AS termin_kennung, paarungen.tisch_no
+		, termin, events.identifier AS event_identifier, paarungen.tisch_no
 		, CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname) AS weiss
 		, CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname) AS schwarz
 		, category
@@ -262,7 +262,7 @@ $zz['sql'] = sprintf('SELECT partien.*
 		AND schwarz.usergroup_id = %d
 ', wrap_id('usergroups', 'spieler'), wrap_id('usergroups', 'spieler'));
 
-$zz['sqlorder'] = ' ORDER BY events.beginn, events.kennung, runde_no, brett_no';
+$zz['sqlorder'] = ' ORDER BY events.beginn, events.identifier, runde_no, brett_no';
 
 $zz['subtitle']['event_id']['sql'] = 'SELECT termin FROM events';
 $zz['subtitle']['event_id']['var'] = ['termin'];

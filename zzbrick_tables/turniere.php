@@ -26,7 +26,7 @@ $zz['fields'][2]['unique'] = true;
 $zz['fields'][2]['if']['where']['hide_in_form'] = true;
 $zz['fields'][2]['link'] = [
 	'string1' => '/intern/termine/',
-	'field1' => 'kennung',
+	'field1' => 'event_identifier',
 	'string2' => '/'
 ];
 $zz['fields'][2]['dont_show_where_class'] = true;
@@ -194,14 +194,14 @@ $zz['fields'][25]['type'] = 'upload_image';
 $zz['fields'][25]['path'] = [
 	'root' => $zz_setting['media_folder'].'/pgn/',
 	'webroot' => '/intern/dateien/pgn/',
-	'field1' => 'termin_kennung',
+	'field1' => 'event_identifier',
 	'string2' => '/gesamt',
 	'string3' => '.pgn'
 ];
 $zz['fields'][25]['input_filetypes'] = ['pgn'];
 $zz['fields'][25]['link'] = [
 	'string1' => '/intern/dateien/pgn/',
-	'field1' => 'termin_kennung',
+	'field1' => 'event_identifier',
 	'string2' => '/gesamt',
 	'string3' => '.pgn'
 ];
@@ -220,13 +220,13 @@ $zz['fields'][22]['type'] = 'upload_image';
 $zz['fields'][22]['path'] = [
 	'root' => $zz_setting['media_folder'].'/swt/',
 	'webroot' => '/intern/dateien/swt/',
-	'field1' => 'termin_kennung', 
+	'field1' => 'event_identifier', 
 	'string2' => '.swt'
 ];
 $zz['fields'][22]['input_filetypes'] = ['swt'];
 $zz['fields'][22]['link'] = [
 	'string1' => '/intern/dateien/swt/',
-	'field1' => 'termin_kennung',
+	'field1' => 'event_identifier',
 	'string2' => '.swt'
 ];
 $zz['fields'][22]['optional_image'] = true;
@@ -426,11 +426,10 @@ $zz['fields'][51]['type'] = 'number';
 
 $zz['sql'] = 'SELECT turniere.*
 		, CONCAT(events.termin, " ", YEAR(beginn)) AS turnier
-		, events.kennung AS termin_kennung
+		, events.identifier AS event_identifier
 		, modus.category_short AS modus
 		, turnierformen.category_short AS turnierform
 		, urkunden.urkunde_titel
-		, events.kennung
 		, (SELECT COUNT(team_id) FROM teams
 			WHERE teams.event_id = turniere.event_id
 			AND team_status = "Teilnehmer"
@@ -453,7 +452,7 @@ $zz['sql'] = 'SELECT turniere.*
 ';
 $zz['sql'] = sprintf($zz['sql'], wrap_id('usergroups', 'spieler'));
 $zz['sqlorder'] = ' ORDER BY events.beginn DESC, events.uhrzeit_beginn DESC,
-	events.kennung';
+	events.identifier';
 
 $zz['subtitle']['event_id']['sql'] = 'SELECT termin
 	, CONCAT(events.beginn, IFNULL(CONCAT("/", events.ende), "")) AS dauer

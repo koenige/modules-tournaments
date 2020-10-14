@@ -21,7 +21,7 @@ $zz['fields'][2]['type'] = 'select';
 $zz['fields'][2]['sql'] = 'SELECT event_id, termin
 	FROM events
 	WHERE ISNULL(main_event_id)
-	ORDER BY beginn, kennung';
+	ORDER BY beginn, identifier';
 $zz['fields'][2]['key_field_name'] = 'events.event_id';
 $zz['fields'][2]['display_field'] = 'termin';
 $zz['fields'][2]['if']['where']['hide_in_list'] = true;
@@ -91,7 +91,7 @@ $zz['fields'][20]['hide_in_list'] = true;
 
 $zz['sql'] = 'SELECT paarungen.*
 		, events.termin
-		, events.kennung AS termin_kennung
+		, events.identifier AS event_identifier
 		, CONCAT(heimteams.team, IFNULL(CONCAT(" ", heimteams.team_no), "")) AS heimteam
 		, CONCAT(auswaertsteams.team, IFNULL(CONCAT(" ", auswaertsteams.team_no), "")) AS auswaertsteam
 	FROM paarungen
@@ -100,7 +100,7 @@ $zz['sql'] = 'SELECT paarungen.*
 		ON heimteams.team_id = paarungen.heim_team_id
 	LEFT JOIN teams auswaertsteams
 		ON auswaertsteams.team_id = paarungen.auswaerts_team_id
-	ORDER BY events.beginn, events.kennung, paarungen.runde_no, tisch_no
+	ORDER BY events.beginn, events.identifier, paarungen.runde_no, tisch_no
 ';
 
 $zz['subtitle']['event_id']['sql'] = 'SELECT termin FROM events';
@@ -111,7 +111,7 @@ $zz['subtitle']['runde_no']['prefix'] = 'Runde ';
 
 $zz['details'][0]['title'] = 'Partien';
 $zz['details'][0]['link'] = [
-	'string1' => '/intern/termine/', 'field1' => 'termin_kennung',
+	'string1' => '/intern/termine/', 'field1' => 'event_identifier',
 	'string2' => '/runde/', 'field2' => 'runde_no',
 	'string3' => '/', 'field3' => 'tisch_no',
 	'string4' => '/'

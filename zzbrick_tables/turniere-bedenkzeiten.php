@@ -18,7 +18,7 @@ $zz_sub['fields'][2]['type'] = 'select';
 $zz_sub['fields'][2]['sql'] = 'SELECT turnier_id, termin
 	FROM turniere
 	LEFT JOIN events USING (event_id)
-	ORDER BY beginn, kennung DESC';
+	ORDER BY beginn, identifier DESC';
 $zz_sub['fields'][2]['display_field'] = 'termin';
 
 $zz_sub['fields'][3]['field_name'] = 'phase';

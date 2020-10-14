@@ -74,12 +74,12 @@ if (count($brick['vars']) === 4) {
 my_event_breadcrumbs($event);
 $zz_conf['breadcrumbs'][] = [
 	'linktext' => 'Runden',
-	'url' => '/intern/termine/'.$event['kennung'].'/runde/'
+	'url' => '/intern/termine/'.$event['identifier'].'/runde/'
 ];
 if (count($brick['vars']) === 4) {
 	$zz_conf['breadcrumbs'][] = [
 		'linktext' => $zz['where']['runde_no'],
-		'url' => '/intern/termine/'.$event['kennung'].'/runde/'.$zz['where']['runde_no'].'/'
+		'url' => '/intern/termine/'.$event['identifier'].'/runde/'.$zz['where']['runde_no'].'/'
 	];
 	$zz_conf['breadcrumbs'][] = ['linktext' => 'Tisch '.$brick['vars'][3]];
 

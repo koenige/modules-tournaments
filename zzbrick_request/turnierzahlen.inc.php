@@ -22,10 +22,10 @@ function mod_tournaments_turnierzahlen($vars) {
 				IF(events.beginn < CURDATE(), 1, NULL)
 			) AS termin_vergangen
 			, YEAR(beginn) AS jahr
-			, termin, kennung
+			, termin, identifier
 		FROM events
 		LEFT JOIN turniere USING (event_id)
-		WHERE kennung = "%s"';
+		WHERE identifier = "%s"';
 	$sql = sprintf($sql, wrap_db_escape(implode('/', $vars)));
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
@@ -44,7 +44,7 @@ function mod_tournaments_turnierzahlen($vars) {
 	);
 	$page['breadcrumbs'][] = sprintf(
 		'<a href="/intern/termine/%s/">%s</a>',
-		$event['kennung'], $event['termin']
+		$event['identifier'], $event['termin']
 	);
 	$page['breadcrumbs'][] = 'Turnierzahlen';
 	$page['title'] = sprintf('Aktualisierung der Wertungszahlen für %s %s', $event['termin'], $event['jahr']);
@@ -154,7 +154,7 @@ function mod_tournaments_turnierzahlen($vars) {
 		$values['POST']['ratings_updated'] = date('Y-m-d');
 		$ops = zzform_multi('turniere', $values);
 		if (empty($ops['id'])) {
-			wrap_error(sprintf('Unable to set `ratings_updated` for tournament %s', $event['kennung']));
+			wrap_error(sprintf('Unable to set `ratings_updated` for tournament %s', $event['identifier']));
 		}
 	}
 	$page['text'] = wrap_template('turnierzahlen', $data);

@@ -20,7 +20,7 @@ function mod_tournaments_startrangliste($vars) {
 			, places.contact AS veranstaltungsort
 			, address, postcode, place, places.description
 			, latitude, longitude
-			, events.kennung
+			, events.identifier
 			, IF(teilnehmerliste = "ja", 1, 0) AS teilnehmerliste
 			, IFNULL(place, places.contact) AS turnierort
 			, pseudo_dwz, bretter_min
@@ -41,7 +41,7 @@ function mod_tournaments_startrangliste($vars) {
 		LEFT JOIN contacts places
 			ON events.place_contact_id = places.contact_id
 		LEFT JOIN addresses USING (contact_id)
-		WHERE events.kennung = "%s"';
+		WHERE events.identifier = "%s"';
 	$sql = sprintf($sql, $zz_setting['website_id'], wrap_db_escape(implode('/', $vars)));
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
@@ -175,7 +175,7 @@ function mod_tournaments_startrangliste_mannschaft($event) {
 	$sql = 'SELECT team_id
 			, team, team_no
 			, IF(NOT ISNULL(teams.setzliste_no), teams.kennung, "") AS kennung, team_status, country
-			, SUBSTRING_INDEX(teams.kennung, "/", -1) AS team_kennung_kurz
+			, SUBSTRING_INDEX(teams.kennung, "/", -1) AS team_identifier_short
 			, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
 			, IFNULL(landesverbaende.kennung, landesverbaende_rueckwaerts.kennung) AS lv_kennung
 			, IFNULL(landesverbaende.org_abk, landesverbaende_rueckwaerts.org_abk) AS lv_kurz

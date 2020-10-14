@@ -17,7 +17,7 @@ $zz['where']['runde_no'] = $brick['vars'][2];
 my_event_breadcrumbs($event);
 $zz_conf['breadcrumbs'][] = [
 	'linktext' => 'Runden',
-	'url' => '/intern/termine/'.$event['kennung'].'/runde/'
+	'url' => '/intern/termine/'.$event['identifier'].'/runde/'
 ];
 $zz_conf['breadcrumbs'][] = ['linktext' => $brick['vars'][2]];
 

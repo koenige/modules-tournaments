@@ -12,7 +12,7 @@ function mod_tournaments_tournamentexport_cb($params) {
 	if (count($params) !== 2) return false;
 	$event = my_event($params[0], $params[1]);
 	if (!$event) return false;
-	$event['path'] = str_replace('/', '-', $event['kennung']);
+	$event['path'] = str_replace('/', '-', $event['identifier']);
 	parse_str($event['parameters'], $parameters);
 	if ($parameters) $event += $parameters;
 	if (empty($event['team'])) return false; // only for team tournaments

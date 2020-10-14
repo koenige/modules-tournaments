@@ -16,13 +16,13 @@ $zz['fields'][1]['type'] = 'id';
 $zz['fields'][2]['title'] = 'Termin';
 $zz['fields'][2]['field_name'] = 'event_id';
 $zz['fields'][2]['type'] = 'select';
-$zz['fields'][2]['sql'] = 'SELECT event_id, termin, kennung
+$zz['fields'][2]['sql'] = 'SELECT event_id, termin, identifier
 	FROM events
 	WHERE ISNULL(main_event_id)
-	ORDER BY beginn, kennung
+	ORDER BY beginn, identifier
 ';
 $zz['fields'][2]['display_field'] = 'termin';
-$zz['fields'][2]['sql_ignore'] = 'kennung';
+$zz['fields'][2]['sql_ignore'] = 'identifier';
 $zz['fields'][2]['if']['where']['hide_in_form'] = true;
 $zz['fields'][2]['if']['where']['hide_in_list'] = true;
 
@@ -108,7 +108,7 @@ $zz['sql'] = 'SELECT tabellenstaende.*
 	LEFT JOIN teams USING (team_id)
 	LEFT JOIN personen USING (person_id)
 ';
-$zz['sqlorder'] = ' ORDER BY events.beginn, events.kennung, runde_no, platz_no';
+$zz['sqlorder'] = ' ORDER BY events.beginn, events.identifier, runde_no, platz_no';
 
 $zz['subtitle']['event_id']['sql'] = 'SELECT termin FROM events';
 $zz['subtitle']['event_id']['var'] = ['termin'];
