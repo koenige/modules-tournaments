@@ -27,10 +27,10 @@ $zz['fields'][3]['title'] = 'Termin';
 $zz['fields'][3]['field_name'] = 'event_id';
 $zz['fields'][3]['type'] = 'write_once';
 $zz['fields'][3]['type_detail'] = 'select';
-$zz['fields'][3]['sql'] = 'SELECT event_id, termin, YEAR(beginn)
+$zz['fields'][3]['sql'] = 'SELECT event_id, termin, YEAR(date_begin)
 	FROM events
 	WHERE ISNULL(main_event_id)
-	ORDER BY beginn, identifier';
+	ORDER BY date_begin, identifier';
 $zz['fields'][3]['key_field_name'] = 'events.event_id';
 $zz['fields'][3]['display_field'] = 'termin';
 $zz['fields'][3]['if']['where']['hide_in_list'] = true;
@@ -262,7 +262,7 @@ $zz['sql'] = sprintf('SELECT partien.*
 		AND schwarz.usergroup_id = %d
 ', wrap_id('usergroups', 'spieler'), wrap_id('usergroups', 'spieler'));
 
-$zz['sqlorder'] = ' ORDER BY events.beginn, events.identifier, runde_no, brett_no';
+$zz['sqlorder'] = ' ORDER BY events.date_begin, events.identifier, runde_no, brett_no';
 
 $zz['subtitle']['event_id']['sql'] = 'SELECT termin FROM events';
 $zz['subtitle']['event_id']['var'] = ['termin'];

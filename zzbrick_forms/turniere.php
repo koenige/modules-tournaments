@@ -16,7 +16,7 @@ $sql = 'SELECT turnier_id
 	LEFT JOIN events USING (event_id)
 	WHERE series_category_id = %d
 	AND event_id != %d
-	ORDER BY beginn DESC
+	ORDER BY date_begin DESC
 	LIMIT 1';
 $sql = sprintf($sql, $event['series_category_id'], $event['event_id']);
 $data = wrap_db_fetch($sql, 'turnier_id');

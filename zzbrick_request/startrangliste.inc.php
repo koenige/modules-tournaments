@@ -15,8 +15,8 @@ function mod_tournaments_startrangliste($vars) {
 	if (count($vars) !== 2) return false;
 	
 	$sql = 'SELECT events.event_id, termin
-			, CONCAT(beginn, IFNULL(CONCAT("/", ende), "")) AS dauer
-			, YEAR(beginn) AS jahr, IFNULL(ende, beginn) AS ende
+			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS dauer
+			, YEAR(date_begin) AS jahr, IFNULL(date_end, date_begin) AS date_end
 			, places.contact AS veranstaltungsort
 			, address, postcode, place, places.description
 			, latitude, longitude
@@ -147,7 +147,7 @@ function mod_tournaments_startrangliste_einzel($event) {
 		, $zz_setting['org_ids']['dsb']
 		, $event['event_id']
 		, wrap_id('usergroups', 'spieler')
-		, ($event['ende'] >= date('Y-m-d')) ? '"angemeldet", ' : ''
+		, ($event['date_end'] >= date('Y-m-d')) ? '"angemeldet", ' : ''
 	);
 	$event['spieler'] = wrap_db_fetch($sql, 'person_id');
 	$event['spieler'] = my_get_personen_kennungen($event['spieler'], ['fide-id', 'zps']);
@@ -226,7 +226,7 @@ function mod_tournaments_startrangliste_mannschaft($event) {
 	$event['meldeliste'] = false;
 	foreach (array_keys($event['teams']) AS $team_id) {
 		// Meldelistestatus nur bei Terminen, die noch nicht zuende sind
-		if (empty($event['teams'][$team_id]['setzliste_no']) AND $event['ende'] > date('Y-m-d')) $event['meldeliste'] = true;
+		if (empty($event['teams'][$team_id]['setzliste_no']) AND $event['date_end'] > date('Y-m-d')) $event['meldeliste'] = true;
 		$event['teams'][$team_id][str_replace('-', '_', $event['turnierform'])] = true;
 		if ($event['teams'][$team_id]['country']) $event['country'] = true;
 	}

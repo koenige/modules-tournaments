@@ -21,7 +21,7 @@ $zz['fields'][2]['type'] = 'select';
 $zz['fields'][2]['sql'] = 'SELECT event_id, termin
 	FROM events
 	WHERE ISNULL(main_event_id)
-	ORDER BY beginn, identifier';
+	ORDER BY date_begin, identifier';
 $zz['fields'][2]['key_field_name'] = 'events.event_id';
 $zz['fields'][2]['display_field'] = 'termin';
 $zz['fields'][2]['if']['where']['hide_in_list'] = true;
@@ -100,7 +100,7 @@ $zz['sql'] = 'SELECT paarungen.*
 		ON heimteams.team_id = paarungen.heim_team_id
 	LEFT JOIN teams auswaertsteams
 		ON auswaertsteams.team_id = paarungen.auswaerts_team_id
-	ORDER BY events.beginn, events.identifier, paarungen.runde_no, tisch_no
+	ORDER BY events.date_begin, events.identifier, paarungen.runde_no, tisch_no
 ';
 
 $zz['subtitle']['event_id']['sql'] = 'SELECT termin FROM events';

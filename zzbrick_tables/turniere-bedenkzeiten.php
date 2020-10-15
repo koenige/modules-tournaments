@@ -18,7 +18,7 @@ $zz_sub['fields'][2]['type'] = 'select';
 $zz_sub['fields'][2]['sql'] = 'SELECT turnier_id, termin
 	FROM turniere
 	LEFT JOIN events USING (event_id)
-	ORDER BY beginn, identifier DESC';
+	ORDER BY date_begin, identifier DESC';
 $zz_sub['fields'][2]['display_field'] = 'termin';
 
 $zz_sub['fields'][3]['field_name'] = 'phase';
@@ -48,4 +48,4 @@ $zz_sub['sql'] = 'SELECT turniere_bedenkzeiten.*
 	LEFT JOIN turniere USING (turnier_id)
 	LEFT JOIN events USING (event_id)
 ';
-$zz_sub['sqlorder'] = ' ORDER BY events.beginn, phase';
+$zz_sub['sqlorder'] = ' ORDER BY events.date_begin, phase';
