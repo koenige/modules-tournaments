@@ -6,7 +6,7 @@
 <h1>Aktualisierung der Wertungszahlen
 <br>%%% item termin %%% %%% item jahr %%%</h1>
 
-%%% condition if termin_vergangen %%%
+%%% condition if event_over %%%
 <p>Turnierzahlen können für Turniere, die in der Vergangenheit liegen, nicht 
 mehr geändert werden.</p>
 

@@ -20,7 +20,7 @@ function mod_tournaments_turnierzahlen($vars) {
 			, IF(NOT ISNULL(events.ende),
 				IF(events.ende < CURDATE(), 1, NULL),
 				IF(events.beginn < CURDATE(), 1, NULL)
-			) AS termin_vergangen
+			) AS event_over
 			, YEAR(beginn) AS jahr
 			, termin, identifier
 		FROM events
@@ -50,8 +50,8 @@ function mod_tournaments_turnierzahlen($vars) {
 	$page['title'] = sprintf('Aktualisierung der Wertungszahlen für %s %s', $event['termin'], $event['jahr']);
 	$page['dont_show_h1'] = true;
 
-	if ($event['termin_vergangen']) {
-		$data['termin_vergangen'] = true;
+	if ($event['event_over']) {
+		$data['event_over'] = true;
 		$page['text'] = wrap_template('turnierzahlen', $data);
 		return $page;
 	}
