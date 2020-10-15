@@ -16,12 +16,12 @@ $zz_sub['fields'][1]['type'] = 'id';
 $zz_sub['fields'][2]['field_name'] = 'turnier_id';
 $zz_sub['fields'][2]['type'] = 'select';
 $zz_sub['fields'][2]['sql'] = 'SELECT turnier_id
-		, CONCAT(termin, " ", YEAR(date_begin)) AS turnier
+		, CONCAT(event, " ", YEAR(date_begin)) AS turnier
 	FROM turniere
 	LEFT JOIN events USING (event_id)
 	ORDER BY date_begin, identifier DESC';
 $zz_sub['fields'][2]['display_field'] = 'turnier';
-$zz_sub['fields'][2]['search'] = 'CONCAT(termin, " ", YEAR(date_begin))';
+$zz_sub['fields'][2]['search'] = 'CONCAT(event, " ", YEAR(date_begin))';
 
 $zz_sub['fields'][3]['field_name'] = 'kennung';
 $zz_sub['fields'][3]['dont_copy'] = true;
@@ -43,7 +43,7 @@ $zz_sub['fields'][20]['hide_in_list'] = true;
 
 
 $zz_sub['sql'] = 'SELECT turniere_kennungen.*
-		, CONCAT(termin, " ", YEAR(date_begin)) AS turnier
+		, CONCAT(event, " ", YEAR(date_begin)) AS turnier
 		, category
 	FROM turniere_kennungen
 	LEFT JOIN turniere USING (turnier_id)
@@ -51,6 +51,6 @@ $zz_sub['sql'] = 'SELECT turniere_kennungen.*
 	LEFT JOIN categories
 		ON categories.category_id = turniere_kennungen.kennung_category_id
 ';
-$zz_sub['sqlorder'] = ' ORDER BY date_begin, termin ASC';
+$zz_sub['sqlorder'] = ' ORDER BY date_begin, event ASC';
 
 $zz_sub['access'] = 'all';

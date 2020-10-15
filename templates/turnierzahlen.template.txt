@@ -1,10 +1,10 @@
 # Zugzwang Project
 # deutsche-schachjugend.de
-# Copyright (c) 2015-2017 Gustaf Mossakowski <gustaf@koenige.org>
+# Copyright (c) 2015-2017, 2020 Gustaf Mossakowski <gustaf@koenige.org>
 # HTML-Ausgabe: Turnierzahlen
 #
 <h1>Aktualisierung der Wertungszahlen
-<br>%%% item termin %%% %%% item jahr %%%</h1>
+<br>%%% item event %%% %%% item jahr %%%</h1>
 
 %%% condition if event_over %%%
 <p>Turnierzahlen können für Turniere, die in der Vergangenheit liegen, nicht 

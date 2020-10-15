@@ -3,11 +3,11 @@
 # Copyright (c) 2012-2014, 2016, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
 # HTML-Ausgabe: Startrangliste für Mannschaftsturniere
 #
-# termin, dauer, veranstaltungsort, address, postcode,
+# event, dauer, veranstaltungsort, address, postcode,
 # place, description, latitude, longitude
 #
 <h1>Startrangliste
-<br><a href="../">%%% item termin %%% %%% item dauer wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
+<br><a href="../">%%% item event %%% %%% item dauer wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
 
 %%% condition if map %%%
 <div class="infocol">

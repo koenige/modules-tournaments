@@ -105,7 +105,7 @@ if (count($brick['vars']) === 3) {
 	// Einzelturnier
 	$zz_conf['export'][] = 'PDF Ergebniszettel';
 	// @todo anders übergeben
-	$zz_conf['termin'] = $event;
+	$zz_conf['event'] = $event;
 }
 
 function my_get_paarung_spieler($paarung, $farbe) {

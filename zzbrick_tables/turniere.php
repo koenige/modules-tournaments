@@ -16,12 +16,12 @@ $zz['fields'][1]['type'] = 'id';
 $zz['fields'][2]['field_name'] = 'event_id';
 $zz['fields'][2]['type'] = 'write_once';
 $zz['fields'][2]['type_detail'] = 'select';
-$zz['fields'][2]['sql'] = 'SELECT event_id, date_begin, termin
+$zz['fields'][2]['sql'] = 'SELECT event_id, date_begin, event
 	FROM events
 	WHERE ISNULL(main_event_id)
-	ORDER BY termin';
+	ORDER BY event';
 $zz['fields'][2]['display_field'] = 'turnier';
-$zz['fields'][2]['search'] = 'CONCAT(events.termin, " ", YEAR(date_begin))';
+$zz['fields'][2]['search'] = 'CONCAT(events.event, " ", YEAR(date_begin))';
 $zz['fields'][2]['unique'] = true;
 $zz['fields'][2]['if']['where']['hide_in_form'] = true;
 $zz['fields'][2]['link'] = [
@@ -425,7 +425,7 @@ $zz['fields'][51]['hide_in_form'] = true;
 $zz['fields'][51]['type'] = 'number';
 
 $zz['sql'] = 'SELECT turniere.*
-		, CONCAT(events.termin, " ", YEAR(date_begin)) AS turnier
+		, CONCAT(events.event, " ", YEAR(date_begin)) AS turnier
 		, events.identifier AS event_identifier
 		, modus.category_short AS modus
 		, turnierformen.category_short AS turnierform
@@ -454,10 +454,10 @@ $zz['sql'] = sprintf($zz['sql'], wrap_id('usergroups', 'spieler'));
 $zz['sqlorder'] = ' ORDER BY events.date_begin DESC, events.time_begin DESC,
 	events.identifier';
 
-$zz['subtitle']['event_id']['sql'] = 'SELECT termin
+$zz['subtitle']['event_id']['sql'] = 'SELECT event
 	, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS dauer
 	FROM events';
-$zz['subtitle']['event_id']['var'] = ['termin', 'dauer'];
+$zz['subtitle']['event_id']['var'] = ['event', 'dauer'];
 $zz['subtitle']['event_id']['format'][1] = 'wrap_date';
 $zz['subtitle']['event_id']['link'] = '../';
 $zz['subtitle']['event_id']['link_no_append'] = true;

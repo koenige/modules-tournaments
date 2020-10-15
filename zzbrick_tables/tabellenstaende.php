@@ -16,12 +16,12 @@ $zz['fields'][1]['type'] = 'id';
 $zz['fields'][2]['title'] = 'Termin';
 $zz['fields'][2]['field_name'] = 'event_id';
 $zz['fields'][2]['type'] = 'select';
-$zz['fields'][2]['sql'] = 'SELECT event_id, termin, identifier
+$zz['fields'][2]['sql'] = 'SELECT event_id, event, identifier
 	FROM events
 	WHERE ISNULL(main_event_id)
 	ORDER BY date_begin, identifier
 ';
-$zz['fields'][2]['display_field'] = 'termin';
+$zz['fields'][2]['display_field'] = 'event';
 $zz['fields'][2]['sql_ignore'] = 'identifier';
 $zz['fields'][2]['if']['where']['hide_in_form'] = true;
 $zz['fields'][2]['if']['where']['hide_in_list'] = true;
@@ -48,7 +48,7 @@ $zz['fields'][11]['hide_in_list'] = true;
 $zz['fields'][4]['title_tab'] = 'Team / Spieler';
 $zz['fields'][4]['field_name'] = 'team_id';
 $zz['fields'][4]['type'] = 'select';
-$zz['fields'][4]['sql'] = 'SELECT team_id, CONCAT(termin, ": ") AS termin
+$zz['fields'][4]['sql'] = 'SELECT team_id, CONCAT(event, ": ") AS event
 		, CONCAT(team, IFNULL(CONCAT(" ", team_no),"")) AS team
 	FROM teams
 	LEFT JOIN events USING (event_id)
@@ -100,7 +100,7 @@ $zz['fields'][10]['fields'][2]['type'] = 'foreign_key';
 
 
 $zz['sql'] = 'SELECT tabellenstaende.*
-		, events.termin
+		, events.event
 		, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
 		, CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname) AS person
 	FROM tabellenstaende
@@ -110,8 +110,8 @@ $zz['sql'] = 'SELECT tabellenstaende.*
 ';
 $zz['sqlorder'] = ' ORDER BY events.date_begin, events.identifier, runde_no, platz_no';
 
-$zz['subtitle']['event_id']['sql'] = 'SELECT termin FROM events';
-$zz['subtitle']['event_id']['var'] = ['termin'];
+$zz['subtitle']['event_id']['sql'] = 'SELECT event FROM events';
+$zz['subtitle']['event_id']['var'] = ['event'];
 
 $zz['subtitle']['runde_no']['value'] = true;
 $zz['subtitle']['runde_no']['prefix'] = 'Runde ';

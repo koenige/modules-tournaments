@@ -27,12 +27,12 @@ $zz['fields'][3]['title'] = 'Termin';
 $zz['fields'][3]['field_name'] = 'event_id';
 $zz['fields'][3]['type'] = 'write_once';
 $zz['fields'][3]['type_detail'] = 'select';
-$zz['fields'][3]['sql'] = 'SELECT event_id, termin, YEAR(date_begin)
+$zz['fields'][3]['sql'] = 'SELECT event_id, event, YEAR(date_begin)
 	FROM events
 	WHERE ISNULL(main_event_id)
 	ORDER BY date_begin, identifier';
 $zz['fields'][3]['key_field_name'] = 'events.event_id';
-$zz['fields'][3]['display_field'] = 'termin';
+$zz['fields'][3]['display_field'] = 'event';
 $zz['fields'][3]['if']['where']['hide_in_list'] = true;
 $zz['fields'][3]['if']['where']['hide_in_form'] = true;
 
@@ -241,7 +241,7 @@ $zz['fields'][99]['type'] = 'timestamp';
 $zz['fields'][99]['hide_in_list'] = true;
 
 $zz['sql'] = sprintf('SELECT partien.*
-		, termin, events.identifier AS event_identifier, paarungen.tisch_no
+		, event, events.identifier AS event_identifier, paarungen.tisch_no
 		, CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname) AS weiss
 		, CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname) AS schwarz
 		, category
@@ -264,8 +264,8 @@ $zz['sql'] = sprintf('SELECT partien.*
 
 $zz['sqlorder'] = ' ORDER BY events.date_begin, events.identifier, runde_no, brett_no';
 
-$zz['subtitle']['event_id']['sql'] = 'SELECT termin FROM events';
-$zz['subtitle']['event_id']['var'] = ['termin'];
+$zz['subtitle']['event_id']['sql'] = 'SELECT event FROM events';
+$zz['subtitle']['event_id']['var'] = ['event'];
 
 $zz['subtitle']['runde_no']['value'] = true;
 $zz['subtitle']['runde_no']['prefix'] = 'Runde ';
