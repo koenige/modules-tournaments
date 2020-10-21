@@ -1,0 +1,29 @@
+# Zugzwang Project
+# deutsche-schachjugend.de
+# Copyright (c) 2014, 2016-2017 Gustaf Mossakowski <gustaf@koenige.org>
+# HTML-Ausgabe: Tabellenstandupdate
+#
+<h1>Tabellenstandupdates
+<br><a href="../">%%% item event %%% %%% item dauer wrap_date %%%</a></h1>
+
+<p>Falls Tabellenstände nicht automatisch berechnet wurden, können die
+Berechnungen hier nachträglich angestoßen werden. Oder wenn ein Tabellenstand
+falsch berechnet wurde, kann er hier neu berechnet werden. Es werden immer alle
+Tabellenstände ab der gewünschten Runde neu berechnet.</p>
+
+<p><strong>Achtung:</strong> Die Berechnung erfolgt im Hintergrund, hier auf der Seite ist keine Änderung
+zu sehen.</p>
+
+%%% condition if runden %%%
+<form method="POST" action="">
+<ul class="buttonliste">
+%%% loop runden %%%
+<li><input type="submit" value="Ab %%% item runde_no %%%. Runde aktualisieren" name="runde_%%% item runde_no %%%"></li>
+%%% loop end %%%
+</ul>
+</form>
+
+%%% condition else %%%
+<p class="note"><strong>Hinweis:</strong> Es sind noch keine Partien vorhanden.</p>
+
+%%% condition endif %%%
