@@ -426,7 +426,12 @@ class cms_tabellenstand_einzel {
 			);
 			$gegnerpunkte = wrap_db_fetch($sql, ['person_id', '_index', 'runde_gegner', 'buchholz'], 'key/value');
 		}
-		$gegner_punkte_pro_runde = $gegnerpunkte[$person_id];
+		if (in_array($person_id, $gegnerpunkte)) {
+			$gegner_punkte_pro_runde = $gegnerpunkte[$person_id];
+		} else {
+			// only default wins so far
+			$gegner_punkte_pro_runde = [];
+		}
 
 		if ($korrektur === 'fide-2012') {
 			// Kampflose Siege?
