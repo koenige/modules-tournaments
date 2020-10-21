@@ -55,8 +55,8 @@ function cms_tabellenstandupdate_uebersicht($vars) {
 	if (count($vars) !== 2) return false;
 
 	$sql = 'SELECT event_id, event
-			, YEAR(date_begin) AS jahr
-			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS dauer
+			, YEAR(date_begin) AS year
+			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
 		FROM events
 		WHERE identifier = "%d/%s"';
 	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
@@ -75,10 +75,10 @@ function cms_tabellenstandupdate_uebersicht($vars) {
 	$event['runden'] = wrap_db_fetch($sql, 'event_id');
 	
 	$page['dont_show_h1'] = true;
-	$page['breadcrumbs'][] = sprintf('<a href="../../">%d</a>', $event['jahr']);
+	$page['breadcrumbs'][] = sprintf('<a href="../../">%d</a>', $event['year']);
 	$page['breadcrumbs'][] = sprintf('<a href="../">%s</a>', $event['event']);
 	$page['breadcrumbs'][] = 'Tabellenstandupdate';
-	$page['title'] = 'Tabellenstandupdates '.$event['event'].' '.$event['jahr'];
+	$page['title'] = 'Tabellenstandupdates '.$event['event'].' '.$event['year'];
 	$page['text'] = wrap_template('standings-update', $event);
 	
 	if (!empty($_POST) AND is_array($_POST)) {
