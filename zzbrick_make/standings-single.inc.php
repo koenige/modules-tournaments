@@ -490,7 +490,7 @@ function my_wertung_einzel_pkt($event_id, $runde_no) {
  * @param int $runde_no
  * @return array Liste person_id => value
  */
-function my_wertung_einzel_sonneborn_berger($event_id, $runde_no) {
+function my_wertung_einzel_sobo($event_id, $runde_no) {
 	$sql = 'SELECT pe.person_id, SUM(punkte * ergebnis) AS sb
 		FROM partien_einzelergebnisse pe
 		LEFT JOIN buchholz_einzel_mit_kampflosen_view bhe
@@ -513,7 +513,7 @@ function my_wertung_einzel_sonneborn_berger($event_id, $runde_no) {
  * @param int $runde_no
  * @return array Liste person_id => value
  */
-function my_wertung_einzel_3_punkte($event_id, $runde_no) {
+function my_wertung_einzel_3p($event_id, $runde_no) {
 	$sql = 'SELECT person_id, SUM(IF(ergebnis = 1, 3, IF(ergebnis = 0.5, 1, 0))) AS punkte
 		FROM partien_einzelergebnisse
 		WHERE runde_no <= %d
@@ -531,7 +531,7 @@ function my_wertung_einzel_3_punkte($event_id, $runde_no) {
  * @param array $tabelle
  * @return array Liste person_id => value
  */
-function my_wertung_einzel_fortschritt($event_id, $runde_no, $tabelle) {
+function my_wertung_einzel_fort($event_id, $runde_no, $tabelle) {
 	$sql = 'SELECT person_id, SUM((%d - runde_no + 1) * ergebnis) AS punkte
 		FROM partien_einzelergebnisse
 		WHERE runde_no <= %d
@@ -681,7 +681,7 @@ function my_wertung_einzel_bhz_1st($event_id, $runde_no, $tabelle, $tabelleeinze
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function my_wertung_einzel_buchholz_2_streichwertungen($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function my_wertung_einzel_bhz_2st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach ($tabelle as $person_id => $stand) {
 		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
@@ -700,7 +700,7 @@ function my_wertung_einzel_buchholz_2_streichwertungen($event_id, $runde_no, $ta
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function my_wertung_einzel_buchholz_gemittelt($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function my_wertung_einzel_bhz_m($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach ($tabelle as $person_id => $stand) {
 		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
@@ -719,7 +719,7 @@ function my_wertung_einzel_buchholz_gemittelt($event_id, $runde_no, $tabelle, $t
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function my_wertung_einzel_verfeinerte_buchholz($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function my_wertung_einzel_bhz_ii($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach ($tabelle as $person_id => $stand) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Buchholz');
@@ -737,7 +737,7 @@ function my_wertung_einzel_verfeinerte_buchholz($event_id, $runde_no, $tabelle, 
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function my_wertung_einzel_verfeinerte_buchholz_1($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function my_wertung_einzel_bhz_ii_1st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach ($tabelle as $person_id => $stand) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Buchholz Cut 1');
@@ -755,7 +755,7 @@ function my_wertung_einzel_verfeinerte_buchholz_1($event_id, $runde_no, $tabelle
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function my_wertung_einzel_bhz_ii_1st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function my_wertung_einzel_bhz_ii_2st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach ($tabelle as $person_id => $stand) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Buchholz Cut 2');
@@ -773,7 +773,7 @@ function my_wertung_einzel_bhz_ii_1st($event_id, $runde_no, $tabelle, $tabelleei
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function my_wertung_einzel_verfeinerte_buchholz_gemittelt($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function my_wertung_einzel_bhz_ii_m($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach ($tabelle as $person_id => $stand) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Median Buchholz');
