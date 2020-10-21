@@ -1,0 +1,45 @@
+# Zugzwang Project
+# deutsche-schachjugend.de
+# Copyright (c) 2016 Gustaf Mossakowski <gustaf@koenige.org>
+# Verzeichnisse für Live-PGNs automatisch erstellen
+#
+%%% loop start %%%
+<h2>%%% item folder %%%</h2>
+<h3>Bestehende Ordner</h3>
+%%% condition if existing_folders %%%
+<ul>
+%%% loop existing_folders %%%
+<li>%%% item folder %%%</li>
+%%% loop end %%%
+</ul>
+%%% condition else %%%
+<p>Es existieren keine Unterordner im Live-PGN-Ordner.</p>
+%%% condition endif %%%
+
+%%% condition if no_changes %%%
+<p>Es wurden keine Änderungen vorgenommen.</p>
+%%% condition endif %%%
+
+%%% condition if deleted %%%
+<h3>Gelöschte Ordner</h3>
+<ul>
+%%% loop deleted %%%
+<li>%%% item folder %%%</li>
+%%% loop end %%%
+</ul>
+%%% condition endif %%%
+
+%%% condition if created %%%
+<h3>Erstellte Ordner</h3>
+<ul>
+%%% loop created %%%
+<li>%%% item folder %%%</li>
+%%% loop end %%%
+</ul>
+%%% condition endif %%%
+%%% loop end %%%
+<div>
+<form method="POST" action="%%% page url_self %%%">
+<input type="submit" name="submit" value="Ordner aktualisieren">
+</form>
+</div>
