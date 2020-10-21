@@ -79,7 +79,7 @@ function cms_tabellenstandupdate_uebersicht($vars) {
 	$page['breadcrumbs'][] = sprintf('<a href="../">%s</a>', $event['event']);
 	$page['breadcrumbs'][] = 'Tabellenstandupdate';
 	$page['title'] = 'Tabellenstandupdates '.$event['event'].' '.$event['jahr'];
-	$page['text'] = wrap_template('standings-make', $event);
+	$page['text'] = wrap_template('standings-update', $event);
 	
 	if (!empty($_POST) AND is_array($_POST)) {
 		$runde = key($_POST);
