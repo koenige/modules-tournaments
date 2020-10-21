@@ -1,0 +1,37 @@
+# Zugzwang Project
+# deutsche-schachjugend.de
+# Copyright (c) 2014, 2018, 2020 Gustaf Mossakowski <gustaf@koenige.org>
+# Import von Partien
+#
+<p>Der Import für das Turnier %%% item event %%% %%% item jahr %%%
+%%% condition if runde_no %%%, Runde %%% item runde_no %%%%%% condition endif %%%
+%%% condition if tisch_no %%%, Tisch %%% item tisch_no %%%%%% condition endif %%%
+%%% condition if brett_no %%%, Brett %%% item brett_no %%%%%% condition endif %%%
+ wurde fertiggestellt.</p>
+
+<p>Ergebnis:</p>
+
+<ul>
+<li>%%% item updates %%% Partien wurden importiert</li>
+<li>%%% item no_updates %%% Partien waren bereits aktuell in der Datenbank</li>
+<li>%%% item db_errors %%% Datenbankfehler traten beim Import auf</li>
+<li>%%% item not_found %%% Partien wurden nicht gefunden</li>
+<li>%%% item wrong_pgn %%% Partien aus der PGN-Datei konnten nicht zugeordnet werden</li>
+</ul>
+
+<p><a href="/intern/termine/%%% item identifier %%%/">Turnier im Terminkalender</a></p>
+
+%%% condition if tisch_no %%%
+<p><a href="/intern/termine/%%% item identifier %%%/partien/%%% item runde_no %%%-%%% item tisch_no %%%-%%% item brett_no %%%.pgn">PGN-Datei herunterladen</a></p>
+<p><a href="/intern/termine/%%% item identifier %%%/runde/%%% item runde_no %%%/%%% item tisch_no %%%/">PGN-Datei erneut hochladen</a></p>
+%%% condition elseif brett_no %%%
+<p><a href="/intern/termine/%%% item identifier %%%/partien/%%% item runde_no %%%-%%% item brett_no %%%.pgn">PGN-Datei herunterladen</a></p>
+<p><a href="/intern/termine/%%% item identifier %%%/runde/%%% item runde_no %%%/">PGN-Datei erneut hochladen</a></p>
+%%% condition elseif runde_no %%%
+<p><a href="/intern/termine/%%% item identifier %%%/partien/%%% item runde_no %%%.pgn">PGN-Datei herunterladen</a></p>
+<p><a href="/intern/termine/%%% item identifier %%%/runde/">PGN-Datei erneut hochladen</a></p>
+%%% condition else %%%
+<p><a href="/intern/termine/%%% item identifier %%%/partien/gesamt.pgn">PGN-Datei herunterladen</a></p>
+<p><a href="/intern/termine/%%% item identifier %%%/partien/gesamt-utf8.pgn">PGN-Datei herunterladen (Unicode UTF-8)</a></p>
+<p><a href="/intern/termine/%%% item identifier %%%/turnier/">PGN-Datei erneut hochladen</a></p>
+%%% condition endif %%%
