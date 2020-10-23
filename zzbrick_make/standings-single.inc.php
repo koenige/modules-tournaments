@@ -426,7 +426,7 @@ class cms_tabellenstand_einzel {
 			);
 			$gegnerpunkte = wrap_db_fetch($sql, ['person_id', '_index', 'runde_gegner', 'buchholz'], 'key/value');
 		}
-		if (in_array($person_id, $gegnerpunkte)) {
+		if (array_key_exists($person_id, $gegnerpunkte)) {
 			$gegner_punkte_pro_runde = $gegnerpunkte[$person_id];
 		} else {
 			// only default wins so far
