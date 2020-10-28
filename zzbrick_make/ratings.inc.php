@@ -25,6 +25,9 @@ function mod_tournaments_make_ratings($params) {
 	if (count($params) !== 2) return false;
 	if (!in_array($params[0], ['download', 'import'])) return false;
 	if (empty($zz_setting['rating_download'][$params[1]])) return false;
+
+	// big files, no timeout please
+	$zz_setting['syndication_timeout_ms'] = false;
 	
 	$filename = __DIR__.'/ratings-'.$params[0].'.inc.php';
 	require_once $filename;
