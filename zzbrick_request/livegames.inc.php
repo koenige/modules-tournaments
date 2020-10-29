@@ -30,6 +30,7 @@ function mod_tournaments_livegames($vars) {
 			, (SELECT MAX(runde_no) FROM partien
 			WHERE partien.event_id = turniere.event_id) AS aktuelle_runde_no
 			, main_series.category AS main_series
+			, IF((DATE_SUB(CURDATE(), INTERVAL %d DAY) <= date_end), 1, NULL) AS current
 		FROM turniere
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories series
@@ -42,6 +43,7 @@ function mod_tournaments_livegames($vars) {
 		ORDER BY series.sequence';
 	$sql = sprintf($sql,
 		wrap_id('usergroups', 'spieler'),
+		wrap_get_setting('live_games_show_for_days'),
 		wrap_db_escape($vars[1]), $vars[0]
 	);
 	$turniere = wrap_db_fetch($sql, 'event_id');
@@ -106,6 +108,10 @@ function mod_tournaments_livegames_series($turniere) {
 	foreach ($turniere AS $event_id => $turnier) {
 		if (empty($turnier['aktuelle_runde_no'])) continue;
 		$has_rounds = true;
+		if (!$turnier['current']) {
+			unset($turniere[$event_id]);
+			continue;
+		}
 		unset($rundendaten[$event_id][$turnier['aktuelle_runde_no']]['runde_no']);
 		unset($rundendaten[$event_id][$turnier['aktuelle_runde_no']]['main_event_id']);
 		if (!empty($rundendaten[$event_id])) {
@@ -113,6 +119,7 @@ function mod_tournaments_livegames_series($turniere) {
 		}
 	}
 	if (!$has_rounds) return false;
+	if (!$turniere) wrap_quit(410, wrap_text('The tournament is over. All live games are integrated into the <a href="../">tournament pages</a>.'));
 
 	$turniere['last_update'] = '';
 	foreach ($turniere as $event_id => $turnier) {
