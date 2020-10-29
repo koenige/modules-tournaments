@@ -1,0 +1,34 @@
+# Zugzwang Project
+# deutsche-schachjugend.de
+# Copyright (c) 2015, 2020 Gustaf Mossakowski <gustaf@koenige.org>
+# Copyright (c) 2017 Erik Kothe <erik@deutsche-schachjugend.de>
+# HTML-Ausgabe: Livepartien für ein Turnier
+#
+# List of fields:
+# event_id, livebretter, identifier, event, jahr, teilnehmer,
+# aktuelle_runde_no, main_series, main_series_path, runde_wochentag,
+# runde_beginn, runde_time_begin, runde_time_end, last_update,
+# bretter, livebretter_nos, livepaarungen { partie_id, runde_no, brett_no,
+# halbzuege, pgn, weiss_ergebnis, schwarz_ergebnis, weiss, schwarz, WhiteElo,
+# BlackElo, weiss_setzliste_no, schwarz_setzliste_no, last_update,
+# aktuelle_zuege }
+#
+<script src="/_behaviour/chessboardjs/js/json3.min.js"></script>
+<script src="/_behaviour/chessboardjs/js/jquery-1.10.1.min.js"></script>
+<script src="/_behaviour/chessboardjs/js/chessboard.js"></script>
+<script src="/_behaviour/chess.js/chess.min.js"></script>
+<script src="/interaktiv/livebretter/multiboard/multiboard.js"></script>
+<script src="/interaktiv/livebretter/multiboard/jquery.countdownTimer.js"></script>
+<img style="display:none;" class="refreshloader" src="/interaktiv/livebretter/multiboard/loader.gif">
+<div style="display:none;" class="refreshcountdown-cont">aktualisiert in <span id="refreshcountdown"></span><br><br></div>
+<script>
+ $(document).ready(function(){
+%%% loop livepaarungen %%%
+  newBoard("%%% item identifier %%%","%%% item runde_no %%%-%%% item brett_no %%%", false);
+%%% loop end %%%
+ });
+getAjaxRequest();
+</script>
+<div id="boards">
+
+</div>

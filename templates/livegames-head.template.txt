@@ -1,0 +1,7 @@
+# Zugzwang Project
+# deutsche-schachjugend.de
+# Copyright (c) 2015 Gustaf Mossakowski <gustaf@koenige.org>
+# HTML-Ausgabe: Stylesheets für Livepartien
+#
+<link rel="stylesheet" href="/_behaviour/chessboardjs/css/chessboard.css">
+<link rel="stylesheet" href="/interaktiv/livebretter/multiboard/multiboard.css">

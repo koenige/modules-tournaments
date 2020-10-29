@@ -1,0 +1,223 @@
+<?php 
+
+// Zugzwang Project
+// deutsche-schachjugend.de
+// Copyright (c) 2014-2016, 2018-2020 Gustaf Mossakowski <gustaf@koenige.org>
+// Übersicht der Live-Partien
+
+
+/**
+ * Übersicht der Live-Partien
+ *
+ * @param array $vars
+ *		int [0]: Jahr
+ *		string [1]: Terminkennung
+ *		(string [2]: (optional) 'live')
+ * @return array
+ */
+function mod_tournaments_livegames($vars) {
+	global $zz_setting;
+	require_once($zz_setting['custom_wrap_dir'].'/pgn.inc.php');
+
+	if (count($vars) !== 2) return false;
+
+	// alle Turniere der Reihe ausgeben
+	$sql = 'SELECT events.event_id, livebretter, events.identifier
+			, event, YEAR(date_begin) AS jahr
+			, (SELECT COUNT(teilnahme_id) FROM teilnahmen
+			WHERE teilnahmen.event_id = turniere.event_id
+			AND usergroup_id = %d) AS teilnehmer
+			, (SELECT MAX(runde_no) FROM partien
+			WHERE partien.event_id = turniere.event_id) AS aktuelle_runde_no
+			, main_series.category AS main_series
+		FROM turniere
+		LEFT JOIN events USING (event_id)
+		LEFT JOIN categories series
+			ON events.series_category_id = series.category_id
+		LEFT JOIN categories main_series
+			ON series.main_category_id = main_series.category_id
+		WHERE main_series.path = "reihen/%s"
+		AND YEAR(date_begin) = %d
+		AND NOT ISNULL(livebretter)
+		ORDER BY series.sequence';
+	$sql = sprintf($sql,
+		wrap_id('usergroups', 'spieler'),
+		wrap_db_escape($vars[1]), $vars[0]
+	);
+	$turniere = wrap_db_fetch($sql, 'event_id');
+	if ($turniere) return mod_tournaments_livegames_series($turniere);
+	
+	// Einzelnes Turnier?
+	$sql = 'SELECT events.event_id, livebretter, events.identifier
+			, event, YEAR(date_begin) AS jahr
+			, (SELECT COUNT(teilnahme_id) FROM teilnahmen
+			WHERE teilnahmen.event_id = turniere.event_id
+			AND usergroup_id = %d) AS teilnehmer
+			, (SELECT MAX(runde_no) FROM partien
+			WHERE partien.event_id = turniere.event_id) AS aktuelle_runde_no
+			, main_series.category AS main_series
+			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
+		FROM turniere
+		LEFT JOIN events USING (event_id)
+		LEFT JOIN categories series
+			ON events.series_category_id = series.category_id
+		LEFT JOIN categories main_series
+			ON series.main_category_id = main_series.category_id
+		WHERE events.identifier = "%d/%s"
+		AND NOT ISNULL(livebretter)';
+	$sql = sprintf($sql,
+		wrap_id('usergroups', 'spieler'),
+		$vars[0], wrap_db_escape($vars[1])
+	);
+	$turnier = wrap_db_fetch($sql);
+	if ($turnier) return mod_tournaments_livegames_turnier($turnier);
+	return false;
+}
+
+function mod_tournaments_livegames_turnier($turnier) {
+	$rundendaten = mod_tournaments_livegames_rundendaten([$turnier['event_id']]);
+	unset($rundendaten[$turnier['event_id']][$turnier['aktuelle_runde_no']]['runde_no']);
+	unset($rundendaten[$turnier['event_id']][$turnier['aktuelle_runde_no']]['main_event_id']);
+	$turnier += $rundendaten[$turnier['event_id']][$turnier['aktuelle_runde_no']];
+	unset($rundendaten);
+
+	$turnier = mod_tournaments_livegames_bretter($turnier);
+	$turnier['last_update'] = substr($turnier['last_update'], 11, 5);
+	
+	$page['breadcrumbs'][] = '<a href="../../">'.$turnier['jahr'].'</a>';
+	if ($turnier['main_series']) {
+		$page['breadcrumbs'][] = '<a href="../../'.$turnier['main_series_path'].'/">'.$turnier['main_series'].'</a>';
+	}
+	$page['breadcrumbs'][] = '<a href="../">'.$turnier['event'].'</a>';
+	$page['breadcrumbs'][] = 'Livepartien';
+	$page['title'] = 'Livepartien '.$turnier['event'].' '.$turnier['jahr'];
+	$page['extra']['realm'] = 'sports';
+
+	$page['head'] = wrap_template('livegames-head');
+	$page['text'] = wrap_template('livegames-tournament', $turnier);
+	return $page;
+}
+
+function mod_tournaments_livegames_series($turniere) {
+	$series = reset($turniere);
+
+	$rundendaten = mod_tournaments_livegames_rundendaten(array_keys($turniere));
+	$has_rounds = false;
+	foreach ($turniere AS $event_id => $turnier) {
+		if (empty($turnier['aktuelle_runde_no'])) continue;
+		$has_rounds = true;
+		unset($rundendaten[$event_id][$turnier['aktuelle_runde_no']]['runde_no']);
+		unset($rundendaten[$event_id][$turnier['aktuelle_runde_no']]['main_event_id']);
+		if (!empty($rundendaten[$event_id])) {
+			$turniere[$event_id] += $rundendaten[$event_id][$turnier['aktuelle_runde_no']];
+		}
+	}
+	if (!$has_rounds) return false;
+
+	$turniere['last_update'] = '';
+	foreach ($turniere as $event_id => $turnier) {
+		if (!is_numeric($event_id)) continue;
+		$turniere[$event_id] = mod_tournaments_livegames_bretter($turnier);
+		if ($turniere[$event_id]['last_update'] > $turniere['last_update'])
+			$turniere['last_update'] = $turniere[$event_id]['last_update'];
+	}
+	$turniere['last_update'] = substr($turniere['last_update'], 11, 5);
+	$page['breadcrumbs'][] = '<a href="../../">'.$series['jahr'].'</a>';
+	$page['breadcrumbs'][] = '<a href="../">'.$series['main_series'].'</a>';
+	$page['breadcrumbs'][] = 'Livepartien';
+	$page['title'] = 'Livepartien '.$series['main_series'].' '.$series['jahr'];
+	$page['extra']['realm'] = 'sports';
+
+	$page['text'] = wrap_template('livegames-series', $turniere);
+	return $page;
+}
+
+function mod_tournaments_livegames_bretter($turnier) {
+	$turnier['last_update'] = '';
+	$turnier['bretter'] = floor($turnier['teilnehmer']/2);
+	$turnier['livebretter_nos'] = my_livebretter(
+		$turnier['livebretter'], $turnier['bretter']
+	);
+	$sql = 'SELECT partie_id, partien.runde_no, partien.brett_no, halbzuege
+			, pgn
+			, (CASE weiss_ergebnis
+				WHEN 1.0 THEN IF(partiestatus_category_id = %d, "+", 1)
+				WHEN 0.5 THEN IF(partiestatus_category_id = %d, "=", 0.5)
+				WHEN 0 THEN IF(partiestatus_category_id = %d, "-", 0)
+			END) AS weiss_ergebnis
+			, (CASE schwarz_ergebnis
+				WHEN 1.0 THEN IF(partiestatus_category_id = %d, "+", 1)
+				WHEN 0.5 THEN IF(partiestatus_category_id = %d, "=", 0.5)
+				WHEN 0 THEN IF(partiestatus_category_id = %d, "-", 0)
+			END) AS schwarz_ergebnis
+			, CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname) AS weiss
+			, CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname) AS schwarz
+			, IFNULL(weiss.t_elo, weiss.t_dwz) AS WhiteElo
+			, IFNULL(schwarz.t_elo, schwarz.t_dwz) AS BlackElo
+			, weiss.setzliste_no AS weiss_setzliste_no
+			, schwarz.setzliste_no AS schwarz_setzliste_no
+			, partien.last_update, events.identifier
+		FROM partien
+		LEFT JOIN events USING (event_id)
+		LEFT JOIN teilnahmen weiss
+			ON partien.weiss_person_id = weiss.person_id AND weiss.usergroup_id = %d
+			AND weiss.event_id = partien.event_id
+		LEFT JOIN teilnahmen schwarz
+			ON partien.schwarz_person_id = schwarz.person_id AND schwarz.usergroup_id = %d
+			AND schwarz.event_id = partien.event_id
+		WHERE partien.event_id = %d
+		AND partien.runde_no = %d
+		AND partien.brett_no IN (%s)
+		ORDER BY brett_no
+	';
+	$sql = sprintf($sql
+		, wrap_category_id('partiestatus/kampflos')
+		, wrap_category_id('partiestatus/kampflos')
+		, wrap_category_id('partiestatus/kampflos')
+		, wrap_category_id('partiestatus/kampflos')
+		, wrap_category_id('partiestatus/kampflos')
+		, wrap_category_id('partiestatus/kampflos')
+		, wrap_id('usergroups', 'spieler')
+		, wrap_id('usergroups', 'spieler')
+		, $turnier['event_id']
+		, $turnier['aktuelle_runde_no']
+		, implode(',', $turnier['livebretter_nos'])
+	);
+	$turnier['livepaarungen'] = wrap_db_fetch($sql, 'partie_id');
+	foreach ($turnier['livepaarungen'] as $partie_id => $partie) {
+		$pgn = preg_replace('/{\[\%clk \d+:\d+:\d+\]} /', '', $partie['pgn']);
+		$pgn = explode(' ', $pgn);
+		$aktuelle_zuege = array_slice($pgn, count($pgn) -10, count($pgn));
+		foreach ($aktuelle_zuege as $index => $zug) {
+			$aktuelle_zuege[$index] = pgn_translate_pieces($zug, 'de');
+		}
+		$turnier['livepaarungen'][$partie_id]['aktuelle_zuege'] 
+			= implode(' ', $aktuelle_zuege);
+		if ($partie['last_update'] > $turnier['last_update']) {
+			$turnier['last_update'] = $partie['last_update'];
+		}
+	}
+	return $turnier;
+}
+
+function mod_tournaments_livegames_rundendaten($turnier_ids) {
+	// Aktuelle Runde, Daten
+	$sql = 'SELECT event_id, runde_no, main_event_id,
+			CASE DAYOFWEEK(events.date_begin) WHEN 1 THEN "So"
+				WHEN 2 THEN "Mo"
+				WHEN 3 THEN "Di"
+				WHEN 4 THEN "Mi"
+				WHEN 5 THEN "Do"
+				WHEN 6 THEN "Fr"
+				WHEN 7 THEN "Sa" END AS runde_wochentag
+			, date_begin AS runde_beginn
+			, TIME_FORMAT(time_begin, "%%H:%%i") AS runde_time_begin
+			, TIME_FORMAT(time_end, "%%H:%%i") AS runde_time_end
+		FROM events
+		WHERE main_event_id IN (%s)
+		AND event_category_id = %d';
+	$sql = sprintf($sql, implode(',', $turnier_ids),
+		wrap_category_id('zeitplan/runde'));
+	$rundendaten = wrap_db_fetch($sql, ['main_event_id', 'runde_no']);
+	return $rundendaten;
+}
