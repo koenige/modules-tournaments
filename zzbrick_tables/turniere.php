@@ -341,10 +341,10 @@ $zz['fields'][46]['hide_in_list'] = true;
 $zz['fields'][46]['separator'] = true;
 
 $zz['fields'][31]['title'] = 'Urkunde';
-$zz['fields'][31]['field_name'] = 'urkunde_id';
+$zz['fields'][31]['field_name'] = 'certificate_id';
 $zz['fields'][31]['type'] = 'select';
-$zz['fields'][31]['sql'] = 'SELECT urkunde_id, urkunde_titel FROM urkunden ORDER BY urkunde_titel';
-$zz['fields'][31]['display_field'] = 'urkunde_titel';
+$zz['fields'][31]['sql'] = 'SELECT certificate_id, certificate FROM certificates ORDER BY certificate';
+$zz['fields'][31]['display_field'] = 'certificate';
 $zz['fields'][31]['hide_in_list'] = true;
 $zz['fields'][31]['suffix'] = ' – <a href="/intern/urkunden/" target="_new">Galerie aller Urkunden</a>';
 
@@ -429,7 +429,7 @@ $zz['sql'] = 'SELECT turniere.*
 		, events.identifier AS event_identifier
 		, modus.category_short AS modus
 		, turnierformen.category_short AS turnierform
-		, urkunden.urkunde_titel
+		, certificates.certificate
 		, (SELECT COUNT(team_id) FROM teams
 			WHERE teams.event_id = turniere.event_id
 			AND team_status = "Teilnehmer"
@@ -448,7 +448,7 @@ $zz['sql'] = 'SELECT turniere.*
 		ON turniere.modus_category_id = modus.category_id
 	LEFT JOIN categories turnierformen
 		ON turniere.turnierform_category_id = turnierformen.category_id
-	LEFT JOIN urkunden USING (urkunde_id)
+	LEFT JOIN certificates USING (certificate_id)
 ';
 $zz['sql'] = sprintf($zz['sql'], wrap_id('usergroups', 'spieler'));
 $zz['sqlorder'] = ' ORDER BY events.date_begin DESC, events.time_begin DESC,
