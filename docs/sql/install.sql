@@ -321,7 +321,7 @@ CREATE TABLE `turniere` (
   `spielernachrichten` enum('ja','nein') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'nein',
   `fehler` text CHARACTER SET latin1 COLLATE latin1_general_ci,
   `komplett` enum('ja','nein') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'nein',
-  `urkunde_id` int(10) unsigned DEFAULT NULL,
+  `certificate_id` int(10) unsigned DEFAULT NULL,
   `urkunde_ort` varchar(63) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `urkunde_datum` date DEFAULT NULL,
   `urkunde_unterschrift1` varchar(63) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
