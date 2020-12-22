@@ -449,3 +449,27 @@ function cms_partienupdate_trigger() {
 	$page['text'] = 'Update in progress';
 	return $page;
 }
+
+/**
+ * Auswertung eines PGN-Strings, ob ein Ergebnis am Ende steht
+ *
+ * @param string $pgn
+ * @return array
+ */
+function my_pgn_ergebnis($pgn) {
+	$moves = explode(' ', trim($pgn));
+	$result = array_pop($moves);
+	if ($result === '*') return false;
+	if (!strstr($result, '-')) return false;
+	$result = explode('-', $result);
+	$ergebnis['weiss'] = my_ergebnis_dec($result[0]);
+	$ergebnis['schwarz'] = my_ergebnis_dec($result[1]);
+	return $ergebnis;
+}
+
+function my_ergebnis_dec($ergebnis) {
+	switch ($ergebnis) {
+		case '1/2': return 0.5; 
+		default: return $ergebnis.'.0';
+	}
+}
