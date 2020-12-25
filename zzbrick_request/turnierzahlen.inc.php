@@ -21,7 +21,7 @@ function mod_tournaments_turnierzahlen($vars) {
 				IF(events.date_end < CURDATE(), 1, NULL),
 				IF(events.date_begin < CURDATE(), 1, NULL)
 			) AS event_over
-			, YEAR(date_begin) AS jahr
+			, YEAR(date_begin) AS year
 			, event, identifier
 		FROM events
 		LEFT JOIN turniere USING (event_id)
@@ -33,21 +33,21 @@ function mod_tournaments_turnierzahlen($vars) {
 	$data['abweichungen'] = [];
 	$data['fehler'] = [];
 	$data['event'] = $event['event'];
-	$data['jahr'] = $event['jahr'];
+	$data['year'] = $event['year'];
 	$data['testlauf'] = true;
 	if (!empty($_POST['update'])) $data['testlauf'] = false;
 
 	$page['breadcrumbs'][] = '<a href="/intern/termine/">Termine</a>';
 	$page['breadcrumbs'][] = sprintf(
 		'<a href="/intern/termine/%d/">%d</a>',
-		$event['jahr'], $event['jahr']
+		$event['year'], $event['year']
 	);
 	$page['breadcrumbs'][] = sprintf(
 		'<a href="/intern/termine/%s/">%s</a>',
 		$event['identifier'], $event['event']
 	);
 	$page['breadcrumbs'][] = 'Turnierzahlen';
-	$page['title'] = sprintf('Aktualisierung der Wertungszahlen für %s %s', $event['event'], $event['jahr']);
+	$page['title'] = sprintf('Aktualisierung der Wertungszahlen für %s %s', $event['event'], $event['year']);
 	$page['dont_show_h1'] = true;
 
 	if ($event['event_over']) {

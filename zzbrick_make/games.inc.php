@@ -92,7 +92,7 @@ function mod_tournaments_make_games($vars) {
 	if ($brett_no) $error_msg .= sprintf(', Brett %s', wrap_html_escape($brett_no));
 
 	// Termin, Partien in Datenbank vorhanden?
-	$sql = 'SELECT event_id, events.identifier, event, YEAR(date_begin) AS jahr
+	$sql = 'SELECT event_id, events.identifier, event, YEAR(date_begin) AS year
 			, COUNT(partie_id) AS partien
 			, SUBSTRING_INDEX(categories.path, "/", -1) AS event_category
 			, turnier_id
@@ -267,7 +267,7 @@ function mod_tournaments_make_games($vars) {
 					if ($fehler) {
 						wrap_error(sprintf(
 							'Ergebnis in der PGN-Datei weicht ab. %s %d %s. Runde: %s - %s Datenbank %s, PGN %s-%s',
-							$event['event'], $event['jahr'], $partie['runde_no'],
+							$event['event'], $event['year'], $partie['runde_no'],
 							$partie['White'], $partie['Black'], $partie['Result'],
 							$ergebnis['weiss'], $ergebnis['schwarz']
 						));
@@ -289,7 +289,7 @@ function mod_tournaments_make_games($vars) {
 			if (!$ops['id']) {
 				wrap_error(sprintf(
 					'PGN-Import: Partie %s-%s, %s %d, Runde %d konnte nicht importiert werden. Fehler: ',
-					$partie['White'], $partie['Black'], $event['event'], $event['jahr'], $partie['runde_no']
+					$partie['White'], $partie['Black'], $event['event'], $event['year'], $partie['runde_no']
 				).implode(', ', $ops['error']), E_USER_NOTICE);
 				$event['db_errors']++;
 			} elseif ($ops['result'] === 'successful_update') {
@@ -302,7 +302,7 @@ function mod_tournaments_make_games($vars) {
 			if (!$robot_zugriff) {
 				wrap_error(sprintf(
 					'PGN-Import: Partie %s-%s, %s %d, Runde %d nicht gefunden.',
-					$partie['White'], $partie['Black'], $event['event'], $event['jahr'], $partie['runde_no']
+					$partie['White'], $partie['Black'], $event['event'], $event['year'], $partie['runde_no']
 				), E_USER_NOTICE);
 			}
 			$event['not_found']++;

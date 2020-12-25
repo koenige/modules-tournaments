@@ -4,7 +4,7 @@
 # HTML-Ausgabe: Livepartien für eine Turnierreihe
 #
 # List of fields:
-# { event_id, livebretter, identifier, event, jahr, teilnehmer,
+# { event_id, livebretter, identifier, event, year, teilnehmer,
 # aktuelle_runde_no, main_series, runde_wochentag, runde_beginn,
 # runde_time_begin, runde_time_end, last_update, bretter,
 # livebretter_nos, livepaarungen { partie_id, runde_no, brett_no, halbzuege,
@@ -33,7 +33,7 @@ Die Partien werden ohne Verzögerung übertragen!
 %%% loop start %%%
 %%% condition if aktuelle_runde_no %%%
 <div class="liveturnier">
-<h2 id="%%% item identifier %%%"><a href="../../../%%% item identifier %%%/">%%% item event %%% %%% item jahr %%%</a>: <a href="../../../%%% item identifier %%%/runde/%%% item aktuelle_runde_no %%%/">%%% item aktuelle_runde_no %%%. Runde</a>, %%% item runde_wochentag %%% %%% item runde_beginn wrap_date %%% %%% item runde_time_begin %%%%%% item runde_time_end "–%s" %%% Uhr</h2>
+<h2 id="%%% item identifier %%%"><a href="../../../%%% item identifier %%%/">%%% item event %%% %%% item year %%%</a>: <a href="../../../%%% item identifier %%%/runde/%%% item aktuelle_runde_no %%%/">%%% item aktuelle_runde_no %%%. Runde</a>, %%% item runde_wochentag %%% %%% item runde_beginn wrap_date %%% %%% item runde_time_begin %%%%%% item runde_time_end "–%s" %%% Uhr</h2>
 <a href="../../../%%% item identifier %%%/live/">Live-Bretter</a>
 <div class="results">
 <table class="spieler">

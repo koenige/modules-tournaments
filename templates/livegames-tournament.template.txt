@@ -5,7 +5,7 @@
 # HTML-Ausgabe: Livepartien für ein Turnier
 #
 # List of fields:
-# event_id, livebretter, identifier, event, jahr, teilnehmer,
+# event_id, livebretter, identifier, event, year, teilnehmer,
 # aktuelle_runde_no, main_series, main_series_path, runde_wochentag,
 # runde_beginn, runde_time_begin, runde_time_end, last_update,
 # bretter, livebretter_nos, livepaarungen { partie_id, runde_no, brett_no,

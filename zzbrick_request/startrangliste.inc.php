@@ -16,7 +16,7 @@ function mod_tournaments_startrangliste($vars) {
 	
 	$sql = 'SELECT events.event_id, event
 			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS dauer
-			, YEAR(date_begin) AS jahr, IFNULL(date_end, date_begin) AS date_end
+			, YEAR(date_begin) AS year, IFNULL(date_end, date_begin) AS date_end
 			, places.contact AS veranstaltungsort
 			, address, postcode, place, places.description
 			, latitude, longitude
@@ -47,7 +47,7 @@ function mod_tournaments_startrangliste($vars) {
 	if (!$event) return false;
 	$event[str_replace('-', '_', $event['turnierform'])] = true;
 
-	$page['breadcrumbs'][] = '<a href="../../">'.$event['jahr'].'</a>';
+	$page['breadcrumbs'][] = '<a href="../../">'.$event['year'].'</a>';
 	if ($event['main_series']) {
 		$page['breadcrumbs'][] = '<a href="../../'.$event['main_series_path'].'/">'.$event['main_series'].'</a>';
 	}
@@ -76,12 +76,12 @@ function mod_tournaments_startrangliste($vars) {
 		$event = mod_tournaments_startrangliste_mannschaft($event);
 	}
 	if ($meldeliste) {
-		$page['title'] = $event['event'].' '.$event['jahr'].': Meldeliste';
+		$page['title'] = $event['event'].' '.$event['year'].': Meldeliste';
 		$page['breadcrumbs'][] = 'Meldeliste';
 		$event['meldeliste'] = true;
 		$event['meldungen'] = !empty($event['spieler']) ? count($event['spieler']) : count($event['teams']);
 	} else {
-		$page['title'] = $event['event'].' '.$event['jahr'].': Startrangliste';
+		$page['title'] = $event['event'].' '.$event['year'].': Startrangliste';
 		$page['breadcrumbs'][] = 'Startrangliste';
 	}
 

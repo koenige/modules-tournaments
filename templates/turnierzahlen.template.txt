@@ -4,7 +4,7 @@
 # HTML-Ausgabe: Turnierzahlen
 #
 <h1>Aktualisierung der Wertungszahlen
-<br>%%% item event %%% %%% item jahr %%%</h1>
+<br>%%% item event %%% %%% item year %%%</h1>
 
 %%% condition if event_over %%%
 <p>Turnierzahlen können für Turniere, die in der Vergangenheit liegen, nicht 

@@ -3,7 +3,7 @@
 # Copyright (c) 2014, 2018, 2020 Gustaf Mossakowski <gustaf@koenige.org>
 # Import von Partien
 #
-<p>Der Import für das Turnier %%% item event %%% %%% item jahr %%%
+<p>Der Import für das Turnier %%% item event %%% %%% item year %%%
 %%% condition if runde_no %%%, Runde %%% item runde_no %%%%%% condition endif %%%
 %%% condition if tisch_no %%%, Tisch %%% item tisch_no %%%%%% condition endif %%%
 %%% condition if brett_no %%%, Brett %%% item brett_no %%%%%% condition endif %%%

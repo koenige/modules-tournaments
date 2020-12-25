@@ -477,8 +477,8 @@ $zz['filter'][2]['identifier'] = 'reihe';
 $zz['filter'][2]['type'] = 'list';
 $zz['filter'][2]['where'] = 'series.main_category_id';
 
-$zz['filter'][1]['sql'] = 'SELECT DISTINCT YEAR(date_begin) AS jahr_idf
-		, YEAR(date_begin) AS jahr
+$zz['filter'][1]['sql'] = 'SELECT DISTINCT YEAR(date_begin) AS year_idf
+		, YEAR(date_begin) AS year
 	FROM turniere
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories series
@@ -487,7 +487,7 @@ $zz['filter'][1]['sql'] = 'SELECT DISTINCT YEAR(date_begin) AS jahr_idf
 		ON series.main_category_id = main_series.category_id
 	ORDER BY YEAR(date_begin) DESC';
 $zz['filter'][1]['title'] = 'Jahr';
-$zz['filter'][1]['identifier'] = 'jahr';
+$zz['filter'][1]['identifier'] = 'year';
 $zz['filter'][1]['type'] = 'list';
 $zz['filter'][1]['where'] = 'YEAR(date_begin)';
 $zz['filter'][1]['depends_on'] = 2;
