@@ -346,6 +346,7 @@ function my_tabellenstand_filter($filter_kennung = false) {
  *
  * @param mixed int or array Liste von Termin-IDs
  * @return array
+ * @todo move to separate request script with own template
  */
 function my_endtabelle($event_ids) {
 	$single = false;
@@ -402,7 +403,7 @@ function my_endtabelle($event_ids) {
 		$sql = 'SELECT tabellenstaende.event_id
 				, tabellenstand_id, runde_no, platz_no
 				, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
-				, IF(turniere.teilnehmerliste = "ja", teams.kennung, "") AS team_kennung
+				, IF(turniere.teilnehmerliste = "ja", teams.kennung, "") AS team_identifier
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 				, teilnahmen.setzliste_no
 				, t_verein AS verein
