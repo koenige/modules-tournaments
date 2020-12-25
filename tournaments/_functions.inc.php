@@ -478,10 +478,10 @@ function my_endtabelle($event_ids) {
  * @return void
  */
 function my_cache_turnier($event) {
-	$dauer = explode('/', $event['dauer']);
+	$duration = explode('/', $event['duration']);
 	$today = date('Y-m-d');
-	if ($today < $dauer[0]) return;
-	if (empty($dauer[1])) return;
-	if ($today > $dauer[1]) return;
+	if ($today < $duration[0]) return;
+	if (empty($duration[1])) return;
+	if ($today > $duration[1]) return;
 	wrap_cache_header('Cache-Control: max-age=0');
 }

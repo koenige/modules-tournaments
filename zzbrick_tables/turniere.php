@@ -455,9 +455,9 @@ $zz['sqlorder'] = ' ORDER BY events.date_begin DESC, events.time_begin DESC,
 	events.identifier';
 
 $zz['subtitle']['event_id']['sql'] = 'SELECT event
-	, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS dauer
+	, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
 	FROM events';
-$zz['subtitle']['event_id']['var'] = ['event', 'dauer'];
+$zz['subtitle']['event_id']['var'] = ['event', 'duration'];
 $zz['subtitle']['event_id']['format'][1] = 'wrap_date';
 $zz['subtitle']['event_id']['link'] = '../';
 $zz['subtitle']['event_id']['link_no_append'] = true;
