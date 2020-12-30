@@ -134,6 +134,22 @@ function cms_tabellenstandupdate_runde($vars) {
 			$runde, $event['runden'], $vars[0], $vars[1]), E_USER_ERROR);
 	}
 
+	// check if there were games played in this round
+	$sql = 'SELECT COUNT(*)
+		FROM partien
+		WHERE event_id = %d AND runde_no = %d
+		AND partiestatus_category_id = %d';
+	$sql = sprintf($sql
+		, $event['event_id']
+		, $runde
+		, wrap_category_id('partiestatus/normal')
+	);
+	$games_played_in_round = wrap_db_fetch($sql, '', 'single value');
+	if (!$games_played_in_round) {
+		my_job_finish('tabelle', 0, $event['event_id'], $runde);
+		wrap_quit(404);
+	}
+
 	require_once $zz_conf['dir'].'/zzform.php';
 	$type = implode('/', $vars);
 	$zz_conf['user'] = 'Tabellenstand '.$type;
