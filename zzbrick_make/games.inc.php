@@ -227,20 +227,22 @@ function mod_tournaments_make_games($vars) {
 		if (!empty($partien[$partie_id]['head'])) {
 			// - Falls Partie vorhanden, PGN importieren
 			$partien[$partie_id]['moves'] = trim($partien[$partie_id]['moves']);
-			if ($partien[$partie_id]['moves'] === $partie['Result']) continue;
-			if ($partien[$partie_id]['moves'] === '*') continue;
+			if ($partien[$partie_id]['moves'] === $partien[$partie_id]['head']['Result']) {
+				if ($partien[$partie_id]['moves'] === $partie['Result']) continue;
+				if ($partien[$partie_id]['moves'] === '*') continue;
+			}
 			$values = [];
 			$values['action'] = 'update';
 			$values['POST']['partie_id'] = $partie_id;
 			// @todo check if it's only a comment
-			if ($comment = pgn_only_comment($partien[$partie_id]['moves'], $partie['Result'])) {
+			if ($comment = pgn_only_comment($partien[$partie_id]['moves'], $partien[$partie_id]['head']['Result'])) {
 				if (!empty($partien[$partie_id]['kommentar'])) continue;
 				if (!empty($partien[$partie_id]['pgn'])) continue;
 				$values['POST']['kommentar'] = $comment;
-			} else {
+			} elseif ($partien[$partie_id]['moves'] !== '*') {
 				$values['POST']['pgn'] = $partien[$partie_id]['moves'];
 			}
-			$ergebnis = my_pgn_ergebnis($partien[$partie_id]['moves']);
+			$ergebnis = mf_tournaments_pgn_result($partien[$partie_id]['moves'], $partien[$partie_id]['head']['Result']);
 			if ($ergebnis) {
 				if ($partie['vertauschte_farben']) {
 					$schwarz = $ergebnis['schwarz'];
@@ -264,9 +266,9 @@ function mod_tournaments_make_games($vars) {
 					}
 				} else {
 					$fehler = false;
-					if (mf_tournaments_result_dec($ergebnis['weiss']) !== mf_tournaments_result_dec($partie['weiss_ergebnis'])) {
+					if (mf_tournaments_pgn_result_dec($ergebnis['weiss']) !== mf_tournaments_pgn_result_dec($partie['weiss_ergebnis'])) {
 						$fehler = true;
-					} elseif (mf_tournaments_result_dec($ergebnis['schwarz']) !== mf_tournaments_result_dec($partie['schwarz_ergebnis'])) {
+					} elseif (mf_tournaments_pgn_result_dec($ergebnis['schwarz']) !== mf_tournaments_pgn_result_dec($partie['schwarz_ergebnis'])) {
 						$fehler = true;
 					}
 					if ($fehler) {
@@ -280,8 +282,10 @@ function mod_tournaments_make_games($vars) {
 				}
 			}
 			$moves = pgn_to_html($partien[$partie_id]);
-			$values['POST']['eco'] = isset($partien[$partie_id]['head']['ECO']) ? $partien[$partie_id]['head']['ECO'] : '';
-			if ($values['POST']['eco'] === '*') $values['POST']['eco'] = '';
+			if ($partien[$partie_id]['moves'] !== '*') {
+				$values['POST']['eco'] = isset($partien[$partie_id]['head']['ECO']) ? $partien[$partie_id]['head']['ECO'] : '';
+				if ($values['POST']['eco'] === '*') $values['POST']['eco'] = '';
+			}
 			$values['POST']['halbzuege'] = $moves['move'];
 			$values['POST']['vertauschte_farben'] = isset($partien[$partie_id]['vertauschte_farben']) ? 'ja' : 'nein';
 			if (!empty($moves['BlackClock'])) {
@@ -473,20 +477,24 @@ function cms_partienupdate_trigger() {
  * Auswertung eines PGN-Strings, ob ein Ergebnis am Ende steht
  *
  * @param string $pgn
+ * @param string $result_Tag
  * @return array
  */
-function my_pgn_ergebnis($pgn) {
+function mf_tournaments_pgn_result($pgn, $result_tag) {
 	$moves = explode(' ', trim($pgn));
 	$result = array_pop($moves);
-	if ($result === '*') return false;
+	if ($result === '*') {
+		$result = $result_tag;
+		if ($result === '*') return false;
+	}
 	if (!strstr($result, '-')) return false;
 	$result = explode('-', $result);
-	$ergebnis['weiss'] = mf_tournaments_result_dec($result[0]);
-	$ergebnis['schwarz'] = mf_tournaments_result_dec($result[1]);
+	$ergebnis['weiss'] = mf_tournaments_pgn_result_dec($result[0]);
+	$ergebnis['schwarz'] = mf_tournaments_pgn_result_dec($result[1]);
 	return $ergebnis;
 }
 
-function mf_tournaments_result_dec($ergebnis) {
+function mf_tournaments_pgn_result_dec($ergebnis) {
 	switch ($ergebnis) {
 		case '1/2': return 0.5; 
 		default: return $ergebnis.'.0';
