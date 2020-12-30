@@ -62,9 +62,9 @@ if (count($brick['vars']) === 3) {
 }
 
 if (count($brick['vars']) === 4) {
-	$zz['fields'][6]['if']['add']['default'] = my_get_paarung_spieler($paarung, 'weiss');
-	$zz['fields'][8]['if']['add']['default'] = my_get_paarung_spieler($paarung, 'schwarz');
-	$zz['fields'][10]['if']['add']['default'] = my_get_paarung_spieler($paarung, 'farbe');
+	$zz['fields'][6]['if']['add']['default'] = mf_tournaments_get_paring_player($paarung, 'weiss');
+	$zz['fields'][8]['if']['add']['default'] = mf_tournaments_get_paring_player($paarung, 'schwarz');
+	$zz['fields'][10]['if']['add']['default'] = mf_tournaments_get_paring_player($paarung, 'farbe');
 	if ($paarung['partien'] + 1 < $event['bretter_min']) {
 		$url_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 		$zz_conf['redirect']['successful_insert'] = $url_path.'?add';
@@ -108,7 +108,7 @@ if (count($brick['vars']) === 3) {
 	$zz_conf['event'] = $event;
 }
 
-function my_get_paarung_spieler($paarung, $farbe) {
+function mf_tournaments_get_paring_player($paarung, $farbe) {
 	static $aufstellungen;
 	static $partien;
 	if (!$aufstellungen) {

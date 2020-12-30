@@ -264,9 +264,9 @@ function mod_tournaments_make_games($vars) {
 					}
 				} else {
 					$fehler = false;
-					if (my_ergebnis_dec($ergebnis['weiss']) !== my_ergebnis_dec($partie['weiss_ergebnis'])) {
+					if (mf_tournaments_result_dec($ergebnis['weiss']) !== mf_tournaments_result_dec($partie['weiss_ergebnis'])) {
 						$fehler = true;
-					} elseif (my_ergebnis_dec($ergebnis['schwarz']) !== my_ergebnis_dec($partie['schwarz_ergebnis'])) {
+					} elseif (mf_tournaments_result_dec($ergebnis['schwarz']) !== mf_tournaments_result_dec($partie['schwarz_ergebnis'])) {
 						$fehler = true;
 					}
 					if ($fehler) {
@@ -481,12 +481,12 @@ function my_pgn_ergebnis($pgn) {
 	if ($result === '*') return false;
 	if (!strstr($result, '-')) return false;
 	$result = explode('-', $result);
-	$ergebnis['weiss'] = my_ergebnis_dec($result[0]);
-	$ergebnis['schwarz'] = my_ergebnis_dec($result[1]);
+	$ergebnis['weiss'] = mf_tournaments_result_dec($result[0]);
+	$ergebnis['schwarz'] = mf_tournaments_result_dec($result[1]);
 	return $ergebnis;
 }
 
-function my_ergebnis_dec($ergebnis) {
+function mf_tournaments_result_dec($ergebnis) {
 	switch ($ergebnis) {
 		case '1/2': return 0.5; 
 		default: return $ergebnis.'.0';

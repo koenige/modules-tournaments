@@ -13,9 +13,9 @@ function mf_tournaments_current_round($identifier) {
 		WHERE events.identifier = "%s"
 		GROUP BY events.event_id';
 	$sql = sprintf($sql, wrap_db_escape($identifier));
-	$runde = wrap_db_fetch($sql, '', 'single value');
-	if (!$runde) return 0;
-	return $runde;
+	$round = wrap_db_fetch($sql, '', 'single value');
+	if (!$round) return 0;
+	return $round;
 }
 
 /**

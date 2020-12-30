@@ -231,7 +231,7 @@ function cms_tabellenstand_wertungen($event, $tabelle, $wertungen, $turnierwertu
 		if (empty($wertungen[$category_id])) continue;
 		if (!is_array($wertungen[$category_id])
 			AND $category_id.'' === wrap_category_id('turnierwertungen/dv').'') {
-			$wertungen[$category_id] = cms_tabellenstand_direkter_vergleich(
+			$wertungen[$category_id] = mf_tournaments_make_team_direct_encounter(
 				$event, $tabelle, reset($turnierwertungen)
 			);
 		}

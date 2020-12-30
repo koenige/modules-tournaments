@@ -60,7 +60,7 @@ function cms_tabellenstand_write_mannschaft($event) {
 		case wrap_category_id('turnierwertungen/bhz.2'):
 			$erste_wertung = reset($turnierwertungen);
 			if ($erste_wertung['category_id'] === wrap_category_id('turnierwertungen/bp')) {
-				$wertungen[$category_id] = my_wertung_team_buchholz_bp(
+				$wertungen[$category_id] = mf_tournaments_make_team_buchholz_bp(
 					$event['event_id'], $event['runde_no']
 				);
 			}
@@ -78,7 +78,7 @@ function cms_tabellenstand_write_mannschaft($event) {
 			$wertungen[$category_id] = wrap_db_fetch($sql, 'team_id', 'key/value');
 			break;
 		case wrap_category_id('turnierwertungen/sobo'):
-			$wertungen[$category_id] = my_wertung_team_sonneborn_berger(
+			$wertungen[$category_id] = mf_tournaments_make_team_sonneborn_berger(
 				$event['event_id'], $event['runde_no']
 			);
 			break;
@@ -169,7 +169,7 @@ function cms_tabellenstand_write_mannschaft($event) {
  * @param array $hauptwertung
  * @return $teams int team_id => string Wertung
  */
-function cms_tabellenstand_direkter_vergleich($event, $tabelle, $hauptwertung) {
+function mf_tournaments_make_team_direct_encounter($event, $tabelle, $hauptwertung) {
 	// Welches ist die Hauptwertung?
 	switch ($hauptwertung['category_id']) {
 	case wrap_category_id('turnierwertungen/mp'):
@@ -308,7 +308,7 @@ function cms_tabellenstand_direkter_vergleich($event, $tabelle, $hauptwertung) {
  * @param int $runde_no
  * @return array Liste team_id => value
  */
-function my_wertung_team_sonneborn_berger($event_id, $runde_no) {
+function mf_tournaments_make_team_sonneborn_berger($event_id, $runde_no) {
 	// paarungen_ergebnisse_view gibt bei Gewinn 2 MP, bei Unentschieden 1 MP aus
 	// daher MP / 2 * gegnerische MP
 	$sql = 'SELECT paarungen_ergebnisse_view.team_id
@@ -339,7 +339,7 @@ function my_wertung_team_sonneborn_berger($event_id, $runde_no) {
  * @param int $runde_no
  * @return array Liste team_id => value
  */
-function my_wertung_team_buchholz_bp($event_id, $runde_no) {
+function mf_tournaments_make_team_buchholz_bp($event_id, $runde_no) {
 	// @todo
 	// check if there's a correction here as well
 	//			, SUM(IF((gegners_paarungen.kampflos = 1), 1, gegners_paarungen.brettpunkte))
