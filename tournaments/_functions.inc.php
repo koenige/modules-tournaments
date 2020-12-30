@@ -485,3 +485,26 @@ function my_cache_turnier($event) {
 	if ($today > $duration[1]) return;
 	wrap_cache_header('Cache-Control: max-age=0');
 }
+
+/**
+ * check if submitting a line-up is available for current round
+ * i. e. round has not begun or lineup_before_round_mins has a negative value
+ *
+ * @param array $event
+ * @return bool
+ */
+function mf_tournaments_lineup($event) {
+	if ($event['runde_no'] != my_aktuelle_runde($event['identifier']) + 1) return false;
+
+	$sql = 'SELECT IF(DATE_ADD(NOW(), INTERVAL %d MINUTE) > CONCAT(date_begin, " ", time_begin), NULL, 1) AS lineup_open
+		FROM events
+		WHERE main_event_id = %d
+		AND runde_no = %d';
+	$sql = sprintf($sql
+		 , (!empty($event['lineup_before_round_mins']) ? $event['lineup_before_round_mins'] : 0)
+		 , $event['event_id']
+		 , $event['runde_no']
+	);
+	$lineup = wrap_db_fetch($sql, '', 'single value');
+	return $lineup;
+}
