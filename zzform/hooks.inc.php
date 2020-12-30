@@ -172,6 +172,26 @@ function my_partienupdate_nach_upload($ops) {
  * @return array
  */
 function my_update_teamwertung($ops) {
+	global $zz_setting;
+	static $settings;
+	if (empty($settings)) {
+		// @todo solve via tournament settings object
+		$sql = 'SELECT urkunde_parameter AS parameter FROM turniere WHERE event_id = %d';
+		$sql = sprintf($sql, $ops['record_new'][0]['event_id']);
+		$parameter = wrap_db_fetch($sql, '', 'single value');
+		parse_str($parameter, $settings);
+	}
+	
+	// set colour for first board
+	$colour_uneven_board = 'schwarz';
+	$colour_even_board = 'weiß'; 
+	if (!empty($settings['home_team_first_board'])) {
+		if ($settings['home_team_first_board'] === 'white') {
+			$colour_uneven_board = 'weiß';
+			$colour_even_board = 'schwarz'; 
+		}
+	}
+
 	$changes = [];
 	foreach ($ops['planned'] as $index => $table) {
 		if ($table['table'] !== 'partien') continue;
@@ -187,14 +207,13 @@ function my_update_teamwertung($ops) {
 		}
 
 		// Farbe leer?
-		// 1. Brett = schwarz für Heim @todo in Turniereinstellungen einstellbar
 		if (!$rec_new['heim_spieler_farbe']) {
 			if ($rec_new['brett_no'] & 1) {
-				$changes['record_replace'][$index]['heim_spieler_farbe'] = 'schwarz';
-				$rec_new['heim_spieler_farbe'] = 'schwarz';
+				$changes['record_replace'][$index]['heim_spieler_farbe'] = $colour_uneven_board;
+				$rec_new['heim_spieler_farbe'] = $colour_uneven_board;
 			}  else {
-				$changes['record_replace'][$index]['heim_spieler_farbe'] = 'weiß';
-				$rec_new['heim_spieler_farbe'] = 'weiß';
+				$changes['record_replace'][$index]['heim_spieler_farbe'] = $colour_even_board;
+				$rec_new['heim_spieler_farbe'] = $colour_even_board;
 			}
 		}
 		// Heim-Wertung leer?
