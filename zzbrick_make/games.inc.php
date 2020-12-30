@@ -96,6 +96,7 @@ function mod_tournaments_make_games($vars) {
 			, COUNT(partie_id) AS partien
 			, SUBSTRING_INDEX(categories.path, "/", -1) AS event_category
 			, turnier_id
+			, urkunde_parameter AS parameter
 		FROM events
 		JOIN partien USING (event_id)
 		JOIN turniere USING (event_id)
@@ -121,6 +122,8 @@ function mod_tournaments_make_games($vars) {
 		}
 		return $page;
 	}
+	parse_str($event['parameter'], $parameter);
+	$event += $parameter;
 
 	// PGN-Datei vorhanden?
 	$pgn_path = $zz_setting['media_folder'].'/pgn/'.$event['identifier'].'/%s.pgn';
@@ -159,9 +162,11 @@ function mod_tournaments_make_games($vars) {
 			, schwarz_ergebnis
 			, heim_spieler_farbe
 			, IF(vertauschte_farben = "ja", 1, NULL) AS vertauschte_farben
-			, runde_no
-			, kommentar
+			, partien.runde_no
+			, partien.kommentar
+			, CONCAT (partien.runde_no, ".", IFNULL(CONCAT(paarungen.tisch_no, "."), ""), partien.brett_no) AS Round_With_Board
 		FROM partien
+		LEFT JOIN paarungen USING (paarung_id)
 		LEFT JOIN teilnahmen weiss
 			ON partien.weiss_person_id = weiss.person_id
 			AND weiss.usergroup_id = %d
@@ -211,14 +216,14 @@ function mod_tournaments_make_games($vars) {
 
 	foreach ($partien as $partie_id => $partie) {
 		if (!empty($games_not_live)) {
-			$not_live_partie = cms_partienupdate_pgnfind($games_not_live, $partie);
+			$not_live_partie = cms_partienupdate_pgnfind($games_not_live, $partie, $event);
 			// check if game in saved PGN export is unfinished, then prefer live game
 			if (!empty($not_live_partie['moves']) AND substr(trim($not_live_partie['moves']), -1) !== '*') {
-				$partien[$partie_id] = cms_partienupdate_pgnfind($games, $partie);
+				$partien[$partie_id] = cms_partienupdate_pgnfind($games, $partie, $event);
 				continue;
 			}
 		}
-		$partien[$partie_id] = cms_partienupdate_pgnfind($games, $partie);
+		$partien[$partie_id] = cms_partienupdate_pgnfind($games, $partie, $event);
 		if (!empty($partien[$partie_id]['head'])) {
 			// - Falls Partie vorhanden, PGN importieren
 			$partien[$partie_id]['moves'] = trim($partien[$partie_id]['moves']);
@@ -365,9 +370,10 @@ function cms_partienupdate_pgn_index($games) {
  * @param array $games (gefundene Partien werden hier entfernt)
  * @param array $partie
  *		string 'White', string 'Black'
+ * @param array $event
  * @return array $pgn
  */
-function cms_partienupdate_pgnfind(&$games, $partie) {
+function cms_partienupdate_pgnfind(&$games, $partie, $event) {
 	$white = cms_partienupdate_normalize_name($partie['White']);
 	$black = cms_partienupdate_normalize_name($partie['Black']);
 
@@ -388,6 +394,19 @@ function cms_partienupdate_pgnfind(&$games, $partie) {
 		unset($games[$index]);
 		return $pgn;
 	}
+	
+	// Round with Board?
+	if (!empty($event['pgn_match_round_table_board']) AND !empty($partie['Round_With_Board'])) {
+		foreach ($games as $index => $game) {
+			if (empty($game['head']['Round'])) continue;
+			if ($game['head']['Round'] !== $partie['Round_With_Board']) continue;
+			$pgn['head'] = $games[$index]['head'];
+			$pgn['moves'] = $games[$index]['moves'];
+			unset($games[$index]);
+			return $pgn;
+		}
+	}
+	
 	return [];
 }
 
