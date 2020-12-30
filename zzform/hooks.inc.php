@@ -23,7 +23,7 @@
  * @param array $ops
  * @return void
  */
-function my_tabellenstand_aktualisieren($ops) {
+function mf_tournaments_standings_update($ops) {
 	$update = false;
 	$turnier_ids = [];
 	$event_ids = [];
@@ -142,7 +142,7 @@ function my_tabellenstand_aktualisieren($ops) {
  *
  * @param array $ops
  */
-function my_partienupdate_nach_upload($ops) {
+function mf_tournaments_games_update($ops) {
 	// Wurde eine Datei hochgeladen?
 	if (empty($ops['file_upload'])) return false;
 
@@ -171,7 +171,7 @@ function my_partienupdate_nach_upload($ops) {
  * @param array $ops
  * @return array
  */
-function my_update_teamwertung($ops) {
+function mf_tournaments_team_points($ops) {
 	global $zz_setting;
 	static $settings;
 	if (empty($settings)) {
@@ -201,9 +201,9 @@ function my_update_teamwertung($ops) {
 		if (empty($rec_new['paarung_id'])) return [];
 
 		if ($rec_new['schwarz_ergebnis'] === '' AND $rec_new['weiss_ergebnis'] !== '') {
-			$rec_new['schwarz_ergebnis'] = my_other_result($rec_new['weiss_ergebnis']);
+			$rec_new['schwarz_ergebnis'] = mf_tournaments_other_result($rec_new['weiss_ergebnis']);
 		} elseif ($rec_new['weiss_ergebnis'] === '' AND $rec_new['schwarz_ergebnis'] !== '') {
-			$rec_new['weiss_ergebnis'] = my_other_result($rec_new['schwarz_ergebnis']);
+			$rec_new['weiss_ergebnis'] = mf_tournaments_other_result($rec_new['schwarz_ergebnis']);
 		}
 
 		// Farbe leer?
@@ -243,16 +243,16 @@ function my_update_teamwertung($ops) {
  * @param array $ops
  * @param return $change
  */
-function my_ergebnis_gemeldet($ops) {
+function mf_tournaments_result_reported($ops) {
 	$change = [];
 	foreach ($ops['planned'] as $index => $table) {
 		if ($table['table'] !== 'partien') continue;
 		if ($ops['record_new'][$index]['schwarz_ergebnis'] !== '' AND $ops['record_new'][$index]['weiss_ergebnis'] === '') {
 			$ops['record_diff'][$index]['schwarz_ergebnis'] = 'insert';
-			$change['record_replace'][$index]['weiss_ergebnis'] = my_other_result($ops['record_new'][$index]['schwarz_ergebnis']);
+			$change['record_replace'][$index]['weiss_ergebnis'] = mf_tournaments_other_result($ops['record_new'][$index]['schwarz_ergebnis']);
 		} elseif ($ops['record_new'][$index]['weiss_ergebnis'] !== '' AND $ops['record_new'][$index]['schwarz_ergebnis'] === '') {
 			$ops['record_diff'][$index]['schwarz_ergebnis'] = 'insert';
-			$change['record_replace'][$index]['schwarz_ergebnis'] = my_other_result($ops['record_new'][$index]['weiss_ergebnis']);
+			$change['record_replace'][$index]['schwarz_ergebnis'] = mf_tournaments_other_result($ops['record_new'][$index]['weiss_ergebnis']);
 		}
 		switch ($ops['record_diff'][$index]['schwarz_ergebnis']) {
 		case 'insert':
@@ -284,7 +284,7 @@ function my_ergebnis_gemeldet($ops) {
 	return $change;
 }
 
-function my_other_result($result) {
+function mf_tournaments_other_result($result) {
 	switch ($result) {
 		case '1': case '1.0': return 0;
 		case '0.5': case '.5': return 0.5;
@@ -297,7 +297,7 @@ function my_other_result($result) {
 // ---- Turnierdaten ----
 //
 
-function my_swtimport($ops) {
+function mf_tournaments_swtimport($ops) {
 	if (empty($ops['record_new'][0]['event_id'])) return [];
 	
 	my_job_create('swt', $ops['record_new'][0]['event_id']);

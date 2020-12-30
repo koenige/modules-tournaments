@@ -142,7 +142,7 @@ function mod_tournaments_livegames_series($turniere) {
 function mod_tournaments_livegames_bretter($turnier) {
 	$turnier['last_update'] = '';
 	$turnier['bretter'] = floor($turnier['teilnehmer']/2);
-	$turnier['livebretter_nos'] = my_livebretter(
+	$turnier['livebretter_nos'] = mf_tournaments_live_boards(
 		$turnier['livebretter'], $turnier['bretter']
 	);
 	$sql = 'SELECT partie_id, partien.runde_no, partien.brett_no, halbzuege

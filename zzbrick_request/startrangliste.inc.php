@@ -238,7 +238,7 @@ function mod_tournaments_startrangliste_mannschaft($event) {
 		if ($erstes_team['setzliste_no']) $dwz_sortierung = false;
 
 		list($event['dwz_schnitt'], $event['teams']) 
-			= my_dwz_schnitt_teams($event['event_id'], $event['teams'], $event['bretter_min'], $event['pseudo_dwz']);
+			= mf_tournaments_team_rating_average_dwz($event['event_id'], $event['teams'], $event['bretter_min'], $event['pseudo_dwz']);
 	}
 
 	foreach ($event['teams'] AS $key => $row) {

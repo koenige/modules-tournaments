@@ -34,7 +34,7 @@ foreach (array_keys($zz['fields']) as $no) {
 }
 
 // @todo extra prozess
-$zz['hooks']['after_upload'] = 'my_swtimport';
+$zz['hooks']['after_upload'] = 'mf_tournaments_swtimport';
 
 $zz_conf['text']['de']['Edit a record'] = '';
 $zz_conf['text']['de']['Record was not updated (no changes were made)'] = 'Datei wurde hochgeladen';

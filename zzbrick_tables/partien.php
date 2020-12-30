@@ -284,14 +284,14 @@ $zz['subtitle']['paarung_id']['prefix'] = 'Tisch ';
 $zz['subtitle']['paarung_id']['concat'] = [' <br><small>', ' – '];
 $zz['subtitle']['paarung_id']['suffix'] = '</small>';
 
-$zz['hooks']['after_insert'][] = 'my_tabellenstand_aktualisieren';
-$zz['hooks']['after_update'][] = 'my_tabellenstand_aktualisieren';
-$zz['hooks']['after_delete'][] = 'my_tabellenstand_aktualisieren';
+$zz['hooks']['after_insert'][] = 'mf_tournaments_standings_update';
+$zz['hooks']['after_update'][] = 'mf_tournaments_standings_update';
+$zz['hooks']['after_delete'][] = 'mf_tournaments_standings_update';
 
-$zz['hooks']['before_insert'][] = 'my_ergebnis_gemeldet';
-$zz['hooks']['before_update'][] = 'my_ergebnis_gemeldet';
+$zz['hooks']['before_insert'][] = 'mf_tournaments_result_reported';
+$zz['hooks']['before_update'][] = 'mf_tournaments_result_reported';
 
-$zz['hooks']['before_insert'][] = 'my_update_teamwertung';
+$zz['hooks']['before_insert'][] = 'mf_tournaments_team_points';
 
 $zz['conditions'][1]['scope'] = 'record';
 $zz['conditions'][1]['where'] = 'ISNULL(tisch_no)';

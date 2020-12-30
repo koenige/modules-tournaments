@@ -73,7 +73,7 @@ function mod_tournaments_make_lineup_active($params) {
 	$event_identifier = implode('/', $params);
 
 	// get next round
-	$current_round = my_aktuelle_runde($event_identifier) + 1;
+	$current_round = mf_tournaments_current_round($event_identifier) + 1;
 
 	// check: all rounds played?
 	$sql = 'SELECT event_id, runden AS rounds, urkunde_parameter AS parameter

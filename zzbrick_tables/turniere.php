@@ -504,5 +504,5 @@ $zz['conditions'][2]['where'] = sprintf(
 
 $zz_conf['copy'] = true;
 
-$zz['hooks']['after_update'][] = 'my_tabellenstand_aktualisieren';
-$zz['hooks']['after_upload'][] = 'my_partienupdate_nach_upload';
+$zz['hooks']['after_update'][] = 'mf_tournaments_standings_update';
+$zz['hooks']['after_upload'][] = 'mf_tournaments_games_update';

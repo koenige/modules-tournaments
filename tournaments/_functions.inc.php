@@ -6,7 +6,7 @@
 // Common functions for tournaments
 
 
-function my_aktuelle_runde($identifier) {
+function mf_tournaments_current_round($identifier) {
 	$sql = 'SELECT MAX(tabellenstaende.runde_no)
 		FROM events
 		JOIN tabellenstaende USING (event_id)
@@ -28,7 +28,7 @@ function my_aktuelle_runde($identifier) {
  * @param int $brett_no
  * @param int $tisch_no (optional)
  */
-function my_runde_live($livebretter, $brett_no, $tisch_no = false) {
+function mf_tournaments_live_round($livebretter, $brett_no, $tisch_no = false) {
 	if ($livebretter === '*') return true;
 	$livebretter = explode(',', $livebretter);
 	foreach ($livebretter as $bretter) {
@@ -68,7 +68,7 @@ function my_runde_live($livebretter, $brett_no, $tisch_no = false) {
  *		int dwz_schnitt
  *		array $teams, Liste wie in params, nur mit Feld 'dwz_schnitt' pro Team
  */
-function my_dwz_schnitt_teams($event_id, $teams, $bretter_min, $pseudo_dwz) {
+function mf_tournaments_team_rating_average_dwz($event_id, $teams, $bretter_min, $pseudo_dwz) {
 	// DWZ-Schnitt der Teams berechnen
 	$sql = 'SELECT teilnahme_id, brett_no, rang_no, team_id, t_dwz
 		FROM teilnahmen
@@ -131,7 +131,7 @@ function my_dwz_schnitt_teams($event_id, $teams, $bretter_min, $pseudo_dwz) {
  * @return array
  * @todo support für Mannschaftsturniere mit Tisch_no
  */
-function my_livebretter($livebretter, $brett_max, $tisch_max = false) {
+function mf_tournaments_live_boards($livebretter, $brett_max, $tisch_max = false) {
 	if ($livebretter === '*') {
 		if ($tisch_max) { // @todo
 //			$data = range(1, $tisch_max);
@@ -188,7 +188,7 @@ function my_livebretter($livebretter, $brett_max, $tisch_max = false) {
  * @param string $where
  * @return string $sql
  */
-function my_partien_liste_sql($event, $where) {
+function mf_tournaments_games_sql($event, $where) {
 	// @todo Punkte der Spieler berechnen (wie?)
 	$sql = 'SELECT paarung_id, partie_id, partien.brett_no, partien.runde_no
 			, IF(partiestatus_category_id = %d, 0.5,
@@ -308,7 +308,7 @@ function my_partien_liste_sql($event, $where) {
  * @param string $filter_kennung
  * @return array
  */
-function my_tabellenstand_filter($filter_kennung = false) {
+function mf_tournaments_standings_filter($filter_kennung = false) {
 	$filter = [];
 	$filter['where'] = [];
 	$filter['error'] = false;
@@ -348,7 +348,7 @@ function my_tabellenstand_filter($filter_kennung = false) {
  * @return array
  * @todo move to separate request script with own template
  */
-function my_endtabelle($event_ids) {
+function mf_tournaments_final_standings($event_ids) {
 	$single = false;
 	if (!is_array($event_ids)) {
 		$single = $event_ids;
@@ -397,7 +397,7 @@ function my_endtabelle($event_ids) {
 		if ($fkennung === 'gesamt') {
 			$filter[$fkennung]['where'][] = 'platz_no <= 3';
 		} else {
-			$filter[$fkennung] = my_tabellenstand_filter($fkennung);
+			$filter[$fkennung] = mf_tournaments_standings_filter($fkennung);
 		}
 
 		$sql = 'SELECT tabellenstaende.event_id
@@ -477,7 +477,7 @@ function my_endtabelle($event_ids) {
  * @param array $event
  * @return void
  */
-function my_cache_turnier($event) {
+function mf_tournaments_cache($event) {
 	$duration = explode('/', $event['duration']);
 	$today = date('Y-m-d');
 	if ($today < $duration[0]) return;
@@ -494,7 +494,7 @@ function my_cache_turnier($event) {
  * @return bool
  */
 function mf_tournaments_lineup($event) {
-	if ($event['runde_no'] != my_aktuelle_runde($event['identifier']) + 1) return false;
+	if ($event['runde_no'] != mf_tournaments_current_round($event['identifier']) + 1) return false;
 
 	$sql = 'SELECT IF(DATE_ADD(NOW(), INTERVAL %d MINUTE) > CONCAT(date_begin, " ", time_begin), NULL, 1) AS lineup_open
 		FROM events

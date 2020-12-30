@@ -60,4 +60,4 @@ $zz_sub['sqlorder'] = ' ORDER BY events.date_begin, turniere_wertungen.reihenfol
 
 $zz_sub['hooks']['after_insert'] = 
 $zz_sub['hooks']['after_update'] = 
-$zz_sub['hooks']['after_delete'] = 'my_tabellenstand_aktualisieren';
+$zz_sub['hooks']['after_delete'] = 'mf_tournaments_standings_update';

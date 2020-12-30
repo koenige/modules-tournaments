@@ -119,4 +119,4 @@ $zz['details'][0]['link'] = [
 	'string4' => '/'
 ];
 
-$zz['hooks']['after_delete'] = 'my_tabellenstand_aktualisieren';
+$zz['hooks']['after_delete'] = 'mf_tournaments_standings_update';
