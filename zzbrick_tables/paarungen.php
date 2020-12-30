@@ -65,6 +65,7 @@ $zz['fields'][6]['sql'] = 'SELECT team_id, CONCAT(event, ": ") AS event
 if ($values['where']) $zz['fields'][6]['sql_ignore'] = 'event';
 $zz['fields'][6]['display_field'] = 'heimteam';
 $zz['fields'][6]['search'] = 'heimteams.kennung';
+$zz['fields'][6]['character_set'] = 'latin1';
 
 $zz['fields'][7]['title'] = 'Auswärtsteam';
 $zz['fields'][7]['field_name'] = 'auswaerts_team_id';
@@ -78,6 +79,7 @@ $zz['fields'][7]['sql'] = 'SELECT team_id, CONCAT(event, ": ") AS event
 if ($values['where']) $zz['fields'][7]['sql_ignore'] = 'event';
 $zz['fields'][7]['display_field'] = 'auswaertsteam';
 $zz['fields'][7]['search'] = 'auswaertsteams.kennung';
+$zz['fields'][7]['character_set'] = 'latin1';
 
 $zz['fields'][8]['field_name'] = 'kommentar';
 $zz['fields'][8]['type'] = 'memo';
