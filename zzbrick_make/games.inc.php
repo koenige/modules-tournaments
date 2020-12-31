@@ -190,6 +190,9 @@ function mod_tournaments_make_games($vars) {
 	// Datei Partie für Partie auswerten
 	require_once $zz_setting['custom_wrap_dir'].'/pgn.inc.php';
 	$games = pgn_parse($pgn, $pgn_filename);
+	if (!empty($event['pgn_preparation_function']))
+		$games = $event['pgn_preparation_function']($games, $event['event_id']);
+
 	if (!empty($pgn_filename_not_live)) {
 		$pgn_not_live = sprintf($pgn_path, $pgn_filename_not_live);
 		if (file_exists($pgn_not_live)) {
