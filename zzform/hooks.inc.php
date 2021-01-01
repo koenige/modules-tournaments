@@ -297,6 +297,19 @@ function mf_tournaments_other_result($result) {
 // ---- Turnierdaten ----
 //
 
+/**
+ * Vereinfachen der Rundeneingabe: automatische Ergänzung von . Runde als Termin
+ *
+ * @param array $ops
+ * @return array
+ */
+function mf_tournaments_round_event($ops) {
+	if (!empty($ops['record_new'][0]['event'])) return [];
+	if (empty($ops['record_new'][0]['runde_no'])) return [];
+	$change['record_replace'][0]['event'] = $ops['record_new'][0]['runde_no'].'. Runde';
+	return $change;
+}
+
 function mf_tournaments_swtimport($ops) {
 	if (empty($ops['record_new'][0]['event_id'])) return [];
 	
