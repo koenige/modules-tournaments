@@ -235,28 +235,130 @@ return @event_id ;;
 DELIMITER ;
 
 
-CREATE VIEW `partien_einzelergebnisse` AS select `partien`.`partie_id` AS `partie_id`,`partien`.`partiestatus_category_id` AS `partiestatus_category_id`,`partien`.`event_id` AS `event_id`,`partien`.`runde_no` AS `runde_no`,`partien`.`weiss_person_id` AS `person_id`,`partien`.`schwarz_person_id` AS `gegner_id`,`partien`.`weiss_ergebnis` AS `ergebnis`,`partien`.`brett_no` AS `brett_no` from `partien` where (`partien`.`event_id` = `event_id`()) union all select `partien`.`partie_id` AS `partie_id`,`partien`.`partiestatus_category_id` AS `partiestatus_category_id`,`partien`.`event_id` AS `event_id`,`partien`.`runde_no` AS `runde_no`,`partien`.`schwarz_person_id` AS `person_id`,`partien`.`weiss_person_id` AS `gegner_id`,`partien`.`schwarz_ergebnis` AS `ergebnis`,`partien`.`brett_no` AS `brett_no` from `partien` where (`partien`.`event_id` = `event_id`());
+CREATE OR REPLACE VIEW `partien_einzelergebnisse` AS
+	SELECT `partie_id`, `partiestatus_category_id`, `event_id`, `runde_no`, `weiss_person_id` AS `person_id`, `schwarz_person_id` AS `gegner_id`, `weiss_ergebnis` AS `ergebnis`, `brett_no`
+	FROM `partien`
+	WHERE `event_id` = `event_id`()
+	UNION ALL SELECT `partie_id`, `partiestatus_category_id`, `event_id`, `runde_no`, `schwarz_person_id` AS `person_id`, `weiss_person_id` AS `gegner_id`, `schwarz_ergebnis` AS `ergebnis`, `brett_no`
+	FROM `partien`
+	WHERE `event_id` = `event_id`();
 
 
-CREATE VIEW `buchholz_einzel_mit_kampflosen_view` AS select `ergebnisse_gegner`.`partiestatus_category_id` AS `partiestatus_category_id`,`ergebnisse`.`runde_no` AS `runde_no`,`ergebnisse`.`event_id` AS `event_id`,`ergebnisse`.`person_id` AS `person_id`,`ergebnisse`.`gegner_id` AS `gegner_id`,`ergebnisse_gegner`.`ergebnis` AS `punkte`,`ergebnisse_gegner`.`runde_no` AS `runde_gegner` from (`partien_einzelergebnisse` `ergebnisse` join `partien_einzelergebnisse` `ergebnisse_gegner` on(((`ergebnisse`.`event_id` = `ergebnisse_gegner`.`event_id`) and (`ergebnisse`.`gegner_id` = `ergebnisse_gegner`.`person_id`)))) order by `ergebnisse`.`person_id`,`ergebnisse`.`gegner_id`;
+CREATE OR REPLACE VIEW `buchholz_einzel_mit_kampflosen_view` AS
+	SELECT `ergebnisse_gegner`.`partiestatus_category_id`, `ergebnisse`.`runde_no`, `ergebnisse`.`event_id`, `ergebnisse`.`person_id`, `ergebnisse`.`gegner_id`, `ergebnisse_gegner`.`ergebnis` AS `punkte`, `ergebnisse_gegner`.`runde_no` AS `runde_gegner`
+	FROM `partien_einzelergebnisse` `ergebnisse`
+	JOIN `partien_einzelergebnisse` `ergebnisse_gegner`
+		ON `ergebnisse`.`event_id` = `ergebnisse_gegner`.`event_id`
+		AND `ergebnisse`.`gegner_id` = `ergebnisse_gegner`.`person_id`
+	ORDER BY `ergebnisse`.`person_id`, `ergebnisse`.`gegner_id`;
 
 
-CREATE VIEW `partien_ergebnisse_view` AS select `partien`.`event_id` AS `event_id`,`paarungen`.`heim_team_id` AS `team_id`,`paarungen`.`auswaerts_team_id` AS `gegner_team_id`,`partien`.`runde_no` AS `runde_no`,`partien`.`brett_no` AS `brett_no`,`partien`.`partie_id` AS `partie_id`,`partien`.`heim_wertung` AS `ergebnis`,`partien`.`auswaerts_wertung` AS `ergebnis_gegner` from (`paarungen` left join `partien` on((`paarungen`.`paarung_id` = `partien`.`paarung_id`))) where (`partien`.`event_id` = `event_id`()) union select `partien`.`event_id` AS `event_id`,`paarungen`.`auswaerts_team_id` AS `team_id`,`paarungen`.`heim_team_id` AS `gegner_team_id`,`partien`.`runde_no` AS `runde_no`,`partien`.`brett_no` AS `brett_no`,`partien`.`partie_id` AS `partie_id`,`partien`.`auswaerts_wertung` AS `ergebnis`,`partien`.`heim_wertung` AS `ergebnis_gegner` from (`paarungen` left join `partien` on((`paarungen`.`paarung_id` = `partien`.`paarung_id`))) where (`partien`.`event_id` = `event_id`());
+CREATE OR REPLACE VIEW `partien_ergebnisse_view` AS
+	SELECT `partien`.`event_id`, `paarungen`.`heim_team_id` AS `team_id`, `paarungen`.`auswaerts_team_id` AS `gegner_team_id`, `partien`.`runde_no`, `partien`.`brett_no`, `partien`.`partie_id`, `partien`.`heim_wertung` AS `ergebnis`, `partien`.`auswaerts_wertung` AS `ergebnis_gegner`
+	FROM `paarungen`
+	LEFT JOIN `partien` USING (`paarung_id`)
+	WHERE `partien`.`event_id` = `event_id`()
+	UNION SELECT `partien`.`event_id`, `paarungen`.`auswaerts_team_id` AS `team_id`, `paarungen`.`heim_team_id` AS `gegner_team_id`, `partien`.`runde_no`, `partien`.`brett_no`, `partien`.`partie_id`, `partien`.`auswaerts_wertung` AS `ergebnis`, `partien`.`heim_wertung` AS `ergebnis_gegner`
+	FROM `paarungen`
+	LEFT JOIN `partien` USING (`paarung_id`)
+	WHERE `partien`.`event_id` = `event_id`();
 
 
-CREATE VIEW `paarungen_ergebnisse_view` AS select `partien_ergebnisse_view`.`event_id` AS `event_id`,`partien_ergebnisse_view`.`team_id` AS `team_id`,`partien_ergebnisse_view`.`gegner_team_id` AS `gegner_team_id`,`partien_ergebnisse_view`.`runde_no` AS `runde_no`,0 AS `kampflos`,sum(`partien_ergebnisse_view`.`ergebnis`) AS `brettpunkte`,sum(`partien_ergebnisse_view`.`ergebnis_gegner`) AS `brettpunkte_gegner`,(case when (sum(`partien_ergebnisse_view`.`ergebnis`) < sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 0 when (sum(`partien_ergebnisse_view`.`ergebnis`) > sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 2 when (sum(`partien_ergebnisse_view`.`ergebnis`) = sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 1 end) AS `mannschaftspunkte`,(case when (sum(`partien_ergebnisse_view`.`ergebnis`) < sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 2 when (sum(`partien_ergebnisse_view`.`ergebnis`) > sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 0 when (sum(`partien_ergebnisse_view`.`ergebnis`) = sum(`partien_ergebnisse_view`.`ergebnis_gegner`)) then 1 end) AS `mannschaftspunkte_gegner` from `partien_ergebnisse_view` where (`partien_ergebnisse_view`.`event_id` = `event_id`()) group by `partien_ergebnisse_view`.`event_id`,`partien_ergebnisse_view`.`team_id`,`partien_ergebnisse_view`.`runde_no`,`partien_ergebnisse_view`.`gegner_team_id` union select `paarungen`.`event_id` AS `event_id`,`paarungen`.`heim_team_id` AS `team_id`,`teams`.`team_id` AS `gegner_team_id`,`paarungen`.`runde_no` AS `runde_no`,1 AS `kampflos`,`turniere`.`bretter_min` AS `brettpunkte`,0 AS `brettpunkte_gegner`,2 AS `mannschaftspunkte`,0 AS `mannschaftspunkte_gegner` from ((`paarungen` join `teams` on(((`teams`.`team_id` = `paarungen`.`auswaerts_team_id`) and (`teams`.`spielfrei` = 'ja')))) join `turniere` on((`turniere`.`event_id` = `paarungen`.`event_id`))) where (`paarungen`.`event_id` = `event_id`()) union select `paarungen`.`event_id` AS `event_id`,`paarungen`.`auswaerts_team_id` AS `team_id`,`teams`.`team_id` AS `gegner_team_id`,`paarungen`.`runde_no` AS `runde_no`,1 AS `kampflos`,`turniere`.`bretter_min` AS `brettpunkte`,0 AS `brettpunkte_gegner`,2 AS `mannschaftspunkte`,0 AS `mannschaftspunkte_gegner` from ((`paarungen` join `teams` on(((`teams`.`team_id` = `paarungen`.`heim_team_id`) and (`teams`.`spielfrei` = 'ja')))) join `turniere` on((`turniere`.`event_id` = `paarungen`.`event_id`))) where (`paarungen`.`event_id` = `event_id`());
+CREATE OR REPLACE VIEW `paarungen_ergebnisse_view` AS
+	SELECT `partien_ergebnisse_view`.`event_id`, `partien_ergebnisse_view`.`team_id`, `partien_ergebnisse_view`.`gegner_team_id`, `partien_ergebnisse_view`.`runde_no`, 0 AS `kampflos`, SUM(`partien_ergebnisse_view`.`ergebnis`) AS `brettpunkte`, SUM(`partien_ergebnisse_view`.`ergebnis_gegner`) AS `brettpunkte_gegner`, (CASE WHEN (SUM(`partien_ergebnisse_view`.`ergebnis`) < SUM(`partien_ergebnisse_view`.`ergebnis_gegner`)) THEN 0 WHEN (SUM(`partien_ergebnisse_view`.`ergebnis`) > SUM(`partien_ergebnisse_view`.`ergebnis_gegner`)) THEN 2 WHEN (SUM(`partien_ergebnisse_view`.`ergebnis`) = SUM(`partien_ergebnisse_view`.`ergebnis_gegner`)) THEN 1 END) AS `mannschaftspunkte`, (CASE WHEN (SUM(`partien_ergebnisse_view`.`ergebnis`) < SUM(`partien_ergebnisse_view`.`ergebnis_gegner`)) THEN 2 WHEN (SUM(`partien_ergebnisse_view`.`ergebnis`) > SUM(`partien_ergebnisse_view`.`ergebnis_gegner`)) THEN 0 WHEN (SUM(`partien_ergebnisse_view`.`ergebnis`) = SUM(`partien_ergebnisse_view`.`ergebnis_gegner`)) THEN 1 END) AS `mannschaftspunkte_gegner`
+	FROM `partien_ergebnisse_view`
+	WHERE `event_id` = `event_id`()
+	GROUP BY `event_id`, `team_id`, `runde_no`, `gegner_team_id`
+	UNION SELECT `paarungen`.`event_id`, `paarungen`.`heim_team_id` AS `team_id`, `teams`.`team_id` AS `gegner_team_id`, `paarungen`.`runde_no`, 1 AS `kampflos`, `turniere`.`bretter_min` AS `brettpunkte`, 0 AS `brettpunkte_gegner`, 2 AS `mannschaftspunkte`, 0 AS `mannschaftspunkte_gegner`
+	FROM `paarungen`
+	JOIN `teams`
+		ON `teams`.`team_id` = `paarungen`.`auswaerts_team_id`
+		AND `teams`.`spielfrei` = 'ja'
+	JOIN `turniere`
+		ON `turniere`.`event_id` = `paarungen`.`event_id`
+	WHERE `paarungen`.`event_id` = `event_id`()
+	UNION SELECT `paarungen`.`event_id`, `paarungen`.`auswaerts_team_id` AS `team_id`, `teams`.`team_id` AS `gegner_team_id`, `paarungen`.`runde_no`, 1 AS `kampflos`, `turniere`.`bretter_min` AS `brettpunkte`, 0 AS `brettpunkte_gegner`, 2 AS `mannschaftspunkte`, 0 AS `mannschaftspunkte_gegner`
+	FROM `paarungen`
+	JOIN `teams`
+		ON `teams`.`team_id` = `paarungen`.`heim_team_id`
+		AND `teams`.`spielfrei` = 'ja'
+	JOIN `turniere`
+		ON `turniere`.`event_id` = `paarungen`.`event_id`
+	WHERE `paarungen`.`event_id` = `event_id`();
 
 
-CREATE VIEW `tabellenstaende_termine_view` AS select `teams`.`event_id` AS `event_id`,`paarungen`.`runde_no` AS `runde_no`,`teams`.`team_id` AS `team_id` from (`paarungen` left join `teams` on((`paarungen`.`event_id` = `teams`.`event_id`))) where (`paarungen`.`event_id` = `event_id`()) group by `teams`.`event_id`,`paarungen`.`runde_no`,`teams`.`team_id`;
+CREATE OR REPLACE VIEW `tabellenstaende_termine_view` AS
+	SELECT `teams`.`event_id`, `paarungen`.`runde_no`, `teams`.`team_id`
+	FROM `paarungen`
+	LEFT JOIN `teams` USING (`event_id`)
+	WHERE `paarungen`.`event_id` = `event_id`()
+	GROUP BY `event_id`, `runde_no`, `team_id`;
 
 
-CREATE VIEW `tabellenstaende_guv_view` AS select `tabellenstaende_termine_view`.`event_id` AS `event_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,sum(if((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 2),1,0)) AS `gewonnen`,sum(if((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 1),1,0)) AS `unentschieden`,sum(if((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 0),1,0)) AS `verloren` from (`tabellenstaende_termine_view` left join `paarungen_ergebnisse_view` on(((`paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) group by `tabellenstaende_termine_view`.`event_id`,`tabellenstaende_termine_view`.`runde_no`,`tabellenstaende_termine_view`.`team_id`;
+CREATE OR REPLACE VIEW `tabellenstaende_guv_view` AS
+	SELECT `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`, SUM(IF((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 2),1,0)) AS `gewonnen`, SUM(IF((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 1),1,0)) AS `unentschieden`, SUM(IF((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 0),1,0)) AS `verloren`
+	FROM `tabellenstaende_termine_view`
+	LEFT JOIN `paarungen_ergebnisse_view`
+		ON `paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`
+		AND `paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`
+		AND `paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`
+	GROUP BY `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`;
 
 
-CREATE VIEW `buchholz_mit_kampflosen_view` AS select `tabellenstaende_termine_view`.`event_id` AS `event_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,sum(if((`gegners_paarungen`.`kampflos` = 1),1,`gegners_paarungen`.`mannschaftspunkte`)) AS `buchholz_mit_korrektur`,sum(`gegners_paarungen`.`mannschaftspunkte`) AS `buchholz` from ((`paarungen_ergebnisse_view` left join `tabellenstaende_termine_view` on(((`paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) left join `paarungen_ergebnisse_view` `gegners_paarungen` on(((`gegners_paarungen`.`team_id` = `paarungen_ergebnisse_view`.`gegner_team_id`) and (`gegners_paarungen`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) group by `tabellenstaende_termine_view`.`event_id`,`tabellenstaende_termine_view`.`team_id`,`tabellenstaende_termine_view`.`runde_no` union select `tabellenstaende_termine_view`.`event_id` AS `event_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,(sum(`bisherige_paarungen`.`mannschaftspunkte`) + (`tabellenstaende_termine_view`.`runde_no` - `paarungen_ergebnisse_view`.`runde_no`)) AS `buchholz_kampflos_mit_korrektur`,0 AS `buchholz_kampflos` from (`paarungen_ergebnisse_view` `bisherige_paarungen` left join (`paarungen_ergebnisse_view` left join `tabellenstaende_termine_view` on(((`paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) on(((`bisherige_paarungen`.`event_id` = `paarungen_ergebnisse_view`.`event_id`) and (`bisherige_paarungen`.`team_id` = `paarungen_ergebnisse_view`.`team_id`) and (`bisherige_paarungen`.`runde_no` < `paarungen_ergebnisse_view`.`runde_no`)))) where (`paarungen_ergebnisse_view`.`kampflos` = 1) group by `tabellenstaende_termine_view`.`event_id`,`tabellenstaende_termine_view`.`team_id`,`tabellenstaende_termine_view`.`runde_no`,`paarungen_ergebnisse_view`.`runde_no` union select `tabellenstaende_termine_view`.`event_id` AS `event_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,(`tabellenstaende_termine_view`.`runde_no` - `paarungen_ergebnisse_view`.`runde_no`) AS `buchholz_kampflos_mit_korrektur`,0 AS `buchholz_kampflos` from (`tabellenstaende_termine_view` join `paarungen_ergebnisse_view` on(((`paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` = 1) and (`paarungen_ergebnisse_view`.`kampflos` = 1))));
+CREATE OR REPLACE VIEW `buchholz_mit_kampflosen_view` AS
+	SELECT `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`, SUM(IF((`gegners_paarungen`.`kampflos` = 1), 1, `gegners_paarungen`.`mannschaftspunkte`)) AS `buchholz_mit_korrektur`, SUM(`gegners_paarungen`.`mannschaftspunkte`) AS `buchholz`
+	FROM `paarungen_ergebnisse_view`
+	LEFT JOIN `tabellenstaende_termine_view`
+		ON `paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`
+		AND `paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`
+		AND `paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`
+	LEFT JOIN `paarungen_ergebnisse_view` `gegners_paarungen`
+		ON `gegners_paarungen`.`team_id` = `paarungen_ergebnisse_view`.`gegner_team_id`
+		AND `gegners_paarungen`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`
+	GROUP BY `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`team_id`, `tabellenstaende_termine_view`.`runde_no`
+	UNION SELECT `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`, (SUM(`bisherige_paarungen`.`mannschaftspunkte`) + (`tabellenstaende_termine_view`.`runde_no` - `paarungen_ergebnisse_view`.`runde_no`)) AS `buchholz_kampflos_mit_korrektur`,0 AS `buchholz_kampflos`
+	FROM `paarungen_ergebnisse_view` `bisherige_paarungen`
+	LEFT JOIN `paarungen_ergebnisse_view`
+		ON `bisherige_paarungen`.`event_id` = `paarungen_ergebnisse_view`.`event_id`
+		AND `bisherige_paarungen`.`team_id` = `paarungen_ergebnisse_view`.`team_id`
+		AND `bisherige_paarungen`.`runde_no` < `paarungen_ergebnisse_view`.`runde_no`
+	LEFT JOIN `tabellenstaende_termine_view`
+		ON `paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`
+		AND `paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`
+		AND `paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`
+	WHERE `paarungen_ergebnisse_view`.`kampflos` = 1
+	GROUP BY `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`team_id`, `tabellenstaende_termine_view`.`runde_no`, `paarungen_ergebnisse_view`.`runde_no`
+	UNION SELECT `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`, (`tabellenstaende_termine_view`.`runde_no` - `paarungen_ergebnisse_view`.`runde_no`) AS `buchholz_kampflos_mit_korrektur`, 0 AS `buchholz_kampflos`
+	FROM `tabellenstaende_termine_view`
+	JOIN `paarungen_ergebnisse_view`
+		ON `paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`
+		AND `paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`
+		AND `paarungen_ergebnisse_view`.`runde_no` = 1
+		AND `paarungen_ergebnisse_view`.`kampflos` = 1;
+
+CREATE OR REPLACE VIEW `buchholz_view` AS
+	SELECT `buchholz_mit_kampflosen_view`.`event_id`, `buchholz_mit_kampflosen_view`.`team_id`, `buchholz_mit_kampflosen_view`.`runde_no`, IFNULL(SUM(`buchholz_mit_kampflosen_view`.`buchholz_mit_korrektur`),0) AS `buchholz_mit_korrektur`, IFNULL(SUM(`buchholz_mit_kampflosen_view`.`buchholz`),0) AS `buchholz`
+	FROM `buchholz_mit_kampflosen_view`
+	GROUP BY `event_id`, `team_id`, `runde_no`;
 
 
-CREATE VIEW `buchholz_view` AS select `buchholz_mit_kampflosen_view`.`event_id` AS `event_id`,`buchholz_mit_kampflosen_view`.`team_id` AS `team_id`,`buchholz_mit_kampflosen_view`.`runde_no` AS `runde_no`,ifnull(sum(`buchholz_mit_kampflosen_view`.`buchholz_mit_korrektur`),0) AS `buchholz_mit_korrektur`,ifnull(sum(`buchholz_mit_kampflosen_view`.`buchholz`),0) AS `buchholz` from `buchholz_mit_kampflosen_view` group by `buchholz_mit_kampflosen_view`.`event_id`,`buchholz_mit_kampflosen_view`.`team_id`,`buchholz_mit_kampflosen_view`.`runde_no`;
-
-
-CREATE VIEW `tabellenstaende_view` AS select `tabellenstaende_termine_view`.`event_id` AS `event_id`,`tabellenstaende_termine_view`.`runde_no` AS `runde_no`,`tabellenstaende_termine_view`.`team_id` AS `team_id`,`turniere_wertungen`.`reihenfolge` AS `reihenfolge`,`turniere_wertungen`.`wertung_category_id` AS `wertung_category_id`,(case `turniere_wertungen`.`wertung_category_id` when 144 then sum(`paarungen_ergebnisse_view`.`mannschaftspunkte`) when 145 then sum(`paarungen_ergebnisse_view`.`brettpunkte`) when 146 then (select `buchholz_view`.`buchholz_mit_korrektur` from `buchholz_view` where ((`buchholz_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`buchholz_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`buchholz_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`))) when 215 then (select `buchholz_view`.`buchholz` from `buchholz_view` where ((`buchholz_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`buchholz_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`buchholz_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`))) when 147 then (select sum((case `partien_ergebnisse_view`.`ergebnis` when 1 then ((1 + `turniere`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) when 0.5 then (((1 + `turniere`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) / 2) when 0 then 0 end)) AS `berliner_wertung` from `partien_ergebnisse_view` where ((`partien_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`partien_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`) and (`partien_ergebnisse_view`.`team_id` = `paarungen_ergebnisse_view`.`team_id`))) when 150 then (select `tabellenstaende_guv_view`.`gewonnen` from `tabellenstaende_guv_view` where ((`tabellenstaende_guv_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`tabellenstaende_guv_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`tabellenstaende_guv_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`))) end) AS `wertung` from (`paarungen_ergebnisse_view` left join (`turniere_wertungen` left join (`turniere` left join `tabellenstaende_termine_view` on((`turniere`.`event_id` = `tabellenstaende_termine_view`.`event_id`))) on((`turniere_wertungen`.`turnier_id` = `turniere`.`turnier_id`))) on(((`paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) and (`paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) and (`paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`)))) group by `tabellenstaende_termine_view`.`event_id`,`tabellenstaende_termine_view`.`runde_no`,`tabellenstaende_termine_view`.`team_id`,`turniere_wertungen`.`reihenfolge`,`turniere_wertungen`.`wertung_category_id`,`paarungen_ergebnisse_view`.`team_id`;
+CREATE OR REPLACE VIEW `tabellenstaende_view` AS
+	SELECT `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`, `turniere_wertungen`.`reihenfolge` AS `reihenfolge`, `turniere_wertungen`.`wertung_category_id` AS `wertung_category_id`,
+		(CASE `turniere_wertungen`.`wertung_category_id`
+			WHEN 144 THEN SUM(`paarungen_ergebnisse_view`.`mannschaftspunkte`)
+			WHEN 145 THEN SUM(`paarungen_ergebnisse_view`.`brettpunkte`)
+			WHEN 146 THEN (SELECT `buchholz_view`.`buchholz_mit_korrektur` FROM `buchholz_view` WHERE ((`buchholz_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) AND (`buchholz_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) AND (`buchholz_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`)))
+			WHEN 215 THEN (SELECT `buchholz_view`.`buchholz` FROM `buchholz_view` WHERE ((`buchholz_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) AND (`buchholz_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) AND (`buchholz_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`)))
+			WHEN 147 THEN (SELECT SUM((CASE `partien_ergebnisse_view`.`ergebnis` WHEN 1 THEN ((1 + `turniere`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) WHEN 0.5 THEN (((1 + `turniere`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) / 2) WHEN 0 THEN 0 END)) AS `berliner_wertung` FROM `partien_ergebnisse_view` WHERE ((`partien_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) AND (`partien_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`) AND (`partien_ergebnisse_view`.`team_id` = `paarungen_ergebnisse_view`.`team_id`)))
+			WHEN 150 THEN (SELECT `tabellenstaende_guv_view`.`gewonnen` FROM `tabellenstaende_guv_view` WHERE ((`tabellenstaende_guv_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) AND (`tabellenstaende_guv_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) AND (`tabellenstaende_guv_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`)))
+		END) AS `wertung`
+	FROM `paarungen_ergebnisse_view`
+	LEFT JOIN `tabellenstaende_termine_view`
+		ON `paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`
+		AND `paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`
+		AND `paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`
+	LEFT JOIN `turniere`
+		ON `turniere`.`event_id` = `tabellenstaende_termine_view`.`event_id`
+	LEFT JOIN `turniere_wertungen`
+		ON `turniere_wertungen`.`turnier_id` = `turniere`.`turnier_id`
+	GROUP BY `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`, `turniere_wertungen`.`reihenfolge`, `turniere_wertungen`.`wertung_category_id`,`paarungen_ergebnisse_view`.`team_id`;
