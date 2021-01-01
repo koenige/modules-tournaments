@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2012-2020 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2012-2021 Gustaf Mossakowski <gustaf@koenige.org>
 // Copyright (c) 2014 Erik Kothe <erik@deutsche-schachjugend.de>
 // update standings for team tournaments
 
@@ -14,7 +14,7 @@
  * @return void
  * @todo return Anzahl der geänderten Datensätze, ggf.
  */
-function cms_tabellenstand_write_mannschaft($event) {
+function mod_tournaments_make_standings_team($event) {
 	$sql = 'SELECT @event_id:=%d';
 	$sql = sprintf($sql, $event['event_id']);
 	wrap_db_query($sql);
@@ -30,13 +30,14 @@ function cms_tabellenstand_write_mannschaft($event) {
 		AND tabellenstaende_guv_view.runde_no = %d
 		AND spielfrei = "nein"
 		AND (meldung = "komplett" OR meldung = "teiloffen")
+		AND team_status = "Teilnehmer"
 		HAVING veroeffentlicht > 0
 	';
 	$sql = sprintf($sql,
 		$event['event_id'], $event['runde_no']
 	);
-	$tabelle = wrap_db_fetch($sql, 'team_id');
-	if (!$tabelle) return false;
+	$standings = wrap_db_fetch($sql, 'team_id');
+	if (!$standings) return false;
 
 	$turnierwertungen = cms_tabellenstandupdate_wertungen($event['event_id']);
 
@@ -51,7 +52,7 @@ function cms_tabellenstand_write_mannschaft($event) {
 		AND wertung IS NOT NULL
 		AND team_id IN (%s)
 		ORDER BY turniere_wertungen.reihenfolge, wertung DESC';
-	$sql = sprintf($sql, $event['runde_no'], implode(',', array_keys($tabelle)));
+	$sql = sprintf($sql, $event['runde_no'], implode(',', array_keys($standings)));
 	$wertungen = wrap_db_fetch($sql, ['wertung_category_id', 'team_id', 'wertung'], 'key/value');
 
 	// Weitere Wertungen ergänzen
@@ -74,7 +75,7 @@ function cms_tabellenstand_write_mannschaft($event) {
 				FROM teams
 				WHERE team_id IN (%s)
 				ORDER BY setzliste_no';
-			$sql = sprintf($sql, implode(',', array_keys($tabelle)));
+			$sql = sprintf($sql, implode(',', array_keys($standings)));
 			$wertungen[$category_id] = wrap_db_fetch($sql, 'team_id', 'key/value');
 			break;
 		case wrap_category_id('turnierwertungen/sobo'):
@@ -93,7 +94,7 @@ function cms_tabellenstand_write_mannschaft($event) {
 			if (!array_key_exists($category_id, $wertungen)) {
 				$wertungen[$category_id] = [];
 			}
-			foreach (array_keys($tabelle) as $team_id) {
+			foreach (array_keys($standings) as $team_id) {
 				if (!array_key_exists($team_id, $wertungen[$category_id])) {
 					$wertungen[$category_id][$team_id] = 0;
 				} elseif (empty($wertungen[$category_id][$team_id])) {
@@ -103,7 +104,7 @@ function cms_tabellenstand_write_mannschaft($event) {
 		}
 	}
 
-	$tabelle = cms_tabellenstand_wertungen($event, $tabelle, $wertungen, $turnierwertungen);
+	$standings = cms_tabellenstand_wertungen($event, $standings, $wertungen, $turnierwertungen);
 
 	$sql = 'SELECT team_id, tabellenstand_id
 		FROM tabellenstaende
@@ -111,7 +112,7 @@ function cms_tabellenstand_write_mannschaft($event) {
 	$sql = sprintf($sql, $event['event_id'], $event['runde_no']);
 	$vorhandene_daten = wrap_db_fetch($sql, '_dummy_', 'key/value');
 
-	foreach ($tabelle as $stand) {
+	foreach ($standings as $stand) {
 		$unwanted_keys = [
 			'dwz_schnitt', 'eindeutig'
 		];
@@ -165,11 +166,11 @@ function cms_tabellenstand_write_mannschaft($event) {
  * and so on.
  *
  * @param array $event
- * @param array $tabelle
+ * @param array $standings
  * @param array $hauptwertung
  * @return $teams int team_id => string Wertung
  */
-function mf_tournaments_make_team_direct_encounter($event, $tabelle, $hauptwertung) {
+function mf_tournaments_make_team_direct_encounter($event, $standings, $hauptwertung) {
 	// Welches ist die Hauptwertung?
 	switch ($hauptwertung['category_id']) {
 	case wrap_category_id('turnierwertungen/mp'):
@@ -184,7 +185,7 @@ function mf_tournaments_make_team_direct_encounter($event, $tabelle, $hauptwertu
 	$teams = [];
 	$unklar = [];
 	
-	foreach ($tabelle as $team_id => $wertung) {
+	foreach ($standings as $team_id => $wertung) {
 		if (!empty($wertung['eindeutig'])) continue;
 		$index = isset($wertung['platz_no']) ? $wertung['platz_no'] : 0;
 		$unklar[$index][] = $team_id;

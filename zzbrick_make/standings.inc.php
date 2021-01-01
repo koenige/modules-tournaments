@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2012-2020 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2012-2021 Gustaf Mossakowski <gustaf@koenige.org>
 // Copyright (c) 2014 Erik Kothe <erik@deutsche-schachjugend.de>
 // Ergebnisse: Tabellenstand aus Views in Datenbank schreiben
 
@@ -168,7 +168,7 @@ function cms_tabellenstandupdate_runde($vars) {
 	} else {
 		$event['runde_no'] = $runde;
 		require_once __DIR__.'/standings-team.inc.php';
-		cms_tabellenstand_write_mannschaft($event);
+		mod_tournaments_make_standings_team($event);
 	}
 	my_job_finish('tabelle', 1, $event['event_id'], $runde);
 	if ($runde < $event['runden_gespielt']) {
