@@ -10,6 +10,23 @@
  */
 
 
+CREATE TABLE `anmerkungen` (
+  `anmerkung_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `anmerkung` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `team_id` int unsigned DEFAULT NULL,
+  `teilnahme_id` int unsigned DEFAULT NULL,
+  `autor_person_id` int unsigned NOT NULL,
+  `sichtbarkeit` set('Team','Organisator') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
+  `anmerkung_status` enum('offen','erledigt') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'offen',
+  `erstellt` datetime NOT NULL,
+  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`anmerkung_id`),
+  KEY `team_id` (`team_id`),
+  KEY `autor_person_id` (`autor_person_id`),
+  KEY `teilnahme_id` (`teilnahme_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 CREATE TABLE `paarungen` (
   `paarung_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `event_id` int(10) unsigned NOT NULL,

@@ -1,0 +1,27 @@
+# tournaments module
+# Mail: remarks to a tournament registration
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2017, 2020-2021 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+Subject: %%% item event %%% %%% item year %%% %%% item team %%% %%% item team_no %%%
+
+Über die Website %%% setting hostname %%% ist eine neue Benachrichtigung
+eingegangen:
+
+Turnier:  %%% item event %%%, %%% item ort %%%, %%% item duration wrap_date %%% 
+           %%% setting host_base %%%/intern/termine/%%% item event_identifier %%%/
+%%% condition if team %%%
+Team:     %%% item team %%% %%% item team_no %%% 
+%%% condition endif %%%
+Absender: %%% item person %%% <%%% item e_mail %%%>
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
+%%% item anmerkung %%%
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

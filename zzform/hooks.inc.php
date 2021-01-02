@@ -316,3 +316,49 @@ function mf_tournaments_swtimport($ops) {
 	my_job_create('swt', $ops['record_new'][0]['event_id']);
 	return [];
 }
+
+/**
+ * Falls Anmerkung zu Turnier erstellt, die offen ist, per Mail versenden
+ *
+ * @param array $ops
+ * @return void
+ */
+function mf_tournaments_remarks_mail($ops) {
+	foreach ($ops['return'] as $index => $table) {
+		if ($table['table'] !== 'anmerkungen') continue;
+		$record = $ops['record_new'][$index];
+		if (empty($record['benachrichtigung'])) continue;
+		if ($record['benachrichtigung'] !== 'ja') continue;
+
+		$sql = 'SELECT event
+				, places.contact AS ort
+				, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
+				, YEAR(events.date_begin) AS year
+				, events.identifier AS event_identifier
+				, team, team_no
+			FROM teams
+			LEFT JOIN events USING (event_id)
+			LEFT JOIN contacts places
+				ON events.place_contact_id = places.contact_id
+			WHERE team_id = %d
+		';
+		$sql = sprintf($sql, $record['team_id']); // @todo teilnahme_id
+		$record = array_merge($record, wrap_db_fetch($sql));
+
+		$sql = 'SELECT CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname) AS person
+			, e_mail
+			FROM personen
+			WHERE person_id = %d';
+		$sql = sprintf($sql, $record['autor_person_id']);
+		$record = array_merge($record, wrap_db_fetch($sql));
+
+		$msg = wrap_template('anmerkung-mail', $record);
+		$mail['message'] = $msg;
+		$mail['headers']['From']['name'] = $record['person'];
+		$mail['headers']['From']['e_mail'] = $record['e_mail'];
+		$mail['to']['name'] = wrap_get_setting('project');
+		$mail['to']['e_mail'] = wrap_get_setting('tournaments_remarks_mail_to');
+		$success = wrap_mail($mail);
+	}
+	return;
+}
