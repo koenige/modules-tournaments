@@ -1,9 +1,15 @@
 <?php 
 
-// Zugzwang Project
-// deutsche-schachjugend.de
-// Copyright (c) 2012-2020 Gustaf Mossakowski <gustaf@koenige.org>
-// Skript: Teams
+/**
+ * Zugzwang Project
+ * table script for teams
+ *
+ * https://www.zugzwang.org/modules/tournaments
+ *
+ * @author Gustaf Mossakowski <gustaf@koenige.org>
+ * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+ */
 
 
 $zz['title'] = 'Teams';
@@ -214,9 +220,7 @@ if (brick_access_rights(['Webmaster'])) {
 	$zz['fields'][48]['separator'] = 'text <div>Sonstiges</div>';
 }
 
-include __DIR__.'/anmerkungen.php';
-$zz['fields'][21] = $zz_sub;
-unset($zz_sub);
+$zz['fields'][21] = zzform_include_table('anmerkungen');
 $zz['fields'][21]['title_tab'] = 'Bemerkungen / Kontakt';
 $zz['fields'][21]['title'] = 'Anmerkungen';
 $zz['fields'][21]['type'] = 'subtable';
