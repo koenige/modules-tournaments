@@ -10,7 +10,7 @@
 #
 %%% loop start %%%
 [Event "%%% item event %%% %%% item year %%%"]
-[Site "%%% item Site %%% %%% item land %%%"]
+[Site "%%% item Site %%%%%% item EventCountry " %s" %%%"]
 [Date "%%% item Date %%%"]
 [Round "%%% item Round %%%"]
 %%% condition unless vertauschte_farben %%%
@@ -84,8 +84,8 @@
 %%% condition if BlackFideId %%%
 [BlackFideId "%%% item BlackFideId %%%"]
 %%% condition endif %%%
-%%% condition if land %%%
-[EventCountry "%%% item land %%%"]
+%%% condition if EventCountry %%%
+[EventCountry "%%% item EventCountry %%%"]
 %%% condition endif %%%
 %%% condition if EventRounds %%%
 [EventRounds "%%% item EventRounds %%%"]

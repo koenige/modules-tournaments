@@ -373,14 +373,12 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 	wrap_db_query('SET NAMES latin1');
 	$zz_conf['character_set'] = 'iso-8859-1';
 
-	// International Olympic Committee country codes
-
 	$sql = 'SELECT partien.partie_id
 			, events.event, YEAR(events.date_begin) AS year
 			, DATE_FORMAT(events.date_begin, "%%Y.%%m.%%d") AS EventDate
 			, DATE_FORMAT(runden.date_begin, "%%Y.%%m.%%d") AS Date
 			, place AS Site
-			, "GER" AS land
+			, countries.ioc_code AS EventCountry
 			, partien.runde_no AS Round
 			, partien.brett_no AS Board
 			, CONCAT(weiss.t_nachname, ", ", weiss.t_vorname, IFNULL(CONCAT(" ", weiss.t_namenszusatz), "")) AS White
@@ -437,6 +435,7 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 			AND runden.runde_no = partien.runde_no
 		LEFT JOIN addresses
 			ON events.place_contact_id = addresses.contact_id
+		LEFT JOIN countries USING (country_id)
 		LEFT JOIN paarungen USING (paarung_id)
 		LEFT JOIN teams heim_teams
 			ON paarungen.heim_team_id = heim_teams.team_id
