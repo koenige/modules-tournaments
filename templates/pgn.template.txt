@@ -2,7 +2,7 @@
 # output of a PGN file
 #
 # Part of »Zugzwang Project«
-# http://www.zugzwang.org/modules/tournaments
+# https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
 # @copyright Copyright © 2014, 2017-2021 Gustaf Mossakowski

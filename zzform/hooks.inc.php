@@ -4,7 +4,7 @@
  * Zugzwang Project
  * functions that are called before or after changing a record
  *
- * http://www.zugzwang.org/modules/tournaments
+ * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2014-2020 Gustaf Mossakowski

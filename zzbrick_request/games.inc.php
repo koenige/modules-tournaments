@@ -4,7 +4,7 @@
  * Zugzwang Project
  * PGN download and re-play games online
  *
- * http://www.zugzwang.org/modules/tournaments
+ * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2005, 2012-2021 Gustaf Mossakowski

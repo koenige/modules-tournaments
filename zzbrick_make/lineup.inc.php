@@ -4,7 +4,7 @@
  * Zugzwang Project
  * Line up for team tournaments
  *
- * http://www.zugzwang.org/modules/tournaments
+ * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2020 Gustaf Mossakowski
