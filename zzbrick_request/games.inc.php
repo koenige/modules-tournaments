@@ -610,7 +610,6 @@ function mod_tournaments_games_html($event, $request, $typ) {
 		}
 	}
 	$partie = array_merge($event, $partie);
-	return mod_tournaments_games_ausgabe($partie, $pgn);
 
 	$partie = array_merge($partie, pgn_to_html($pgn));
 	if (!$partie['pgn']) $page['status'] = 404;
