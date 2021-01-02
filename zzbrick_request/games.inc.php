@@ -377,7 +377,7 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 			, events.event, YEAR(events.date_begin) AS year
 			, DATE_FORMAT(events.date_begin, "%%Y.%%m.%%d") AS EventDate
 			, DATE_FORMAT(runden.date_begin, "%%Y.%%m.%%d") AS Date
-			, place AS Site
+			, IF(LOCATE("&virtual=1", place_categories.parameters), events.direct_link, place) AS Site
 			, countries.ioc_code AS EventCountry
 			, partien.runde_no AS Round
 			, partien.brett_no AS Board
@@ -433,6 +433,10 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 		LEFT JOIN events runden
 			ON events.event_id = runden.main_event_id
 			AND runden.runde_no = partien.runde_no
+		LEFT JOIN contacts places
+			ON events.place_contact_id = places.contact_id
+		LEFT JOIN categories place_categories
+			ON places.contact_category_id = place_categories.category_id
 		LEFT JOIN addresses
 			ON events.place_contact_id = addresses.contact_id
 		LEFT JOIN countries USING (country_id)
