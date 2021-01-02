@@ -398,8 +398,14 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 				CONCAT(CASE(weiss_ergebnis) WHEN 1.0 THEN 1 WHEN 0.5 THEN "1/2" WHEN 0 THEN 0 END,
 				"-", CASE(schwarz_ergebnis) WHEN 1.0 THEN 1 WHEN 0.5 THEN "1/2" WHEN 0 THEN 0 END)) AS Result
 			, partien.kommentar
-			, IF(paarungen.paarung_id, weiss.t_verein, "") AS WhiteTeam
-			, IF(paarungen.paarung_id, schwarz.t_verein, "") AS BlackTeam
+			, IF(heim_spieler_farbe = "schwarz"
+				, CONCAT(auswaerts_teams.team, IFNULL(CONCAT(" ", auswaerts_teams.team_no), ""))
+				, CONCAT(heim_teams.team, IFNULL(CONCAT(" ", heim_teams.team_no), ""))
+			) AS WhiteTeam
+			, IF(heim_spieler_farbe = "schwarz"
+				, CONCAT(heim_teams.team, IFNULL(CONCAT(" ", heim_teams.team_no), ""))
+				, CONCAT(auswaerts_teams.team, IFNULL(CONCAT(" ", auswaerts_teams.team_no), ""))
+			) AS BlackTeam
 			, IF(vertauschte_farben = "ja", 1, NULL) AS vertauschte_farben
 			, IF(vertauschte_farben = "ja", IF(ISNULL(weiss_ergebnis) AND ISNULL(schwarz_ergebnis), "*",
 				CONCAT(CASE(schwarz_ergebnis) WHEN 1.0 THEN 1 WHEN 0.5 THEN "1/2" WHEN 0 THEN 0 END,
