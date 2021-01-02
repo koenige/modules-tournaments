@@ -17,7 +17,7 @@
  */
 function mod_tournaments_livegames($vars) {
 	global $zz_setting;
-	require_once($zz_setting['custom_wrap_dir'].'/pgn.inc.php');
+	require_once __DIR__.'/../tournaments/pgn.inc.php';
 
 	if (count($vars) !== 2) return false;
 

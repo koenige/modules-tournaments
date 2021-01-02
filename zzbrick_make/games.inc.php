@@ -132,8 +132,8 @@ function mod_tournaments_make_games($vars) {
 		$pgn = file($pgn_filename);
 	} elseif ($live) {
 		// Gibt es Live-Links in Tabelle?
-		require_once $zz_setting['custom_wrap_dir'].'/pgn.inc.php';
-		$pgn = explode("\n", my_pgn_aus_turnier($event['turnier_id']));
+		require_once __DIR__.'/../tournaments/pgn.inc.php';
+		$pgn = explode("\n", pgn_file_from_tournament($event['turnier_id']));
 	} else {
 		$pgn = false;
 	}
@@ -188,7 +188,7 @@ function mod_tournaments_make_games($vars) {
 	$partien = wrap_db_fetch($sql, 'partie_id');
 
 	// Datei Partie für Partie auswerten
-	require_once $zz_setting['custom_wrap_dir'].'/pgn.inc.php';
+	require_once __DIR__.'/../tournaments/pgn.inc.php';
 	$games = pgn_parse($pgn, $pgn_filename);
 	if (!empty($event['pgn_preparation_function']))
 		$games = $event['pgn_preparation_function']($games, $event['event_id']);

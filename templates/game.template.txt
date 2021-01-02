@@ -1,0 +1,241 @@
+# tournaments module
+# HTML output: single game
+#
+# Part of »Zugzwang Project«
+# http://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2005, 2012-2021 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+# List of fields:
+# event_id, series_short, year, identifier, runden, event, place, turnier_id,
+# livebretter, bretter_max, partie_id, weiss, schwarz, weiss_ergebnis,
+# schwarz_ergebnis, runde_no, tisch_no, brett_no, heim_team,
+# heim_team_identifier, auswaerts_team, auswaerts_team_identifier, weiss_dwz,
+# weiss_elo, schwarz_dwz, schwarz_elo, pgn, eco, weiss_teilnehmer_nr,
+# schwarz_teilnehmer_nr, kommentar, WhiteClock, BlackClock, last_update,
+# vertauschte_farben, main_series_path, main_series, finished, move, html
+# 
+%%% condition if partie_id %%%
+<div id="partie_%%% item partie_id %%%">
+%%% condition endif %%%
+<script type="text/javascript">
+var baseurl = '/_behaviour/ltpgnviewer/';
+var imgoffset = 1; // number of img src in HTML code before board
+</script>
+<script src="/_behaviour/ltpgnviewer/ltpgnviewer.js" type="text/javascript"></script>
+
+<h1>Partie: %%% item weiss %%%–%%% item schwarz %%% %%% item live " (Live)" %%%
+<br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
+
+<div class="brett">
+
+<form name=BoardForm>
+%%% condition unless vertauschte_farben %%%
+<p><span class="schwarz"></span> %%% item schwarz %%% %%% item BlackClock " (Zeit: <span class='BlackClock'>%s</span>) " %%%</p>
+%%% condition else %%%
+<p><span class="schwarz"></span> %%% item weiss %%% %%% item WhiteClock " (Zeit: <span class='BlackClock'>%s</span>) " %%%</p>
+%%% condition endif %%%
+<table class="position"><tr>
+<td><img src="/_behaviour/ltpgnviewer/brw.gif" onMouseDown="BoardClick(0)"><img src="/_behaviour/ltpgnviewer/bnb.gif" onMouseDown="BoardClick(1)"><img src="/_behaviour/ltpgnviewer/bbw.gif" onMouseDown="BoardClick(2)"><img src="/_behaviour/ltpgnviewer/bqb.gif" onMouseDown="BoardClick(3)"><img src="/_behaviour/ltpgnviewer/bkw.gif" onMouseDown="BoardClick(4)"><img src="/_behaviour/ltpgnviewer/bbb.gif" onMouseDown="BoardClick(5)"><img src="/_behaviour/ltpgnviewer/bnw.gif" onMouseDown="BoardClick(6)"><img src="/_behaviour/ltpgnviewer/brb.gif" onMouseDown="BoardClick(7)"><br>
+<img src="/_behaviour/ltpgnviewer/bpb.gif" onMouseDown="BoardClick(8)"><img src="/_behaviour/ltpgnviewer/bpw.gif" onMouseDown="BoardClick(9)"><img src="/_behaviour/ltpgnviewer/bpb.gif" onMouseDown="BoardClick(10)"><img src="/_behaviour/ltpgnviewer/bpw.gif" onMouseDown="BoardClick(11)"><img src="/_behaviour/ltpgnviewer/bpb.gif" onMouseDown="BoardClick(12)"><img src="/_behaviour/ltpgnviewer/bpw.gif" onMouseDown="BoardClick(13)"><img src="/_behaviour/ltpgnviewer/bpb.gif" onMouseDown="BoardClick(14)"><img src="/_behaviour/ltpgnviewer/bpw.gif" onMouseDown="BoardClick(15)"><br>
+<img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(16)"><img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(17)"><img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(18)"><img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(19)"><img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(20)"><img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(21)"><img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(22)"><img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(23)"><br>
+<img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(24)"><img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(25)"><img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(26)"><img src="/_behaviour/ltpgnviewer/bqw.gif" onMouseDown="BoardClick(27)"><img src="/_behaviour/ltpgnviewer/bkb.gif" onMouseDown="BoardClick(28)"><img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(29)"><img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(30)"><img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(31)"><br>
+<img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(32)"><img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(33)"><img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(34)"><img src="/_behaviour/ltpgnviewer/wqb.gif" onMouseDown="BoardClick(35)"><img src="/_behaviour/ltpgnviewer/wkw.gif" onMouseDown="BoardClick(36)"><img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(37)"><img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(38)"><img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(39)"><br>
+<img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(40)"><img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(41)"><img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(42)"><img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(43)"><img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(44)"><img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(45)"><img src="/_behaviour/ltpgnviewer/b.gif" onMouseDown="BoardClick(46)"><img src="/_behaviour/ltpgnviewer/w.gif" onMouseDown="BoardClick(47)"><br>
+<img src="/_behaviour/ltpgnviewer/wpw.gif" onMouseDown="BoardClick(48)"><img src="/_behaviour/ltpgnviewer/wpb.gif" onMouseDown="BoardClick(49)"><img src="/_behaviour/ltpgnviewer/wpw.gif" onMouseDown="BoardClick(50)"><img src="/_behaviour/ltpgnviewer/wpb.gif" onMouseDown="BoardClick(51)"><img src="/_behaviour/ltpgnviewer/wpw.gif" onMouseDown="BoardClick(52)"><img src="/_behaviour/ltpgnviewer/wpb.gif" onMouseDown="BoardClick(53)"><img src="/_behaviour/ltpgnviewer/wpw.gif" onMouseDown="BoardClick(54)"><img src="/_behaviour/ltpgnviewer/wpb.gif" onMouseDown="BoardClick(55)"><br>
+<img src="/_behaviour/ltpgnviewer/wrb.gif" onMouseDown="BoardClick(56)"><img src="/_behaviour/ltpgnviewer/wnw.gif" onMouseDown="BoardClick(57)"><img src="/_behaviour/ltpgnviewer/wbb.gif" onMouseDown="BoardClick(58)"><img src="/_behaviour/ltpgnviewer/wqw.gif" onMouseDown="BoardClick(59)"><img src="/_behaviour/ltpgnviewer/wkb.gif" onMouseDown="BoardClick(60)"><img src="/_behaviour/ltpgnviewer/wbw.gif" onMouseDown="BoardClick(61)"><img src="/_behaviour/ltpgnviewer/wnb.gif" onMouseDown="BoardClick(62)"><img src="/_behaviour/ltpgnviewer/wrw.gif" onMouseDown="BoardClick(63)"></td>
+</tr></table>
+%%% condition unless vertauschte_farben %%%
+<p><span class="weiss"></span> %%% item weiss %%% %%% item WhiteClock " (Zeit: <span class='WhiteClock'>%s</span>) " %%%</p>
+%%% condition else %%%
+<p><span class="weiss"></span> %%% item schwarz %%% %%% item BlackClock " (Zeit: <span class='WhiteClock'>%s</span>) " %%%</p>
+%%% condition endif %%%
+
+<table class="brett-nav"><TR>
+<td><input type=button value="I&lt;" width=20 style="width:25"  onClick="javascript:Init('')" title="Zum Anfang der Partie"></td>
+<td><input type=button value="&lt;&lt;" width=20 style="width:25"  onClick="javascript:MoveBack(10)" title="10 Züge zurück"></td>
+<td><input type=button value="&lt;" width=20 style="width:25"  onClick="javascript:MoveBack(1)" title="Letzter Zug"></td>
+<td><input type=button value="&gt;" width=20 style="width:25"  onClick="javascript:MoveForward(1)" title="Nächster Zug"></td>
+<td><input type=button value="&gt;&gt;" width=20 style="width:25" onClick="javascript:MoveForward(10)" title="10 Züge vorwärts"></td>
+<td><input type=button value="&gt;I" width=20 style="width:25" onClick="javascript:MoveForward(1000)" title="Zum Ende der Partie"></td>
+<td><input type=button value="play" width=35 style="width:40" name="AutoPlay" onClick="javascript:SwitchAutoPlay()" title="Partie automatisch abspielen"></td>
+<td><select name="Delay" onChange="SetDelay(this.options[selectedIndex].value)" SIZE=1>
+<option value=1000>schnell
+<option value=2000>mittel
+<option value=3000>langsam
+</select>
+</td></tr></table>
+<br>
+Stellung nach: <input type=text name="Position" value="" size=16>
+%%% comment
+<!--
+<br><br>
+<NOBR>
+<input type=checkbox name="Rotated" value=1 onClick="javascript:RotateBoard(this.checked)">rotate board
+<input type=checkbox name="Recording" value=1 onClick="javascript:AllowRecording(this.checked)">allow recording
+</NOBR>
+
+<br><br>
+<NOBR>
+SAN letters: <input type=text name="SAN" value="KQRBNP" size=7>
+<input type=button value=" Apply " onClick="javascript:ApplySAN(document.BoardForm.SAN.value)">
+</NOBR>
+</td>
+<td>
+<textarea name="PgnMoveText" rows=27 cols=14 wrap=virtual></textarea>
+-->
+<!--
+<br>
+<table noborder width=420>
+<tr><td width=100% align=left>FEN:
+<input type=text name="FEN" value="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" size=31>
+<input type=button value=" Apply " onClick="javascript:ApplyFEN(document.BoardForm.FEN.value)">
+<input type=button value=" Get " onClick="javascript:GetFEN()">
+</td></tr></table>
+<br>
+<table noborder width=420>
+<tr><td width=100% align=left>
+<input type=button value="Setup Board" name="SetupBoard" onClick="javascript:SwitchSetupBoard()">
+<input type=radio checked value="copy" name="BoardSetupMode" onClick="javascript:SetBoardSetupMode('copy')">copy
+<input type=radio value="move" name="BoardSetupMode" onClick="javascript:SetBoardSetupMode('move')">move
+<input type=radio value="delete" name="BoardSetupMode" onClick="javascript:SetBoardSetupMode('delete')">delete
+</td></tr></table>
+--> %%%
+</FORM>
+</div>
+
+<div class="zuege">
+<p><strong>
+%%% condition if weiss_teilnehmer_nr %%%
+<a href="../../spieler/%%% item weiss_teilnehmer_nr %%%/">
+%%% condition endif %%%
+%%% condition if weiss %%%
+%%% item weiss %%%
+%%% condition else %%%
+%%% item White %%%
+%%% condition endif %%%
+%%% condition if weiss_teilnehmer_nr %%%
+</a>
+%%% condition endif %%%
+
+%%% condition if weiss_dwz %%%
+%%% item weiss_dwz " (%s)" %%%
+%%% condition else %%%
+%%% item WhiteElo " (%s)" %%%
+%%% condition endif %%%
+ – 
+%%% condition if schwarz_teilnehmer_nr %%%
+<a href="../../spieler/%%% item schwarz_teilnehmer_nr %%%/">
+%%% condition endif %%%
+%%% condition if schwarz %%%
+%%% item schwarz %%%
+%%% condition else %%%
+%%% item Black %%%
+%%% condition endif %%%
+%%% condition if schwarz_teilnehmer_nr %%%
+</a>
+%%% condition endif %%%
+%%% condition if schwarz_dwz %%%
+%%% item schwarz_dwz " (%s)" %%%
+%%% condition else %%%
+%%% item BlackElo " (%s)" %%%
+%%% condition endif %%%
+</strong><br>
+%%% condition if vertauschte_farben %%%
+<em>Die Partie wurde mit vertauschten Farben gespielt:</em><br>
+%%% condition if schwarz %%%
+%%% item schwarz %%%
+%%% condition else %%%
+%%% item Black %%%
+%%% condition endif %%%
+ – 
+%%% condition if weiss %%%
+%%% item weiss %%%
+%%% condition else %%%
+%%% item White %%%
+%%% condition endif %%%<br>
+%%% condition endif %%%
+<a href="../../">%%% item event %%%</a> %%% item place %%%,
+ %%% condition if runde_no %%%<a href="../../runde/%%% item runde_no %%%/">%%% item runde_no %%%. Runde</a>%%% condition endif %%%
+ %%% item tag " Tag %s" %%%
+%%% condition if tisch_no %%%
+<br>%%% item heim_team_identifier "<a href='../../../../%s/'>" %%%%%% item heim_team %%%%%% item heim_team_identifier "</a>" %%%–%%% item auswaerts_team_identifier "<a href='../../../../%s/'>" %%%%%% item auswaerts_team %%%%%% item auswaerts_team_identifier "</a>" %%%
+%%% condition endif %%%
+%%% condition if brett_no %%%
+ (Brett %%% item brett_no %%%)<br>
+%%% condition endif %%%
+%%% item eco "<abbr title='Eröffnungscode der Enzyklopädie der Schacheröffnungen'>ECO</abbr> <span class='ECO'>%s</span>" %%%
+%%% condition if Annotator %%%
+ Kommentar: %%% item Annotator %%%
+%%% condition endif %%%
+</p>
+%%% condition if pgn %%%
+<div class='PgnMoveText'>
+%%% item html %%% %%% item partiestatus %%%
+</div>
+
+%%% item kommentar markdown %%%
+
+<p><a href="../%%% item tag "%s" %%%%%% item runde_no %%%%%% item tisch_no "-%s" %%%%%% item brett_no "-%s" %%%.pgn">Download PGN-Datei</a></p>
+
+%%% condition if live %%%
+%%% condition if finished %%%
+%%% condition else %%%
+<p class="partieanmerkung">Die 
+aktuellen Züge werden ca. alle 15 sec neu übertragen%%% condition if setting live_pgn_delay_mins %%%, allerdings mit einem Zeitversatz von %%% setting setting live_pgn_delay_mins %%% Minuten %%% condition endif %%%.
+Stand: <span class="LastUpdate">%%% item last_update %%%</span> Uhr.</p>
+%%% condition endif %%%
+%%% condition endif %%%
+<script type="text/javascript">
+	SetPgnMoveText('%%% item pgn %%%');
+	Init('');
+	MoveForward(%%% item move %%%);
+</script>
+%%% condition else %%%
+<p>Partie nicht gefunden.</p>
+%%% condition endif %%%
+</div>
+<script type="text/javascript">
+%%% condition if partie_id %%%
+var partie_id = %%% item partie_id %%%; 
+%%% condition endif %%%
+
+function Navigate (myevent) {
+	if (!myevent)
+		var myevent = window.event;
+	if (myevent.which) {
+		var Code = myevent.which;
+	} else if (myevent.keyCode) {
+		var Code = myevent.keyCode;
+	}
+	if (myevent.altKey) return;
+	// only allow <- -> navigation if body has focus
+	if (document.activeElement.nodeName !== "BODY") return;
+	if ((Code == 37)) {
+		MoveBack(1);
+	} else if ((Code == 39)) {
+		MoveForward(1);
+  	}
+}
+
+document.onkeyup = Navigate;
+
+</script>
+%%% condition if live %%%
+<script type="text/javascript" src="/_behaviour/livegame.js"></script>
+<script type="text/javascript">
+
+var gamedata;
+var lastmove;
+var live = true;
+
+if (live == true){
+  setInterval(function () {getGamedata('/%%% item identifier %%%/partien/%%% item runde_no %%%%%% item tisch_no "-%s" %%%%%% item brett_no "-%s" %%%.json')}, 30000);
+}
+</script>
+%%% condition endif %%%
+%%% condition if partie_id %%%
+</div>
+%%% condition endif %%%
