@@ -483,6 +483,9 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 }
 
 function mod_tournaments_games_cleanup($partien) {
+	return $partien;
+
+	// @disabled
 	foreach ($partien as $partie_id => $partie) {
 		if (empty($partie['moves'])) continue;
 		$partien[$partie_id]['moves'] = preg_replace('/{\[\%clk \d+:\d+:\d+\]} /', '', $partie['moves']);
