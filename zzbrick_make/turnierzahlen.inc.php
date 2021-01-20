@@ -19,7 +19,7 @@
  * @param array $vars
  * @return array $page
  */
-function mod_tournaments_turnierzahlen($vars) {
+function mod_tournaments_make_turnierzahlen($vars) {
 	global $zz_conf;
 
 	$sql = 'SELECT event_id, turnier_id
