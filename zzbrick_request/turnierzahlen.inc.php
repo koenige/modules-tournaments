@@ -1,9 +1,15 @@
 <?php
 
-// Zugzwang Project
-// deutsche-schachjugend.de
-// Copyright (c) 2012-2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
-// Aktualisierung der Turnierwertungszahlen kurz vor Turnierbeginn
+/**
+ * Zugzwang Project
+ * make script to update tournament ratings before tournament start
+ *
+ * https://www.zugzwang.org/modules/tournaments
+ *
+ * @author Gustaf Mossakowski <gustaf@koenige.org>
+ * @copyright Copyright © 2012-2017, 2019-2021 Gustaf Mossakowski
+ * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+ */
 
 
 /**
@@ -75,13 +81,14 @@ function mod_tournaments_turnierzahlen($vars) {
 	
 	$sql = 'SELECT teilnahme_id, teilnahmen.person_id, t_dwz, t_elo
 			, contacts_identifiers.identifier AS zps_code
-			, CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname) AS person
+			, contact AS person
 			, CONCAT(nachname, ",", vorname) AS dwz_person
 			, anmerkung
 		FROM teilnahmen
 		LEFT JOIN personen USING (person_id)
+		LEFT JOIN contacts USING (contact_id)
 		LEFT JOIN contacts_identifiers
-			ON personen.contact_id = contacts_identifiers.contact_id
+			ON contacts.contact_id = contacts_identifiers.contact_id
 			AND contacts_identifiers.current = "yes"
 			AND contacts_identifiers.identifier_category_id = %d
 		WHERE event_id = %d

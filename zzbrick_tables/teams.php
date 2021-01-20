@@ -259,12 +259,12 @@ $zz['fields'][25]['fields'][3]['type'] = 'select';
 $zz['fields'][25]['fields'][3]['search'] = 'IF(logins.active = "yes", "(+)", "(-)")';
 $zz['fields'][25]['fields'][4]['field_name'] = 'person_id';
 $zz['fields'][25]['fields'][4]['type'] = 'select';
-$zz['fields'][25]['fields'][4]['search'] = 'CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname)';
+$zz['fields'][25]['fields'][4]['search'] = 'contact';
 $zz['fields'][25]['hide_in_form'] = true;
 $zz['fields'][25]['sql'] =
 $zz['fields'][25]['subselect']['sql'] = sprintf('SELECT team_id
 		, contacts.identifier
-		, CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname, 
+		, CONCAT(contact,
 			IF(logins.active = "yes", " (+)", " (-)")) AS person
 		, e_mail
 		, GROUP_CONCAT(CONCAT(category_short, ": ", identification) SEPARATOR "<br>") AS telefon

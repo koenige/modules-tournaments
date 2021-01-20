@@ -7,7 +7,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2020 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2021 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -345,9 +345,10 @@ function mf_tournaments_remarks_mail($ops) {
 		$sql = sprintf($sql, $record['team_id']); // @todo teilnahme_id
 		$record = array_merge($record, wrap_db_fetch($sql));
 
-		$sql = 'SELECT CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname) AS person
+		$sql = 'SELECT contact AS person
 			, e_mail
 			FROM personen
+			LEFT JOIN contacts USING (contact_id)
 			WHERE person_id = %d';
 		$sql = sprintf($sql, $record['autor_person_id']);
 		$record = array_merge($record, wrap_db_fetch($sql));

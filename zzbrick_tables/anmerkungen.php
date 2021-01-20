@@ -45,32 +45,29 @@ if (!empty($_GET['where']['team_id'])) {
 
 $zz['fields'][9]['field_name'] = 'teilnahme_id';
 $zz['fields'][9]['type'] = 'select';
-$zz['fields'][9]['sql'] = 'SELECT teilnahme_id
-		, CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname) AS person, event
+$zz['fields'][9]['sql'] = 'SELECT teilnahme_id, contact, event
 	FROM teilnahmen
 	LEFT JOIN personen USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
 	LEFT JOIN events USING (event_id)
 	ORDER BY contacts.identifier
 ';
-$zz['fields'][9]['display_field'] = 'person';
-$zz['fields'][9]['search'] = 'CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname)';
+$zz['fields'][9]['display_field'] = 'contact';
 
 $zz['fields'][4]['title'] = 'Autor';
 $zz['fields'][4]['field_name'] = 'autor_person_id';
 $zz['fields'][4]['type'] = 'hidden';
 $zz['fields'][4]['type_detail'] = 'select';
 $zz['fields'][4]['sql'] = 'SELECT person_id
-		, CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname) AS person
+		, contact
 		, IFNULL(YEAR(geburtsdatum), "unbek.") AS geburtsjahr
 		, identifier
 	FROM personen
 	LEFT JOIN contacts USING (contact_id)
 	ORDER BY nachname, vorname, YEAR(geburtsdatum), identifier';
 $zz['fields'][4]['unique_ignore'] = ['geburtsjahr', 'identifier'];
-$zz['fields'][4]['display_field'] = 'person';
+$zz['fields'][4]['display_field'] = 'contact';
 $zz['fields'][4]['key_field_name'] = 'person_id';
-$zz['fields'][4]['search'] = 'CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname)';
 if (!empty($_SESSION)) {
 	$zz['fields'][4]['default'] = $_SESSION['person_id'];
 }
@@ -104,7 +101,7 @@ $zz['fields'][99]['type'] = 'timestamp';
 $zz['fields'][99]['hide_in_list'] = true;
 
 $zz['sql'] = 'SELECT anmerkungen.*
-		, CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname) AS person
+		, contact
 		, teams.kennung AS team_identifier
 		, DATE_FORMAT(erstellt, "%d.%m.%Y") AS erstellt_de
 		, CONCAT(teams.team, IFNULL(CONCAT(" ", team_no), "")) AS teamname
@@ -114,6 +111,7 @@ $zz['sql'] = 'SELECT anmerkungen.*
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN personen
 		ON anmerkungen.autor_person_id = personen.person_id
+	LEFT JOIN contacts USING (contact_id)
 ';
 $zz['sqlorder'] = ' ORDER BY erstellt DESC';
 

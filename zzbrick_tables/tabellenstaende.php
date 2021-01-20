@@ -1,9 +1,15 @@
 <?php 
 
-// Zugzwang Project
-// deutsche-schachjugend.de
-// Copyright (c) 2012-2015, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
-// Skript: Tabellenstände
+/**
+ * Zugzwang Project
+ * table script for standings
+ *
+ * https://www.zugzwang.org/modules/tournaments
+ *
+ * @author Gustaf Mossakowski <gustaf@koenige.org>
+ * @copyright Copyright © 2012-2015, 2019-2021 Gustaf Mossakowski
+ * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+ */
 
 
 $zz['title'] = 'Tabellenstände';
@@ -60,14 +66,13 @@ $zz['fields'][4]['list_append_next'] = true;
 $zz['fields'][5]['field_name'] = 'person_id';
 $zz['fields'][5]['type'] = 'select';
 $zz['fields'][5]['sql'] = 'SELECT person_id
-		, CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname) AS person
+		, contact
 		, IFNULL(YEAR(geburtsdatum), "unbek.") AS geburtsjahr
 		, identifier
 	FROM personen
 	LEFT JOIN contacts USING (contact_id)
 	ORDER BY nachname, vorname';
-$zz['fields'][5]['display_field'] = 'person';
-$zz['fields'][5]['search'] = 'CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname)';
+$zz['fields'][5]['display_field'] = 'contact';
 $zz['fields'][5]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 
 $zz['fields'][7]['title'] = 'Gewonnen';
@@ -102,11 +107,12 @@ $zz['fields'][10]['fields'][2]['type'] = 'foreign_key';
 $zz['sql'] = 'SELECT tabellenstaende.*
 		, events.event
 		, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
-		, CONCAT(vorname, " ", IFNULL(CONCAT(namenszusatz, " "), ""), nachname) AS person
+		, contact
 	FROM tabellenstaende
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN teams USING (team_id)
 	LEFT JOIN personen USING (person_id)
+	LEFT JOIN contacts USING (contact_id)
 ';
 $zz['sqlorder'] = ' ORDER BY events.date_begin, events.identifier, runde_no, platz_no';
 
