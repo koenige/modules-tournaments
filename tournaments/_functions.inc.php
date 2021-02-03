@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2012-2020 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2012-2021 Gustaf Mossakowski <gustaf@koenige.org>
 // Common functions for tournaments
 
 
@@ -214,11 +214,11 @@ function mf_tournaments_games_sql($event, $where) {
 			, IF(weiss_ergebnis > schwarz_ergebnis, 1, NULL) AS weiss_gewinnt
 			, IF(schwarz_ergebnis > weiss_ergebnis, 1, NULL) AS schwarz_gewinnt
 			, @schwarz_spieler := IF(ISNULL(schwarz_status.t_vorname),
-				CONCAT(schwarz.vorname, " ", IFNULL(CONCAT(schwarz.namenszusatz, " "), ""), schwarz.nachname),
+				black_contact.contact,
 				CONCAT(schwarz_status.t_vorname, " ", IFNULL(CONCAT(schwarz_status.t_namenszusatz, " "), ""), schwarz_status.t_nachname)
 			)
 			, @weiss_spieler := IF(ISNULL(weiss_status.t_vorname),
-				CONCAT(weiss.vorname, " ", IFNULL(CONCAT(weiss.namenszusatz, " "), ""), weiss.nachname),
+				white_contact.contact,
 				CONCAT(weiss_status.t_vorname, " ", IFNULL(CONCAT(weiss_status.t_namenszusatz, " "), ""), weiss_status.t_nachname)
 			)
 			, IFNULL(IF(heim_spieler_farbe = "schwarz", @schwarz_spieler, @weiss_spieler), "N. N.") AS heim_spieler
@@ -262,12 +262,16 @@ function mf_tournaments_games_sql($event, $where) {
 			ON partien.partiestatus_category_id = categories.category_id
 		LEFT JOIN personen weiss
 			ON weiss.person_id = partien.weiss_person_id
+		LEFT JOIN contacts white_contact
+			ON weiss.contact_id = white_contact.contact_id
 		LEFT JOIN teilnahmen weiss_status
 			ON weiss_status.person_id = weiss.person_id
 			AND weiss_status.usergroup_id = %d
 			AND weiss_status.event_id = %d
 		LEFT JOIN personen schwarz
 			ON schwarz.person_id = partien.schwarz_person_id
+		LEFT JOIN contacts black_contact
+			ON schwarz.contact_id = black_contact.contact_id
 		LEFT JOIN teilnahmen schwarz_status
 			ON schwarz_status.person_id = schwarz.person_id
 			AND schwarz_status.usergroup_id = %d
