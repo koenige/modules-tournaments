@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2014-2015, 2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2014-2015, 2017, 2019-2021 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Tabellenstände zu einem Turnier
 
 
@@ -44,7 +44,7 @@ $zz['fields'][5]['sql'] = 'SELECT person_id
 	LEFT JOIN contacts USING (contact_id)
 	WHERE teilnahmen.usergroup_id = %d
 	AND event_id = %d
-	ORDER BY nachname, vorname, YEAR(geburtsdatum), identifier';
+	ORDER BY nachname, first_name, YEAR(geburtsdatum), identifier';
 $zz['fields'][5]['sql'] = sprintf($zz['fields'][5]['sql'], wrap_id('usergroups', 'spieler'), $event['event_id']);
 $zz['fields'][5]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 

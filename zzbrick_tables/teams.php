@@ -229,7 +229,7 @@ $zz['fields'][21]['fields'][3]['type'] = 'foreign_key';
 unset($zz['fields'][21]['fields'][9]); // teilnahme_id
 // Zeige nur offene Anmerkungen in Liste
 $zz['fields'][21]['subselect']['sql'] = 'SELECT team_id
-		, CONCAT(SUBSTRING(personen.vorname, 1, 1), SUBSTRING(personen.nachname, 1, 1)) AS person, DATE_FORMAT(erstellt, "%d%m")
+		, CONCAT(SUBSTRING(personen.first_name, 1, 1), SUBSTRING(personen.nachname, 1, 1)) AS person, DATE_FORMAT(erstellt, "%d%m")
 		, anmerkung
 	FROM anmerkungen
 	LEFT JOIN personen

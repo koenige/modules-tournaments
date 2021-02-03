@@ -64,7 +64,7 @@ $zz['fields'][4]['sql'] = 'SELECT person_id
 		, identifier
 	FROM personen
 	LEFT JOIN contacts USING (contact_id)
-	ORDER BY nachname, vorname, YEAR(geburtsdatum), identifier';
+	ORDER BY nachname, first_name, YEAR(geburtsdatum), identifier';
 $zz['fields'][4]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 $zz['fields'][4]['display_field'] = 'contact';
 $zz['fields'][4]['key_field_name'] = 'person_id';
