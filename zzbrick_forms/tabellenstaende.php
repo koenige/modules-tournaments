@@ -44,7 +44,7 @@ $zz['fields'][5]['sql'] = 'SELECT person_id
 	LEFT JOIN contacts USING (contact_id)
 	WHERE teilnahmen.usergroup_id = %d
 	AND event_id = %d
-	ORDER BY nachname, first_name, YEAR(geburtsdatum), identifier';
+	ORDER BY last_name, first_name, YEAR(geburtsdatum), identifier';
 $zz['fields'][5]['sql'] = sprintf($zz['fields'][5]['sql'], wrap_id('usergroups', 'spieler'), $event['event_id']);
 $zz['fields'][5]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 

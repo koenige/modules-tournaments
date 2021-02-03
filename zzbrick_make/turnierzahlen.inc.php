@@ -82,7 +82,7 @@ function mod_tournaments_make_turnierzahlen($vars) {
 	$sql = 'SELECT teilnahme_id, teilnahmen.person_id, t_dwz, t_elo
 			, contacts_identifiers.identifier AS zps_code
 			, contact AS person
-			, CONCAT(nachname, ",", first_name) AS dwz_person
+			, CONCAT(last_name, ",", first_name) AS dwz_person
 			, anmerkung
 		FROM teilnahmen
 		LEFT JOIN personen USING (person_id)
