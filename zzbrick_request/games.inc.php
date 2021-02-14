@@ -566,6 +566,7 @@ function mod_tournaments_games_html($event, $request, $typ) {
 				, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
 				, IFNULL(place, places.contact) AS turnierort
 				, IF(partiestatus_category_id NOT IN (%d, %d), partiestatus.category, "") AS partiestatus
+				, url
 			FROM partien
 			LEFT JOIN categories partiestatus
 				ON partiestatus.category_id = partien.partiestatus_category_id
