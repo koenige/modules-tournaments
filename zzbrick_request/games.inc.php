@@ -377,7 +377,7 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 			, events.event, YEAR(events.date_begin) AS year
 			, DATE_FORMAT(events.date_begin, "%%Y.%%m.%%d") AS EventDate
 			, DATE_FORMAT(runden.date_begin, "%%Y.%%m.%%d") AS Date
-			, IF(LOCATE("&virtual=1", place_categories.parameters), events.direct_link, place) AS Site
+			, IF(ISNULL(url), IF(LOCATE("&virtual=1", place_categories.parameters), events.direct_link, place), url) AS Site
 			, countries.ioc_code AS EventCountry
 			, partien.runde_no AS Round
 			, partien.brett_no AS Board
