@@ -230,6 +230,12 @@ $zz['fields'][23]['if'][1]['image'][0]['path'] = $zz['fields'][23]['if'][1]['pat
 $zz['fields'][23]['dont_show_missing'] = true;
 $zz['fields'][23]['hide_in_list_if_empty'] = true;
 
+$zz['fields'][25]['title'] = 'URL';
+$zz['fields'][25]['field_name'] = 'url';
+$zz['fields'][25]['explanation'] = 'Falls online gespielt, Link zum Server';
+$zz['fields'][25]['type'] = 'url';
+$zz['fields'][25]['hide_in_list'] = true;
+
 $zz['fields'][98]['title'] = 'Ergebnis gemeldet';
 $zz['fields'][98]['field_name'] = 'ergebnis_gemeldet_um';
 $zz['fields'][98]['type'] = 'hidden';

@@ -70,6 +70,7 @@ CREATE TABLE `partien` (
   `weiss_zeit` time DEFAULT NULL,
   `schwarz_zeit` time DEFAULT NULL,
   `ergebnis_gemeldet_um` datetime DEFAULT NULL,
+  `url` tinytext CHARACTER SET latin1 COLLATE latin1_general_ci,
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`partie_id`),
   KEY `paarung_id` (`paarung_id`),
