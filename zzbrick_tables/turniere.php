@@ -398,6 +398,17 @@ $zz['fields'][51]['hide_in_list'] = true;
 $zz['fields'][51]['hide_in_form'] = true;
 $zz['fields'][51]['type'] = 'number';
 
+$zz['fields'][54]['field_name'] = 'main_tournament_id';
+$zz['fields'][54]['type'] = 'select';
+$zz['fields'][54]['sql'] = 'SELECT tournament_id
+		, CONCAT(event, " ", YEAR(date_begin)) AS tournament, identifier
+	FROM tournaments
+	LEFT JOIN events USING (event_id)
+	ORDER BY date_begin, identifier DESC';
+$zz['fields'][54]['exclude_from_search'] = true;
+$zz['fields'][54]['hide_in_list'] = true;
+
+
 $zz['sql'] = 'SELECT tournaments.*
 		, CONCAT(events.event, " ", YEAR(date_begin)) AS turnier
 		, events.identifier AS event_identifier
