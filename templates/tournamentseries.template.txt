@@ -89,11 +89,15 @@
 <div class="infocol">
 <h2>Turniere</h2>
 %%% condition if tournaments %%%
-<ul>
+<ul class="tournaments">
 %%% loop tournaments %%%
-<li>%%% item duration wrap_date %%%%%% condition unless date_end %%%%%% item time_begin wrap_time ", %s Uhr" %%%%%% condition endif %%%: <a href="../../%%% item identifier %%%/">%%% item event %%%</a>
+<li>%%% item duration wrap_date %%%%%% condition unless date_end %%%%%% item time_begin wrap_time ", %s Uhr" %%%%%% condition endif %%%: 
+%%% condition if tournaments %%%<strong>%%% condition endif %%%
+<a href="../../%%% item identifier %%%/">%%% item event %%%</a>
+%%% condition if tournaments %%%</strong>%%% condition endif %%%
 %%% condition unless place_equal %%%%%% item turnierort " in %s" %%%%%% condition endif %%%
 %%% condition if tournaments %%%
+<p><em>Qualifikation:</em></p>
 <ul>
 %%% loop tournaments %%%
 <li>%%% item duration wrap_date %%%%%% condition unless date_end %%%%%% item time_begin wrap_time ", %s Uhr" %%%%%% condition endif %%%: <a href="../../%%% item identifier %%%/">%%% item event %%%</a>
