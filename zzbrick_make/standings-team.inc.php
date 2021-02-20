@@ -46,7 +46,7 @@ function mod_tournaments_make_standings_team($event) {
 		FROM tabellenstaende_view
 		JOIN turniere USING (event_id)
 		JOIN turniere_wertungen
-			ON turniere_wertungen.turnier_id = turniere.turnier_id
+			ON turniere_wertungen.tournament_id = turniere.tournament_id
 			AND turniere_wertungen.wertung_category_id = tabellenstaende_view.wertung_category_id
 		WHERE tabellenstaende_view.runde_no = %d
 		AND wertung IS NOT NULL

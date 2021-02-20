@@ -7,7 +7,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2016, 2018-2020 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2016, 2018-2021 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -213,7 +213,7 @@ function mod_tournaments_livegames_bretter($turnier) {
 	return $turnier;
 }
 
-function mod_tournaments_livegames_rundendaten($turnier_ids) {
+function mod_tournaments_livegames_rundendaten($tournament_ids) {
 	// Aktuelle Runde, Daten
 	$sql = 'SELECT event_id, runde_no, main_event_id,
 			CASE DAYOFWEEK(events.date_begin) WHEN 1 THEN "So"
@@ -229,7 +229,7 @@ function mod_tournaments_livegames_rundendaten($turnier_ids) {
 		FROM events
 		WHERE main_event_id IN (%s)
 		AND event_category_id = %d';
-	$sql = sprintf($sql, implode(',', $turnier_ids),
+	$sql = sprintf($sql, implode(',', $tournament_ids),
 		wrap_category_id('zeitplan/runde'));
 	$rundendaten = wrap_db_fetch($sql, ['main_event_id', 'runde_no']);
 	return $rundendaten;

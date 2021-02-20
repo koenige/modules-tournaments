@@ -22,7 +22,7 @@
 function mod_tournaments_make_turnierzahlen($vars) {
 	global $zz_conf;
 
-	$sql = 'SELECT event_id, turnier_id
+	$sql = 'SELECT event_id, tournament_id
 			, IF(NOT ISNULL(events.date_end),
 				IF(events.date_end < CURDATE(), 1, NULL),
 				IF(events.date_begin < CURDATE(), 1, NULL)
@@ -157,7 +157,7 @@ function mod_tournaments_make_turnierzahlen($vars) {
 	if ($updated) {
 		$values = [];
 		$values['action'] = 'update';
-		$values['POST']['turnier_id'] = $event['turnier_id'];
+		$values['POST']['tournament_id'] = $event['tournament_id'];
 		$values['POST']['ratings_updated'] = date('Y-m-d');
 		$ops = zzform_multi('turniere', $values);
 		if (empty($ops['id'])) {

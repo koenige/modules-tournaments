@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2012-2020 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2012-2021 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Turniere
 
 
@@ -10,7 +10,7 @@ $zz['title'] = 'Turniere';
 $zz['table'] = 'turniere';
 
 $zz['fields'][1]['title'] = 'ID';
-$zz['fields'][1]['field_name'] = 'turnier_id';
+$zz['fields'][1]['field_name'] = 'tournament_id';
 $zz['fields'][1]['type'] = 'id';
 
 $zz['fields'][2]['field_name'] = 'event_id';
@@ -174,7 +174,7 @@ $zz['fields'][28]['max_records'] = 10;
 $zz['fields'][28]['form_display'] = 'lines';
 $zz['fields'][28]['fields'][2]['type'] = 'foreign_key';
 $zz['fields'][28]['sql'] .= $zz['fields'][28]['sqlorder'];
-$zz['fields'][28]['subselect']['sql'] = 'SELECT turnier_id, category_short
+$zz['fields'][28]['subselect']['sql'] = 'SELECT tournament_id, category_short
 		, turniere_kennungen.kennung
 	FROM turniere_kennungen
 	LEFT JOIN categories
@@ -396,7 +396,7 @@ $zz['fields'][43]['max_records'] = 10;
 $zz['fields'][43]['form_display'] = 'set';
 $zz['fields'][43]['fields'][2]['type'] = 'foreign_key';
 $zz['fields'][43]['sql'] .= $zz['fields'][43]['sqlorder'];
-$zz['fields'][43]['subselect']['sql'] = 'SELECT turnier_id, category, category_short
+$zz['fields'][43]['subselect']['sql'] = 'SELECT tournament_id, category, category_short
 	FROM turniere_status
 	LEFT JOIN categories
 		ON categories.category_id = turniere_status.status_category_id';

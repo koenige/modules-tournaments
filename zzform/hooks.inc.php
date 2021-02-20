@@ -25,7 +25,7 @@
  */
 function mf_tournaments_standings_update($ops) {
 	$update = false;
-	$turnier_ids = [];
+	$tournament_ids = [];
 	$event_ids = [];
 	$runde_nos = [];
 	$prioritaet = 0;
@@ -39,7 +39,7 @@ function mf_tournaments_standings_update($ops) {
 			if (!array_key_exists('bretter_min', $ops['record_diff'][$index])) break;
 			if ($ops['record_diff'][$index]['bretter_min'] === 'same') break;
 			$update = true;
-			$turnier_ids[] = $ops['record_new'][$index]['turnier_id'];
+			$tournament_ids[] = $ops['record_new'][$index]['tournament_id'];
 			break;
 		case 'turniere_wertungen':
 			// Bei Aktualisierung, Einfügen und Löschen immer, auch bei
@@ -48,18 +48,18 @@ function mf_tournaments_standings_update($ops) {
 				if ($action === 'same') continue;
 				$update = true;
 			}
-			if ($ops['record_new'][$index] AND isset($ops['record_new'][$index]['turnier_id'])) {
-				if ($ops['record_new'][$index]['turnier_id']) {
-					$turnier_ids[] = $ops['record_new'][$index]['turnier_id'];
+			if ($ops['record_new'][$index] AND isset($ops['record_new'][$index]['tournament_id'])) {
+				if ($ops['record_new'][$index]['tournament_id']) {
+					$tournament_ids[] = $ops['record_new'][$index]['tournament_id'];
 				}
 			} elseif (empty($ops['record_new'][$index])) {
-				if ($ops['record_old'][$index]['turnier_id']) {
-					$turnier_ids[] = $ops['record_old'][$index]['turnier_id'];
+				if ($ops['record_old'][$index]['tournament_id']) {
+					$tournament_ids[] = $ops['record_old'][$index]['tournament_id'];
 				}
 			} else {
 				// Hauptdatensatz Turnier, bei Hinzufügen von einer Wertung
-				if ($ops['record_old'][$index]['turnier_id']) {
-					$turnier_ids[] = $ops['record_old'][0]['turnier_id'];
+				if ($ops['record_old'][$index]['tournament_id']) {
+					$tournament_ids[] = $ops['record_old'][0]['tournament_id'];
 				}
 			}
 			break;
@@ -101,9 +101,9 @@ function mf_tournaments_standings_update($ops) {
 	}
 	if ($update) {
 		$where = [];
-		if ($turnier_ids) {
-			$turnier_ids = array_unique($turnier_ids);
-			$where[] = sprintf('turnier_id IN (%s)', implode(',', $turnier_ids));
+		if ($tournament_ids) {
+			$tournament_ids = array_unique($tournament_ids);
+			$where[] = sprintf('tournament_id IN (%s)', implode(',', $tournament_ids));
 		}
 		if ($event_ids) {
 			$event_ids = array_unique($event_ids);

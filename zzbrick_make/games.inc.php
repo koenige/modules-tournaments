@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2014-2020 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2014-2021 Gustaf Mossakowski <gustaf@koenige.org>
 // Schreiben von PGN-Dateien in die Datenbank
 
 
@@ -95,7 +95,7 @@ function mod_tournaments_make_games($vars) {
 	$sql = 'SELECT event_id, events.identifier, event, YEAR(date_begin) AS year
 			, COUNT(partie_id) AS partien
 			, SUBSTRING_INDEX(categories.path, "/", -1) AS event_category
-			, turnier_id
+			, tournament_id
 			, urkunde_parameter AS parameter
 		FROM events
 		JOIN partien USING (event_id)
@@ -133,7 +133,7 @@ function mod_tournaments_make_games($vars) {
 	} elseif ($live) {
 		// Gibt es Live-Links in Tabelle?
 		require_once __DIR__.'/../tournaments/pgn.inc.php';
-		$pgn = explode("\n", pgn_file_from_tournament($event['turnier_id']));
+		$pgn = explode("\n", pgn_file_from_tournament($event['tournament_id']));
 	} else {
 		$pgn = false;
 	}

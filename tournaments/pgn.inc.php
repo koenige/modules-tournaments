@@ -328,17 +328,17 @@ function pgn_to_html($pgn, $extra_comment = []) {
  * Liest PGN-Datei(en) aus Tabelle aus, holt sich den Inhalt und gibt alle
  * PGNs zurück
  *
- * @param int $turnier_id
+ * @param int $tournament_id
  * @return string
  * @global array $zz_conf
  */
-function pgn_file_from_tournament($turnier_id) {
+function pgn_file_from_tournament($tournament_id) {
 	global $zz_conf;
 
 	$sql = 'SELECT partien_pfad
 		FROM turniere_partien
-		WHERE turnier_id = %d';
-	$sql = sprintf($sql, $turnier_id);
+		WHERE tournament_id = %d';
+	$sql = sprintf($sql, $tournament_id);
 	$pgn_pfade = wrap_db_fetch($sql, '_dummy_', 'single value');
 	$pgn = '';
 	foreach ($pgn_pfade as $pfad) {

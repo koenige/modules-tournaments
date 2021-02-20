@@ -13,9 +13,9 @@ $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'tb_id';
 $zz['fields'][1]['type'] = 'id';
 
-$zz['fields'][2]['field_name'] = 'turnier_id';
+$zz['fields'][2]['field_name'] = 'tournament_id';
 $zz['fields'][2]['type'] = 'select';
-$zz['fields'][2]['sql'] = 'SELECT turnier_id, event
+$zz['fields'][2]['sql'] = 'SELECT tournament_id, event
 	FROM turniere
 	LEFT JOIN events USING (event_id)
 	ORDER BY date_begin, identifier DESC';
@@ -45,7 +45,7 @@ $zz['fields'][6]['type'] = 'number';
 $zz['sql'] = 'SELECT turniere_bedenkzeiten.*
 		, event
 	FROM turniere_bedenkzeiten
-	LEFT JOIN turniere USING (turnier_id)
+	LEFT JOIN turniere USING (tournament_id)
 	LEFT JOIN events USING (event_id)
 ';
 $zz['sqlorder'] = ' ORDER BY events.date_begin, phase';

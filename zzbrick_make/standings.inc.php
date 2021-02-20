@@ -113,7 +113,7 @@ function cms_tabellenstandupdate_runde($vars) {
 
 	$sql = 'SELECT event_id, events.identifier
 			, runden, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform, bretter_min
-			, turnier_id
+			, tournament_id
 			, (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id) AS runden_gespielt
 		FROM events
 		LEFT JOIN turniere USING (event_id)
@@ -182,7 +182,7 @@ function cms_tabellenstandupdate_runde($vars) {
 	$max_runde_no = wrap_db_fetch($sql, '', 'single value');
 	$values = [];
 	$values['action'] = 'update';
-	$values['POST']['turnier_id'] = $event['turnier_id'];
+	$values['POST']['tournament_id'] = $event['tournament_id'];
 	$values['POST']['tabellenstand_runde_no'] = $max_runde_no;
 	$ops = zzform_multi('turniere', $values);
 
@@ -206,7 +206,7 @@ function cms_tabellenstandupdate_wertungen($event_id) {
 	$sql = 'SELECT category_id, category, category_short
 			, SUBSTRING_INDEX(REPLACE(path, "-", "_"), "/", -1) AS path, anzeigen
 		FROM turniere_wertungen
-		JOIN turniere USING (turnier_id)
+		JOIN turniere USING (tournament_id)
 		JOIN categories
 			ON turniere_wertungen.wertung_category_id = categories.category_id
 		WHERE event_id = %d

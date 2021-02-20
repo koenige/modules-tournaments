@@ -9,7 +9,7 @@
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 # List of fields:
-# event_id, series_short, year, identifier, runden, event, place, turnier_id,
+# event_id, series_short, year, identifier, runden, event, place, tournament_id,
 # livebretter, bretter_max, partie_id, weiss, schwarz, weiss_ergebnis,
 # schwarz_ergebnis, runde_no, tisch_no, brett_no, heim_team,
 # heim_team_identifier, auswaerts_team, auswaerts_team_identifier, weiss_dwz,

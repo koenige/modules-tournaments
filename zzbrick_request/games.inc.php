@@ -65,7 +65,7 @@ function mod_tournaments_games($vars) {
 	$sql = 'SELECT events.event_id, series.category_short AS series_short
 			, YEAR(date_begin) AS year
 			, events.identifier, runden, events.event
-			, place, turnier_id, livebretter
+			, place, tournament_id, livebretter
 			, IF(bretter_min, bretter_min, (SELECT COUNT(teilnahme_id)/2 FROM teilnahmen
 				WHERE event_id = events.event_id
 				AND usergroup_id = %d)) AS bretter_max
@@ -284,7 +284,7 @@ function mod_tournaments_games_file($event, $request, $typ = false) {
 		if (empty($file)) {
 			// maybe there's some path on the server / on an external server?
 			// read turniere_partien
-			$page['text'] = pgn_file_from_tournament($event['turnier_id']);
+			$page['text'] = pgn_file_from_tournament($event['tournament_id']);
 			if (!$page['text']) return false;
 			$page['headers']['filename'] =  ' (Live)';
 		} else {

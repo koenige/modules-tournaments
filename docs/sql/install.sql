@@ -144,7 +144,7 @@ CREATE TABLE `teams` (
 
 
 CREATE TABLE `turniere` (
-  `turnier_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `tournament_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `event_id` int(10) unsigned NOT NULL,
   `turnierform_category_id` int(10) unsigned NOT NULL,
   `bretter_min` tinyint(3) unsigned DEFAULT NULL,
@@ -183,7 +183,7 @@ CREATE TABLE `turniere` (
   `urkunde_parameter` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `tabellenstaende` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tabellenstand_runde_no` tinyint(3) unsigned DEFAULT NULL,
-  PRIMARY KEY (`turnier_id`),
+  PRIMARY KEY (`tournament_id`),
   UNIQUE KEY `event_id` (`event_id`),
   KEY `modus_kategorie_id` (`modus_category_id`),
   KEY `turnierform_kategorie_id` (`turnierform_category_id`)
@@ -192,7 +192,7 @@ CREATE TABLE `turniere` (
 
 CREATE TABLE `turniere_bedenkzeiten` (
   `tb_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `turnier_id` int(10) unsigned NOT NULL,
+  `tournament_id` int(10) unsigned NOT NULL,
   `phase` tinyint(3) unsigned NOT NULL,
   `bedenkzeit_sec` smallint(5) unsigned NOT NULL,
   `zeitbonus_sec` tinyint(3) unsigned DEFAULT NULL,
@@ -203,12 +203,12 @@ CREATE TABLE `turniere_bedenkzeiten` (
 
 CREATE TABLE `turniere_kennungen` (
   `tk_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `turnier_id` int(10) unsigned NOT NULL,
+  `tournament_id` int(10) unsigned NOT NULL,
   `kennung` varchar(15) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
   `kennung_category_id` int(10) unsigned NOT NULL,
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`tk_id`),
-  UNIQUE KEY `turnier_id_kennung_kategorie_id` (`turnier_id`,`kennung_category_id`),
+  UNIQUE KEY `tournament_id_kennung_kategorie_id` (`tournament_id`,`kennung_category_id`),
   UNIQUE KEY `kennung_kennung_kategorie_id` (`kennung`,`kennung_category_id`),
   KEY `kennung_kategorie_id` (`kennung_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -216,30 +216,30 @@ CREATE TABLE `turniere_kennungen` (
 
 CREATE TABLE `turniere_partien` (
   `tp_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `turnier_id` int(10) unsigned NOT NULL,
+  `tournament_id` int(10) unsigned NOT NULL,
   `partien_pfad` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`tp_id`),
-  KEY `turnier_id` (`turnier_id`)
+  KEY `tournament_id` (`tournament_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `turniere_status` (
   `turnier_status_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `turnier_id` int(10) unsigned NOT NULL,
+  `tournament_id` int(10) unsigned NOT NULL,
   `status_category_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`turnier_status_id`),
-  UNIQUE KEY `turnier_id_status_kategorie_id` (`turnier_id`,`status_category_id`)
+  UNIQUE KEY `tournament_id_status_kategorie_id` (`tournament_id`,`status_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `turniere_wertungen` (
   `tw_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `turnier_id` int(10) unsigned NOT NULL,
+  `tournament_id` int(10) unsigned NOT NULL,
   `wertung_category_id` int(10) unsigned NOT NULL,
   `reihenfolge` tinyint(3) unsigned NOT NULL,
   `anzeigen` enum('immer','bei Gleichstand') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'immer',
   PRIMARY KEY (`tw_id`),
-  UNIQUE KEY `turnier_id` (`turnier_id`,`wertung_category_id`),
+  UNIQUE KEY `tournament_id` (`tournament_id`,`wertung_category_id`),
   KEY `reihenfolge` (`reihenfolge`),
   KEY `wertung_kategorie_id` (`wertung_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -378,5 +378,5 @@ CREATE OR REPLACE VIEW `tabellenstaende_view` AS
 	LEFT JOIN `turniere`
 		ON `turniere`.`event_id` = `tabellenstaende_termine_view`.`event_id`
 	LEFT JOIN `turniere_wertungen`
-		ON `turniere_wertungen`.`turnier_id` = `turniere`.`turnier_id`
+		ON `turniere_wertungen`.`tournament_id` = `turniere`.`tournament_id`
 	GROUP BY `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`, `turniere_wertungen`.`reihenfolge`, `turniere_wertungen`.`wertung_category_id`,`paarungen_ergebnisse_view`.`team_id`;

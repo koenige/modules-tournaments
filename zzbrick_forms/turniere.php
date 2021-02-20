@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2014-2015, 2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2014-2015, 2017, 2019-2021 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Turnierdetails
 
 
@@ -11,7 +11,7 @@ if (!$event) wrap_quit(404);
 
 $zz = zzform_include_table('turniere');
 
-$sql = 'SELECT turnier_id
+$sql = 'SELECT tournament_id
 	FROM turniere
 	LEFT JOIN events USING (event_id)
 	WHERE series_category_id = %d
@@ -19,13 +19,13 @@ $sql = 'SELECT turnier_id
 	ORDER BY date_begin DESC
 	LIMIT 1';
 $sql = sprintf($sql, $event['series_category_id'], $event['event_id']);
-$data = wrap_db_fetch($sql, 'turnier_id');
-$event['letztes_turnier_id'] = wrap_db_fetch($sql, '', 'single value');
+$data = wrap_db_fetch($sql, 'tournament_id');
+$event['last_tournament_id'] = wrap_db_fetch($sql, '', 'single value');
 
-if ($event['letztes_turnier_id']) {
+if ($event['last_tournament_id']) {
 	$zz['if']['add']['explanation'] = sprintf(
 		'<ul><li>Statt Eingabe: <a href="./?add=%s">Übernahme der Daten vom letzten Turnier dieser Reihe</a></li></ul>',
-		$event['letztes_turnier_id']
+		$event['last_tournament_id']
 	);
 }
 
