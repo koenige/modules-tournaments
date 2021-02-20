@@ -1,0 +1,72 @@
+# tournaments module
+# HTML output: map for tournaments, show clubs of players
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2015-2019, 2021 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+# List of fields:
+# reselect { place_id, licence, osm_type, osm_id, boundingbox, lat, lon,
+# display_name, place_rank, category, type, importance, icon }, q, places
+#
+<div id="fullmap" class="smallmap"> </div>
+<div class="box"></div>
+
+<div class="innerbox">
+<h1>
+%%% condition if organisation %%%
+<a href="../">
+%%% condition endif %%%
+Herkunftsorte der Spieler
+%%% condition if organisation %%%
+</a><a href="../../lv/%%% item org_kennung %%%/">Landesverband %%% item org_kurz %%%</a>
+%%% condition endif %%%
+</h1>
+<p><a href="%%% item organisation ../ %%%../">%%% item event %%% %%% item year %%% im Schach</a></p>
+
+<p>Spielorte oder ungefähre Orte der Vereine der Teilnehmerinnen und Teilnehmer</p>
+</div>
+
+<script type="text/javascript" src="%%% item organisation ../ %%%../herkunftsorte%%% item org_kennung "/%s" %%%.geojson"></script>
+<script type="text/javascript">
+
+	var tiles = L.tileLayer('https://api.mapbox.com/styles/v1/%%% setting mapbox_user %%%/%%% setting mapbox_style %%%/tiles/512/{z}/{x}/{y}?access_token=%%% setting mapbox_access_token %%%', {
+		maxZoom: 18, tileSize: 512,  zoomOffset: -1,
+		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+	});
+
+	var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+	var map = L.map('fullmap').addLayer(tiles);
+
+	L.Icon.Default.imagePath = '/_layout/clubs/leaflet/';
+	var Icon = new L.Icon.Default({
+		iconUrl: 'marker-icon.png',
+		iconRetinaUrl: 'marker-icon-2x.png'
+	});
+
+	var markers = L.markerClusterGroup({maxClusterRadius: 20});
+	// @todo set to 10 if zoom is above 10
+
+	var geoJsonLayer = L.geoJson(locations, {
+		pointToLayer: function(feature, latlng) {
+			return L.marker(latlng, {icon: Icon, title: feature.properties.org });
+		},
+		onEachFeature: function (feature, layer) {
+			var popupText = '<div class="popup"><h2>' + feature.properties.org + '</h2>';
+			if (feature.properties.description) {
+				popupText += '<ul class="map_spieler">' + feature.properties.description + "</ul>";
+			}
+			popupText += "<p class='more'><a href='https://schach.in%%% condition if setting localhost %%%.local%%% condition endif %%%/" + feature.properties.identifier + "/'>Weitere Informationen</a></p>";
+			popupText += '</div>';
+			layer.bindPopup(popupText);
+		}
+	});
+	markers.addLayer(geoJsonLayer);
+
+	map.addLayer(markers);
+	map.fitBounds(markers.getBounds(), {maxZoom: 12, paddingTopLeft: [20, 20], paddingBottomRight: [20, 20] });
+
+</script>
