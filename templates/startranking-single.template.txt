@@ -1,7 +1,12 @@
-# Zugzwang Project
-# deutsche-schachjugend.de
-# Copyright (c) 2012-2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
-# HTML-Ausgabe: Startrangliste für Einzelturniere
+# tournaments module
+# HTML output: start ranking for single tournaments
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2012-2017, 2019-2021 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 # event, duration, veranstaltungsort, address, postcode,
 # place, description, latitude, longitude

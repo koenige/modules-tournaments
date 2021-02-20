@@ -7,12 +7,12 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2020 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2021 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-function mod_tournaments_startrangliste($vars) {
+function mod_tournaments_startranking($vars) {
 	global $zz_conf;
 	global $zz_setting;
 
@@ -63,7 +63,7 @@ function mod_tournaments_startrangliste($vars) {
 
 	$meldeliste = false;
 	if ($event['turnierform'] === 'e') {
-		$event = mod_tournaments_startrangliste_einzel($event);
+		$event = mod_tournaments_startranking_single($event);
 		foreach ($event['spieler'] as $spieler) {
 			if ($spieler['teilnahme_status'] !== 'angemeldet') continue;
 			$meldeliste = true;
@@ -79,7 +79,7 @@ function mod_tournaments_startrangliste($vars) {
 			$event['map'] = my_teilnehmerkarte($event);
 		}
 	} else {
-		$event = mod_tournaments_startrangliste_mannschaft($event);
+		$event = mod_tournaments_startranking_team($event);
 	}
 	if ($meldeliste) {
 		$page['title'] = $event['event'].' '.$event['year'].': Meldeliste';
@@ -92,14 +92,14 @@ function mod_tournaments_startrangliste($vars) {
 	}
 
 	if ($event['turnierform'] === 'e') {
-		$page['text'] = wrap_template('startrangliste-einzel', $event);
+		$page['text'] = wrap_template('startranking-single', $event);
 	} else {
-		$page['text'] = wrap_template('startrangliste-mannschaft', $event);
+		$page['text'] = wrap_template('startranking-team', $event);
 	}
 	return $page;
 }
 
-function mod_tournaments_startrangliste_einzel($event) {
+function mod_tournaments_startranking_single($event) {
 	global $zz_setting;
 
 	// @todo Sortierung nach DWZ oder Elo, je nach Turniereinstellung
@@ -175,7 +175,7 @@ function mod_tournaments_startrangliste_einzel($event) {
 	return $event;
 }
 	
-function mod_tournaments_startrangliste_mannschaft($event) {
+function mod_tournaments_startranking_team($event) {
 	global $zz_setting;
 
 	$sql = 'SELECT team_id
