@@ -56,7 +56,7 @@
 %%% rights - %%%
 %%% condition if turnier %%%
 %%% rights Webmaster Vorstand "AK Spielbetrieb" %%%
-<li><a href="turnier/">Turnierdetails und Urkunden</a></li>
+<li><a href="turnier/">Turnierdetails</a></li>
 %%% condition unless event_over %%%
 <li><a href="liveergebnisse/">Liveergebniseingabe</a></li>
 %%% condition endif %%%
@@ -110,7 +110,7 @@
 <h2>Organisation des Turniers</h2>
 
 <ul>
-<li><a href="turnier/">Turnierdetails und Urkunden</a></li>
+<li><a href="turnier/">Turnierdetails</a></li>
 %%% condition unless event_over %%%
 <li><a href="liveergebnisse/">Liveergebniseingabe</a></li>
 %%% condition endif %%%
@@ -169,7 +169,7 @@
 </ul></li>
 <li><strong>Organisation des Turniers</strong>
 <ul>
-<li><a href="turnier/">Turnierdetails und Urkunden</a></li>
+<li><a href="turnier/">Turnierdetails</a></li>
 <li><a href="runde/">Termine: Runden und Partien</a></li>
 <li><a href="swt-upload/">Übernahme der Turnierdaten aus Swiss-Chess</a></li>
 %%% condition unless event_over %%%

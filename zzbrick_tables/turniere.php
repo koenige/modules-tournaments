@@ -340,32 +340,6 @@ $zz['fields'][46]['default'] = 'nein';
 $zz['fields'][46]['hide_in_list'] = true;
 $zz['fields'][46]['separator'] = true;
 
-$zz['fields'][31]['title'] = 'Urkunde';
-$zz['fields'][31]['field_name'] = 'certificate_id';
-$zz['fields'][31]['type'] = 'select';
-$zz['fields'][31]['sql'] = 'SELECT certificate_id, certificate FROM certificates ORDER BY certificate';
-$zz['fields'][31]['display_field'] = 'certificate';
-$zz['fields'][31]['hide_in_list'] = true;
-$zz['fields'][31]['suffix'] = ' – <a href="/intern/urkunden/" target="_new">Galerie aller Urkunden</a>';
-
-$zz['fields'][32]['title'] = 'Urkunde: Ort';
-$zz['fields'][32]['field_name'] = 'urkunde_ort';
-$zz['fields'][32]['hide_in_list'] = true;
-
-$zz['fields'][33]['title'] = 'Urkunde: Datum';
-$zz['fields'][33]['field_name'] = 'urkunde_datum';
-$zz['fields'][33]['dont_copy'] = true;
-$zz['fields'][33]['hide_in_list'] = true;
-$zz['fields'][33]['type'] = 'date';
-
-$zz['fields'][34]['title'] = 'Unterschrift links';
-$zz['fields'][34]['field_name'] = 'urkunde_unterschrift1';
-$zz['fields'][34]['hide_in_list'] = true;
-
-$zz['fields'][35]['title'] = 'Unterschrift rechts';
-$zz['fields'][35]['field_name'] = 'urkunde_unterschrift2';
-$zz['fields'][35]['hide_in_list'] = true;
-
 $zz['fields'][36]['title'] = 'Parameter';
 $zz['fields'][36]['field_name'] = 'urkunde_parameter';
 $zz['fields'][36]['type'] = 'parameter';
@@ -429,7 +403,6 @@ $zz['sql'] = 'SELECT turniere.*
 		, events.identifier AS event_identifier
 		, modus.category_short AS modus
 		, turnierformen.category_short AS turnierform
-		, certificates.certificate
 		, (SELECT COUNT(team_id) FROM teams
 			WHERE teams.event_id = turniere.event_id
 			AND team_status = "Teilnehmer"
@@ -448,7 +421,6 @@ $zz['sql'] = 'SELECT turniere.*
 		ON turniere.modus_category_id = modus.category_id
 	LEFT JOIN categories turnierformen
 		ON turniere.turnierform_category_id = turnierformen.category_id
-	LEFT JOIN certificates USING (certificate_id)
 ';
 $zz['sql'] = sprintf($zz['sql'], wrap_id('usergroups', 'spieler'));
 $zz['sqlorder'] = ' ORDER BY events.date_begin DESC, events.time_begin DESC,
