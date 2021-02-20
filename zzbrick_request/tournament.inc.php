@@ -13,7 +13,6 @@
 
 
 function mod_tournaments_tournament($vars, $settings) {
-	global $zz_conf;
 	global $zz_setting;
 
 	if (!empty($settings['intern'])) {
@@ -220,6 +219,23 @@ function mod_tournaments_tournament($vars, $settings) {
 			$event['events'][$event_id]['paarungen'] = false;
 		}
 	}
+	
+	// qualification tournaments?
+	$sql = 'SELECT event_id, event, YEAR(date_begin) AS year, identifier
+			, CONCAT(IFNULL(date_begin, ""), IFNULL(CONCAT("/", date_end), "")) AS duration
+			, TIME_FORMAT(time_begin, "%%H.%%i") AS time_begin
+			, TIME_FORMAT(time_end, "%%H.%%i") AS time_end
+			, date_begin, date_end
+		FROM tournaments
+		LEFT JOIN events USING (event_id)
+		WHERE main_tournament_id = %d';
+	$sql = sprintf($sql, $event['tournament_id']);
+	$event['events'] += wrap_db_fetch($sql, 'event_id');
+	$dates = [];
+	foreach ($event['events'] as $sub_event) {
+		$dates[] = $sub_event['date_begin'].'T'.$sub_event['time_begin'];
+	}
+	array_multisort($dates, SORT_ASC, $event['events']);
 	
 	$sql = 'SELECT event_link_id, link, link_text
 		FROM events_links

@@ -206,7 +206,9 @@
 %%% condition if paarungen | partien %%%
 <a href="runde/%%% item runde_no %%%/">
 %%% condition endif %%%
+%%% condition if identifier %%%<a href="/%%% item identifier %%%/">%%% condition endif %%%
 %%% item event %%%
+%%% condition if identifier %%%</a>%%% condition endif %%%
 %%% condition if paarungen | partien %%%
 </a>
 %%% condition endif %%%
