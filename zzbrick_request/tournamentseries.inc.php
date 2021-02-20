@@ -12,7 +12,7 @@
  */
 
 
-function mod_tournaments_turnierreihe($vars, $settings) {
+function mod_tournaments_tournamentseries($vars, $settings) {
 	global $zz_setting;
 
 	$intern = !empty($settings['intern']) ? true : false;
@@ -202,6 +202,6 @@ function mod_tournaments_turnierreihe($vars, $settings) {
 	$page['breadcrumbs'][] = '<a href="../">'.$event['year'].'</a>';
 	$page['breadcrumbs'][] = $event['event'];
 	$page['dont_show_h1'] = true;
-	$page['text'] = wrap_template('turnierreihe', $event);
+	$page['text'] = wrap_template('tournamentseries', $event);
 	return $page;
 }
