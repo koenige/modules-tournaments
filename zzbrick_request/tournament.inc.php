@@ -62,6 +62,7 @@ function mod_tournaments_tournament($vars, $settings) {
 				WHERE turniere_wertungen.tournament_id = tournaments.tournament_id
 				AND turniere_wertungen.reihenfolge = 1) AS haupt_wertung_category_id
 			, website_org.org_abk
+			, IF(NOT ISNULL(IFNULL(events.description, series.description)), 1, NULL) AS ausschreibung
 		FROM events
 		LEFT JOIN websites USING (website_id)
 		LEFT JOIN organisationen website_org USING (org_id)

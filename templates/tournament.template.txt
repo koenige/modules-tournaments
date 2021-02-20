@@ -233,7 +233,9 @@
 </dd>
 %%% loop end %%%
 %%% condition unless intern %%%
+%%% condition if ausschreibung %%%
 <dd><a href="%%% setting events_path %%%/%%% item identifier %%%/#zeitplan">Kompletter Zeitplan …</a></dd>
+%%% condition endif %%%
 %%% condition endif %%%
 %%% condition endif %%%
 %%% condition if series %%%
@@ -252,8 +254,11 @@
 %%% loop end %%%
 </dd>
 %%% condition endif %%%
+%%% condition if links | ausschreibung %%%
 <dt>Links:</dt>
+%%% condition if ausschreibung %%%
 <dd><a href="%%% setting events_path %%%/%%% item identifier %%%/">Ausschreibung des Turniers</a></dd>
+%%% condition endif %%%
 %%% condition if links %%%
 %%% loop links %%%
 <dd><a href="%%% item link %%%">%%% item link_text %%%</a></dd>
@@ -261,6 +266,7 @@
 
 %%% condition endif %%%
 </dl>
+%%% condition endif %%%
 <div class="tournament_links">
 %%% condition if partien %%%
 <p><a href="partien/gesamt.pgn">Partien aller Runden [PGN]</a>
