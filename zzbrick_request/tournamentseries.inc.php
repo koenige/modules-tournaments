@@ -75,7 +75,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 	// Turniere auslesen
 	$sql = 'SELECT events.event_id, events.identifier, event
 			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
-			, date_begin, date_end
+			, date_begin, date_end, time_begin
 			, IFNULL(place, places.contact) AS turnierort
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
@@ -102,6 +102,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 				AND (NOT ISNULL(teilnahmen.verein_org_id))
 			) AS spieler_mit_verein
 			, (SELECT COUNT(kontingent_id) FROM kontingente WHERE kontingente.event_id = events.event_id) AS kontingente
+			, tournament_id, main_tournament_id
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
 		JOIN events_websites
@@ -189,6 +190,19 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 			WHERE event_id IN (%s)';
 		$sql = sprintf($sql, implode(',', array_keys($event['tournaments'])));
 		$event['event_links'] = wrap_db_fetch($sql, '', 'single value');
+	}
+
+	$tournament_ids = [];
+	foreach ($event['tournaments'] as $event_id => $tournament) {
+		$tournament_ids[$tournament['tournament_id']] = $event_id;
+		if ($tournament['turnierort'] === $event['turnierort'])
+			$event['tournaments'][$event_id]['place_equal'] = true;
+	}
+	foreach ($event['tournaments'] as $event_id => $tournament) {
+		if (empty($tournament['main_tournament_id'])) continue;
+		$t_event_id = $tournament_ids[$tournament['main_tournament_id']];
+		$event['tournaments'][$t_event_id]['tournaments'][$event_id] = $tournament;
+		unset($event['tournaments'][$event_id]);
 	}
 
 	// Terminkalender
