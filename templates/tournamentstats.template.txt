@@ -1,0 +1,131 @@
+# tournaments module
+# HTML output: tournament statistics
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2015-2018, 2020-2021 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+<h1>Turnierstatistik
+<br><a href="../">%%% item series %%% (%%% item series_short %%%) %%% item year %%%</a></h1>
+
+<h2>Turniere</h2>
+
+<div class="results">
+<table>
+<thead>
+<tr class="sortable">
+<th>Turnier</th>
+%%% condition if summe_teams %%%
+<th>Teams</th>
+%%% condition endif %%%
+<th><abbr title="Teilnehmer">TN</abbr></th>
+<th><abbr title="Teilnehmer männlich">♂</abbr></th>
+<th><abbr title="Teilnehmer weiblich">♀</abbr></th>
+<th><abbr title="DWZ-Schnitt">∅&nbsp;DWZ</abbr></th>
+<th><abbr title="Elo-Schnitt">∅&nbsp;Elo</abbr></th>
+<th>Partien</th>
+%%% condition if summe_zuege %%%
+<th>Züge</th>
+<th><abbr title="Züge pro Partie">∅&nbsp;Z./P.</abbr></th>
+%%% condition endif %%%
+<th><abbr title="Siege Weiß">+W</abbr></th>
+<th><abbr title="Remis">=</abbr></th>
+<th><abbr title="Siege Schwarz">+S</abbr></th>
+%%% comment <th><abbr title="Nachrichten ans Brett">Nachr.</abbr></th> %%%
+<th><abbr title="Durschnittsalter (ungefähr)">Alter</abbr></th>
+</tr>
+</thead>
+<tfoot>
+<tr>
+<th>Gesamt</th>
+%%% condition if summe_teams %%%
+<th class="tz">%%% item summe_teams %%%</th>
+%%% condition endif %%%
+<th class="tz">%%% item summe_total %%%</th>
+<th class="tz">%%% item summe_m %%%</th>
+<th class="tz">%%% item summe_w %%%</th>
+<th></th>
+<th></th>
+<th class="tz">%%% item summe_partien wrap_number %%%</th>
+%%% condition if summe_zuege %%%
+<th class="tz">%%% item summe_zuege wrap_number %%%</th>
+<th class="tz">%%% item summe_zuege_pro_partie %%%</th>
+%%% condition endif %%%
+<th class="tz">%%% item quote_siege_weiss wrap_percent %%%</th>
+<th class="tz">%%% item quote_remis wrap_percent %%%</th>
+<th class="tz">%%% item quote_siege_schwarz wrap_percent %%%</th>
+%%% comment <th class="tz">--- item summe_tn_nachrichten ---</th> %%%
+<th class="tz">%%% item summe_average_age wrap_number %%%</th>
+</tr>
+</tfoot>
+<tbody id="js-statistik">
+%%% loop turniere %%%
+<tr class="%%% loopposition uneven un %%%even">
+<td><a href="../../../%%% item identifier %%%/">%%% item event %%%</a></td>
+%%% condition if teams %%%
+<td class="tz">%%% item teams %%%</td>
+%%% condition endif %%%
+<td class="tz">%%% item tn_total %%%</td>
+<td class="tz">%%% item tn_m %%%</td>
+<td class="tz">%%% item tn_w %%%</td>
+<td class="tz">%%% item dwz_schnitt %%%</td>
+<td class="tz">%%% item elo_schnitt %%%</td>
+<td class="tz">%%% item partien wrap_number %%%</td>
+%%% condition if summe_zuege %%%
+<td class="tz"><span class="sortonly">%%% item zuege %%%</span> %%% item zuege wrap_number %%%</td>
+<td class="tz">%%% item zuege_pro_partie %%%</td>
+%%% condition endif %%%
+<td class="tz">%%% item quote_siege_weiss wrap_percent %%%</td>
+<td class="tz">%%% item quote_remis wrap_percent %%%</td>
+<td class="tz">%%% item quote_siege_schwarz wrap_percent %%%</td>
+%%% comment <td class="tz">--- item tn_nachrichten ---</td> %%%
+<td class="tz">%%% item average_age wrap_number %%%</td>
+</tr>
+%%% loop end %%%
+</tbody>
+</table>
+
+<p>Anmerkungen:</p>
+
+<ul>
+<li>Die Wertungsschnitte werden aus allen verfügbaren Wertungszahlen berechnet.
+Spielerinnen und Spieler ohne Wertung werden bei der Berechnung des Schnitts nicht berücksichtigt.</li>
+<li>Es werden nur abgeschlossene Partien berücksichtigt.</li>
+</ul>
+
+</div>
+
+%%% condition if laengste_partien %%%
+<h2>Partien</h2>
+
+<ul>
+<li>Die längste(n) Partie(n):
+	<ul>
+	%%% loop laengste_partien %%%
+	<li>in der %%% item event %%% mit %%% item zuege %%% Zügen</li>
+	%%% loop end %%%
+	</ul></li>
+</ul>
+%%% condition endif %%%
+
+<div class="relnav">
+%%% condition if prev %%%<p class="prev"><a href="%%% item prev %%%">Statistik des Turniers im Vorjahr</a></p>%%% condition endif %%%
+%%% condition if next %%%<p class="next"><a href="%%% item next %%%">Statistik des Turniers im folgenden Jahr</a></p>%%% condition endif %%%
+</div>
+
+<script type="text/javascript" src="/_behaviour/link-rel-nav.js"></script>
+
+<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/core.js"></script>
+<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/widgets/sortable.js"></script>
+<script type="text/javascript">
+	var sortTableObject = vxJS.widget.sorTable(document.getElementById('js-statistik'), {
+		columnFormat: [
+			null, %%% condition if summe_teams %%%'float', %%% condition endif %%%
+			'float', 'float', 'float', 'float', 'float', 'float', 'float',
+			'float', 'float', 'float', 'float', 'float'
+		]
+	});
+</script>
