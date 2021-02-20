@@ -1,0 +1,497 @@
+# tournaments module
+# HTML output: tournament
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2012-2021 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+# List of fields:
+# event_id, event, duration, year, veranstaltungsort, veranstaltungsort_link,
+# address, postcode, place, description, latitude, longitude,
+# telefon, telefax, e_mail, series_category_id, identifier, offen,
+# teilnehmerliste, turnierort, pseudo_dwz, bretter_min, turnierform,
+# event_category, tournament_id, tabellenstaende, event_over, series,
+# series_description, series_path, main_series_path, main_series, runden,
+# modus, spielerphotos, intern, einzel, einzel, turnier, fide_id, dwz_code,
+# bedenkzeit { tb_id, phase, bedenkzeit, zeitbonus, zuege }, organisationen {
+# rolle, organisation { event_contact_id, organisation, website, rolle } }, events {
+# event_id, event, duration, time_begin, time_end,
+# event_category_id, date_begin, date_end, runde_no, paarungen, partien, tabelle,
+# faellt_aus, pgn, intern }, partien, links, teams, einzelteilnehmerliste,
+# photouebersicht
+#
+<h1>%%% item event %%%<br>
+%%% item duration wrap_date %%% %%% item turnierort "<em>in %s</em>"%%%</h1>
+
+%%% condition if team_abgesagt %%%
+<p class="error">Schade. Wir haben Deine Absage erhalten.</p>
+
+%%% condition endif %%%
+
+%%% condition if intern %%%
+%%% rights Webmaster Vorstand "AK Spielbetrieb" Geschäftsstelle %%%
+<div class="infocol">
+<h2>Werkzeuge</h2>
+
+<ul>
+<li><a href="termin/">Termin bearbeiten</a>
+<ul>
+	<li><a href="fristen/">Termine: Fristen</a> – Melde- und Zahlungsfristen</li>
+%%% rights - %%%
+%%% rights Webmaster Vorstand "AK Spielbetrieb" %%%
+  <li><a href="runde/">Termine: Runden und Partien</a></li>
+%%% rights - %%%
+%%% rights Webmaster Vorstand "AK Spielbetrieb" Geschäftsstelle %%%
+  <li><a href="meldeformular/">Meldeformular</a></li>
+	<li><a href="zeitplan/">Zeitplan</a> – außerschachlicher Terminplan</li>
+	<li><a href="kosten/">Kosten</a> – Kosten für die Teilnehmer</li>
+</ul>
+</li>
+%%% rights - %%%
+%%% rights Webmaster %%%
+<li><a href="mails/">Mails an Teilnehmer verschicken</a></li>
+%%% rights - %%%
+%%% condition if turnier %%%
+%%% rights Webmaster Vorstand "AK Spielbetrieb" %%%
+<li><a href="turnier/">Turnierdetails und Urkunden</a></li>
+%%% condition unless event_over %%%
+<li><a href="liveergebnisse/">Liveergebniseingabe</a></li>
+%%% condition endif %%%
+%%% rights - %%%
+%%% rights Webmaster Vorstand "AK Spielbetrieb" Geschäftsstelle %%%
+<li><a href="teilnahmen/">Teilnahmen und Organisationsteam</a></li>
+%%% condition if teams %%%
+<li><a href="teams/">Alle Teams</a> mit An- und Abreise, Kontaktdaten und Anmerkungen</li>
+<li><a href="buchungen/">Alle Zimmerbuchungen und Zahlungseingänge</a> der Teams</li>
+<li><a href="spieler/">Alle Aufstellungen</a> der Teams</li>
+<li><a href="meldeboegen.pdf">Alle Meldebögen der Teams als PDF</a></li>
+%%% condition elseif mannschaft %%%
+<li><a href="teams/">Alle Teams</a> mit An- und Abreise, Kontaktdaten und Anmerkungen</li>
+%%% condition else %%%
+<li><a href="spieler/">Alle Spieler</a></li>
+%%% condition endif %%%
+%%% rights - %%%
+%%% rights "AK Spielbetrieb" Vorstand %%%
+%%% condition unless event_over %%%
+<li><a href="/intern/turnierzahlen/%%% item identifier %%%/">Turnierzahlen direkt zu Turnierbeginn aktualisieren</a></li>
+<li><a href="swisschess.csv">Export in Swiss-Chess (.lst)</a> | <a href="swisschess.csv?alle">Export auch ungeprüfter Spieler (.lst)</a> (ohne Gewähr …)</li>
+%%% condition endif %%%
+<li><a href="swt-upload/">Übernahme der Turnierdaten aus Swiss-Chess</a></li>
+%%% rights - %%%
+%%% condition endif %%%
+%%% rights Webmaster %%%
+%%% condition if turnier %%%
+<ul>
+<li><a href="/intern/swtimport/%%% item identifier %%%/">Import Turnierstand aus Swiss-Chess (.swt)</a> (Aufruf normalerweise nicht nötig, nur bei Fehlern!)</li>
+<li><a href="/intern/swtwriter/%%% item identifier %%%/?delete">Löschen der Person- und Team-IDs in der SwissChess-Datei</a> (Bei Fehlern der ID-Schreibung in der SWT-Datei)</li>
+<li><a href="swtreader/?view=data">Rohdaten-Ansicht der SwissChess-Datei</a></li>
+</ul>
+<li><a href="tabellenstandupdate/">Tabellenstände neu berechnen</a></li>
+%%% condition endif %%%
+%%% rights - %%%
+%%% rights Webmaster Vorstand "AK Spielbetrieb" Geschäftsstelle %%%
+%%% condition if turnier %%%
+<li><a href="urkunden/">Druck der Urkunden</a></li>
+%%% condition endif %%%
+%%% condition if kontingent %%%
+<li><a href="kontingent/">Berechnung der Kontingente</a></li>
+%%% condition endif %%%
+<li><a href="/medien/%%% item org_abk %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
+</ul>
+<p><a href="/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
+</div>
+
+%%% rights Schiedsrichter Technik Turnierleitung event:* %%%
+
+<div class="infocol">
+<h2>Organisation des Turniers</h2>
+
+<ul>
+<li><a href="turnier/">Turnierdetails und Urkunden</a></li>
+%%% condition unless event_over %%%
+<li><a href="liveergebnisse/">Liveergebniseingabe</a></li>
+%%% condition endif %%%
+<li><a href="runde/">Termine: Runden und Partien</a></li>
+<li><a href="teilnahmen/">Teilnahmen und Organisationsteam</a></li>
+%%% condition if teams %%%
+<li><a href="teams/">Alle Teams</a> mit An- und Abreise, Kontaktdaten und Anmerkungen</li>
+<li><a href="buchungen/">Alle Zimmerbuchungen und Zahlungseingänge</a> der Teams</li>
+<li><a href="spieler/">Alle Aufstellungen</a> der Teams</li>
+<li><a href="meldeboegen.pdf">Alle Meldebögen der Teams als PDF</a></li>
+%%% condition endif %%%
+%%% condition unless event_over %%%
+<li><a href="/intern/turnierzahlen/%%% item identifier %%%/">Turnierzahlen direkt zu Turnierbeginn aktualisieren</a></li>
+<li><a href="swisschess.csv">Export in Swiss-Chess (.lst)</a> | <a href="swisschess.csv?alle">Export auch ungeprüfter Spieler (.lst)</a></li>
+%%% condition endif %%%
+<li><a href="swt-upload/">Übernahme der Turnierdaten aus Swiss-Chess</a></li>
+<li><a href="tabellenstandupdate/">Tabellenstände neu berechnen</a></li>
+<li><a href="urkunden/">Druck der Urkunden</a></li>
+<li><a href="/medien/%%% item org_abk %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
+</ul>
+<p><a href="/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
+</div>
+
+%%% rights Bulletin event:* %%%
+
+<div class="infocol">
+<h2>Organisation des Turniers</h2>
+
+<ul>
+<li><a href="runde/">Termine: Runden und Partien</a></li>
+<li><a href="/intern/dateien/swt/%%% item identifier %%%.swt">Download SWT-Datei</a> falls vorhanden</li>
+<li><a href="/medien/%%% item org_abk %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
+</ul>
+
+<p><a href="/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
+</div>
+
+%%% rights Organisator event:* %%%
+<div class="infocol">
+<h2>Organisation der Veranstaltung</h2>
+
+<ul>
+<li><strong>Organisation vorab</strong>
+<ul>
+%%% condition if mannschaft %%%
+<li><a href="teams/">Alle Teams</a> mit An- und Abreise, Kontaktdaten und Anmerkungen</li>
+%%% condition else %%%
+<li><a href="spieler/">Alle Spieler</a></li>
+%%% condition endif %%%
+<li><a href="buchungen/">Alle Zimmerbuchungen und Zahlungseingänge</a> der Teams</li>
+<li><a href="fristen/">Termine: Fristen</a></li>
+%%% condition unless event_over %%%
+<li><a href="/intern/turnierzahlen/%%% item identifier %%%/">Turnierzahlen direkt zu Turnierbeginn aktualisieren</a></li>
+<li><a href="swisschess.csv">Export in Swiss-Chess (.lst)</a> | <a href="swisschess.csv?alle">Export auch ungeprüfter Spieler (.lst)</a></li>
+%%% condition endif %%%
+</ul></li>
+<li><strong>Organisation des Turniers</strong>
+<ul>
+<li><a href="turnier/">Turnierdetails und Urkunden</a></li>
+<li><a href="runde/">Termine: Runden und Partien</a></li>
+<li><a href="swt-upload/">Übernahme der Turnierdaten aus Swiss-Chess</a></li>
+%%% condition unless event_over %%%
+<li><a href="liveergebnisse/">Liveergebniseingabe</a></li>
+%%% condition endif %%%
+</ul>
+</li>
+<li><a href="urkunden/">Druck der Urkunden</a></li>
+<li><a href="/medien/%%% item org_abk %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
+</ul>
+
+<p><a href="/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
+</div>
+%%% rights - %%%
+%%% condition endif %%%
+
+<div class="infocol">
+<h2>Daten &amp; Fakten</h2>
+<dl>
+%%% condition if events %%%
+<dt>Termine:</dt>
+%%% loop events %%%
+<dd>
+%%% condition if faellt_aus %%%<del>%%% condition endif %%%
+<strong>%%% item dauer_gleich "<span style='visibility: hidden;'>" %%%%%% item duration wrap_date %%%%%% item dauer_gleich "</span>" %%%</strong> 
+%%% condition if time_begin %%%
+%%% item time_begin %%%
+%%% condition if time_end %%%
+%%% condition else %%%
+ Uhr
+%%% condition endif %%%
+%%% condition endif %%%
+%%% item time_end "–%s Uhr" %%% 
+%%% condition if paarungen | partien %%%
+<a href="runde/%%% item runde_no %%%/">
+%%% condition endif %%%
+%%% item event %%%
+%%% condition if paarungen | partien %%%
+</a>
+%%% condition endif %%%
+%%% condition if pgn %%%
+ · <a href="partien/%%% item runde_no %%%.pgn" title="Herunterladen der Partien der %%% item runde_no %%%. Runde im Format PGN (Portable Game Notation)">Partien [PGN]</a>
+%%% condition if intern & livebretter %%%
+ · <a href="partien/%%% item runde_no %%%-live.pgn" title="Herunterladen der Live-Partien der %%% item runde_no %%%. Runde im Format PGN (Portable Game Notation)">Live [PGN]</a>
+%%% condition endif %%%
+%%% condition elseif intern %%%
+%%% condition if paarungen | partien %%%
+ · <a href="partien/%%% item runde_no %%%.pgn">Leere PGN</a>
+%%% condition endif %%%
+%%% condition endif %%%
+
+%%% condition if tabelle %%%
+ · <a href="tabelle/%%% item runde_no %%%/">Tabelle</a>
+%%% loop tabellenstaende %%%
+ · <a href="tabelle/%%% item runde_no %%%/%%% item tabelle %%%/">Tabelle (%%% item tabelle %%%)</a>
+%%% loop end %%%
+%%% condition endif %%%
+%%% condition if faellt_aus %%%</del> <strong>fällt aus!</strong>%%% condition endif %%%
+</dd>
+%%% loop end %%%
+%%% condition unless intern %%%
+<dd><a href="%%% setting events_path %%%/%%% item identifier %%%/#zeitplan">Kompletter Zeitplan …</a></dd>
+%%% condition endif %%%
+%%% condition endif %%%
+%%% condition if series %%%
+<dt>Reihe:</dt>
+<dd><strong>%%% item series %%%</strong> (<a href="%%% setting events_path %%%/%%% item series_path %%%/archiv/">Archiv</a>)</dd>
+<dd>%%% item series_description markdown %%%</dd>
+%%% condition endif %%%
+%%% condition if runden %%%
+<dt>Modus:</dt>
+<dd>%%% item runden %%% Runden %%% item modus %%%</dd>
+%%% condition endif %%%
+%%% condition if bedenkzeit %%%
+<dd>Bedenkzeit pro Spieler und Partie: 
+%%% loop bedenkzeit %%%
+%%% item bedenkzeit my_minuten_format %%% Minuten %%% item zuege " für %d Züge" %%%%%% loopposition last " für den Rest der Partie" %%%%%% item zeitbonus " (%d Sekunden Zeitbonus pro Zug)" 0 "" 1 " (1 Sekunde Zeitbonus pro Zug)" %%%%%% loopposition first|middle ", " %%%
+%%% loop end %%%
+</dd>
+%%% condition endif %%%
+<dt>Links:</dt>
+<dd><a href="%%% setting events_path %%%/%%% item identifier %%%/">Ausschreibung des Turniers</a></dd>
+%%% condition if links %%%
+%%% loop links %%%
+<dd><a href="%%% item link %%%">%%% item link_text %%%</a></dd>
+%%% loop end %%%
+
+%%% condition endif %%%
+</dl>
+<div class="tournament_links">
+%%% condition if partien %%%
+<p><a href="partien/gesamt.pgn">Partien aller Runden [PGN]</a>
+<br><a href="partien/gesamt-utf8.pgn">Partien aller Runden [PGN, Unicode UTF-8]</a></p>
+%%% condition endif %%%
+%%% condition if fide_id %%%
+<p><a href="http://ratings.fide.com/tournament_details.phtml?event=%%% item fide_id %%%">Elo-Auswertung bei der FIDE</a></p>
+%%% condition endif %%%
+%%% condition if dwz_code & dwz_db_archiv %%%
+<p><a href="http://altdwz.schachbund.net/turniere/%%% item year %%%.html?code=%%% item dwz_code %%%">DWZ-Auswertung beim Schachbund</a></p>
+%%% condition elseif dwz_code %%%
+<p><a href="http://www.schachbund.de/turnier/%%% item dwz_code %%%.html">DWZ-Auswertung beim Schachbund</a></p>
+%%% condition endif %%%
+</div>
+
+</div>
+
+<div class="infocol">
+<h2>%%% condition if tabelle %%%Tabelle%%% condition else %%%Teilnehmer%%% condition endif %%%</h2>
+
+%%% condition if offen %%%
+%%% condition if einzel %%%
+<p><strong>Dieses Turnier ist ein offenes Turnier! <a href="%%% setting events_path %%%/%%% item identifier %%%/#anmeldung">Jetzt melden!</a></strong></p>
+%%% condition else %%%
+<p><strong>Dieses Turnier ist ein offenes Turnier!
+%%% condition if meldung_moeglich & online_meldung  %%%
+<a href="/meldung/%%% item identifier %%%/">Jetzt melden!</a></strong>
+%%% condition elseif online_meldung %%%
+</strong> Es ist leider keine Meldung mehr möglich.
+Die Meldeliste ist voll. Die Organisatoren können Auskunft geben, ob noch 
+Plätze frei sind oder eine Warteliste existiert.
+%%% condition else %%%</strong>
+%%% condition endif %%%</p>
+%%% condition endif %%%
+%%% condition elseif freiplatz %%%
+%%% condition if einzel %%%
+<p><strong>Für dieses Turnier gibt es Freiplätze. <a href="%%% setting events_path %%%/%%% item identifier %%%/#anmeldung">Jetzt bewerben!</a></strong></p>
+%%% condition endif %%%
+%%% condition endif %%%
+
+%%% condition if teams %%%
+<div class="results">
+<table>
+<thead>
+<tr>
+<th>%%% condition if tabelle %%%<abbr title="Platz">Pl.</abbr>%%% condition else %%%Nr.%%% condition endif %%%</th>
+<th>%%% condition if m-v %%%Verein%%% condition elseif m-s %%%Schule%%% condition else %%%Land%%% condition endif %%%</th>
+%%% condition if dwz_schnitt %%%<th class="number"><abbr title="Schnitt der Deutschen Wertungszahlen">Ø&nbsp;DWZ</abbr></th>%%% condition endif %%%
+%%% condition if m-v | m-s %%%
+<th>Land</th>
+%%% condition endif %%%
+%%% condition if tabelle %%%
+<th class="number"><abbr title="Punkte">Pkt.</abbr></th>
+%%% condition endif %%%
+</tr>
+</thead>
+<tbody>
+%%% loop teams %%%
+<tr class='%%% loopposition uneven "un" %%%even'>
+<td>%%% condition if platz_no %%%
+%%% item platz_no %%%
+%%% condition else %%%
+%%% item setzliste_no %%%
+%%% condition endif %%%</td>
+<td>%%% condition if aktiv %%%<a href="../../%%% item team_identifier %%%/">%%% condition endif %%%
+%%% item team %%% %%% item team_no %%%%%% item aktiv "</a>" %%%</td>
+%%% condition if dwz_schnitt %%%
+<td class="number">%%% item dwz_schnitt %%%</td>
+%%% condition endif %%%
+%%% condition if m-v | m-s %%%
+<td>%%% condition if main_series_path & lv_kennung %%%
+<a href="../%%% item main_series_path %%%/lv/%%% item lv_kennung %%%/">
+%%% condition endif %%%
+<abbr title="%%% item country %%%">%%% item lv_kurz %%%</abbr>
+%%% condition if main_series_path & lv_kennung %%%
+</a>
+%%% condition endif %%%</td>
+%%% condition endif %%%
+%%% condition if wertung %%%
+<td class="number">%%% item wertung my_ergebnis_format %%%</td>
+%%% condition endif %%%
+</tr>
+%%% loop end %%%
+</tbody>
+</table>
+</div>
+%%% condition if tabelle %%%
+<p><a href="tabelle/">Ausführlicher Tabellenstand</a></p>
+<p><a href="startrangliste/">Startrangliste</a></p>
+%%% condition endif %%%
+%%% condition if dwz_schnitt %%%
+<p>DWZ-Schnitt der ersten %%% item bretter_min %%% Bretter aller Teams: <strong>%%% item dwz_schnitt %%%</strong>
+%%% condition if pseudo_dwz %%%
+ <br><em>(unter Berücksichtigung einer Pseudo-DWZ von %%% item pseudo_dwz %%% für Spieler ohne DWZ)</em>
+%%% condition endif %%%
+</p>
+%%% condition endif %%%
+%%% condition if teilnehmerliste %%%
+<h3>Suche nach Team oder Spieler</h3>
+<form method="GET" action="./suche/" id="suche" accept-charset="utf-8">
+<p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
+%%% condition else %%%
+<h3>Suche nach Team</h3>
+<form method="GET" action="./suche/" id="suche" accept-charset="utf-8">
+<p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
+%%% condition endif %%%
+
+%%% condition elseif einzelteilnehmerliste %%%
+%%% condition if tabelle %%%
+<div class="results">
+<table>
+<thead>
+<tr>
+<th><abbr title="Platz">Pl.</abbr></th>
+<th>Spieler</th>
+<th>Land</th>
+<th class="number"><abbr title="Punkte">Pkt.</abbr></th>
+</tr>
+</thead>
+<tbody>
+%%% loop spieler %%%
+<tr class='%%% loopposition uneven "un" %%%even'>
+<td>%%% item platz_no %%%</td>
+<td>
+%%% condition if setzliste_no %%%
+<a href="spieler/%%% item setzliste_no %%%/">
+%%% condition endif %%%
+%%% item spieler %%%
+%%% item setzliste_no </a> %%%</td>
+<td>%%% condition if main_series_path & lv_kennung %%%
+<a href="../%%% item main_series_path %%%/lv/%%% item lv_kennung %%%/">
+%%% condition endif %%%
+<abbr title="%%% item country %%%">%%% item lv_kurz %%%</abbr>
+%%% condition if main_series_path & lv_kennung %%%
+</a>
+%%% condition endif %%%</td>
+<td class="number">%%% item wertung my_ergebnis_format %%%</td>
+</tr>
+%%% loop end %%%
+%%% condition if mehr_spieler %%%
+<tr><td> </td><td colspan="4">… und weitere %%% item mehr_spieler %%% Spieler</td></tr>
+%%% condition endif %%%
+</tbody>
+</table>
+</div>
+<p><a href="tabelle/">Ausführlicher Tabellenstand</a></p>
+<p><a href="spieler/">Startrangliste</a></p>
+
+%%% condition else %%%
+<p><a href="spieler/">Teilnehmerliste</a></p>
+
+%%% condition endif %%%
+
+%%% condition if photouebersicht %%%
+<p><a href="photos/">Photos aller Teilnehmer</a></p>
+%%% condition endif %%%
+
+%%% condition if main_series_path %%%
+<h3>Suche nach Spielerinnen und Spielern</h3>
+<form method="GET" action="./suche/" id="suche" accept-charset="utf-8">
+<p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
+%%% condition endif %%%
+%%% condition else %%%
+<p>Noch keine Teilnehmer vorhanden.</p>
+%%% condition endif %%%
+%%% condition unless intern %%%
+</div>
+%%% condition endif %%%
+
+%%% condition unless intern %%%
+<div class="infocol" style="clear:both;">
+%%% condition endif %%%
+
+<h2>Vor Ort</h2>
+<dl>
+%%% loop organisationen %%%
+<dt>%%% item rolle %%%:</dt>
+%%% loop organisation %%%
+<dd><strong>%%% item website "<a href='%s'>" %%%
+%%% item organisation %%% %%% item website "</a>" %%%</strong></dd>
+%%% loop end %%%
+%%% loop end %%%
+
+%%% condition if organisator %%%
+<dt>Kontakt:</dt>
+%%% loop organisator %%%
+%%% condition if person %%%
+<dd>%%% item person %%%%%% condition if e_mail %%%, <a href="mailto:%%% item e_mail %%%">%%% item e_mail %%%</a>%%% condition endif %%%
+%%% item telefon "<br>%s" %%%</dd>
+%%% condition endif %%%
+%%% loop end %%%
+%%% condition endif %%%
+
+%%% condition if veranstaltungsort %%%
+<dt>Veranstaltungsort:</dt>
+
+<dd><strong>%%% condition if url %%%%%% loop url 1 %%%<a href="%%% item identification %%%">%%% loop end %%%%%% condition endif %%%
+%%% item veranstaltungsort %%%%%% condition if url %%% </a> %%% condition endif %%%</strong> 
+%%% condition if address %%%</dd>
+<dd>%%% item address %%%, %%% item postcode %%% %%% item place %%%</dd>
+%%% condition endif %%%
+%%% loop phone %%%
+<dd>%%% item category %%% %%% item identification %%%</dd>
+%%% loop end %%%
+%%% loop mail %%%
+<dd>%%% item mailto %%%</dd>
+%%% loop end %%%
+
+%%% item description markdown "<dd>%s</dd>" %%%
+%%% condition endif %%%
+%%% condition if turnierleitung %%%
+<dt>Turnierleitung:</dt>
+%%% loop turnierleitung %%%
+<dd>%%% item person %%%</dd>
+%%% loop end %%%
+%%% condition endif %%%
+%%% condition if schiedsrichter %%%
+<dt>Schiedsrichter:</dt>
+%%% loop schiedsrichter %%%
+<dd>%%% item person %%%</dd>
+%%% loop end %%%
+%%% condition endif %%%
+</dl>
+</div>
+
+%%% condition unless intern %%%
+%%% condition if map %%%
+<div class="infocol">
+<h2>Karte</h2>
+<div class="map">
+%%% item map %%%
+</div>
+<p>(Rot: Veranstaltungsort; blau: Teilnehmer)</p>
+</div>
+%%% condition endif %%%
+%%% condition endif %%%
