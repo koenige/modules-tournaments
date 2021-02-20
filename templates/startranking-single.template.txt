@@ -32,6 +32,9 @@
 %%% condition if zeige_elo %%%
 <th ><abbr title="Elo-Wertungszahl des Weltschachbunds FIDE">Elo</abbr></th>
 %%% condition endif %%%
+%%% condition if qualification_col %%%
+<th>Qualifikation</th>
+%%% condition endif %%%
 %%% condition if meldeliste %%%
 <th>Meldung</th>
 %%% condition endif %%%
@@ -75,6 +78,10 @@
 %%% condition endif %%%
 %%% item t_elo %%%
 %%% item fide_id "</a>" %%%</td>
+%%% condition endif %%%
+%%% condition if qualification_col %%%
+<td>%%% condition if qualification_event %%%<a href="/%%% item qualification_event_identifier %%%/tabelle/">%%% item qualification_event %%% %%% item qualification_year %%%</a>
+%%% condition else %%%%%% item qualification %%%%%% condition endif %%%</td>
 %%% condition endif %%%
 %%% condition if meldeliste %%%
 <td class="meldung"><span class="sortonly">%%% item eintrag_datum_raw %%%</span>%%% item eintrag_datum %%%</td>

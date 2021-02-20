@@ -118,6 +118,12 @@ function mod_tournaments_startranking_single($event) {
 			, teilnahme_status
 			, DATE_FORMAT(eintrag_datum, "%%d.%%m %%H:%%i") AS eintrag_datum
 			, eintrag_datum AS eintrag_datum_raw
+			, IF(SUBSTRING(qualification.event, 1, LENGTH(events.event)) = events.event
+				, SUBSTRING(qualification.event, LENGTH(events.event)+1), qualification.event
+			) AS qualification_event
+			, YEAR(qualification.date_begin) AS qualification_year
+			, qualification.identifier AS qualification_event_identifier
+			, qualification
 		FROM teilnahmen
 		JOIN personen USING (person_id)
 		LEFT JOIN organisationen
@@ -145,7 +151,9 @@ function mod_tournaments_startranking_single($event) {
 			ON events.series_category_id = series.category_id
 		LEFT JOIN categories main_series
 			ON series.main_category_id = main_series.category_id
-		WHERE event_id = %d
+		LEFT JOIN events qualification
+			ON teilnahmen.qualification_event_id = qualification.event_id
+		WHERE events.event_id = %d
 		AND usergroup_id = %d
 		AND teilnahme_status IN (%s"Teilnehmer", "disqualifiziert", "geblockt")
 		ORDER BY setzliste_no, IFNULL(t_dwz, t_elo) DESC, t_elo DESC, t_nachname, t_vorname';
@@ -161,6 +169,7 @@ function mod_tournaments_startranking_single($event) {
 	$event['zeige_elo'] = false;
 	$event['zeige_titel'] = false;
 	foreach ($event['spieler'] as $person_id => $spieler) {
+		if ($spieler['qualification_event']) $event['qualification_col'] = true;
 		if ($spieler['t_fidetitel']) $event['zeige_titel'] = true;
 		if ($spieler['t_elo']) $event['zeige_elo'] = true;
 		if ($spieler['t_dwz']) $event['zeige_dwz'] = true;
@@ -171,6 +180,7 @@ function mod_tournaments_startranking_single($event) {
 		if ($event['zeige_dwz']) $event['spieler'][$person_id]['zeige_dwz'] = true;
 		if ($event['zeige_elo']) $event['spieler'][$person_id]['zeige_elo'] = true;
 		if ($event['zeige_titel']) $event['spieler'][$person_id]['zeige_titel'] = true;
+		if (!empty($event['qualification_col'])) $event['spieler'][$person_id]['qualification_col'] = true;
 	}
 	return $event;
 }
