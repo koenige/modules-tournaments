@@ -1,0 +1,21 @@
+# tournaments module
+# HTML output: live results overview
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2012, 2014, 2020-2021 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+<p>Bitte wähle ein Turnier aus:</p>
+
+<ul>
+%%% loop start %%%
+%%% condition if runde_no %%%
+<li><a href="../../../%%% item identifier %%%/liveergebnisse/">%%% item event %%%</a>, %%% item runde_no %%%. Runde</li>
+%%% condition else %%%
+<li>%%% item event %%%</li>
+%%% condition endif %%%
+%%% loop end %%%
+</ul>

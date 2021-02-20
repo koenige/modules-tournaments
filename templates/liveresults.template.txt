@@ -1,0 +1,81 @@
+# tournaments module
+# HTML output: live results per tournament
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2012, 2014, 2016-2017, 2021 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+<style type="text/css">
+	tr.grau td {color: #666;}
+	td.zahl {text-align: right;}
+	tr.odd td {background-color: #DDD;}
+	td, th {padding-right: 1em; text-align: left;}
+
+</style>
+<h1>Liveergebnisse
+<br><a href="../">%%% item event %%% %%% item duration wrap_date %%%</a>%%% condition if runde_no %%%, %%% item runde_no %%%. Runde%%% condition endif %%%</h1>
+<p>Ergebniseintragung des Ergebnisses von Weiß: <code>0</code> = verloren, 
+<code>5</code>, <code>R</code> oder <code>r</code> = Remis, 
+<code>1</code> = gewonnen, <code>+</code> kampflos gewonnen, <code>-</code> kampflos verloren, <code>=</code> kampflos Remis.
+<code>D</code> oder <code>d</code> = Ergebnis löschen</p>
+
+%%% condition if falsche_runde %%%
+<p>Achtung: es wurde versucht, Daten der alten Runde auf die neue Runde zu übertragen!</p>
+%%% condition endif %%%
+
+%%% condition if partien %%%
+<form action="%%% page url_path %%%" method="post" enctype="text" class="results">
+<table>
+<thead><tr><th>Brett</th><th>Weiß</th><th>Schwarz</th><th><abbr title="gespeichertes Ergebnis">Erg.</abbr></th><th><abbr title="Ergebnis von Weiß">Erg. w.</abbr></th></tr>  </thead>
+<tbody>
+%%% loop ergebnisse %%%
+%%% condition if heim_team %%%
+<tr class="teamname"><td>%%% item tisch_no %%%</td><td colspan="2">%%% item heim_team %%%–%%% item auswaerts_team %%%</td><td colspan="2">%%% item heim_ergebnis my_ergebnis_format %%%:%%% item auswaerts_ergebnis my_ergebnis_format %%%</td></tr>
+%%% condition endif %%%
+%%% loop partien %%%
+<tr class='%%% loopposition uneven "un" %%%even%%% item gespeichert " grau"%%%'>
+<td class="zahl">%%% item brett_no %%%</td>
+<td>
+%%% condition if weiss %%%
+%%% item weiss %%% 
+%%% condition if paarung_id %%%
+<br><small>
+%%% condition if heim_schwarz %%% %%% item auswaerts_team %%% %%% condition else %%% %%% item heim_team %%% %%% condition endif %%%
+</small>
+%%% condition endif %%%
+%%% condition else %%%
+spielfrei
+%%% condition endif %%%
+</td>
+<td>
+%%% condition if schwarz %%%
+%%% item schwarz %%%
+%%% condition if paarung_id %%%
+<br><small>
+%%% condition if heim_schwarz %%% %%% item heim_team %%% %%% condition else %%% %%% item auswaerts_team %%% %%% condition endif %%%
+</small>
+%%% condition endif %%%
+%%% condition else %%%
+spielfrei
+%%% condition endif %%%
+</td>
+<td>%%% condition if gespeichert %%%%%% item weiss_ergebnis my_ergebnis_format %%%:%%% item schwarz_ergebnis my_ergebnis_format %%%%%% condition endif %%%</td>
+<td>
+<input type="text" name="%%% item partie_id %%%" size="1" maxlength="1" value="%%% item weiss_ergebnis %%%">
+</td></tr>
+%%% loop end %%%
+%%% loop end %%%
+<tr><td></td><td></td><td></td><td></td><td></td><td><input type="submit" value="OK">
+<input type="hidden" name="runde_no" value="%%% item runde_no %%%"></td></tr>
+</tbody>
+</table>
+</form>
+%%% condition else %%%
+<p class="note"><strong>Hinweis:</strong> Das Turnier hat noch nicht begonnen oder es liegen noch keine Rundendaten vor.
+Nach Beginn ist es möglich, hier die Ergebnisse live einzutragen.</p>
+
+%%% condition endif %%%
+
