@@ -6,7 +6,7 @@
 # List of fields:
 # event_id, event, date_begin, date_end, ort, takes_place, description, year,
 # duration, category_short, series_description, series_category_id,
-# series_path, turnierort, turniere { event_id, identifier, event, duration,
+# series_path, turnierort, tournaments { event_id, identifier, event, duration,
 # date_begin, date_end, turnierort, teilnehmerliste, turnierform, partien, teams,
 # spieler, spieler_mit_verein }, spieler, teams, mannschaft_(verein),
 # teilnehmerliste, kontingent, event_links
@@ -36,7 +36,7 @@
 %%% condition if turnierstart %%%
 <li><a href="liveergebnisse/">Liveergebniseingabe</a></li>
 %%% condition endif %%%
-%%% condition if turniere %%%
+%%% condition if tournaments %%%
 <li><a href="urkunden/">Druck der Urkunden</a></li>
 <li><a href="doppelte/">Spieler/in in mehreren Turnieren gemeldet?</a></li>
 <li><a href="siegerehrung.json">Daten für Siegerehrung im JSON-Format</a></li>
@@ -52,7 +52,7 @@
 %%% condition endif %%%
 %%% condition if kontingente %%%
 <li><a href="kontingente/">Kontingente</a></li>
-%%% condition if turniere & e %%%
+%%% condition if tournaments & e %%%
 <li><a href="meldungen/">Meldeübersicht der Landesverbände</a></li>
 %%% condition endif %%%
 %%% condition endif %%%
@@ -88,9 +88,9 @@
 
 <div class="infocol">
 <h2>Turniere</h2>
-%%% condition if turniere %%%
+%%% condition if tournaments %%%
 <ul>
-%%% loop turniere %%%
+%%% loop tournaments %%%
 <li>%%% item duration wrap_date %%%: <a href="../../%%% item identifier %%%/">%%% item event %%%</a>
 %%% item turnierort " in %s" %%%</li>
 %%% loop end %%%

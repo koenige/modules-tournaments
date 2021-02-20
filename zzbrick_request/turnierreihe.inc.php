@@ -125,13 +125,13 @@ function mod_tournaments_turnierreihe($vars, $settings) {
 		$event['series_category_id'],
 		$event['year']
 	);
-	$event['turniere'] = wrap_db_fetch($sql, 'event_id');
-	if ($series AND !$event['turniere']) return false;
+	$event['tournaments'] = wrap_db_fetch($sql, 'event_id');
+	if ($series AND !$event['tournaments']) return false;
 	parse_str($event['parameters'], $parameter);
 	$event['kontingente'] = !empty($parameter['kontingent']) ? true : false;
 
 	$event['turnierstart'] = 0;
-	foreach ($event['turniere'] AS $turnier) {
+	foreach ($event['tournaments'] AS $turnier) {
 		$event['turnierstart'] += $turnier['turnierstart'];
 		if ($turnier['kontingente']) $event['kontingente'] = true;
 		if ($turnier['partien']) $event['pgn'] = true;
@@ -176,7 +176,7 @@ function mod_tournaments_turnierreihe($vars, $settings) {
 	$sql = sprintf($sql, $event['series_category_id']);
 	$event['kontingent'] = wrap_db_fetch($sql, '', 'single value');
 	$found = false;
-	foreach ($event['turniere'] as $turnier) {
+	foreach ($event['tournaments'] as $turnier) {
 		if (!$turnier['spieler']) continue;
 		$found = true;
 		break;
@@ -184,10 +184,10 @@ function mod_tournaments_turnierreihe($vars, $settings) {
 	if (!$found) $event['kontingent'] = NULL;
 
 	// Links?
-	if ($event['turniere']) {
+	if ($event['tournaments']) {
 		$sql = 'SELECT COUNT(event_link_id) FROM events_links
 			WHERE event_id IN (%s)';
-		$sql = sprintf($sql, implode(',', array_keys($event['turniere'])));
+		$sql = sprintf($sql, implode(',', array_keys($event['tournaments'])));
 		$event['event_links'] = wrap_db_fetch($sql, '', 'single value');
 	}
 
