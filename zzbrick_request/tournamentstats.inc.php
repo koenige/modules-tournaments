@@ -56,14 +56,14 @@ function mod_tournaments_tournamentstats($vars) {
 			, (SELECT COUNT(team_id) FROM teams WHERE teams.event_id = events.event_id AND teams.team_status = "Teilnehmer") AS teams
 			, (SELECT AVG(YEAR(events.date_begin)-YEAR(geburtsdatum)) FROM teilnahmen LEFT JOIN personen USING (person_id) WHERE event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS average_age
 		FROM events
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
 		LEFT JOIN categories main_series
 			ON series.main_category_id = main_series.category_id
 		WHERE main_series.path = "reihen/%s"
 		AND YEAR(events.date_begin) = %d
-		AND (ISNULL(turniere.urkunde_parameter) OR turniere.urkunde_parameter NOT LIKE "%%statistik=0%%")
+		AND (ISNULL(tournaments.urkunde_parameter) OR tournaments.urkunde_parameter NOT LIKE "%%statistik=0%%")
 		ORDER BY series.sequence
 	';
 	$sql = sprintf($sql, wrap_id('usergroups', 'spieler')
@@ -179,13 +179,13 @@ function mod_tournaments_tournamentstats($vars) {
 	// check if there's a statistic for last and/or next year
 	$sql = 'SELECT YEAR(events.date_begin) AS year
 		FROM events
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
 		LEFT JOIN categories main_series
 			ON series.main_category_id = main_series.category_id
 		WHERE main_series.path = "reihen/%s"
-		AND (ISNULL(turniere.urkunde_parameter) OR turniere.urkunde_parameter NOT LIKE "%%statistik=0%%")
+		AND (ISNULL(tournaments.urkunde_parameter) OR tournaments.urkunde_parameter NOT LIKE "%%statistik=0%%")
 		AND (
 			(SELECT COUNT(team_id) FROM teilnahmen LEFT JOIN teams USING (team_id) WHERE teilnahmen.event_id = events.event_id AND teams.team_status = "Teilnehmer") > 0
 			OR (SELECT COUNT(teilnahme_id) FROM teilnahmen WHERE teilnahmen.event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %d) > 0

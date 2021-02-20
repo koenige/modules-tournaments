@@ -318,7 +318,7 @@ function mf_tournaments_standings_filter($filter_kennung = false) {
 	$filter['error'] = false;
 	$filter['kennung'] = $filter_kennung;
 	switch ($filter_kennung) {
-	// @todo nur Filter erlauben, die auch in turniere.tabellenstand eingetragen sind
+	// @todo nur Filter erlauben, die auch in tournaments.tabellenstand eingetragen sind
 	case 'w':
 		$filter['where'][] = 'personen.geschlecht = "weiblich"';
 		$filter['untertitel'] = 'weiblich';
@@ -376,9 +376,9 @@ function mf_tournaments_final_standings($event_ids) {
 				AND usergroup_id = %d
 				AND geschlecht = "weiblich"
 				AND teilnahmen.event_id = events.event_id) AS spielerinnen
-			, turniere.tabellenstaende
+			, tournaments.tabellenstaende
 		FROM events
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		WHERE event_id IN (%s)
 		AND ((ISNULL(events.date_end) AND events.date_begin < CURDATE()) OR events.date_end < CURDATE())';
 	$sql = sprintf($sql,
@@ -407,13 +407,13 @@ function mf_tournaments_final_standings($event_ids) {
 		$sql = 'SELECT tabellenstaende.event_id
 				, tabellenstand_id, runde_no, platz_no
 				, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
-				, IF(turniere.teilnehmerliste = "ja", teams.kennung, "") AS team_identifier
+				, IF(tournaments.teilnehmerliste = "ja", teams.kennung, "") AS team_identifier
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 				, teilnahmen.setzliste_no
 				, t_verein AS verein
 				, personen.geschlecht
 			FROM tabellenstaende
-			LEFT JOIN turniere USING (event_id)
+			LEFT JOIN tournaments USING (event_id)
 			LEFT JOIN teams USING (team_id)
 			LEFT JOIN teilnahmen
 				ON teilnahmen.person_id = tabellenstaende.person_id

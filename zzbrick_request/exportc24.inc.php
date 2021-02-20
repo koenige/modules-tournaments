@@ -31,10 +31,10 @@ function mod_tournaments_exportc24($vars, $settings) {
 	// Wertungen
 	$sql = 'SELECT tw_id, categories.parameters
 		FROM turniere_wertungen
-		LEFT JOIN turniere USING (tournament_id)
+		LEFT JOIN tournaments USING (tournament_id)
 		LEFT JOIN categories
 			ON turniere_wertungen.wertung_category_id = categories.category_id
-		WHERE turniere.event_id = %d
+		WHERE tournaments.event_id = %d
 		ORDER BY turniere_wertungen.reihenfolge';
 	$sql = sprintf($sql, $event['event_id']);
 	$wertungen = wrap_db_fetch($sql, 'tw_id');
@@ -164,7 +164,7 @@ function mod_tournaments_exportc24($vars, $settings) {
 			, IFNULL(ROUND(zeitbonus_sec * 1000), "") AS incrementPerMove
 			, bretter_min AS gamesPerMatch
 		FROM turniere_bedenkzeiten
-		LEFT JOIN turniere USING (tournament_id)
+		LEFT JOIN tournaments USING (tournament_id)
 		WHERE event_id = %d AND phase = 1';
 	$sql = sprintf($sql, $event['event_id']);
 	$turnier = wrap_db_fetch($sql);

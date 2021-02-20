@@ -17,7 +17,7 @@ $zz['fields'][2]['field_name'] = 'tournament_id';
 $zz['fields'][2]['type'] = 'select';
 $zz['fields'][2]['sql'] = 'SELECT tournament_id
 		, CONCAT(event, " ", YEAR(date_begin)) AS turnier
-	FROM turniere
+	FROM tournaments
 	LEFT JOIN events USING (event_id)
 	ORDER BY date_begin, identifier DESC';
 $zz['fields'][2]['display_field'] = 'turnier';
@@ -37,7 +37,7 @@ $zz['sql'] = 'SELECT turniere_status.*
 		, CONCAT(event, " ", YEAR(date_begin)) AS turnier
 		, category
 	FROM turniere_status
-	LEFT JOIN turniere USING (tournament_id)
+	LEFT JOIN tournaments USING (tournament_id)
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories
 		ON categories.category_id = turniere_status.status_category_id

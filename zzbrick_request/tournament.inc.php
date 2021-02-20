@@ -35,7 +35,7 @@ function mod_tournaments_tournament($vars, $settings) {
 			, IF(offen = "ja", IF(date_begin < CURDATE(), 0, 1), 0) AS offen
 			, IF(LOCATE("meldung=1", series.parameters), 1, NULL) AS online_meldung
 			, IF(ISNULL(teams_max), 1, 
-				IF((SELECT COUNT(team_id) FROM teams WHERE teams.event_id = events.event_id) < turniere.teams_max, 1, NULL)
+				IF((SELECT COUNT(team_id) FROM teams WHERE teams.event_id = events.event_id) < tournaments.teams_max, 1, NULL)
 			) AS meldung_moeglich
 			, (SELECT COUNT(form_id) FROM forms WHERE forms.event_id = events.event_id AND forms.form_category_id = %d) AS freiplatz
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
@@ -60,7 +60,7 @@ function mod_tournaments_tournament($vars, $settings) {
 			, registration
 			, livebretter
 			, (SELECT wertung_category_id FROM turniere_wertungen
-				WHERE turniere_wertungen.tournament_id = turniere.tournament_id
+				WHERE turniere_wertungen.tournament_id = tournaments.tournament_id
 				AND turniere_wertungen.reihenfolge = 1) AS haupt_wertung_category_id
 			, website_org.org_abk
 		FROM events
@@ -68,7 +68,7 @@ function mod_tournaments_tournament($vars, $settings) {
 		LEFT JOIN organisationen website_org USING (org_id)
 		LEFT JOIN categories event_categories
 			ON events.event_category_id = event_categories.category_id
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = %d
@@ -77,9 +77,9 @@ function mod_tournaments_tournament($vars, $settings) {
 		LEFT JOIN categories main_series
 			ON main_series.category_id = series.main_category_id
 		LEFT JOIN categories turnierformen
-			ON turniere.turnierform_category_id = turnierformen.category_id
+			ON tournaments.turnierform_category_id = turnierformen.category_id
 		LEFT JOIN categories modus
-			ON turniere.modus_category_id = modus.category_id
+			ON tournaments.modus_category_id = modus.category_id
 		LEFT JOIN contacts places
 			ON events.place_contact_id = places.contact_id
 		LEFT JOIN addresses
@@ -354,10 +354,10 @@ function mod_tournaments_tournament($vars, $settings) {
 					, tw.reihenfolge, categories.sequence
 				FROM tabellenstaende_wertungen tsw
 				LEFT JOIN tabellenstaende USING (tabellenstand_id)
-				LEFT JOIN turniere USING (event_id)
+				LEFT JOIN tournaments USING (event_id)
 				LEFT JOIN turniere_wertungen tw
 					ON tw.wertung_category_id = tsw.wertung_category_id
-					AND tw.tournament_id = turniere.tournament_id
+					AND tw.tournament_id = tournaments.tournament_id
 				LEFT JOIN categories
 					ON tsw.wertung_category_id = categories.category_id
 				WHERE tabellenstand_id IN (%s)

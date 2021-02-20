@@ -99,7 +99,7 @@ function mod_tournaments_make_games($vars) {
 			, urkunde_parameter AS parameter
 		FROM events
 		JOIN partien USING (event_id)
-		JOIN turniere USING (event_id)
+		JOIN tournaments USING (event_id)
 		JOIN categories
 			ON events.event_category_id = categories.category_id
 		WHERE events.identifier = "%d/%s"
@@ -443,9 +443,9 @@ function cms_partienupdate_normalize_name($name) {
  * @return function
  */
 function cms_partienupdate_trigger() {
-	$sql = 'SELECT DISTINCT turniere.event_id, runden.runde_no,
+	$sql = 'SELECT DISTINCT tournaments.event_id, runden.runde_no,
 			IF(runden.date_begin >= CURDATE() AND runden.time_begin > CURTIME(), NULL, 1) AS laufend
-		FROM turniere
+		FROM tournaments
 		JOIN events USING (event_id)
 		LEFT JOIN events runden
 			ON events.event_id = runden.main_event_id
@@ -456,15 +456,15 @@ function cms_partienupdate_trigger() {
 		WHERE NOT ISNULL(livebretter)
 		AND events.date_begin <= CURDATE() AND events.date_end >= CURDATE()
 		AND NOT ISNULL(partien.partie_id)
-		ORDER BY turniere.event_id, runden.runde_no
+		ORDER BY tournaments.event_id, runden.runde_no
 	';
 	$sql = sprintf($sql, wrap_category_id('zeitplan/runde'));
 	// in SQL-Abfrage werden alle Runden ausgegeben, wrap_db_fetch() speichert
 	// aber nach event_id und durch die Sortierung wird nur die letzte Runde
 	// gespeichert
-	$turniere = wrap_db_fetch($sql, 'event_id');
+	$tournaments = wrap_db_fetch($sql, 'event_id');
 
-	foreach ($turniere as $event_id => $turnier) {
+	foreach ($tournaments as $event_id => $turnier) {
 		if (!$turnier['laufend']) continue;
 		// @todo maybe disable next two lines to reduce server load
 		my_job_create('partien', $turnier['event_id'], $turnier['runde_no']);

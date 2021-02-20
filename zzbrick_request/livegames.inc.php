@@ -31,13 +31,13 @@ function mod_tournaments_livegames($vars) {
 	$sql = 'SELECT events.event_id, livebretter, events.identifier
 			, event, YEAR(date_begin) AS year
 			, (SELECT COUNT(teilnahme_id) FROM teilnahmen
-			WHERE teilnahmen.event_id = turniere.event_id
+			WHERE teilnahmen.event_id = tournaments.event_id
 			AND usergroup_id = %d) AS teilnehmer
 			, (SELECT MAX(runde_no) FROM partien
-			WHERE partien.event_id = turniere.event_id) AS aktuelle_runde_no
+			WHERE partien.event_id = tournaments.event_id) AS aktuelle_runde_no
 			, main_series.category AS main_series
 			, IF((DATE_SUB(CURDATE(), INTERVAL %d DAY) <= date_end), 1, NULL) AS current
-		FROM turniere
+		FROM tournaments
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
@@ -52,20 +52,20 @@ function mod_tournaments_livegames($vars) {
 		wrap_get_setting('live_games_show_for_days'),
 		wrap_db_escape($vars[1]), $vars[0]
 	);
-	$turniere = wrap_db_fetch($sql, 'event_id');
-	if ($turniere) return mod_tournaments_livegames_series($turniere);
+	$tournaments = wrap_db_fetch($sql, 'event_id');
+	if ($tournaments) return mod_tournaments_livegames_series($tournaments);
 	
 	// Einzelnes Turnier?
 	$sql = 'SELECT events.event_id, livebretter, events.identifier
 			, event, YEAR(date_begin) AS year
 			, (SELECT COUNT(teilnahme_id) FROM teilnahmen
-			WHERE teilnahmen.event_id = turniere.event_id
+			WHERE teilnahmen.event_id = tournaments.event_id
 			AND usergroup_id = %d) AS teilnehmer
 			, (SELECT MAX(runde_no) FROM partien
-			WHERE partien.event_id = turniere.event_id) AS aktuelle_runde_no
+			WHERE partien.event_id = tournaments.event_id) AS aktuelle_runde_no
 			, main_series.category AS main_series
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
-		FROM turniere
+		FROM tournaments
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
@@ -106,42 +106,42 @@ function mod_tournaments_livegames_turnier($turnier) {
 	return $page;
 }
 
-function mod_tournaments_livegames_series($turniere) {
-	$series = reset($turniere);
+function mod_tournaments_livegames_series($tournaments) {
+	$series = reset($tournaments);
 
-	$rundendaten = mod_tournaments_livegames_rundendaten(array_keys($turniere));
+	$rundendaten = mod_tournaments_livegames_rundendaten(array_keys($tournaments));
 	$has_rounds = false;
-	foreach ($turniere AS $event_id => $turnier) {
+	foreach ($tournaments AS $event_id => $turnier) {
 		if (empty($turnier['aktuelle_runde_no'])) continue;
 		$has_rounds = true;
 		if (!$turnier['current']) {
-			unset($turniere[$event_id]);
+			unset($tournaments[$event_id]);
 			continue;
 		}
 		unset($rundendaten[$event_id][$turnier['aktuelle_runde_no']]['runde_no']);
 		unset($rundendaten[$event_id][$turnier['aktuelle_runde_no']]['main_event_id']);
 		if (!empty($rundendaten[$event_id])) {
-			$turniere[$event_id] += $rundendaten[$event_id][$turnier['aktuelle_runde_no']];
+			$tournaments[$event_id] += $rundendaten[$event_id][$turnier['aktuelle_runde_no']];
 		}
 	}
 	if (!$has_rounds) return false;
-	if (!$turniere) wrap_quit(410, wrap_text('The tournament is over. All live games are integrated into the <a href="../">tournament pages</a>.'));
+	if (!$tournaments) wrap_quit(410, wrap_text('The tournament is over. All live games are integrated into the <a href="../">tournament pages</a>.'));
 
-	$turniere['last_update'] = '';
-	foreach ($turniere as $event_id => $turnier) {
+	$tournaments['last_update'] = '';
+	foreach ($tournaments as $event_id => $turnier) {
 		if (!is_numeric($event_id)) continue;
-		$turniere[$event_id] = mod_tournaments_livegames_bretter($turnier);
-		if ($turniere[$event_id]['last_update'] > $turniere['last_update'])
-			$turniere['last_update'] = $turniere[$event_id]['last_update'];
+		$tournaments[$event_id] = mod_tournaments_livegames_bretter($turnier);
+		if ($tournaments[$event_id]['last_update'] > $tournaments['last_update'])
+			$tournaments['last_update'] = $tournaments[$event_id]['last_update'];
 	}
-	$turniere['last_update'] = substr($turniere['last_update'], 11, 5);
+	$tournaments['last_update'] = substr($tournaments['last_update'], 11, 5);
 	$page['breadcrumbs'][] = '<a href="../../">'.$series['year'].'</a>';
 	$page['breadcrumbs'][] = '<a href="../">'.$series['main_series'].'</a>';
 	$page['breadcrumbs'][] = 'Livepartien';
 	$page['title'] = 'Livepartien '.$series['main_series'].' '.$series['year'];
 	$page['extra']['realm'] = 'sports';
 
-	$page['text'] = wrap_template('livegames-series', $turniere);
+	$page['text'] = wrap_template('livegames-series', $tournaments);
 	return $page;
 }
 

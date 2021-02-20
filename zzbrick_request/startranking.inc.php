@@ -38,12 +38,12 @@ function mod_tournaments_startranking($vars) {
 			ON events.series_category_id = series.category_id
 		LEFT JOIN categories main_series
 			ON main_series.category_id = series.main_category_id
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = %d
 		LEFT JOIN categories turnierformen
-			ON turniere.turnierform_category_id = turnierformen.category_id
+			ON tournaments.turnierform_category_id = turnierformen.category_id
 		LEFT JOIN contacts places
 			ON events.place_contact_id = places.contact_id
 		LEFT JOIN addresses USING (contact_id)

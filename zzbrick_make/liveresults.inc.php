@@ -23,7 +23,7 @@ function mod_tournament_make_liveresults($params) {
 			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
 			, tournament_id
 		FROM events
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		WHERE identifier = "%d/%s"
 		AND takes_place = "yes"';
 	$sql = sprintf($sql, $params[0], wrap_db_escape($params[1]));
@@ -42,8 +42,8 @@ function mod_tournament_make_liveresults($params) {
 		WHERE YEAR(events.date_begin) = %d
 		AND main_series.path = "reihen/%s"';
 	$sql = sprintf($sql, $params[0], wrap_db_escape($params[1]));
-	$turniere = wrap_db_fetch($sql, 'event_id');
-	if (!$turniere) return false;
+	$tournaments = wrap_db_fetch($sql, 'event_id');
+	if (!$tournaments) return false;
 	if (!$event) {
 		$event['year'] = intval($params[0]);
 		$sql = 'SELECT category_id, category
@@ -57,7 +57,7 @@ function mod_tournament_make_liveresults($params) {
 	$page['breadcrumbs'][] = '<a href="../../">'.$event['year'].'</a>';
 	$page['breadcrumbs'][] = '<a href="../">'.$event['event'].'</a>';
 	$page['breadcrumbs'][] = 'Liveergebnisse';
-	$page['text'] = wrap_template('liveresults-overview', $turniere);
+	$page['text'] = wrap_template('liveresults-overview', $tournaments);
 	$page['title'] = 'Liveergebnisse <br><a href="../">'.$event['event'].'</a>';
 	return $page;
 }
@@ -83,9 +83,9 @@ function mod_tournament_make_liveresults_tournament($params) {
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform_kennung
 			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
 		FROM events
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN categories turnierformen
-			ON turnierformen.category_id = turniere.turnierform_category_id
+			ON turnierformen.category_id = tournaments.turnierform_category_id
 		WHERE events.identifier = "%d/%s"';
 	$sql = sprintf($sql, $params[0], wrap_db_escape($params[1]));
 	$turnier = wrap_db_fetch($sql);

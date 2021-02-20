@@ -12,7 +12,7 @@ if (!$event) wrap_quit(404);
 $zz = zzform_include_table('turniere');
 
 $sql = 'SELECT tournament_id
-	FROM turniere
+	FROM tournaments
 	LEFT JOIN events USING (event_id)
 	WHERE series_category_id = %d
 	AND event_id != %d

@@ -32,7 +32,7 @@ function mf_tournaments_standings_update($ops) {
 	foreach ($ops['return'] as $index => $table) {
 		if ($table['action'] === 'nothing') continue;
 		switch ($table['table']) {
-		case 'turniere':
+		case 'tournaments':
 			// nur bei Aktualisierung bretter_min
 			// Achtung, Einzelturniere: keine Bretterzahl
 			if ($table['action'] !== 'update') break;
@@ -112,7 +112,7 @@ function mf_tournaments_standings_update($ops) {
 		if (!$where) return [];
 		$event_ids = array_unique($event_ids);
 		$sql = 'SELECT event_id, events.identifier
-			FROM turniere
+			FROM tournaments
 			JOIN events USING (event_id)
 			WHERE %s';
 		$sql = sprintf($sql, implode(' OR ', $where));
@@ -153,7 +153,7 @@ function mf_tournaments_games_update($ops) {
 			if (!$ops['record_new'][$index]['runde_no']) return false;
 			$event_id = $ops['record_new'][$index]['main_event_id'];
 			$runde_no = $ops['record_new'][$index]['runde_no'];
-		} elseif ($table['table'] === 'turniere') {
+		} elseif ($table['table'] === 'tournaments') {
 			$event_id = $ops['record_new'][$index]['event_id'];
 			$runde_no = '';
 		}
@@ -176,7 +176,7 @@ function mf_tournaments_team_points($ops) {
 	static $settings;
 	if (empty($settings)) {
 		// @todo solve via tournament settings object
-		$sql = 'SELECT urkunde_parameter AS parameter FROM turniere WHERE event_id = %d';
+		$sql = 'SELECT urkunde_parameter AS parameter FROM tournaments WHERE event_id = %d';
 		$sql = sprintf($sql, $ops['record_new'][0]['event_id']);
 		$parameter = wrap_db_fetch($sql, '', 'single value');
 		parse_str($parameter, $settings);

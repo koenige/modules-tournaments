@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2016-2020 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2016-2021 Gustaf Mossakowski <gustaf@koenige.org>
 // Filemove für Live-PGN-Dateien
 
 
@@ -15,8 +15,8 @@ function mod_tournaments_make_filemove() {
 			, events.identifier
 			, REPLACE(events.identifier, "/", "-") AS pfad
 			, CONCAT(YEAR(events.date_begin), "-", IF(main_series.path != "reihen", SUBSTRING_INDEX(main_series.path, "/", -1), SUBSTRING_INDEX(series.path, "/", -1))) AS main_series
-			, turniere.urkunde_parameter AS parameter
-		FROM turniere
+			, tournaments.urkunde_parameter AS parameter
+		FROM tournaments
 		JOIN events USING (event_id)
 		LEFT JOIN categories series
 			ON series.category_id = events.series_category_id
@@ -24,7 +24,7 @@ function mod_tournaments_make_filemove() {
 			ON series.main_category_id = main_series.category_id
 		WHERE events.date_begin <= CURDATE()
 		AND events.date_end >= CURDATE()
-		AND NOT ISNULL(turniere.livebretter)
+		AND NOT ISNULL(tournaments.livebretter)
 		ORDER BY events.identifier';
 	$tournaments = wrap_db_fetch($sql, 'event_id');
 	if (!$tournaments) return false;

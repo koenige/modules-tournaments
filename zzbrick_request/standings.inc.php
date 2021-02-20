@@ -56,7 +56,7 @@ function mod_tournaments_standings($vars) {
 	$filter = mf_tournaments_standings_filter($filter_kennung);
 	if ($filter['error']) return false;
 
-	$sql = 'SELECT events.event_id, event, turniere.runden, bretter_min, pseudo_dwz
+	$sql = 'SELECT events.event_id, event, tournaments.runden, bretter_min, pseudo_dwz
 			, YEAR(events.date_begin) AS year
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
@@ -69,13 +69,13 @@ function mod_tournaments_standings($vars) {
 				AND ISNULL(weiss_ergebnis)
 				AND partien.runde_no = %d
 			) AS live
-			, IF(ISNULL(@live) AND turniere.runden = %d, 1, NULL) AS endstand
+			, IF(ISNULL(@live) AND tournaments.runden = %d, 1, NULL) AS endstand
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, main_series.category_short AS main_series
 			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
 			, IFNULL(place, places.contact) AS turnierort
 		FROM events
-		JOIN turniere USING (event_id)
+		JOIN tournaments USING (event_id)
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = %d
@@ -88,7 +88,7 @@ function mod_tournaments_standings($vars) {
 		LEFT JOIN categories main_series
 			ON series.main_category_id = main_series.category_id
 		LEFT JOIN categories turnierformen
-			ON turnierformen.category_id = turniere.turnierform_category_id
+			ON turnierformen.category_id = tournaments.turnierform_category_id
 		WHERE events.identifier = "%d/%s"
 	';
 	$sql = sprintf($sql, $runde, $runde, $runde, $zz_setting['website_id'], $vars[0], wrap_db_escape($vars[1]));
@@ -149,7 +149,7 @@ function mod_tournaments_standings($vars) {
 				, t_verein, tabellenstaende.person_id
 				, teilnahme_status AS status
 			FROM tabellenstaende
-			JOIN turniere USING (event_id)
+			JOIN tournaments USING (event_id)
 			JOIN events USING (event_id)
 			LEFT JOIN teilnahmen
 				ON teilnahmen.person_id = tabellenstaende.person_id
@@ -311,10 +311,10 @@ function mod_tournaments_standings($vars) {
 			, tw.reihenfolge, categories.sequence
 		FROM tabellenstaende_wertungen tsw
 		LEFT JOIN tabellenstaende USING (tabellenstand_id)
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN turniere_wertungen tw
 			ON tw.wertung_category_id = tsw.wertung_category_id
-			AND tw.tournament_id = turniere.tournament_id
+			AND tw.tournament_id = tournaments.tournament_id
 		LEFT JOIN categories
 			ON tsw.wertung_category_id = categories.category_id
 		WHERE tabellenstand_id IN (%s)

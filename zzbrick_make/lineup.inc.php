@@ -7,7 +7,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2020 Gustaf Mossakowski
+ * @copyright Copyright © 2020-2021 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -78,7 +78,7 @@ function mod_tournaments_make_lineup_active($params) {
 	// check: all rounds played?
 	$sql = 'SELECT event_id, runden AS rounds, urkunde_parameter AS parameter
 			, bretter_min AS boards_min, bretter_max AS boards_max
-		FROM turniere
+		FROM tournaments
 		LEFT JOIN events USING (event_id)
 		WHERE events.identifier = "%s"';
 	$sql = sprintf($sql, wrap_db_escape($event_identifier));

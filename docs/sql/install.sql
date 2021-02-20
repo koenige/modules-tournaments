@@ -143,7 +143,7 @@ CREATE TABLE `teams` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
-CREATE TABLE `turniere` (
+CREATE TABLE `tournaments` (
   `tournament_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `event_id` int(10) unsigned NOT NULL,
   `turnierform_category_id` int(10) unsigned NOT NULL,
@@ -282,21 +282,21 @@ CREATE OR REPLACE VIEW `paarungen_ergebnisse_view` AS
 	FROM `partien_ergebnisse_view`
 	WHERE `event_id` = `event_id`()
 	GROUP BY `event_id`, `team_id`, `runde_no`, `gegner_team_id`
-	UNION SELECT `paarungen`.`event_id`, `paarungen`.`heim_team_id` AS `team_id`, `teams`.`team_id` AS `gegner_team_id`, `paarungen`.`runde_no`, 1 AS `kampflos`, `turniere`.`bretter_min` AS `brettpunkte`, 0 AS `brettpunkte_gegner`, 2 AS `mannschaftspunkte`, 0 AS `mannschaftspunkte_gegner`
+	UNION SELECT `paarungen`.`event_id`, `paarungen`.`heim_team_id` AS `team_id`, `teams`.`team_id` AS `gegner_team_id`, `paarungen`.`runde_no`, 1 AS `kampflos`, `tournaments`.`bretter_min` AS `brettpunkte`, 0 AS `brettpunkte_gegner`, 2 AS `mannschaftspunkte`, 0 AS `mannschaftspunkte_gegner`
 	FROM `paarungen`
 	JOIN `teams`
 		ON `teams`.`team_id` = `paarungen`.`auswaerts_team_id`
 		AND `teams`.`spielfrei` = 'ja'
-	JOIN `turniere`
-		ON `turniere`.`event_id` = `paarungen`.`event_id`
+	JOIN `tournaments`
+		ON `tournaments`.`event_id` = `paarungen`.`event_id`
 	WHERE `paarungen`.`event_id` = `event_id`()
-	UNION SELECT `paarungen`.`event_id`, `paarungen`.`auswaerts_team_id` AS `team_id`, `teams`.`team_id` AS `gegner_team_id`, `paarungen`.`runde_no`, 1 AS `kampflos`, `turniere`.`bretter_min` AS `brettpunkte`, 0 AS `brettpunkte_gegner`, 2 AS `mannschaftspunkte`, 0 AS `mannschaftspunkte_gegner`
+	UNION SELECT `paarungen`.`event_id`, `paarungen`.`auswaerts_team_id` AS `team_id`, `teams`.`team_id` AS `gegner_team_id`, `paarungen`.`runde_no`, 1 AS `kampflos`, `tournaments`.`bretter_min` AS `brettpunkte`, 0 AS `brettpunkte_gegner`, 2 AS `mannschaftspunkte`, 0 AS `mannschaftspunkte_gegner`
 	FROM `paarungen`
 	JOIN `teams`
 		ON `teams`.`team_id` = `paarungen`.`heim_team_id`
 		AND `teams`.`spielfrei` = 'ja'
-	JOIN `turniere`
-		ON `turniere`.`event_id` = `paarungen`.`event_id`
+	JOIN `tournaments`
+		ON `tournaments`.`event_id` = `paarungen`.`event_id`
 	WHERE `paarungen`.`event_id` = `event_id`();
 
 
@@ -362,7 +362,7 @@ CREATE OR REPLACE VIEW `tabellenstaende_view` AS
 			WHEN 145 THEN SUM(`paarungen_ergebnisse_view`.`brettpunkte`)
 			WHEN 146 THEN (SELECT `buchholz_view`.`buchholz_mit_korrektur` FROM `buchholz_view` WHERE ((`buchholz_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) AND (`buchholz_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) AND (`buchholz_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`)))
 			WHEN 215 THEN (SELECT `buchholz_view`.`buchholz` FROM `buchholz_view` WHERE ((`buchholz_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) AND (`buchholz_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) AND (`buchholz_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`)))
-			WHEN 147 THEN (SELECT SUM((CASE `partien_ergebnisse_view`.`ergebnis` WHEN 1 THEN ((1 + `turniere`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) WHEN 0.5 THEN (((1 + `turniere`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) / 2) WHEN 0 THEN 0 END)) AS `berliner_wertung` FROM `partien_ergebnisse_view` WHERE ((`partien_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) AND (`partien_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`) AND (`partien_ergebnisse_view`.`team_id` = `paarungen_ergebnisse_view`.`team_id`)))
+			WHEN 147 THEN (SELECT SUM((CASE `partien_ergebnisse_view`.`ergebnis` WHEN 1 THEN ((1 + `tournaments`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) WHEN 0.5 THEN (((1 + `tournaments`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) / 2) WHEN 0 THEN 0 END)) AS `berliner_wertung` FROM `partien_ergebnisse_view` WHERE ((`partien_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) AND (`partien_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`) AND (`partien_ergebnisse_view`.`team_id` = `paarungen_ergebnisse_view`.`team_id`)))
 			WHEN 150 THEN (SELECT `tabellenstaende_guv_view`.`gewonnen` FROM `tabellenstaende_guv_view` WHERE ((`tabellenstaende_guv_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) AND (`tabellenstaende_guv_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) AND (`tabellenstaende_guv_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`)))
 		END) AS `wertung`
 	FROM `paarungen_ergebnisse_view`
@@ -370,8 +370,8 @@ CREATE OR REPLACE VIEW `tabellenstaende_view` AS
 		ON `paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`
 		AND `paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`
 		AND `paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`
-	LEFT JOIN `turniere`
-		ON `turniere`.`event_id` = `tabellenstaende_termine_view`.`event_id`
+	LEFT JOIN `tournaments`
+		ON `tournaments`.`event_id` = `tabellenstaende_termine_view`.`event_id`
 	LEFT JOIN `turniere_wertungen`
-		ON `turniere_wertungen`.`tournament_id` = `turniere`.`tournament_id`
+		ON `turniere_wertungen`.`tournament_id` = `tournaments`.`tournament_id`
 	GROUP BY `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`, `turniere_wertungen`.`reihenfolge`, `turniere_wertungen`.`wertung_category_id`,`paarungen_ergebnisse_view`.`team_id`;

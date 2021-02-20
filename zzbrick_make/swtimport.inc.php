@@ -43,12 +43,12 @@ function mod_tournaments_make_swtimport($vars) {
 	// Datenherkunft aus Turniere
 	$sql = 'SELECT event_id, event, events.identifier, YEAR(date_begin) AS year
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
-			, turniere.wertung_spielfrei
-			, turniere.urkunde_parameter AS parameter
+			, tournaments.wertung_spielfrei
+			, tournaments.urkunde_parameter AS parameter
 		FROM events
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN categories turnierformen
-			ON turnierformen.category_id = turniere.turnierform_category_id
+			ON turnierformen.category_id = tournaments.turnierform_category_id
 		WHERE events.identifier = "%s"';
 	$sql = sprintf($sql, wrap_db_escape($identifier));
 	$event = wrap_db_fetch($sql);
@@ -73,7 +73,7 @@ function mod_tournaments_make_swtimport($vars) {
 
 	$sql = 'SELECT category_id, categories.path
 		FROM turniere_wertungen
-		JOIN turniere USING (tournament_id)
+		JOIN tournaments USING (tournament_id)
 		JOIN categories
 			ON turniere_wertungen.wertung_category_id = categories.category_id
 		WHERE event_id = %d
@@ -595,7 +595,7 @@ function mod_tournaments_make_swtimport_personen($event, $spielerliste, $ids, $i
 function mod_tournaments_make_swtimport_teilnahmen($event, $spielerliste, $ids) {
 	if ($event['turnierform'] !== 'e') {
 		$sql = 'SELECT IF(gastspieler = "ja", 1, 0)
-			FROM turniere WHERE event_id = %d';
+			FROM tournaments WHERE event_id = %d';
 		$sql = sprintf($sql, $event['event_id']);
 		$gastspieler = wrap_db_fetch($sql, '', 'single value');
 

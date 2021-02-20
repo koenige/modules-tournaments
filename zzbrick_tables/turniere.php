@@ -7,7 +7,7 @@
 
 
 $zz['title'] = 'Turniere';
-$zz['table'] = 'turniere';
+$zz['table'] = 'tournaments';
 
 $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'tournament_id';
@@ -398,29 +398,29 @@ $zz['fields'][51]['hide_in_list'] = true;
 $zz['fields'][51]['hide_in_form'] = true;
 $zz['fields'][51]['type'] = 'number';
 
-$zz['sql'] = 'SELECT turniere.*
+$zz['sql'] = 'SELECT tournaments.*
 		, CONCAT(events.event, " ", YEAR(date_begin)) AS turnier
 		, events.identifier AS event_identifier
 		, modus.category_short AS modus
 		, turnierformen.category_short AS turnierform
 		, (SELECT COUNT(team_id) FROM teams
-			WHERE teams.event_id = turniere.event_id
+			WHERE teams.event_id = tournaments.event_id
 			AND team_status = "Teilnehmer"
 			AND spielfrei = "nein"
 		) AS teams
 		, (SELECT COUNT(teilnahme_id) FROM teilnahmen
-			WHERE teilnahmen.event_id = turniere.event_id
+			WHERE teilnahmen.event_id = tournaments.event_id
 			AND teilnahme_status = "Teilnehmer"
 			AND usergroup_id = %d
 		) AS spieler
-	FROM turniere
+	FROM tournaments
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories series
 		ON events.series_category_id = series.category_id
 	LEFT JOIN categories modus
-		ON turniere.modus_category_id = modus.category_id
+		ON tournaments.modus_category_id = modus.category_id
 	LEFT JOIN categories turnierformen
-		ON turniere.turnierform_category_id = turnierformen.category_id
+		ON tournaments.turnierform_category_id = turnierformen.category_id
 ';
 $zz['sql'] = sprintf($zz['sql'], wrap_id('usergroups', 'spieler'));
 $zz['sqlorder'] = ' ORDER BY events.date_begin DESC, events.time_begin DESC,
@@ -436,7 +436,7 @@ $zz['subtitle']['event_id']['link_no_append'] = true;
 
 $zz['filter'][2]['sql'] = 'SELECT DISTINCT main_series.category_id
 		, main_series.category_short, date_begin
-	FROM turniere
+	FROM tournaments
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories series
 		ON events.series_category_id = series.category_id
@@ -451,7 +451,7 @@ $zz['filter'][2]['where'] = 'series.main_category_id';
 
 $zz['filter'][1]['sql'] = 'SELECT DISTINCT YEAR(date_begin) AS year_idf
 		, YEAR(date_begin) AS year
-	FROM turniere
+	FROM tournaments
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories series
 		ON events.series_category_id = series.category_id

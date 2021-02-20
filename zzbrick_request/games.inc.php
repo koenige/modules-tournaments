@@ -48,13 +48,13 @@ function mod_tournaments_games($vars) {
 			ON events.series_category_id = series.category_id
 		LEFT JOIN categories main_series
 			ON main_series.category_id = series.main_category_id
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = %d
 		WHERE YEAR(events.date_begin) = %d
 		AND main_series.path = "reihen/%s"
-		AND turniere.notationspflicht = "ja"
+		AND tournaments.notationspflicht = "ja"
 	';
 	$sql = sprintf($sql, $zz_setting['website_id'], $vars[0], wrap_db_escape($vars[1]));
 	$events = wrap_db_fetch($sql, 'event_id');
@@ -75,9 +75,9 @@ function mod_tournaments_games($vars) {
 			ON events.place_contact_id = addresses.contact_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN categories turnierformen
-			ON turniere.turnierform_category_id = turnierformen.category_id
+			ON tournaments.turnierform_category_id = turnierformen.category_id
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = %d
@@ -410,7 +410,7 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 				"-", CASE(weiss_ergebnis) WHEN 1.0 THEN 1 WHEN 0.5 THEN "1/2" WHEN 0 THEN 0 END)), NULL) AS Result_vertauscht
 			, weiss_fide_id.identifier AS WhiteFideId
 			, schwarz_fide_id.identifier AS BlackFideId
-			, turniere.runden AS EventRounds
+			, tournaments.runden AS EventRounds
 			, CONCAT(
 				IF (LOCATE("pgn=", turnierformen.parameters),
 					CONCAT(SUBSTRING_INDEX(SUBSTRING_INDEX(turnierformen.parameters, "pgn=", -1), "&", 1), "-"), ""
@@ -423,11 +423,11 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 			, paarungen.tisch_no AS `Table`
 		FROM partien
 		LEFT JOIN events USING (event_id)
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN categories modi
-			ON turniere.modus_category_id = modi.category_id
+			ON tournaments.modus_category_id = modi.category_id
 		LEFT JOIN categories turnierformen
-			ON turniere.turnierform_category_id = turnierformen.category_id
+			ON tournaments.turnierform_category_id = turnierformen.category_id
 		LEFT JOIN categories partiestatus
 			ON partien.partiestatus_category_id = partiestatus.category_id
 		LEFT JOIN events runden
@@ -559,7 +559,7 @@ function mod_tournaments_games_html($event, $request, $typ) {
 				, partien.kommentar
 				, weiss_zeit AS WhiteClock, schwarz_zeit AS BlackClock
 				, DATE_FORMAT(partien.last_update, "%%H:%%i") AS last_update
-				, turniere.livebretter
+				, tournaments.livebretter
 				, IF(vertauschte_farben = "ja", 1, NULL) AS vertauschte_farben
 				, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 				, main_series.category_short AS main_series
@@ -570,7 +570,7 @@ function mod_tournaments_games_html($event, $request, $typ) {
 			FROM partien
 			LEFT JOIN categories partiestatus
 				ON partiestatus.category_id = partien.partiestatus_category_id
-			LEFT JOIN turniere USING (event_id)
+			LEFT JOIN tournaments USING (event_id)
 			LEFT JOIN events USING (event_id)
 			LEFT JOIN contacts places
 				ON events.place_contact_id = places.contact_id

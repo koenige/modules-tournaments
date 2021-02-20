@@ -7,7 +7,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2020 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2021 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -103,12 +103,12 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 			) AS spieler_mit_verein
 			, (SELECT COUNT(kontingent_id) FROM kontingente WHERE kontingente.event_id = events.event_id) AS kontingente
 		FROM events
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		JOIN events_websites
 			ON events.event_id = events_websites.event_id
 			AND events_websites.website_id = %d
 		LEFT JOIN categories turnierformen
-			ON turniere.turnierform_category_id = turnierformen.category_id
+			ON tournaments.turnierform_category_id = turnierformen.category_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
 		LEFT JOIN contacts places

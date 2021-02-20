@@ -43,9 +43,9 @@ function mod_tournaments_make_swtwriter($vars) {
 	$sql = 'SELECT event_id, event, events.identifier, YEAR(date_begin) AS year
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 		FROM events
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN categories turnierformen
-			ON turnierformen.category_id = turniere.turnierform_category_id
+			ON turnierformen.category_id = tournaments.turnierform_category_id
 		WHERE events.identifier = "%s"';
 	$sql = sprintf($sql, wrap_db_escape($writer['identifier']));
 	$event = wrap_db_fetch($sql);

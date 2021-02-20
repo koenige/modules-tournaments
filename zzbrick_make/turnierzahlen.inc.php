@@ -30,7 +30,7 @@ function mod_tournaments_make_turnierzahlen($vars) {
 			, YEAR(date_begin) AS year
 			, event, identifier
 		FROM events
-		LEFT JOIN turniere USING (event_id)
+		LEFT JOIN tournaments USING (event_id)
 		WHERE identifier = "%s"';
 	$sql = sprintf($sql, wrap_db_escape(implode('/', $vars)));
 	$event = wrap_db_fetch($sql);

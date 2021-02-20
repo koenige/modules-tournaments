@@ -12,8 +12,8 @@ if (!$event) wrap_quit(404);
 // Wertungen
 $sql = 'SELECT wertung_category_id
 	FROM turniere_wertungen
-	LEFT JOIN turniere USING (tournament_id)
-	WHERE turniere.event_id = %d
+	LEFT JOIN tournaments USING (tournament_id)
+	WHERE tournaments.event_id = %d
 	ORDER BY reihenfolge';
 $sql = sprintf($sql, $event['event_id']);
 $wertungen = wrap_db_fetch($sql, 'wertung_category_id', 'single value');

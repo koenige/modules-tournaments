@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2016, 2020 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2016, 2020-2021 Gustaf Mossakowski <gustaf@koenige.org>
 // Verzeichnisse für Live-PGNs automatisch erstellen
 
 
@@ -19,7 +19,7 @@ function mod_tournaments_make_livefolders() {
 	// get folders which should exist
 	$sql = 'SELECT events.event_id
 			, REPLACE(events.identifier, "/", "-") AS folder
-		FROM turniere
+		FROM tournaments
 		LEFT JOIN events USING (event_id)
 		WHERE NOT ISNULL(livebretter)
 		AND DATE_SUB(events.date_begin, INTERVAL %d DAY) <= CURDATE()
