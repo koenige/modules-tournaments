@@ -1,0 +1,133 @@
+# Zugzwang Project
+# deutsche-schachjugend.de
+# Copyright (c) 2014-2020 Gustaf Mossakowski <gustaf@koenige.org>
+# HTML-Ausgabe: Anzeige einer Turnierreihe
+#
+# List of fields:
+# event_id, event, date_begin, date_end, ort, takes_place, description, year,
+# duration, category_short, series_description, series_category_id,
+# series_path, turnierort, turniere { event_id, identifier, event, duration,
+# date_begin, date_end, turnierort, teilnehmerliste, turnierform, partien, teams,
+# spieler, spieler_mit_verein }, spieler, teams, mannschaft_(verein),
+# teilnehmerliste, kontingent, event_links
+#
+<h1>%%% item event %%%
+<br>%%% item duration wrap_date %%% %%% item turnierort "<em>in %s</em>" %%%</h1>
+
+%%% condition if intern %%%
+
+%%% rights Webmaster Vorstand Geschäftsstelle "AK Spielbetrieb" %%%
+<div class="infocol">
+<h2><a href="karten/">Fairplay-Karten</a></h2>
+
+<h2>Werkzeuge</h2>
+
+<ul>
+%%% condition if event_id %%%
+<li><a href="termin/">Termin bearbeiten</a>
+<ul>
+	<li><a href="kosten/">Kosten</a> – Kosten für die Teilnehmer</li>
+</ul>
+</li>
+<li><a href="teilnahmen/">Teilnahmen und Organisationsteam</a></li>
+%%% condition endif %%%
+%%% rights - %%%
+%%% rights Webmaster "AK Spielbetrieb" %%%
+%%% condition if turnierstart %%%
+<li><a href="liveergebnisse/">Liveergebniseingabe</a></li>
+%%% condition endif %%%
+%%% condition if turniere %%%
+<li><a href="urkunden/">Druck der Urkunden</a></li>
+<li><a href="doppelte/">Spieler/in in mehreren Turnieren gemeldet?</a></li>
+<li><a href="siegerehrung.json">Daten für Siegerehrung im JSON-Format</a></li>
+<li><a href="siegerehrungkarten/">Karten mit Platzierungen für Siegerehrung</a></li>
+%%% condition endif %%%
+%%% rights - %%%
+%%% rights Webmaster Vorstand Geschäftsstelle "AK Spielbetrieb" %%%
+<li><a href="zeitplan/">Rahmen-Zeitplan des Gesamtturniers</a></li>
+%%% rights - %%%
+%%% rights Webmaster Vorstand Geschäftsstelle "AK Spielbetrieb" %%%
+%%% condition if kontingent %%%
+<li><a href="kontingent/">Kontingente der Regionalgruppen</a></li>
+%%% condition endif %%%
+%%% condition if kontingente %%%
+<li><a href="kontingente/">Kontingente</a></li>
+%%% condition if turniere & e %%%
+<li><a href="meldungen/">Meldeübersicht der Landesverbände</a></li>
+%%% condition endif %%%
+%%% condition endif %%%
+<li><a href="buchungen/">Buchungen</a></li>
+<li><a href="/medien/%%% item org_abk %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
+%%% condition if access_codes %%%
+<li><a href="access-codes/">Download-Zugriffscodes</a></li>
+%%% condition endif %%%
+</ul>
+</div>
+
+%%% rights Schiedsrichter Technik Organisator Information Turnierleitung Öffentlichkeitsarbeit event:* %%%
+<div class="infocol">
+<h2>Werkzeuge</h2>
+
+<ul>
+<li><a href="teilnahmen/">Teilnahmen und Organisationsteam</a></li>
+<li><a href="liveergebnisse/">Liveergebniseingabe</a></li>
+<li><a href="urkunden/">Druck der Urkunden</a></li>
+%%% condition if access_codes %%%
+<li><a href="access-codes/">Download-Zugriffscodes</a></li>
+%%% condition endif %%%
+</ul>
+</div>
+
+%%% rights Betreuer event:* %%%
+<div class="infocol">
+<h2><a href="karten/">Fairplay-Karten</a></h2>
+</div>
+%%% rights - %%%
+
+%%% condition endif %%%
+
+<div class="infocol">
+<h2>Turniere</h2>
+%%% condition if turniere %%%
+<ul>
+%%% loop turniere %%%
+<li>%%% item duration wrap_date %%%: <a href="../../%%% item identifier %%%/">%%% item event %%%</a>
+%%% item turnierort " in %s" %%%</li>
+%%% loop end %%%
+</ul>
+%%% condition if series_path %%%
+<p><a href="%%% setting events_path %%%/%%% item year %%%/%%% item series_path %%%/">Terminplan aller Turniere</a></p>
+%%% condition endif %%%
+%%% condition if event_links %%%
+<p><a href="%%% condition if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% condition endif %%%links/">Links zu den Turnieren</a></p>
+%%% condition endif %%%
+
+%%% condition unless intern %%%
+</div>
+<div class="infocol">
+%%% condition endif %%%
+
+%%% condition if pgn %%%
+<h2>Partien</h2>
+<p><a href="partien/gesamt.pgn">Download der Partien aller Turniere als PGN-Datei</a>
+<br><a href="partien/gesamt-utf8.pgn">Download der Partien aller Turniere als PGN-Datei (UTF-8)</a>
+<br>(Download kann u. U. etwas dauern, da Datei erst zusammengestellt wird)</p>
+%%% condition endif %%%
+%%% condition if spieler | teams %%%
+<h2>Suche nach %%% condition unless e %%%Team oder %%% condition endif %%%Spieler</h2>
+<form method="GET" action="./suche/" id="suche" accept-charset="utf-8">
+<p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
+<p><a href="%%% condition if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% condition endif %%%lv/">Übersicht der %%% condition if e %%%Spieler%%% condition else %%%Teams%%% condition endif %%% nach Landesverbänden</a></p>
+%%% condition if teilnehmerliste %%%
+<p><a href="%%% condition if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% condition endif %%%herkunftsorte/">Übersicht der Herkunftsorte der Teilnehmer</a></p>
+%%% condition endif %%%
+
+<h2>Zahlen</h2>
+
+<p><a href="%%% condition if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% condition endif %%%statistik/">Statistiken zu den Turnieren</a></p>
+%%% condition endif %%%
+%%% condition else %%%
+<p>Die Termine der einzelnen Turniere sind noch nicht veröffentlicht.</p>
+%%% condition endif %%%
+</div>
+
