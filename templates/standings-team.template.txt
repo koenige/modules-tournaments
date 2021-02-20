@@ -1,0 +1,88 @@
+# tournaments module
+# HTML output: standings for team tournaments
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2012-2020 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+<h1>Tabellenstand nach der %%% item runde_no %%%. Runde%%% item endstand " (Endstand)" %%%%%% item live " (LIVE!)" %%%
+<br><a href="../%%% item pfad %%%">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
+
+<div class="results">
+<table>
+	<thead>
+	<tr>
+		<th><abbr title="Platz">Pl.</abbr></th>
+		<th class="tx">Team</th>
+%%% condition if dwz_schnitt %%%
+		<th>Ø <abbr title="Deutsche Wertungszahl">DWZ</abbr></th>
+%%% condition endif %%%
+%%% condition if m-v | m-s %%%
+%%% condition if country %%%
+		<th>Land</th>
+%%% condition endif %%%
+%%% condition endif %%%
+%%% condition if guv %%%
+		<th class="bx"><abbr title="Gewonnene Spiele">G</abbr></th>		
+		<th><abbr title="Unentschiedene Spiele">U</abbr></th>
+		<th class="bxv"><abbr title="Verlorene Spiele">V</abbr></th>
+%%% condition endif %%%
+%%% loop wertungen %%%
+		<th><abbr title="%%% item category %%%">%%% item category_short %%%</abbr></th>
+%%% loop end %%%
+	</tr>
+	</thead>
+%%% loop start %%%
+	<tr class="%%% loopposition uneven "un" %%%even%%% item live " live" %%%" id="%%% item team_identifier_short %%%">
+	<td class="tz tableposition">%%% item platz_no_identisch "<span class='identical_place'>" %%%%%% item platz_no %%%%%% item platz_no_identisch "</span>" %%%
+ %%% condition if platz_wechsel %%% <img src="/_layout/tabelle-%%% item platz_wechsel %%%.png" alt="%%% item platz_symbol %%%" class="%%% item platz_wechsel %%%"> %%% condition endif %%%</td>
+<td>%%% condition if aktiv %%%<a href="../../../%%% item pfad %%%%%% item team_identifier %%%/">%%% condition endif %%%
+%%% item team %%%%%% item aktiv "</a>" %%%</td>
+%%% condition if dwz_schnitt %%%
+		<td class="tm">%%% item dwz_schnitt %%%</td>
+%%% condition endif %%%
+%%% condition if m-v | m-s %%%
+%%% condition if country %%%
+<td>%%% condition if main_series_path & lv_kennung %%%
+<a href="../../%%% item pfad %%%%%% item main_series_path %%%/lv/%%% item lv_kennung %%%/">
+%%% condition endif %%%
+<span class="short"><abbr title="%%% item country %%%">%%% item lv_kurz %%%</abbr></span>
+<span class="long">%%% item country %%%</span>
+%%% condition if main_series_path & lv_kennung %%%
+</a>
+%%% condition endif %%%</td>
+%%% condition endif %%%
+%%% condition endif %%%
+%%% condition if guv %%%
+		<td class="tm bx">%%% item spiele_g %%%</td>
+		<td class="tm">%%% item spiele_u %%%</td>
+		<td class="tm bxv">%%% item spiele_v %%%</td>
+%%% condition endif %%%
+		%%% loop wertungen %%%
+		<td class="tm">%%% item wertung my_ergebnis_format %%%</td>
+		%%% loop end %%%
+	</tr>
+%%% loop end %%%
+</table>
+</div>
+
+<p class="glossary"><a href="/glossar/">Erläuterungen zu den Abkürzungen und Wertungen</a></p>
+<nav>
+<div class="relnav">
+%%% condition if vorige_runde_no %%%
+<p class="prev"><a href="%%% item pfad %%%%%% item vorige_runde_no %%%/">Tabellenstand %%% item vorige_runde_no %%%. Runde</a></p>
+%%% condition endif %%%
+<p class="middle">
+%%% condition if paarungen %%%
+<a href="../%%% item pfad %%%runde/%%% item runde_no %%%/">Paarungen der %%% item runde_no %%%. Runde</a> | 
+%%% condition endif %%%
+<a href="../%%% item pfad %%%">Übersicht</a></p>
+%%% condition if naechste_runde_no %%%
+<p class="next"><a href="%%% item pfad %%%%%% item naechste_runde_no %%%/">Tabellenstand %%% item naechste_runde_no %%%. Runde</a></p>
+%%% condition endif %%%
+</div>
+</nav>
+<script type="text/javascript" src="/_behaviour/link-rel-nav.js"></script>
