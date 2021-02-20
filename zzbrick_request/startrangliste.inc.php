@@ -1,9 +1,15 @@
 <?php 
 
-// Zugzwang Project
-// deutsche-schachjugend.de
-// Copyright (c) 2012-2020 Gustaf Mossakowski <gustaf@koenige.org>
-// Turnier: Startrangliste
+/**
+ * Zugzwang Project
+ * Starting ranking
+ *
+ * https://www.zugzwang.org/modules/tournaments
+ *
+ * @author Gustaf Mossakowski <gustaf@koenige.org>
+ * @copyright Copyright © 2012-2020 Gustaf Mossakowski
+ * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+ */
 
 
 function mod_tournaments_startrangliste($vars) {
