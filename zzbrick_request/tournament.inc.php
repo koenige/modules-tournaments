@@ -64,6 +64,7 @@ function mod_tournaments_tournament($vars, $settings) {
 				AND turniere_wertungen.reihenfolge = 1) AS haupt_wertung_category_id
 			, website_org.org_abk
 			, IF(NOT ISNULL(IFNULL(events.description, series.description)), 1, NULL) AS ausschreibung
+			, main_tournament_id
 		FROM events
 		LEFT JOIN websites USING (website_id)
 		LEFT JOIN organisationen website_org USING (org_id)
@@ -108,6 +109,24 @@ function mod_tournaments_tournament($vars, $settings) {
 	$event[str_replace('-', '_', $event['event_category'])] = true;
 	// @todo im Grunde überflüssig, da Auswahlskript hier eh nur Turniere ankommen läßt
 	$event['turnier'] = true;
+	
+	if ($event['show_main_tournament_archive']) {
+		// series, series_path
+		$sql = 'SELECT category_id
+				, series.category AS series
+				, SUBSTRING_INDEX(series.path, "/", -1) AS series_path
+			FROM tournaments
+			LEFT JOIN events USING (event_id)
+			LEFT JOIN categories series
+				ON events.series_category_id = series.category_id
+			WHERE tournament_id = %d';
+		$sql = sprintf($sql, $event['main_tournament_id']);
+		$archive_series = wrap_db_fetch($sql);
+		if ($archive_series) {
+			$event['series'] = $archive_series['series'];
+			$event['series_path'] = $archive_series['series_path'];
+		}
+	}
 
 	// Kontaktdetails
 	require_once $zz_setting['custom_wrap_dir'].'/personen.inc.php';
