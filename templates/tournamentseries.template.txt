@@ -117,7 +117,8 @@
 
 %%% condition unless intern %%%
 </div>
-<div class="infocol">
+<div class="infocol infocol2">
+%%% request tournamentnews * %%%
 %%% condition endif %%%
 
 %%% condition if pgn %%%
