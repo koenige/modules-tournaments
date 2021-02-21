@@ -1,9 +1,10 @@
 <?php 
 
 /**
- * Zugzwang Project
+ * tournaments module
  * Export tournament data for ChessBase
  *
+ * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>

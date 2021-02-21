@@ -1,9 +1,10 @@
 <?php 
 
 /**
- * Zugzwang Project
+ * tournaments module
  * Overview of live games
  *
+ * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>

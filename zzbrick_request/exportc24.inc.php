@@ -1,10 +1,11 @@
 <?php 
 
 /**
- * Zugzwang Project
+ * tournaments module
  * Export tournament data for Chess24
  *
- * https://www.zugzwang.org/modules/tournaments
+ * Part of »Zugzwang Project«
+ * https://www.zugzwang.org/modules/default
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2017-2021 Gustaf Mossakowski

@@ -1,9 +1,10 @@
 <?php 
 
 /**
- * Zugzwang Project
+ * tournaments module
  * Standings
  *
+ * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
