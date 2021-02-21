@@ -110,7 +110,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	// @todo im Grunde überflüssig, da Auswahlskript hier eh nur Turniere ankommen läßt
 	$event['turnier'] = true;
 	
-	if ($event['show_main_tournament_archive']) {
+	if (!empty($event['show_main_tournament_archive'])) {
 		// series, series_path
 		$sql = 'SELECT category_id
 				, series.category AS series
@@ -249,8 +249,13 @@ function mod_tournaments_tournament($vars, $settings) {
 			, date_begin, date_end
 		FROM tournaments
 		LEFT JOIN events USING (event_id)
-		WHERE main_tournament_id = %d';
-	$sql = sprintf($sql, $event['tournament_id']);
+		WHERE (tournament_id = %d OR main_tournament_id = %d)
+		AND tournament_id != %d';
+	$sql = sprintf($sql
+		, $event['main_tournament_id'] ? $event['main_tournament_id']: $event['tournament_id']
+		, $event['main_tournament_id'] ? $event['main_tournament_id']: $event['tournament_id']
+		, $event['tournament_id']
+	);
 	$event['events'] += wrap_db_fetch($sql, 'event_id');
 	$dates = [];
 	foreach ($event['events'] as $sub_event) {
