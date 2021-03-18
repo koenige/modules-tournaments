@@ -497,7 +497,7 @@ function mod_tournaments_make_swtimport_personen($event, $spielerliste, $ids, $i
 				OR (pk.identifier LIKE "%s-%%" AND identifier_category_id = %d
 					AND (CONCAT(last_name, ",", first_name) = "%s"
 						OR CONCAT(last_name, ", ", first_name) = "%s")
-					AND (YEAR(geburtsdatum) = %d OR ISNULL(geburtsdatum)))
+					AND (YEAR(date_of_birth) = %d OR ISNULL(date_of_birth)))
 			';
 			$sql = sprintf($sql
 				, !empty($spieler[2034]) ? wrap_db_escape($spieler[2034]) : 0
@@ -561,7 +561,7 @@ function mod_tournaments_make_swtimport_personen($event, $spielerliste, $ids, $i
 			$person = [];
 			$person['first_name'] = !empty($name[1]) ? trim($name[1]) : '';
 			$person['last_name'] = trim($name[0]);
-			$person['geburtsdatum'] = trim(substr($spieler[2008], 0, 4));
+			$person['date_of_birth'] = trim(substr($spieler[2008], 0, 4));
 			$person['geschlecht'] = (strtolower($spieler[2013]) === 'w') ? 'weiblich' : 'männlich';
 			list($person_id, $contact_id) = my_person_add($person);
 

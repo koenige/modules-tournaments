@@ -60,11 +60,11 @@ $zz['fields'][4]['type'] = 'hidden';
 $zz['fields'][4]['type_detail'] = 'select';
 $zz['fields'][4]['sql'] = 'SELECT person_id
 		, contact
-		, IFNULL(YEAR(geburtsdatum), "unbek.") AS geburtsjahr
+		, IFNULL(YEAR(date_of_birth), "unbek.") AS geburtsjahr
 		, identifier
 	FROM personen
 	LEFT JOIN contacts USING (contact_id)
-	ORDER BY last_name, first_name, YEAR(geburtsdatum), identifier';
+	ORDER BY last_name, first_name, YEAR(date_of_birth), identifier';
 $zz['fields'][4]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 $zz['fields'][4]['display_field'] = 'contact';
 $zz['fields'][4]['key_field_name'] = 'person_id';

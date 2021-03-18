@@ -37,14 +37,14 @@ if ($event['turnierform'] === 'e') {
 
 $zz['fields'][5]['sql'] = 'SELECT person_id
 		, contact
-		, IFNULL(YEAR(geburtsdatum), "unbek.") AS geburtsjahr
+		, IFNULL(YEAR(date_of_birth), "unbek.") AS geburtsjahr
 		, identifier
 	FROM personen
 	LEFT JOIN teilnahmen USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
 	WHERE teilnahmen.usergroup_id = %d
 	AND event_id = %d
-	ORDER BY last_name, first_name, YEAR(geburtsdatum), identifier';
+	ORDER BY last_name, first_name, YEAR(date_of_birth), identifier';
 $zz['fields'][5]['sql'] = sprintf($zz['fields'][5]['sql'], wrap_id('usergroups', 'spieler'), $event['event_id']);
 $zz['fields'][5]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 

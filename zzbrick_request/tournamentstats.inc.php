@@ -55,7 +55,7 @@ function mod_tournaments_tournamentstats($vars) {
 			, (SELECT COUNT(partie_id) FROM partien WHERE event_id = events.event_id AND partiestatus_category_id IN (%s) AND NOT ISNULL(weiss_ergebnis) AND weiss_ergebnis = 0) AS siege_schwarz
 			, (SELECT COUNT(nachricht_id) FROM spieler_nachrichten LEFT JOIN teilnahmen ON teilnahmen.teilnahme_id = spieler_nachrichten.teilnehmer_id WHERE teilnahmen.event_id = events.event_id) AS tn_nachrichten
 			, (SELECT COUNT(team_id) FROM teams WHERE teams.event_id = events.event_id AND teams.team_status = "Teilnehmer") AS teams
-			, (SELECT AVG(YEAR(events.date_begin)-YEAR(geburtsdatum)) FROM teilnahmen LEFT JOIN personen USING (person_id) WHERE event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS average_age
+			, (SELECT AVG(YEAR(events.date_begin)-YEAR(date_of_birth)) FROM teilnahmen LEFT JOIN personen USING (person_id) WHERE event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS average_age
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN categories series

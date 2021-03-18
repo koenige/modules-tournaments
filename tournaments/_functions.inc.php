@@ -328,11 +328,11 @@ function mf_tournaments_standings_filter($filter_kennung = false) {
 		$filter['untertitel'] = 'männlich';
 		break;
 	case 'alt':
-		$filter['where'][] = 'YEAR(personen.geburtsdatum) = (YEAR(events.date_begin) - alter_max)';
+		$filter['where'][] = 'YEAR(personen.date_of_birth) = (YEAR(events.date_begin) - alter_max)';
 		$filter['untertitel'] = 'ältester Jahrgang';
 		break;
 	case 'jung':
-		$filter['where'][] = 'YEAR(personen.geburtsdatum) > (YEAR(events.date_begin) - alter_max)';
+		$filter['where'][] = 'YEAR(personen.date_of_birth) > (YEAR(events.date_begin) - alter_max)';
 		$filter['untertitel'] = 'jüngere Jahrgänge';
 		break;
 	// @todo u12, u10, u...

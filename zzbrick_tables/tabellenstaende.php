@@ -67,7 +67,7 @@ $zz['fields'][5]['field_name'] = 'person_id';
 $zz['fields'][5]['type'] = 'select';
 $zz['fields'][5]['sql'] = 'SELECT person_id
 		, contact
-		, IFNULL(YEAR(geburtsdatum), "unbek.") AS geburtsjahr
+		, IFNULL(YEAR(date_of_birth), "unbek.") AS geburtsjahr
 		, identifier
 	FROM personen
 	LEFT JOIN contacts USING (contact_id)
