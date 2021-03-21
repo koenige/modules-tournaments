@@ -24,7 +24,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 	// sobald Download-Code etabliert und vielfältig einsetzbar
 	$sql = 'SELECT events.event_id
 			, event, date_begin, date_end, places.contact AS ort, takes_place, events.description, events.identifier
-			, YEAR(date_begin) AS year
+			, IFNULL(event_year, YEAR(date_begin)) AS year
 			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
 			, series.category_short, series.description AS series_description, series_category_id
 			, SUBSTRING_INDEX(series.path, "/", -1) AS series_path
@@ -118,7 +118,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 		LEFT JOIN addresses
 			ON addresses.contact_id = places.contact_id
 		WHERE series.main_category_id = %d
-		AND YEAR(date_begin) = %d
+		AND IFNULL(event_year, YEAR(date_begin)) = %d
 		ORDER BY series.sequence, date_begin, events.identifier';
 	$sql = sprintf($sql,
 		wrap_id('usergroups', 'spieler'),
