@@ -475,7 +475,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	if ($event['turnierform'] !== 'e') {
 		$eigene_teams = mod_tournaments_tournament_own_teams();
 		foreach ($event['teams'] as $id => $team) {
-			if ($event['teilnehmerliste']) $event['teams'][$id]['aktiv'] = 1;
+			if ($event['teilnehmerliste'] AND $team['team_status'] === 'Teilnehmer') $event['teams'][$id]['aktiv'] = 1;
 			elseif (in_array($id, $eigene_teams) AND $intern) $event['teams'][$id]['aktiv'] = 1;
 			elseif (brick_access_rights('Webmaster') AND $event['intern']) $event['teams'][$id]['aktiv'] = 1;
 			$event['teams'][$id][str_replace('-', '_', $event['turnierform'])] = true;
