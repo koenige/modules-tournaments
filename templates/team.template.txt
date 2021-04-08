@@ -29,6 +29,12 @@
 <h1>%%% item team %%% %%% item team_no %%%
 <br><a href="../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
 
+%%% condition if team_withdrawn %%%
+<p>Dieses Team wurde zurückgezogen.</p>
+<p><a href="https://schach.in%%% condition if setting localhost %%%.local%%% condition endif %%%/%%% item organisation_kennung %%%/">Weitere Infos: %%% item organisation %%%</a></p>
+
+%%% condition else %%%
+
 <div class="infocol_max">
 
 <h3>Aufstellung</h3>
@@ -218,3 +224,4 @@ nicht abschließend geprüft.)</em></p>
 %%% condition endif %%%
 %%% condition endif %%%
 <script type="text/javascript" src="/_behaviour/link-rel-nav.js"></script>
+%%% condition endif %%%

@@ -134,7 +134,17 @@ function mod_tournaments_team($vars, $settings) {
 	$page['dont_show_h1'] = true;
 	$page['extra']['realm'] = 'sports';
 	$data = array_merge($team, $event);
-	if ($data['team_status'] !== 'Teilnehmer' AND !$intern) return false;
+	if ($data['team_status'] !== 'Teilnehmer' AND !$intern) {
+		switch ($data['team_status']) {
+			case 'Löschung':
+				$data['team_withdrawn'] = true;
+				$page['status'] = 410;
+				$page['text'] = wrap_template('team', $data);
+				return $page;
+			default:
+				return false;
+		}
+	}
 
 	if ($intern) return mod_tournaments_team_intern($page, $data);
 	return mod_tournaments_team_public($page, $data);
