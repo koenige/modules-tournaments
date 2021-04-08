@@ -1,0 +1,220 @@
+# tournaments module
+# HTML output: team of a tournament
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2012-2021 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+# List of fields:
+# team_id, team, team_no, datum_anreise, uhrzeit_anreise, datum_abreise,
+# uhrzeit_abreise, setzliste_no, platz_no, zps_code, org_id, team_identifier,
+# team_identifier_short, meldung_datum, regionalgruppe, meldung, website,
+# organisation, latitude, longitude, veranstaltungsort, place,
+# address, postcode, lv_kennung, main_series_path, event_identifier,
+# turnierform, country, endstand, zwischenstand,
+# mannschaft_(verein), event_id, event, bretter_min, bretter_max,
+# alter_max, alter_min, geschlecht, gastspieler_status, duration, dauer_tage,
+# teilnehmerliste, pseudo_dwz,
+# turnierort, year, main_series, _prev_team_id, _prev_kennung, _next_team_id,
+# _next_kennung, map, spielberechtigt, dwz_schnitt, spieler { team_id,
+# person_id, person, t_verein, t_dwz, t_elo, t_fidetitel, spielberechtigt,
+# rang_no, brett_no, gastspieler, gastspieler_status, geburtsjahr,
+# pseudo_dwz, zps_code, partien { ergebnis }, summe_bp }, paarungen {
+# runde_no, tisch_no, gegner, punkte, verloren, unentschieden, gewonnen,
+# spielfrei }, summe_bp, summe_mp, links
+#
+<h1>%%% item team %%% %%% item team_no %%%
+<br><a href="../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
+
+<div class="infocol_max">
+
+<h3>Aufstellung</h3>
+
+%%% condition if spieler %%%
+<div class="results">
+<table>
+<thead>
+<tr><th>Nr.</th> <th>Name</th> <th><abbr title="FIDE-Titel">Tit.</abbr></th> <th><abbr title="Geburtsjahr">Geb.</abbr></th> <th><abbr title="Deutsche Wertungszahl">DWZ</abbr></th> <th><abbr title="Elo-Wertungszahl des Weltschachbunds FIDE">Elo</abbr></th>
+%%% condition if gastspieler_status %%% <th>Typ</th> %%% condition endif %%%
+%%% condition if paarungen %%%
+%%% loop paarungen %%%
+<th class="number"><a href="../runde/%%% item runde_no %%%/" title="Runde %%% item runde_no %%%, Gegner %%% item gegner %%%">%%% item runde_no %%%</a></th>
+%%% loop end %%%
+<th class="tsum"><abbr title="Summe">&Sigma;</abbr></th>
+%%% condition endif %%%
+</tr>	
+</thead>
+%%% condition if paarungen %%%
+<tfoot>
+<tr>
+<th></th><th colspan="%%% condition if gastspieler_status %%%6%%% condition else %%%5%%% condition endif %%%">Brettpunkte</th>
+%%% loop paarungen %%%
+<th class="number">%%% item punkte my_ergebnis_format %%%%%% item spielfrei * %%%</th>
+%%% loop end %%%
+<th class="tsum">%%% item summe_bp my_ergebnis_format %%%</th>
+</tr>
+<tr>
+<th></th><th colspan="%%% condition if gastspieler_status %%%6%%% condition else %%%5%%% condition endif %%%">Mannschaftspunkte</th>
+%%% loop paarungen %%%
+<th class="number">%%% condition if verloren %%%
+0
+%%% condition elseif gewonnen %%%
+2%%% item spielfrei * %%%
+%%% condition elseif unentschieden %%%
+1
+%%% condition endif %%%
+</th>
+%%% loop end %%%
+<th class="tsum">%%% item summe_mp %%%</th>
+</tr>
+</tfoot>
+%%% condition endif %%%
+<tbody>
+%%% loop spieler %%%
+<tr class='%%% loopposition uneven "un" %%%even'>
+<td class="number">%%% condition if brett_no %%%
+%%% item brett_no %%%
+%%% condition else %%%
+%%% loopposition counter %%%
+%%% condition endif %%%</td>
+<td>%%% item person %%%</td>
+<td>%%% item fidetitel_lang "<abbr title='%s'>" %%%%%% item t_fidetitel "%s" %%%%%% item fidetitel_lang "</abbr>" %%%</td>
+<td class="number">%%% item geburtsjahr %%%</td>
+<td class="number">%%% comment condition if zps_code <a href="http://www.schachbund.de/spieler.html?zps=%/%% item zps_code %/%%">%%%
+%%% comment condition endif %%%
+%%% item t_dwz %%%%%% comment item zps_code "</a>" %%%</td>
+<td class="number">
+%%% condition if fide_id %%%
+<a href="http://ratings.fide.com/card.phtml?event=%%% item fide_id %%%">
+%%% condition endif %%%
+%%% item t_elo %%%
+%%% item fide_id "</a>" %%%</td>
+%%% condition if gastspieler_status %%%
+<td>%%% item gastspieler "Gast" %%%</td>
+%%% condition endif %%%
+%%% condition if partien %%%
+%%% loop partien %%%
+<td title="%%% condition if farbe %%%mit %%% item farbe ucfirst %%% %%% condition endif %%%%%% item gegner "gegen %s" %%%%%% item gegner_dwz " · DWZ %s" %%%%%% item gegner_elo " · Elo %s" %%%" class="ergebnis %%% loopposition even "checkered" %%%">
+%%% condition if runde_no %%%%%% condition if pgn %%%
+<a href="../partien/%%% item runde_no %%%-%%% item tisch_no %%%-%%% item brett_no %%%/">
+%%% condition endif %%%%%% condition endif %%%
+<span class="%%% item farbe_kennung %%%">&nbsp;</span>%%% item ergebnis my_ergebnis_format %%%
+%%% condition if live %%%<em>live</em>%%% condition endif %%%
+%%% item haengepartie "(<abbr title="Hängepartie">H</abbr>)" %%% %%% item partie_spielfrei "*" %%%
+%%% condition if runde_no %%%%%% item pgn "</a>" %%%%%% condition endif %%%
+</td>
+%%% loop end %%%
+<td class="tsum">%%% item summe_bp my_ergebnis_format %%%</td>
+%%% condition endif %%%
+</tr>
+%%% loop end %%%
+</tbody>
+</table>
+</div>
+
+%%% condition if platz_no %%%
+<p><a href="../tabelle/#%%% item team_identifier_short %%%">%%% item platz_no %%%. Tabellenplatz</a>%%% item endstand " (Endstand)" %%%</p>
+%%% condition endif %%%
+<p>%%% condition if dwz_schnitt %%%
+DWZ-Schnitt der ersten %%% item bretter_min %%% Bretter: <strong>%%% item dwz_schnitt %%%</strong>
+%%% condition if setzliste_no %%% – %%% condition endif %%%%%% condition endif %%%
+%%% condition if setzliste_no %%% Nr. %%% item setzliste_no %%% der <a href="../startrangliste/#%%% item team_identifier_short %%%">Startrangliste</a>%%% condition endif %%%
+%%% condition if pseudo_dwz %%%
+ <br><em>(unter Berücksichtigung einer Pseudo-DWZ von %%% item pseudo_dwz %%% für Spieler ohne DWZ)</em>
+%%% condition endif %%%
+</p>
+%%% condition if spielfrei %%%
+<p>* = spielfrei</p>
+%%% condition endif %%%
+%%% condition if spielberechtigt %%%
+%%% condition else %%%
+<p><em>(Vorläufige Aufstellung, die Aufstellungen und Spielberechtigungen sind noch
+nicht abschließend geprüft.)</em></p>
+%%% condition endif %%%
+
+%%% condition else %%%
+<p>Team noch nicht abschließend gemeldet.</p>
+%%% condition endif %%%
+
+%%% condition if bilder %%%
+<h3>Teamphoto</h3>
+
+<p class="teamphoto">
+%%% loop bilder 1 %%%
+<img src="%%% page mediabase %%%/%%% item base_filename %%%.600.%%% item preview_extension %%%" alt="">
+%%% loop end %%%
+</p>
+%%% condition endif %%%
+
+</div>
+
+%%% condition if m-s | m-v %%%
+%%% condition if country %%%
+<div class="infocol_map">
+
+%%% condition if m-s %%%
+<h3>Schulinfos</h3>
+%%% condition else %%%
+<h3>Vereinsinfos</h3>
+%%% condition endif %%%
+
+<p>
+%%% condition if main_series_path & lv_kennung %%%
+<a href="../../%%% item main_series_path %%%/lv/%%% item lv_kennung %%%/">
+%%% condition endif %%%
+%%% item country %%%
+%%% condition if main_series_path & lv_kennung %%%
+</a>
+%%% condition endif %%%
+ %%% item regionalgruppe "(Regionalgruppe %s)" %%%</p>
+
+%%% condition if map %%%
+<div class="mapverein">
+<div id="mapverein"> </div>
+<script type="text/javascript">
+
+	var tiles = L.tileLayer('https://api.mapbox.com/styles/v1/%%% setting mapbox_user %%%/%%% setting mapbox_style %%%/tiles/512/{z}/{x}/{y}?access_token=%%% setting mapbox_access_token %%%', {
+		maxZoom: 18, tileSize: 512,  zoomOffset: -1,
+		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+	});
+	var map = L.map('mapverein', {scrollWheelZoom: false}).addLayer(tiles);
+	map.setView([%%% item latitude %%%, %%% item longitude %%%], 8);
+	L.Icon.Default.imagePath = '/_layout/clubs/leaflet/';
+	var Icon = new L.Icon.Default({
+		iconUrl: 'marker-icon.png',
+		iconRetinaUrl: 'marker-icon-2x.png'
+	});
+
+	L.marker([%%% item latitude %%%, %%% item longitude %%%], {icon: Icon}).addTo(map)
+	    .bindPopup('%%% item place %%%');
+
+</script>
+</div>
+%%% condition endif %%%
+%%% condition if veranstaltungsort %%%
+<p>Ort: %%% item veranstaltungsort %%%, %%% item address %%%, %%% item postcode %%% %%% item place %%%</p>
+%%% condition endif %%%
+<p><a href="https://schach.in%%% condition if setting localhost %%%.local%%% condition endif %%%/%%% item organisation_kennung %%%/">Weitere Infos: %%% item organisation %%%</a></p>
+%%% condition if website %%%
+<p><a href="%%% item website %%%">Website %%% item organisation %%%</a></p>
+%%% condition endif %%%
+%%% condition if links %%%
+%%% condition if m-s %%%
+<p>Weitere Links von der Schule zum Turnier:</p>
+%%% condition else %%%
+<p>Weitere Links vom Verein zum Turnier:</p>
+%%% condition endif %%%
+
+<ul>
+%%% loop links %%%
+<li><a href="%%% item link htmlspecialchars %%%">%%% item link_text htmlspecialchars %%%</a></li>
+%%% loop end %%%
+</ul>
+%%% condition endif %%%
+</div>
+%%% condition endif %%%
+%%% condition endif %%%
+<script type="text/javascript" src="/_behaviour/link-rel-nav.js"></script>
