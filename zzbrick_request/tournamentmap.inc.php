@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2008, 2012, 2014-2020 Gustaf Mossakowski
+ * @copyright Copyright © 2008, 2012, 2014-2021 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -22,7 +22,6 @@
  * @return array $page
  */
 function mod_tournaments_tournamentmap($vars) {
-	global $zz_conf;
 	global $zz_setting;
 	
 	$verband = count($vars) === 3 ? array_pop($vars) : '';
@@ -61,7 +60,7 @@ function mod_tournaments_tournamentmap($vars) {
 		LEFT JOIN organisationen
 			ON teilnahmen.verein_org_id = organisationen.org_id
 		LEFT JOIN teams USING (team_id)
-		WHERE YEAR(events.date_begin) = %d
+		WHERE YEAR(IFNULL(events.event_year, events.date_begin)) = %d
 		AND (ISNULL(teams.team_id) OR teams.meldung = "komplett" OR teams.meldung = "teiloffen")
 		AND NOT ISNULL(teilnahmen.verein_org_id)
 		AND categories.main_category_id = %d
@@ -103,8 +102,6 @@ function mod_tournaments_tournamentmap($vars) {
 }
 
 function mod_tournaments_tournamentmap_json($params) {
-	global $zz_conf;
-
 	$verband = count($params) === 3 ? substr(array_pop($params), 0, -8) : '';
 	if (count($params) !== 2) return false;
 
@@ -173,7 +170,7 @@ function mod_tournaments_tournamentmap_json($params) {
 			AND fide.identifier_category_id = %d
 			AND fide.current = "yes"
 		WHERE main_series.path = "reihen/%s"
-		AND YEAR(events.date_begin) = %d
+		AND YEAR(IFNULL(events.event_year, events.date_begin)) = %d
 		AND (ISNULL(teams.team_id) OR teams.meldung = "komplett" OR teams.meldung = "teiloffen")
 		AND usergroup_id = %d
 		%s
