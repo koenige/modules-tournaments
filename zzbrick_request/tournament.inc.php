@@ -259,7 +259,8 @@ function mod_tournaments_tournament($vars, $settings) {
 	$event['events'] += wrap_db_fetch($sql, 'event_id');
 	$dates = [];
 	foreach ($event['events'] as $sub_event) {
-		$dates[] = $sub_event['date_begin'].'T'.$sub_event['time_begin'];
+		$dates[] = ($sub_event['date_begin'] ? $sub_event['date_begin'] : $sub_event['date_end'])
+			.'T'.($sub_event['time_begin'] ? $sub_event['time_begin'] : $sub_event['time_end']);
 	}
 	array_multisort($dates, SORT_ASC, $event['events']);
 	
