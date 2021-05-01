@@ -14,7 +14,7 @@
  */
 
 
-function mod_tournament_make_liveresults($params) {
+function mod_tournaments_make_liveresults($params) {
 	global $zz_setting;
 	$zz_setting['cache'] = false;
 	if (count($params) !== 2) return false;
