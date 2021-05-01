@@ -24,11 +24,11 @@
 function mod_tournaments_tournamentmap($vars) {
 	global $zz_setting;
 	
-	$verband = count($vars) === 3 ? array_pop($vars) : '';
+	$federation = count($vars) === 3 ? array_pop($vars) : '';
 	$event = my_turniertermin($vars);
 	if (!$event) return false;
-
-	if ($verband) {
+	
+	if ($federation) {
 		$sql = 'SELECT org_id
 				, organisation, kennung AS org_kennung, org_kurz
 				, country_id
@@ -36,12 +36,12 @@ function mod_tournaments_tournamentmap($vars) {
 			WHERE kennung = "%s"
 			AND mutter_org_id = %d';
 		$sql = sprintf($sql
-			, wrap_db_escape($verband)
+			, wrap_db_escape($federation)
 			, $zz_setting['org_ids']['dsb']
 		);
-		$verband = wrap_db_fetch($sql);
-		if (!$verband) return false;
-		$org_ids[] = $verband['org_id'];
+		$federation = wrap_db_fetch($sql);
+		if (!$federation) return false;
+		$org_ids[] = $federation['org_id'];
 		$sql = 'SELECT org_id
 			FROM organisationen
 			WHERE mutter_org_id IN (%s)
@@ -50,7 +50,7 @@ function mod_tournaments_tournamentmap($vars) {
 		// no member organisations?
 		if (count($org_ids) === 1) return false;
 	}
-	
+
 	// gibt es Teilnehmer?
 	$sql = 'SELECT COUNT(teilnahme_id)
 		FROM teilnahmen
@@ -60,7 +60,7 @@ function mod_tournaments_tournamentmap($vars) {
 		LEFT JOIN organisationen
 			ON teilnahmen.verein_org_id = organisationen.org_id
 		LEFT JOIN teams USING (team_id)
-		WHERE YEAR(IFNULL(events.event_year, events.date_begin)) = %d
+		WHERE IFNULL(events.event_year, YEAR(events.date_begin)) = %d
 		AND (ISNULL(teams.team_id) OR teams.meldung = "komplett" OR teams.meldung = "teiloffen")
 		AND NOT ISNULL(teilnahmen.verein_org_id)
 		AND categories.main_category_id = %d
@@ -69,26 +69,26 @@ function mod_tournaments_tournamentmap($vars) {
 	$sql = sprintf($sql,
 		$event['year'], $event['series_category_id'],
 		wrap_id('usergroups', 'spieler'),
-		($verband ? sprintf(
+		($federation ? sprintf(
 			'AND (org_id IN (%s) OR country_id = %d)',
-			implode(',', $org_ids), $verband['country_id']) : '')
+			implode(',', $org_ids), $federation['country_id']) : '')
 	);
 	$tn = wrap_db_fetch($sql, '', 'single value');
 	if (!$tn) return false;
 	
-	if ($verband) {
-		$event = array_merge($event, $verband);
+	if ($federation) {
+		$event = array_merge($event, $federation);
 	}
 
 	$page['head'] = wrap_template('vereine-map-head');
 
 	$page['title'] = 'Herkunftsorte der Spieler: '.$event['event'].' '.$event['year'];
-	if ($verband) $page['title'] .= ' – '.$verband['organisation'];
+	if ($federation) $page['title'] .= ' – '.$federation['organisation'];
 	$page['extra']['body_attributes'] = 'id="map"';
 	$page['extra']['realm'] = 'vereine';
 	$page['text'] = wrap_template('tournamentmap', $event);
 	$page['dont_show_h1'] = true;
-	if (!$verband) {
+	if (!$federation) {
 		$page['breadcrumbs'][] = sprintf('<a href="../../">%d</a>', $event['year']);
 		$page['breadcrumbs'][] = sprintf('<a href="../">%s</a>', $event['event']);
 		$page['breadcrumbs'][] = 'Herkunftsorte';
@@ -96,20 +96,20 @@ function mod_tournaments_tournamentmap($vars) {
 		$page['breadcrumbs'][] = sprintf('<a href="../../../">%d</a>', $event['year']);
 		$page['breadcrumbs'][] = sprintf('<a href="../../">%s</a>', $event['event']);
 		$page['breadcrumbs'][] = '<a href="../">Herkunftsorte</a>';
-		$page['breadcrumbs'][] = $verband['organisation'];
+		$page['breadcrumbs'][] = $federation['organisation'];
 	}
 	return $page;
 }
 
 function mod_tournaments_tournamentmap_json($params) {
-	$verband = count($params) === 3 ? substr(array_pop($params), 0, -8) : '';
+	$federation = count($params) === 3 ? substr(array_pop($params), 0, -8) : '';
 	if (count($params) !== 2) return false;
 
-	if ($verband) {
+	if ($federation) {
 		$sql = 'SELECT org_id
 			FROM organisationen
 			WHERE kennung = "%s"';
-		$sql = sprintf($sql, wrap_db_escape($verband));
+		$sql = sprintf($sql, wrap_db_escape($federation));
 		$org_ids = wrap_db_fetch($sql);
 		$sql = 'SELECT org_id
 			FROM organisationen
@@ -152,7 +152,7 @@ function mod_tournaments_tournamentmap_json($params) {
 			, events.identifier AS event_identifier
 			, CONCAT(teams.team, IFNULL(CONCAT(" ", team_no), "")) AS team
 			, teams.kennung AS team_identifier
-			, YEAR(events.date_begin) AS year
+			, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 		FROM teilnahmen
 		LEFT JOIN personen USING (person_id)
 		LEFT JOIN events USING (event_id)
@@ -170,7 +170,7 @@ function mod_tournaments_tournamentmap_json($params) {
 			AND fide.identifier_category_id = %d
 			AND fide.current = "yes"
 		WHERE main_series.path = "reihen/%s"
-		AND YEAR(IFNULL(events.event_year, events.date_begin)) = %d
+		AND IFNULL(events.event_year, YEAR(events.date_begin)) = %d
 		AND (ISNULL(teams.team_id) OR teams.meldung = "komplett" OR teams.meldung = "teiloffen")
 		AND usergroup_id = %d
 		%s
@@ -181,7 +181,7 @@ function mod_tournaments_tournamentmap_json($params) {
 		wrap_category_id('kennungen/fide-id'),
 		wrap_db_escape($params[1]), $params[0],
 		wrap_id('usergroups', 'spieler'),
-		$verband ? sprintf(' AND (teilnahmen.verein_org_id IN (%s) OR teams.verein_org_id IN (%s)) ', implode(',', $org_ids), implode(',', $org_ids)) : ''
+		$federation ? sprintf(' AND (teilnahmen.verein_org_id IN (%s) OR teams.verein_org_id IN (%s)) ', implode(',', $org_ids), implode(',', $org_ids)) : ''
 	);
 	$spieler = wrap_db_fetch($sql, 'tt_id');
 
