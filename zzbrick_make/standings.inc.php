@@ -86,9 +86,7 @@ function cms_tabellenstandupdate_uebersicht($vars) {
 		if (substr($runde, 0, 6) === 'runde_') {
 			$runde = substr($runde, 6);
 			my_job_create('tabelle', $event['event_id'], $runde);
-			wrap_http_status_header(303);
-			header('Location: '.$zz_setting['host_base'].$_SERVER['REQUEST_URI']);
-			exit;
+			wrap_redirect_change();
 		}
 	}
 	return $page;
