@@ -63,7 +63,7 @@ function mod_tournaments_tournamentstats($vars) {
 		LEFT JOIN categories main_series
 			ON series.main_category_id = main_series.category_id
 		WHERE main_series.path = "reihen/%s"
-		AND YEAR(events.date_begin) = %d
+		AND IFNULL(events.event_year, YEAR(events.date_begin)) = %d
 		AND (ISNULL(tournaments.urkunde_parameter) OR tournaments.urkunde_parameter NOT LIKE "%%statistik=0%%")
 		ORDER BY series.sequence
 	';
