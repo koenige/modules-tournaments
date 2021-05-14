@@ -42,6 +42,7 @@ function mod_tournaments_games($vars) {
 			, YEAR(date_begin) AS year
 			, events.identifier, runden, events.event
 			, place
+			, addresses.*
 		FROM events
 		LEFT JOIN addresses
 			ON addresses.contact_id = events.place_contact_id
@@ -55,9 +56,14 @@ function mod_tournaments_games($vars) {
 			AND events_websites.website_id = %d
 		WHERE YEAR(events.date_begin) = %d
 		AND main_series.path = "reihen/%s"
-		AND tournaments.notationspflicht = "ja"
+		AND (tournaments.notationspflicht = "ja" OR addresses.country_id = %d)
 	';
-	$sql = sprintf($sql, $zz_setting['website_id'], $vars[0], wrap_db_escape($vars[1]));
+	$sql = sprintf($sql
+		, $zz_setting['website_id']
+		, $vars[0]
+		, wrap_db_escape($vars[1])
+		, wrap_id('countries', '--') // internet
+	);
 	$events = wrap_db_fetch($sql, 'event_id');
 	if ($events AND in_array($request, ['gesamt.pgn', 'gesamt-utf8.pgn'])) {
 		return mod_tournaments_games_series($events, $request);
