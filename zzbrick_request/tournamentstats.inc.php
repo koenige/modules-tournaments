@@ -178,7 +178,7 @@ function mod_tournaments_tournamentstats($vars) {
 	$data['laengste_partien'] = wrap_db_fetch($sql, 'partie_id');
 
 	// check if there's a statistic for last and/or next year
-	$sql = 'SELECT YEAR(events.date_begin) AS year
+	$sql = 'SELECT IFNULL(event_year, YEAR(events.date_begin)) AS year
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN categories series
