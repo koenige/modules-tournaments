@@ -22,7 +22,7 @@
 %%% condition endif %%%
 Herkunftsorte der Spieler
 %%% condition if organisation %%%
-</a><a href="../../lv/%%% item org_kennung %%%/">Landesverband %%% item org_kurz %%%</a>
+</a><a href="../../lv/%%% item org_kennung %%%/">Landesverband %%% item contact_short %%%</a>
 %%% condition endif %%%
 </h1>
 <p><a href="%%% item organisation ../ %%%../">%%% item event %%% %%% item year %%% im Schach</a></p>

@@ -62,7 +62,7 @@ function mod_tournaments_tournament($vars, $settings) {
 			, (SELECT wertung_category_id FROM turniere_wertungen
 				WHERE turniere_wertungen.tournament_id = tournaments.tournament_id
 				AND turniere_wertungen.reihenfolge = 1) AS haupt_wertung_category_id
-			, website_org.org_abk
+			, website_org.contact_abbr
 			, IF(NOT ISNULL(IFNULL(events.description, series.description)), 1, NULL) AS ausschreibung
 			, main_tournament_id
 		FROM events
@@ -280,7 +280,7 @@ function mod_tournaments_tournament($vars, $settings) {
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
 				, countries.country
 				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
-				, IFNULL(landesverbaende.org_abk, landesverbaende_rueckwaerts.org_abk) AS lv_kurz
+				, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
 				, setzliste_no
 				, tabellenstaende_wertungen.wertung
 			FROM teilnahmen
@@ -332,7 +332,7 @@ function mod_tournaments_tournament($vars, $settings) {
 				, countries.country
 				, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
 				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
-				, IFNULL(landesverbaende.org_abk, landesverbaende_rueckwaerts.org_abk) AS lv_kurz
+				, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
 				, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 				, platz_no, tabellenstand_id
 			FROM teams

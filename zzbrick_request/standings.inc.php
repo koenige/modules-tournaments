@@ -106,7 +106,7 @@ function mod_tournaments_standings($vars) {
 				, SUBSTRING_INDEX(teams.kennung, "/", -1) AS team_identifier_short
 				, countries.country
 				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
-				, IFNULL(landesverbaende.org_abk, landesverbaende_rueckwaerts.org_abk) AS lv_kurz
+				, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
 				, team_status AS status
 			FROM tabellenstaende
 			JOIN teams USING (team_id)
@@ -145,7 +145,7 @@ function mod_tournaments_standings($vars) {
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 				, countries.country
 				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
-				, IFNULL(landesverbaende.org_abk, landesverbaende_rueckwaerts.org_abk) AS lv_kurz
+				, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
 				, teilnahmen.setzliste_no
 				, t_verein, tabellenstaende.person_id
 				, teilnahme_status AS status

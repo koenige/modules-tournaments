@@ -30,7 +30,7 @@ function mod_tournaments_tournamentmap($vars) {
 	
 	if ($federation) {
 		$sql = 'SELECT org_id
-				, organisation, identifier AS org_kennung, org_kurz
+				, organisation, identifier AS org_kennung, contact_short
 				, country_id
 			FROM organisationen
 			WHERE identifier = "%s"

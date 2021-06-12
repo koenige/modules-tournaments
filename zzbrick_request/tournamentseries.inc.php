@@ -29,7 +29,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 			, series.category_short, series.description AS series_description, series_category_id
 			, SUBSTRING_INDEX(series.path, "/", -1) AS series_path
 			, IFNULL(place, places.contact) AS turnierort
-			, website_org.org_abk
+			, website_org.contact_abbr
 			, (SELECT COUNT(code_id) FROM access_codes WHERE event_id = events.event_id) AS access_codes
 			, series.parameters
 			, (SELECT COUNT(*) FROM categories WHERE categories.main_category_id = series.category_id) AS sub_series

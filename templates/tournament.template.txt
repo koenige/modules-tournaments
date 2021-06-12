@@ -99,7 +99,7 @@
 %%% condition if kontingent %%%
 <li><a href="kontingent/">Berechnung der Kontingente</a></li>
 %%% condition endif %%%
-<li><a href="/medien/%%% item org_abk %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
+<li><a href="/medien/%%% item contact_abbr %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
 </ul>
 <p><a href="/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
 </div>
@@ -129,7 +129,7 @@
 <li><a href="swt-upload/">Übernahme der Turnierdaten aus Swiss-Chess</a></li>
 <li><a href="tabellenstandupdate/">Tabellenstände neu berechnen</a></li>
 <li><a href="urkunden/">Druck der Urkunden</a></li>
-<li><a href="/medien/%%% item org_abk %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
+<li><a href="/medien/%%% item contact_abbr %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
 </ul>
 <p><a href="/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
 </div>
@@ -142,7 +142,7 @@
 <ul>
 <li><a href="runde/">Termine: Runden und Partien</a></li>
 <li><a href="/intern/dateien/swt/%%% item identifier %%%.swt">Download SWT-Datei</a> falls vorhanden</li>
-<li><a href="/medien/%%% item org_abk %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
+<li><a href="/medien/%%% item contact_abbr %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
 </ul>
 
 <p><a href="/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
@@ -178,7 +178,7 @@
 </ul>
 </li>
 <li><a href="urkunden/">Druck der Urkunden</a></li>
-<li><a href="/medien/%%% item org_abk %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
+<li><a href="/medien/%%% item contact_abbr %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
 </ul>
 
 <p><a href="/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>

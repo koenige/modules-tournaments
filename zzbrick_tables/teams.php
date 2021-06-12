@@ -37,7 +37,7 @@ $zz['fields'][3]['sql'] = 'SELECT org_id, organisation
 	FROM organisationen
 	LEFT JOIN organisationen_kennungen USING (org_id)
 	WHERE (ISNULL(organisationen_kennungen.ok_id) OR organisationen_kennungen.current = "yes")
-	ORDER BY organisationen_kennungen.identifier, org_abk';
+	ORDER BY organisationen_kennungen.identifier, contact_abbr';
 $zz['fields'][3]['display_field'] = 'organisation';
 $zz['fields'][3]['search'] = 'vereine.organisation';
 $zz['fields'][3]['character_set'] = 'utf8';

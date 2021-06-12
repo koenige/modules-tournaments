@@ -1,6 +1,6 @@
 # Zugzwang Project
 # deutsche-schachjugend.de
-# Copyright (c) 2014-2020 Gustaf Mossakowski <gustaf@koenige.org>
+# Copyright (c) 2014-2021 Gustaf Mossakowski <gustaf@koenige.org>
 # HTML-Ausgabe: Anzeige einer Turnierreihe
 #
 # List of fields:
@@ -57,7 +57,7 @@
 %%% condition endif %%%
 %%% condition endif %%%
 <li><a href="buchungen/">Buchungen</a></li>
-<li><a href="/medien/%%% item org_abk %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
+<li><a href="/medien/%%% item contact_abbr %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
 %%% condition if access_codes %%%
 <li><a href="access-codes/">Download-Zugriffscodes</a></li>
 %%% condition endif %%%
