@@ -35,8 +35,8 @@ function mod_tournaments_team($vars, $settings) {
 			, meldung_datum, regionalgruppe
 			, meldung
 			, organisationen.website, organisationen.organisation
-			, organisationen.kennung AS organisation_kennung
-			, IFNULL(landesverbaende.kennung, landesverbaende_rueckwaerts.kennung) AS lv_kennung
+			, organisationen.identifier AS organisation_kennung
+			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, country
 			, @laufende_partien:= (SELECT IF(COUNT(partie_id) = 0, NULL, 1) FROM partien

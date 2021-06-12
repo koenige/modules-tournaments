@@ -279,7 +279,7 @@ function mod_tournaments_tournament($vars, $settings) {
 		$sql = 'SELECT teilnahme_id, platz_no
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
 				, countries.country
-				, IFNULL(landesverbaende.kennung, landesverbaende_rueckwaerts.kennung) AS lv_kennung
+				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
 				, IFNULL(landesverbaende.org_abk, landesverbaende_rueckwaerts.org_abk) AS lv_kurz
 				, setzliste_no
 				, tabellenstaende_wertungen.wertung
@@ -331,7 +331,7 @@ function mod_tournaments_tournament($vars, $settings) {
 				, team, team_no, teams.kennung AS team_identifier, team_status
 				, countries.country
 				, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
-				, IFNULL(landesverbaende.kennung, landesverbaende_rueckwaerts.kennung) AS lv_kennung
+				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
 				, IFNULL(landesverbaende.org_abk, landesverbaende_rueckwaerts.org_abk) AS lv_kurz
 				, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 				, platz_no, tabellenstand_id

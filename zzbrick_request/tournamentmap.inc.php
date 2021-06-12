@@ -30,10 +30,10 @@ function mod_tournaments_tournamentmap($vars) {
 	
 	if ($federation) {
 		$sql = 'SELECT org_id
-				, organisation, kennung AS org_kennung, org_kurz
+				, organisation, identifier AS org_kennung, org_kurz
 				, country_id
 			FROM organisationen
-			WHERE kennung = "%s"
+			WHERE identifier = "%s"
 			AND mutter_org_id = %d';
 		$sql = sprintf($sql
 			, wrap_db_escape($federation)
@@ -108,7 +108,7 @@ function mod_tournaments_tournamentmap_json($params) {
 	if ($federation) {
 		$sql = 'SELECT org_id
 			FROM organisationen
-			WHERE kennung = "%s"';
+			WHERE identifier = "%s"';
 		$sql = sprintf($sql, wrap_db_escape($federation));
 		$org_ids = wrap_db_fetch($sql);
 		$sql = 'SELECT org_id
@@ -121,7 +121,7 @@ function mod_tournaments_tournamentmap_json($params) {
 
 	$sql = 'SELECT organisationen.org_id
 			, organisation, organisationen.website, longitude, latitude
-			, ok.identifier AS zps_code, organisationen.kennung
+			, ok.identifier AS zps_code, organisationen.identifier
 		FROM organisationen
 		LEFT JOIN organisationen_orte USING (org_id)
 		LEFT JOIN contacts places
@@ -208,7 +208,7 @@ function mod_tournaments_tournamentmap_json($params) {
 				'title' => $person['organisation'],
 				'style' => 'verein',
 				'website' => $person['website'],
-				'kennung' => $person['kennung'],
+				'identifier' => $person['identifier'],
 				'longitude' => $person['longitude'],
 				'latitude' => $person['latitude'],
 				'altitude' => 0,

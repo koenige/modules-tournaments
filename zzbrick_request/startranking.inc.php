@@ -113,7 +113,7 @@ function mod_tournaments_startranking_single($event) {
 			, setzliste_no
 			, country
 			, places.contact AS veranstaltungsort, place, latitude, longitude
-			, landesverbaende.kennung AS lv_kennung
+			, landesverbaende.identifier AS lv_kennung
 			, landesverbaende.org_abk AS lv_kurz
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, teilnahme_status
@@ -194,7 +194,7 @@ function mod_tournaments_startranking_team($event) {
 			, IF(NOT ISNULL(teams.setzliste_no), teams.kennung, "") AS kennung, team_status, country
 			, SUBSTRING_INDEX(teams.kennung, "/", -1) AS team_identifier_short
 			, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
-			, IFNULL(landesverbaende.kennung, landesverbaende_rueckwaerts.kennung) AS lv_kennung
+			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
 			, IFNULL(landesverbaende.org_abk, landesverbaende_rueckwaerts.org_abk) AS lv_kurz
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, eintrag_datum
