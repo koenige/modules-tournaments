@@ -125,7 +125,7 @@ function mod_tournaments_tournamentmap_json($params) {
 		FROM organisationen
 		LEFT JOIN organisationen_orte USING (org_id)
 		LEFT JOIN contacts places
-			ON organisationen_orte.main_contact_id = places.contact_id
+			ON organisationen_orte.contact_id = places.contact_id
 		LEFT JOIN addresses
 			ON places.contact_id = addresses.contact_id
 		LEFT JOIN organisationen_kennungen ok

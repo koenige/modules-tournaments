@@ -166,13 +166,13 @@ function mod_tournaments_team_public($page, $data) {
 	}
 
 	// Einen Spielort auslesen
-	$sql = 'SELECT contact_id AS place_id
+	$sql = 'SELECT contacts.contact_id AS place_id
 			, latitude, longitude, contacts.contact AS veranstaltungsort
 			, place, address, postcode
 		FROM contacts
 		LEFT JOIN addresses USING (contact_id)
 		LEFT JOIN organisationen_orte
-			ON organisationen_orte.main_contact_id = contacts.contact_id
+			ON organisationen_orte.contact_id = contacts.contact_id
 		WHERE org_id = %d
 		AND organisationen_orte.published = "yes"
 		ORDER BY contacts.contact_id LIMIT 1';

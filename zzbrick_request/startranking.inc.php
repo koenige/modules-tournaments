@@ -144,7 +144,7 @@ function mod_tournaments_startranking_single($event) {
 			ON organisationen_orte.org_id = organisationen.org_id
 			AND organisationen_orte.published = "yes"
 		LEFT JOIN contacts places
-			ON organisationen_orte.main_contact_id = places.contact_id
+			ON organisationen_orte.contact_id = places.contact_id
 		LEFT JOIN addresses
 			ON places.contact_id = addresses.contact_id
 		LEFT JOIN events USING (event_id)
@@ -219,7 +219,7 @@ function mod_tournaments_startranking_team($event) {
 			ON organisationen_orte.org_id = organisationen.org_id
 			AND organisationen_orte.published = "yes"
 		LEFT JOIN contacts places
-			ON organisationen_orte.main_contact_id = places.contact_id
+			ON organisationen_orte.contact_id = places.contact_id
 		LEFT JOIN addresses
 			ON places.contact_id = addresses.contact_id
 		LEFT JOIN events USING (event_id)
