@@ -305,7 +305,7 @@ function mod_tournaments_tournament($vars, $settings) {
 					= countries.country_id
 			LEFT JOIN organisationen landesverbaende_rueckwaerts
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
-				AND landesverbaende_rueckwaerts.category_id = %d
+				AND landesverbaende_rueckwaerts.contact_category_id = %d
 				AND landesverbaende_rueckwaerts.mutter_org_id = %d
 			WHERE teilnahmen.event_id = %d
 			AND usergroup_id = %d
@@ -350,7 +350,7 @@ function mod_tournaments_tournament($vars, $settings) {
 					= countries.country_id
 			LEFT JOIN organisationen landesverbaende_rueckwaerts
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
-				AND landesverbaende_rueckwaerts.category_id = %d
+				AND landesverbaende_rueckwaerts.contact_category_id = %d
 				AND landesverbaende_rueckwaerts.mutter_org_id = %d
 			LEFT JOIN organisationen_orte
 				ON organisationen_orte.org_id = organisationen.org_id

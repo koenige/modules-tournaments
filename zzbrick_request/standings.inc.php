@@ -126,7 +126,7 @@ function mod_tournaments_standings($vars) {
 					= countries.country_id
 			LEFT JOIN organisationen landesverbaende_rueckwaerts
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
-				AND landesverbaende_rueckwaerts.category_id = %d
+				AND landesverbaende_rueckwaerts.contact_category_id = %d
 				AND landesverbaende_rueckwaerts.mutter_org_id = %d
 			WHERE teams.event_id = %d
 			AND tabellenstaende.runde_no = %d
@@ -174,7 +174,7 @@ function mod_tournaments_standings($vars) {
 					= countries.country_id
 			LEFT JOIN organisationen landesverbaende_rueckwaerts
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
-				AND landesverbaende_rueckwaerts.category_id = %d
+				AND landesverbaende_rueckwaerts.contact_category_id = %d
 				AND landesverbaende_rueckwaerts.mutter_org_id = %d
 			WHERE tabellenstaende.event_id = %d
 			AND tabellenstaende.runde_no = %d

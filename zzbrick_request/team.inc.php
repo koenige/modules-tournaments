@@ -62,7 +62,7 @@ function mod_tournaments_team($vars, $settings) {
 			ON regionalgruppen.landesverband_org_id = landesverbaende.org_id
 		LEFT JOIN organisationen landesverbaende_rueckwaerts
 			ON countries.country_id = landesverbaende_rueckwaerts.country_id
-			AND landesverbaende_rueckwaerts.category_id = %d
+			AND landesverbaende_rueckwaerts.contact_category_id = %d
 			AND landesverbaende_rueckwaerts.mutter_org_id = %d
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN tournaments USING (event_id)
