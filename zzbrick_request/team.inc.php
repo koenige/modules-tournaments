@@ -162,7 +162,7 @@ function mod_tournaments_team_public($page, $data) {
 
 	if (!$data['teilnehmerliste']) {
 		// Umleitung zur Terminübersicht
-		return brick_format('%%% redirect /'.$data['event_identifier'].'/ %%%');
+		return wrap_redirect(sprintf('/%s/', $data['event_identifier']));
 	}
 
 	// Einen Spielort auslesen

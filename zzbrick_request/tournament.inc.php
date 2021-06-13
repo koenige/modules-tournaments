@@ -99,7 +99,8 @@ function mod_tournaments_tournament($vars, $settings) {
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
 	if (!$intern AND !$event['tournament_id']) {
-		return brick_format('%%% redirect 307 '.$zz_setting['events_path'].'/'.implode('/', $vars).'/ %%%');
+		return wrap_redirect(
+			sprintf('%s/%s/', $zz_setting['events_path'], implode('/', $vars)), 307);
 	}
 	parse_str($event['series_parameter'], $series_parameter);
 	$event += $series_parameter;
