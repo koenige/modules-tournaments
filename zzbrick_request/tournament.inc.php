@@ -426,7 +426,7 @@ function mod_tournaments_tournament($vars, $settings) {
 		LEFT JOIN contactdetails USING (contact_id)
 		LEFT JOIN categories
 			ON categories.category_id = contactdetails.provider_category_id
-			AND categories.parameters LIKE "%type=phone%"
+			AND categories.parameters LIKE "%&type=phone%"
 		';
 	} else {
 		$sql_fields = '';
