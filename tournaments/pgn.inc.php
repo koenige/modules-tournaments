@@ -81,7 +81,7 @@ function pgn_parse($pgn, $filename = false) {
 			if (!$line) continue;
 			preg_match('/^\[(.+) "(.*)"\]$/', $line, $matches);
 			if (!$matches) {
-				wrap_error(sprintf(
+				wrap_log(sprintf(
 					'PGN: Cannot interpret line %d as tag pair: %s (Filename: %s)'
 					, $line_no, $line, $filename ? $filename : 'unknown'
 				));
@@ -296,7 +296,7 @@ function pgn_to_html($pgn, $extra_comment = []) {
 			}
 		} elseif (substr($move, 0, 1) === '$') {
 			if (!isset($nag)) {
-//				wrap_error('PGN: NAG file not found. {'.$_SERVER['REQUEST_URI'].'}');
+//				wrap_log('PGN: NAG file not found. {'.$_SERVER['REQUEST_URI'].'}');
 				require_once $zz_setting['lib'].'/pgnreader/nag.php';
 				$nag = get_pgn_basics();
 			}

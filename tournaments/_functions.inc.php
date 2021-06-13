@@ -89,7 +89,7 @@ function mf_tournaments_team_rating_average_dwz($event_id, $teams, $bretter_min,
 		$teams[$team_id]['dwz_schnitt'] = 'k. A.';
 	}
 	if (!$bretter_min) {
-		wrap_error('Keine Mindestbrettzahl angegeben, kann keinen DWZ-Schnitt berechnen');
+		wrap_log('Keine Mindestbrettzahl angegeben, kann keinen DWZ-Schnitt berechnen');
 		return [$event_dwz_schnitt, $teams];
 	}
 	foreach ($dwz as $team_id => $spieler) {

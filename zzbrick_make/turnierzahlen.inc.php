@@ -161,7 +161,7 @@ function mod_tournaments_make_turnierzahlen($vars) {
 		$values['POST']['ratings_updated'] = date('Y-m-d');
 		$ops = zzform_multi('turniere', $values);
 		if (empty($ops['id'])) {
-			wrap_error(sprintf('Unable to set `ratings_updated` for tournament %s', $event['identifier']));
+			wrap_log(sprintf('Unable to set `ratings_updated` for tournament %s', $event['identifier']));
 		}
 	}
 	$page['text'] = wrap_template('turnierzahlen', $data);

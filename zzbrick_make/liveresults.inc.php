@@ -250,11 +250,11 @@ function mod_tournament_make_liveresults_tournament($params) {
 				}
 				$ops = zzform_multi('partien', $values);
 				if (!$ops['id']) {
-					wrap_error(
+					wrap_log(
 						sprintf(
 							'Livergebnis wurde nicht gespeichert, ID: %d, Ergebnis: %s',
 							$partie_id, $ergebnis
-						).implode(', ', $ops['error']), E_USER_NOTICE
+						).implode(', ', $ops['error'])
 					);
 				} else {
 					$updated = true;

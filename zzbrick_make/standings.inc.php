@@ -190,7 +190,7 @@ function cms_tabellenstandupdate_runde($vars) {
 function cms_tabellenstandupdate_return($bool, $time, $type) {
 	$time = microtime(true) - $time;
 	if ($time < 1) return $bool; // do not log if it's fast enough
-	wrap_error(sprintf('Tabellenstand %s in %s sec erstellt.', $type, $time), E_USER_NOTICE);
+	wrap_log(sprintf('Tabellenstand %s in %s sec erstellt.', $type, $time));
 	return $bool;
 }
 

@@ -32,12 +32,11 @@ function mod_tournaments_make_swtimport($vars) {
 	ini_set('max_execution_time', 180);
 
 	$identifier = implode('/', $vars);
-	$zz_setting['error_prefix'] = sprintf('SWT-Import (%s): ', $identifier);
 	if (count($vars) !== 2) {
-		wrap_error('= Falsche Zahl von Parametern.');
-		$zz_setting['error_prefix'] = '';
+		wrap_log(sprintf('SWT-Import: Falsche Zahl von Parametern: %s', $identifier));
 		return false;
 	}
+	$zz_setting['active_module_for_log'] = $identifier;
 	
 	// @todo Einzel- oder Mannschaftsturnier aus Termine auslesen
 	// Datenherkunft aus Turniere
@@ -53,8 +52,7 @@ function mod_tournaments_make_swtimport($vars) {
 	$sql = sprintf($sql, wrap_db_escape($identifier));
 	$event = wrap_db_fetch($sql);
 	if (empty($event['event_id'])) {
-		wrap_error('Kein Termin für diese Parameter in der Datenbank');
-		$zz_setting['error_prefix'] = '';
+		wrap_log('SWT-Import: Kein Termin für diese Parameter in der Datenbank');
 		return false;
 	}
 	parse_str($event['parameter'], $parameter);
@@ -266,7 +264,7 @@ function mod_tournaments_make_swtimport_turniercheck($event, $form, $data) {
 	$diff = array_diff($db_ids, $swt_ids);
 	if ($db_ids AND $swt_ids AND $diff === $db_ids) {
 		// Kein Team in Datenbank passt zu Teams aus SWT
-		wrap_error('Turnierdatei passt nicht zum Turnier. Bitte lade die richtige Datei hoch!', E_USER_ERROR);
+		wrap_error(sprintf('SWT-Import: Turnierdatei passt nicht zum Turnier. Bitte lade die richtige Datei hoch! (%s)', $event['identifier']), E_USER_ERROR);
 	}
 	return true;
 }
@@ -921,14 +919,14 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 				$partien[$last_p_key][1] = $partie[1];
 				$partien[$last_p_key][1][$brett_key]--;
 				unset($partien[$p_key][1]);
-				wrap_error('SWT-Import: Brett falsch. Daten: %s', json_encode($partie));
+				wrap_log('SWT-Import: Brett falsch. Daten: %s', json_encode($partie));
 			} elseif ($partien[$last_p_key][0]['s_key'] === $partie[0][4001]) {
 				$partien[$last_p_key][1] = $partie[0];
 				$partien[$last_p_key][1][$brett_key]--;
 				unset($partien[$p_key][0]);
-				wrap_error('SWT-Import: Brett falsch. Daten: %s', json_encode($partie));
+				wrap_log('SWT-Import: Brett falsch. Daten: %s', json_encode($partie));
 			} else {
-				wrap_error('SWT-Import: Partiegegner passen nicht zusammen. Unbekannter Fehler. Daten: %s', json_encode($partie));
+				wrap_log('SWT-Import: Partiegegner passen nicht zusammen. Unbekannter Fehler. Daten: %s', json_encode($partie));
 			}
 		}
 		$last_p_key = $p_key;
@@ -1079,7 +1077,7 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 		$ops = zzform_multi('partien', $values);
 		if (!$ops['id']) {
 			if ($values['action'] === 'insert') {
-				wrap_error('Partie konnte nicht hinzugefügt werden: ', implode("\n", $ops['error']));
+				wrap_log('SWT-Import: Partie konnte nicht hinzugefügt werden: ', implode("\n", $ops['error']));
 			} else {
 				wrap_error(sprintf('Partie %s konnte nicht aktualisiert werden: ', $partie_id).implode("\n", $ops['error']));
 			}
@@ -1179,9 +1177,9 @@ function mod_tournaments_make_swtimport_verein_zps($zps) {
 		$verein = wrap_db_fetch($sql);
 		if (!$verein) {
 			// Kann auch leer bleiben, z. B. bei DLMs
-			wrap_error(sprintf(
+			wrap_log(sprintf(
 				'SWT-Import: Konnte Verein mit ZPS-Code %s nicht finden.', $zps
-			), E_USER_NOTICE);
+			));
 		}
 	}
 	return $verein;

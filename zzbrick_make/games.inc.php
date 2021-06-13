@@ -275,7 +275,7 @@ function mod_tournaments_make_games($vars) {
 						$fehler = true;
 					}
 					if ($fehler) {
-						wrap_error(sprintf(
+						wrap_log(sprintf(
 							'Ergebnis in der PGN-Datei weicht ab. %s %d %s. Runde: %s - %s Datenbank %s, PGN %s-%s',
 							$event['event'], $event['year'], $partie['runde_no'],
 							$partie['White'], $partie['Black'], $partie['Result'],
@@ -299,10 +299,10 @@ function mod_tournaments_make_games($vars) {
 			}
 			$ops = zzform_multi('partien', $values);
 			if (!$ops['id']) {
-				wrap_error(sprintf(
+				wrap_log(sprintf(
 					'PGN-Import: Partie %s-%s, %s %d, Runde %d konnte nicht importiert werden. Fehler: ',
 					$partie['White'], $partie['Black'], $event['event'], $event['year'], $partie['runde_no']
-				).implode(', ', $ops['error']), E_USER_NOTICE);
+				).implode(', ', $ops['error']));
 				$event['db_errors']++;
 			} elseif ($ops['result'] === 'successful_update') {
 				$event['updates']++;
@@ -312,10 +312,10 @@ function mod_tournaments_make_games($vars) {
 		} else {
 			// - Falls nicht, PGN in Fehlerlog oder Fehler-PGN-Datei
 			if (!$robot_zugriff) {
-				wrap_error(sprintf(
+				wrap_log(sprintf(
 					'PGN-Import: Partie %s-%s, %s %d, Runde %d nicht gefunden.',
 					$partie['White'], $partie['Black'], $event['event'], $event['year'], $partie['runde_no']
-				), E_USER_NOTICE);
+				));
 			}
 			$event['not_found']++;
 			/*
@@ -337,7 +337,7 @@ function mod_tournaments_make_games($vars) {
 		if (!$robot_zugriff AND count($games) < 100) {
 			// Fehlerlog nur bei einzelnen Partien, sonst zuviele
 			// z. B. bei Upload einer einzelnen DEM-PGN für alle Meisterschaften
-			wrap_error('PGN-Import: Für diese PGN konnte keine Partie gefunden werden: '.$head, E_USER_NOTICE);
+			wrap_log('PGN-Import: Für diese PGN konnte keine Partie gefunden werden: '.$head);
 		}
 		$event['wrong_pgn']++;
 	}

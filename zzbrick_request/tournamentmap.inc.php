@@ -192,11 +192,11 @@ function mod_tournaments_tournamentmap_json($params) {
 		if (empty($spieler[$id]['latitude']) AND !empty($person['verein_org_id'])) {
 			if ($person['year'] > date('Y') - 6) {
 				// just log errors for players in the last 6 years
-				wrap_error(sprintf(
+				wrap_log(sprintf(
 					'Keine Koordinaten für Verein %s (Org-ID %s), Spieler %s beim Turnier %s.', 
 					(isset($spieler[$id]['organisation']) ? $spieler[$id]['organisation'] : 'unbekannt'),
 					$person['verein_org_id'], $spieler[$id]['spieler'], $spieler[$id]['turniername']
-				), E_USER_NOTICE);
+				));
 			}
 		}
 	}

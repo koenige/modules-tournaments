@@ -31,12 +31,11 @@ function mod_tournaments_make_swtwriter($vars) {
 
 	$writer = [];
 	$writer['identifier'] = implode('/', $vars);
-	$zz_setting['error_prefix'] = sprintf('SWT-Writer (%s): ', $writer['identifier']);
 	if (count($vars) !== 2) {
-		wrap_error('= Falsche Zahl von Parametern.');
-		$zz_setting['error_prefix'] = '';
+		wrap_error(sprintf('SWT-Import: Falsche Zahl von Parametern: %s', $writer['identifier']));
 		return false;
 	}
+	$zz_setting['active_module_for_log'] = $writer['identifier'];
 	
 	// @todo Einzel- oder Mannschaftsturnier aus Termine auslesen
 	// Datenherkunft aus Turniere
@@ -50,8 +49,7 @@ function mod_tournaments_make_swtwriter($vars) {
 	$sql = sprintf($sql, wrap_db_escape($writer['identifier']));
 	$event = wrap_db_fetch($sql);
 	if (empty($event['event_id'])) {
-		wrap_error('Kein Termin für diese Parameter in der Datenbank');
-		$zz_setting['error_prefix'] = '';
+		wrap_log('SWT-Import: Kein Termin für diese Parameter in der Datenbank');
 		return false;
 	}
 	
@@ -72,7 +70,7 @@ function mod_tournaments_make_swtwriter($vars) {
 	$swt = $event['identifier'].'.swt';
 	$filename = $zz_setting['media_folder'].'/swt/'.$swt;
 	if (!file_exists($filename)) {
-		wrap_error(sprintf('Datei swt/%s existiert nicht', $swt));
+		wrap_log(sprintf('Datei swt/%s existiert nicht', $swt));
 		$zz_setting['error_prefix'] = '';
 		return false;
 	}
@@ -88,13 +86,13 @@ function mod_tournaments_make_swtwriter($vars) {
 	}
 
 	if (!is_writable($filename)) {
-		wrap_error(sprintf('Datei swt/%s ist nicht schreibbar', $swt));
+		wrap_log(sprintf('Datei swt/%s ist nicht schreibbar', $swt));
 		$zz_setting['error_prefix'] = '';
 		return false;
 	}
 
     if (!$handle = fopen($filename, "r+b")) {
-		wrap_error(sprintf('Datei swt/%s ist nicht öffenbar', $swt));
+		wrap_log(sprintf('Datei swt/%s ist nicht öffenbar', $swt));
 		$zz_setting['error_prefix'] = '';
 		return false;
     }
@@ -148,7 +146,7 @@ function mod_tournaments_make_swtwriter($vars) {
 	
 	$zz_setting['error_prefix'] = '';
 	if (!empty($writer['changes'])) {
-		wrap_error(sprintf('SWT-Writer für %s: %d Personen, %d Teams geschrieben.',
+		wrap_log(sprintf('SWT-Writer für %s: %d Personen, %d Teams geschrieben.',
 			$swt, $writer['changes_person_id'], $writer['changes_team_id']
 		));
 	}
