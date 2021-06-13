@@ -67,7 +67,8 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 			'series_category_id' => $series['category_id'],
 			'year' => intval($vars[0]),
 			'event' => $series['category'],
-			'parameters' => $series['parameters']
+			'parameters' => $series['parameters'],
+			'turnierort' => ''
 		];
 	}
 
