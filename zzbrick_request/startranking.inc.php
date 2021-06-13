@@ -52,6 +52,7 @@ function mod_tournaments_startranking($vars) {
 	$sql = sprintf($sql, $zz_setting['website_id'], wrap_db_escape(implode('/', $vars)));
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
+	$zz_setting['active_module_for_log'] = $event['identifier'];
 	$event[str_replace('-', '_', $event['turnierform'])] = true;
 
 	$page['breadcrumbs'][] = '<a href="../../">'.$event['year'].'</a>';

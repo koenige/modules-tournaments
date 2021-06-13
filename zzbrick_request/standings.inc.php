@@ -75,6 +75,7 @@ function mod_tournaments_standings($vars) {
 			, main_series.category_short AS main_series
 			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
 			, IFNULL(place, places.contact) AS turnierort
+			, events.identifier
 		FROM events
 		JOIN tournaments USING (event_id)
 		JOIN events_websites
@@ -95,6 +96,7 @@ function mod_tournaments_standings($vars) {
 	$sql = sprintf($sql, $runde, $runde, $runde, $zz_setting['website_id'], $vars[0], wrap_db_escape($vars[1]));
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
+	$zz_setting['active_module_for_log'] = $event['identifier'];
 	$event['runde_no'] = $runde;
 	mf_tournaments_cache($event);
 
