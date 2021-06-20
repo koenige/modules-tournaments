@@ -188,7 +188,7 @@ SAN letters: <input type=text name="SAN" value="KQRBNP" size=7>
 %%% condition if finished %%%
 %%% condition else %%%
 <p class="partieanmerkung">Die 
-aktuellen Züge werden ca. alle 15 sec neu übertragen%%% condition if setting live_pgn_delay_mins %%%, allerdings mit einem Zeitversatz von %%% setting setting live_pgn_delay_mins %%% Minuten %%% condition endif %%%.
+aktuellen Züge werden ca. alle 15 sec neu übertragen%%% condition if setting live_pgn_delay_mins %%%, allerdings mit einem Zeitversatz von %%% setting live_pgn_delay_mins %%% Minuten %%% condition endif %%%.
 Stand: <span class="LastUpdate">%%% item last_update %%%</span> Uhr.</p>
 %%% condition endif %%%
 %%% condition endif %%%
