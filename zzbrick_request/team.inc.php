@@ -34,7 +34,7 @@ function mod_tournaments_team($vars, $settings) {
 			, SUBSTRING_INDEX(teams.kennung, "/", -1) AS team_identifier_short
 			, meldung_datum, regionalgruppe
 			, meldung
-			, organisationen.website, organisationen.organisation
+			, organisationen.website, organisationen.contact
 			, organisationen.identifier AS organisation_kennung
 			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform

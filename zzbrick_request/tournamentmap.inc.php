@@ -30,7 +30,7 @@ function mod_tournaments_tournamentmap($vars) {
 	
 	if ($federation) {
 		$sql = 'SELECT org_id
-				, organisation, identifier AS org_kennung, contact_short
+				, contact, identifier AS org_kennung, contact_short
 				, country_id
 			FROM organisationen
 			WHERE identifier = "%s"
@@ -83,7 +83,7 @@ function mod_tournaments_tournamentmap($vars) {
 	$page['head'] = wrap_template('vereine-map-head');
 
 	$page['title'] = 'Herkunftsorte der Spieler: '.$event['event'].' '.$event['year'];
-	if ($federation) $page['title'] .= ' – '.$federation['organisation'];
+	if ($federation) $page['title'] .= ' – '.$federation['contact'];
 	$page['extra']['body_attributes'] = 'id="map"';
 	$page['extra']['realm'] = 'vereine';
 	$page['text'] = wrap_template('tournamentmap', $event);
@@ -96,7 +96,7 @@ function mod_tournaments_tournamentmap($vars) {
 		$page['breadcrumbs'][] = sprintf('<a href="../../../">%d</a>', $event['year']);
 		$page['breadcrumbs'][] = sprintf('<a href="../../">%s</a>', $event['event']);
 		$page['breadcrumbs'][] = '<a href="../">Herkunftsorte</a>';
-		$page['breadcrumbs'][] = $federation['organisation'];
+		$page['breadcrumbs'][] = $federation['contact'];
 	}
 	return $page;
 }
@@ -120,7 +120,7 @@ function mod_tournaments_tournamentmap_json($params) {
 	}
 
 	$sql = 'SELECT organisationen.org_id
-			, organisation, organisationen.website, longitude, latitude
+			, organisationen.contact, organisationen.website, longitude, latitude
 			, ok.identifier AS zps_code, organisationen.identifier
 		FROM organisationen
 		LEFT JOIN organisationen_orte USING (org_id)
@@ -131,7 +131,7 @@ function mod_tournaments_tournamentmap_json($params) {
 		LEFT JOIN organisationen_kennungen ok
 			ON ok.org_id = organisationen.org_id AND current = "yes"
 			AND identifier_category_id = %d
-		WHERE NOT ISNULL(organisation)
+		WHERE NOT ISNULL(organisationen.contact)
 		AND organisationen_orte.published = "yes"
 		ORDER BY ok.identifier
 	';
@@ -194,7 +194,7 @@ function mod_tournaments_tournamentmap_json($params) {
 				// just log errors for players in the last 6 years
 				wrap_log(sprintf(
 					'Keine Koordinaten für Verein %s (Org-ID %s), Spieler %s beim Turnier %s.', 
-					(isset($spieler[$id]['organisation']) ? $spieler[$id]['organisation'] : 'unbekannt'),
+					(isset($spieler[$id]['contact']) ? $spieler[$id]['contact'] : 'unbekannt'),
 					$person['verein_org_id'], $spieler[$id]['spieler'], $spieler[$id]['turniername']
 				));
 			}
@@ -205,7 +205,7 @@ function mod_tournaments_tournamentmap_json($params) {
 		if (empty($person['org_id'])) continue;
 		if (empty($data[$person['org_id']])) {
 			$data[$person['org_id']] = [
-				'title' => $person['organisation'],
+				'title' => $person['contact'],
 				'style' => 'verein',
 				'website' => $person['website'],
 				'identifier' => $person['identifier'],

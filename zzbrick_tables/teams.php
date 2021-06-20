@@ -32,14 +32,14 @@ $zz['fields'][2]['if']['where']['hide_in_list'] = true;
 $zz['fields'][3]['title'] = 'Organisation';
 $zz['fields'][3]['field_name'] = 'verein_org_id';
 $zz['fields'][3]['type'] = 'select';
-$zz['fields'][3]['sql'] = 'SELECT org_id, organisation
+$zz['fields'][3]['sql'] = 'SELECT org_id, contact
 		, organisationen_kennungen.identifier AS zps_code
 	FROM organisationen
 	LEFT JOIN organisationen_kennungen USING (org_id)
 	WHERE (ISNULL(organisationen_kennungen.ok_id) OR organisationen_kennungen.current = "yes")
 	ORDER BY organisationen_kennungen.identifier, contact_abbr';
 $zz['fields'][3]['display_field'] = 'organisation';
-$zz['fields'][3]['search'] = 'vereine.organisation';
+$zz['fields'][3]['search'] = 'vereine.contact';
 $zz['fields'][3]['character_set'] = 'utf8';
 $zz['fields'][3]['sql_fieldnames_ignore'] = ['org_id'];
 $zz['fields'][3]['hide_in_list'] = true;
@@ -351,7 +351,7 @@ $zz['fields'][20]['type'] = 'timestamp';
 $zz['fields'][20]['hide_in_list'] = true;
 
 $zz['sql'] = 'SELECT teams.*
-		, vereine.organisation
+		, vereine.contact AS organisation
 		, regionalgruppe
 		, country AS verband
 		, event
@@ -380,7 +380,7 @@ $zz['sql'] = 'SELECT teams.*
 	AND (ISNULL(lv_kennungen.ok_id) OR lv_kennungen.current = "yes")
 ';
 $zz['sqlorder'] = ' ORDER BY team_status, events.date_begin, events.identifier
-	, nachruecker_reihenfolge, organisation, team_no';
+	, nachruecker_reihenfolge, vereine.contact, team_no';
 
 $zz['subtitle']['event_id']['sql'] = 'SELECT event
 	, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration

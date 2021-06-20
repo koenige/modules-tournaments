@@ -17,20 +17,20 @@
 
 <div class="innerbox">
 <h1>
-%%% condition if organisation %%%
+%%% condition if contact %%%
 <a href="../">
 %%% condition endif %%%
 Herkunftsorte der Spieler
-%%% condition if organisation %%%
+%%% condition if contact %%%
 </a><a href="../../lv/%%% item org_kennung %%%/">Landesverband %%% item contact_short %%%</a>
 %%% condition endif %%%
 </h1>
-<p><a href="%%% item organisation ../ %%%../">%%% item event %%% %%% item year %%% im Schach</a></p>
+<p><a href="%%% item contact ../ %%%../">%%% item event %%% %%% item year %%% im Schach</a></p>
 
 <p>Spielorte oder ungefähre Orte der Vereine der Teilnehmerinnen und Teilnehmer</p>
 </div>
 
-<script type="text/javascript" src="%%% item organisation ../ %%%../herkunftsorte%%% item org_kennung "/%s" %%%.geojson"></script>
+<script type="text/javascript" src="%%% item contact ../ %%%../herkunftsorte%%% item org_kennung "/%s" %%%.geojson"></script>
 <script type="text/javascript">
 
 	var tiles = L.tileLayer('https://api.mapbox.com/styles/v1/%%% setting mapbox_user %%%/%%% setting mapbox_style %%%/tiles/512/{z}/{x}/{y}?access_token=%%% setting mapbox_access_token %%%', {

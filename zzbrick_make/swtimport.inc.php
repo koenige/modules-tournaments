@@ -1156,10 +1156,10 @@ function mod_tournaments_make_swtimport_verein($team, $spielerliste) {
  *
  * @param string $zps
  * @return array
- *		int 'org_id', string 'organisation'
+ *		int 'org_id', string 'contact'
  */
 function mod_tournaments_make_swtimport_verein_zps($zps) {
-	$sql = 'SELECT org_id, organisation
+	$sql = 'SELECT org_id, contact
 		FROM organisationen
 		LEFT JOIN organisationen_kennungen ok
 			USING (org_id)
@@ -1168,7 +1168,7 @@ function mod_tournaments_make_swtimport_verein_zps($zps) {
 	$sql = sprintf($sql, wrap_db_escape($zps));
 	$verein = wrap_db_fetch($sql);
 	if (!$verein) {
-		$sql = 'SELECT org_id, organisation
+		$sql = 'SELECT org_id, contact
 			FROM organisationen
 			LEFT JOIN organisationen_kennungen ok
 				USING (org_id)
@@ -1192,7 +1192,7 @@ function mod_tournaments_make_swtimport_verein_zps($zps) {
  * @return array
  */
 function mod_tournaments_make_swtimport_verein_name($verein) {
-	$sql = 'SELECT org_id, organisation
+	$sql = 'SELECT org_id, contact
 		FROM organisationen
 		WHERE organisation LIKE "%%%s%%"';
 	$sql = sprintf($sql, wrap_db_escape($verein));
@@ -1209,9 +1209,9 @@ function mod_tournaments_make_swtimport_verein_name($verein) {
  * @return string
  */
 function mod_tournaments_make_swtimport_teamno($teamname, $verein) {
-	if ($teamname === $verein['organisation']) return '';
+	if ($teamname === $verein['contact']) return '';
 	$teamname = explode(' ', $teamname);
-	$vereinsname = explode(' ', $verein['organisation']);
+	$vereinsname = explode(' ', $verein['contact']);
 	$team_no = end($teamname);
 	if (!is_numeric($team_no)) return '';
 	if ($team_no === end($vereinsname)) return '';

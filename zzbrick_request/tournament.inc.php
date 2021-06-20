@@ -157,7 +157,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	$event['bedenkzeit'] = wrap_db_fetch($sql, 'tb_id');
 
 	$sql = 'SELECT event_contact_id
-			, organisation
+			, contact
 			, organisationen.website AS website
 			, category AS rolle
 		FROM events_contacts
