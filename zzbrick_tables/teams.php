@@ -32,11 +32,12 @@ $zz['fields'][2]['if']['where']['hide_in_list'] = true;
 $zz['fields'][3]['title'] = 'Organisation';
 $zz['fields'][3]['field_name'] = 'verein_org_id';
 $zz['fields'][3]['type'] = 'select';
-$zz['fields'][3]['sql'] = 'SELECT org_id, contact
+$zz['fields'][3]['sql'] = 'SELECT organisationen.org_id, contact
 		, organisationen_kennungen.identifier AS zps_code
 	FROM organisationen
-	LEFT JOIN organisationen_kennungen USING (org_id)
-	WHERE (ISNULL(organisationen_kennungen.ok_id) OR organisationen_kennungen.current = "yes")
+	LEFT JOIN organisationen_kennungen
+		ON organisationen_kennungen.org_id = organisationen.org_id
+		AND organisationen_kennungen.current = "yes"
 	ORDER BY organisationen_kennungen.identifier, contact_abbr';
 $zz['fields'][3]['display_field'] = 'organisation';
 $zz['fields'][3]['search'] = 'vereine.contact';
@@ -367,17 +368,17 @@ $zz['sql'] = 'SELECT teams.*
 	LEFT JOIN organisationen vereine
 		ON teams.verein_org_id = vereine.org_id
 	LEFT JOIN organisationen_kennungen
-		ON vereine.org_id = organisationen_kennungen.org_id
+		ON organisationen_kennungen.org_id = vereine.org_id
+		AND organisationen_kennungen.current = "yes"
 	LEFT JOIN organisationen_kennungen lv_kennungen
 		ON CONCAT(SUBSTRING(organisationen_kennungen.identifier, 1, 1), "00") = lv_kennungen.identifier 
+		AND lv_kennungen.current = "yes"
 	LEFT JOIN organisationen landesverbaende
 		ON landesverbaende.org_id = lv_kennungen.org_id
 	LEFT JOIN regionalgruppen 
 		ON landesverbaende.org_id = regionalgruppen.landesverband_org_id
 	LEFT JOIN countries
 		ON landesverbaende.country_id = countries.country_id
-	WHERE (ISNULL(organisationen_kennungen.ok_id) OR organisationen_kennungen.current = "yes")
-	AND (ISNULL(lv_kennungen.ok_id) OR lv_kennungen.current = "yes")
 ';
 $zz['sqlorder'] = ' ORDER BY team_status, events.date_begin, events.identifier
 	, nachruecker_reihenfolge, vereine.contact, team_no';
