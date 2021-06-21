@@ -137,7 +137,7 @@ function mod_tournaments_standings($vars) {
 		';
 		$sql = sprintf($sql
 			, $zz_setting['org_ids']['dsb']
-			, wrap_category_id('organisationen/verband')
+			, wrap_category_id('contact/federation')
 			, $zz_setting['org_ids']['dsb']
 			, $event['event_id'], $runde
 		);
@@ -186,7 +186,7 @@ function mod_tournaments_standings($vars) {
 		$sql = sprintf($sql
 			, wrap_id('usergroups', 'spieler')
 			, $zz_setting['org_ids']['dsb']
-			, wrap_category_id('organisationen/verband')
+			, wrap_category_id('contact/federation')
 			, $zz_setting['org_ids']['dsb']
 			, $event['event_id'], $runde
 			, $filter['where'] ? ' AND '.implode(' AND ', $filter['where']) : ''

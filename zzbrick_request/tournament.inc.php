@@ -318,7 +318,7 @@ function mod_tournaments_tournament($vars, $settings) {
 			, $runde
 			, $event['haupt_wertung_category_id']
 			, $zz_setting['org_ids']['dsb']
-			, wrap_category_id('organisationen/verband')
+			, wrap_category_id('contact/federation')
 			, $zz_setting['org_ids']['dsb']
 			, $event['event_id']
 			, wrap_id('usergroups', 'spieler')
@@ -376,7 +376,7 @@ function mod_tournaments_tournament($vars, $settings) {
 		';
 		$sql = sprintf($sql
 			, $zz_setting['org_ids']['dsb']
-			, wrap_category_id('organisationen/verband')
+			, wrap_category_id('contact/federation')
 			, $zz_setting['org_ids']['dsb']
 			, $runde
 			, $event['event_id']

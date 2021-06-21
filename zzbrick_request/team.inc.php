@@ -81,7 +81,7 @@ function mod_tournaments_team($vars, $settings) {
 	';
 	$sql = sprintf($sql
 		, $zz_setting['org_ids']['dsb']
-		, wrap_category_id('organisationen/verband')
+		, wrap_category_id('contact/federation')
 		, $zz_setting['org_ids']['dsb']
 		, $zz_setting['website_id']
 		, wrap_db_escape(implode('/', $vars))

@@ -234,7 +234,7 @@ function mod_tournaments_startranking_team($event) {
 		ORDER BY setzliste_no, place, team';
 	$sql = sprintf($sql
 		, $zz_setting['org_ids']['dsb']
-		, wrap_category_id('organisationen/verband')
+		, wrap_category_id('contact/federation')
 		, $zz_setting['org_ids']['dsb']
 		, $event['event_id']
 	);
