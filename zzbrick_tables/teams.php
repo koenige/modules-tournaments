@@ -40,6 +40,7 @@ $zz['fields'][3]['sql'] = 'SELECT organisationen.org_id, contact
 		AND organisationen_kennungen.current = "yes"
 	ORDER BY organisationen_kennungen.identifier, contact_abbr';
 $zz['fields'][3]['display_field'] = 'organisation';
+$zz['fields'][3]['id_field_name'] = 'organisationen.org_id';
 $zz['fields'][3]['search'] = 'vereine.contact';
 $zz['fields'][3]['character_set'] = 'utf8';
 $zz['fields'][3]['sql_fieldnames_ignore'] = ['org_id'];
