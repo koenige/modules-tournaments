@@ -39,6 +39,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	$first_field = reset($ops['output']['head']);
 	switch ($first_field['field_name']) {
 		case 'usergroup_id': $data = mf_tournaments_export_pdf_tischkarten_single($ops); break;
+		case 'team_id': $data = mf_tournaments_export_pdf_tischkarten_team($ops); break;
 		default: return false;
 	}
 
@@ -168,4 +169,33 @@ function mf_tournaments_export_pdf_tischkarten_single($ops) {
 		if ($line[$nos['t_elo']]['text']) $data[$index]['ratings']['Elo'] = ' '.$line[$nos['t_elo']]['text'];
 	}
 	return $data;
+}
+
+function mf_tournaments_export_pdf_tischkarten_team($ops) {
+	$team_ids = [];
+	foreach ($ops['output']['rows'] as $row) {
+		$team_ids[] = $row['0']['value'];
+	}
+	$sql = 'SELECT team_id
+			, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS name
+			, event AS usergroup
+			, verein_org_id AS contact_id
+			, categories.parameters
+	    FROM teams
+	    LEFT JOIN events USING (event_id)
+	    LEFT JOIN categories
+	    	ON events.series_category_id = categories.category_id
+	    WHERE team_id IN (%s)';
+	$sql = sprintf($sql, implode(',', $team_ids));
+	$teams = wrap_db_fetch($sql, 'team_id');
+	$teams = mf_tournaments_federations($teams, 'team_id');
+	
+	foreach ($teams as $team_id => $team) {
+		$teams[$team_id]['club'] = $team['federation'];
+		$teams[$team_id]['ratings'] = [];
+		parse_str($team['parameters'], $team['parameters']);
+		if (empty($team['parameters']['color'])) $team['parameters']['color'] = '#CC0000';
+		$teams[$team_id]['colors'] = mf_tournaments_colors_hex2dec($team['parameters']['color']);
+	}
+	return $teams;
 }
