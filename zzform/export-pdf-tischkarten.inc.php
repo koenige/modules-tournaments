@@ -26,11 +26,6 @@
 function mf_tournaments_export_pdf_tischkarten($ops) {
 	global $zz_setting;
 	global $zz_conf;
-	require_once __DIR__.'/export-pdf-teilnehmerschilder.inc.php';
-	
-	// Feld-IDs raussuchen
-	$nos = mf_tournaments_export_pdf_teilnehmerschilder_nos($ops['output']['head']);
-	
 	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
 
 	// event information
@@ -39,6 +34,14 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 		, str_replace('-', '- ', $event['main_series_long'])
 		, $event['turnierort'], $event['year']
 	);
+
+	// get data for cards
+	$first_field = reset($ops['output']['head']);
+	switch ($first_field['field_name']) {
+		case 'usergroup_id': $data = mf_tournaments_export_pdf_tischkarten_single($ops); break;
+		default: return false;
+	}
+
 	// A4 PDF, set fonts
 	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
 	$pdf->open();
@@ -48,22 +51,13 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 
 	$hoehe_flagge = 34;
 	$k = 0;
-	foreach ($ops['output']['rows'] as $line) {
-		// ignoriere Orga vorab
-		if (!in_array($line[$nos['usergroup_id']]['text'], ['Spieler'])) continue;
-
+	foreach ($data as $line) {
 		$i = floor($k / 2);
 		$col = $k % 2;
 		// PDF setzen
 		$row = $i % 4;
 		if (!$row AND !$col) $pdf->addPage();
 		$top = 198.5 * $row;
-
-		// Daten anpassen
-		$line = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos);
-		$wertungen = [];
-		if ($line[$nos['t_dwz']]['text']) $wertungen['DWZ'] = ' '.$line[$nos['t_dwz']]['text'];
-		if ($line[$nos['t_elo']]['text']) $wertungen['Elo'] = ' '.$line[$nos['t_elo']]['text'];
 
 		if (!empty($line['federation_abbr'])) {
 			$line['flagge'] = sprintf('%s/flaggen/%s.png', $zz_setting['media_folder'], wrap_filename($line['federation_abbr']));
@@ -105,11 +99,11 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 		// Wertungen
 		$width = 0;
 		$count = 0;
-		foreach ($wertungen as $key => $value) {
+		foreach ($line['ratings'] as $key => $value) {
 			$count++;
-			if ($count !== count($wertungen)) {
+			if ($count !== count($line['ratings'])) {
 				$value .= ' ';
-				$wertungen[$key] = $value.' ';
+				$line['ratings'][$key] = $value.' ';
 			}
 			// mittig
 			$pdf->setFont('FiraSans-Regular', '', 12);
@@ -119,7 +113,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 		}
 		$startpos = 297.5 * $col + 148.75 - $width/2;
 		$pdf->SetXY($startpos, $top + 130);
-		foreach ($wertungen as $key => $value) {
+		foreach ($line['ratings'] as $key => $value) {
 			$pdf->setFont('FiraSans-Regular', '', 12);
 			$pdf->Cell($pdf->GetStringWidth($key), 27, $key, 0, 0, 'L');	
 			$pdf->setFont('FiraSans-SemiBold', '', 18);
@@ -154,4 +148,24 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	$pdf->output($file['name']);
 	wrap_file_send($file);
 	exit;
-}	
+}
+
+function mf_tournaments_export_pdf_tischkarten_single($ops) {	
+	require_once __DIR__.'/export-pdf-teilnehmerschilder.inc.php';
+	
+	// Feld-IDs raussuchen
+	$nos = mf_tournaments_export_pdf_teilnehmerschilder_nos($ops['output']['head']);
+
+	$data = [];
+	foreach ($ops['output']['rows'] as $index => $line) {
+		// ignoriere Orga vorab
+		if (!in_array($line[$nos['usergroup_id']]['text'], ['Spieler'])) continue;
+		$data[$index] = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos);
+
+		// Daten anpassen
+		$data[$index]['ratings'] = [];
+		if ($line[$nos['t_dwz']]['text']) $data[$index]['ratings']['DWZ'] = ' '.$line[$nos['t_dwz']]['text'];
+		if ($line[$nos['t_elo']]['text']) $data[$index]['ratings']['Elo'] = ' '.$line[$nos['t_elo']]['text'];
+	}
+	return $data;
+}
