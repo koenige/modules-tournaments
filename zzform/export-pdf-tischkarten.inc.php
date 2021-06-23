@@ -23,7 +23,7 @@
  * SHO
  * @param array $ops
  */
-function export_pdf_tischkarten($ops) {
+function mf_tournaments_export_pdf_tischkarten($ops) {
 	global $zz_setting;
 	global $zz_conf;
 	require_once __DIR__.'/export-pdf-teilnehmerschilder.inc.php';
@@ -31,7 +31,7 @@ function export_pdf_tischkarten($ops) {
 	$event['main_series_long'] = str_replace('-', '- ', $event['main_series_long']);
 	
 	// Feld-IDs raussuchen
-	$nos = export_pdf_teilnehmerschilder_nos($ops['output']['head']);
+	$nos = mf_tournaments_export_pdf_teilnehmerschilder_nos($ops['output']['head']);
 	
 	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
 
@@ -58,7 +58,7 @@ function export_pdf_tischkarten($ops) {
 		$top = 198.5 * $row;
 
 		// Daten anpassen
-		$line = export_pdf_teilnehmerschilder_prepare($line, $nos);
+		$line = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos);
 		$wertungen = [];
 		if ($line[$nos['t_dwz']]['text']) $wertungen['DWZ'] = ' '.$line[$nos['t_dwz']]['text'];
 		if ($line[$nos['t_elo']]['text']) $wertungen['Elo'] = ' '.$line[$nos['t_elo']]['text'];
