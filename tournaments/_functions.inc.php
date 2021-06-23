@@ -519,3 +519,51 @@ function mf_tournaments_lineup($event) {
 	$lineup = wrap_db_fetch($sql, '', 'single value');
 	return $lineup;
 }
+
+/**
+ * get federation for a list of clubs (long name, abbreviation)
+ *
+ * @param array $data
+ * @param string $id_field
+ * @return array
+ */
+function mf_tournaments_federations($data, $id_field) {
+	$contact_ids = [];
+	foreach ($data as $line) {
+		$contact_ids[$line[$id_field]] = $line['contact_id'];
+	}
+	$sql = 'SELECT vereine.org_id AS contact_id, country, landesverbaende.contact_abbr
+	    FROM organisationen vereine
+		LEFT JOIN organisationen_kennungen
+			ON organisationen_kennungen.org_id = vereine.org_id
+			AND organisationen_kennungen.current = "yes"
+		LEFT JOIN organisationen_kennungen lv_kennungen
+			ON CONCAT(SUBSTRING(organisationen_kennungen.identifier, 1, 1), "00") = lv_kennungen.identifier 
+			AND lv_kennungen.current = "yes"
+		LEFT JOIN organisationen landesverbaende
+			ON landesverbaende.org_id = lv_kennungen.org_id
+		LEFT JOIN countries
+			ON landesverbaende.country_id = countries.country_id
+	    WHERE vereine.org_id IN (%s)';
+	$sql = sprintf($sql, implode(',', $contact_ids));
+	$federations = wrap_db_fetch($sql, 'contact_id');
+	foreach ($contact_ids as $id_field => $contact_id) {
+		$data[$id_field]['federation'] = $federations[$contact_id]['country'];	
+		$data[$id_field]['federation_abbr'] = $federations[$contact_id]['contact_abbr'];	
+	}
+	return $data;
+}
+
+/**
+ * convert hexadecimal colors to decimal
+ * for use in PDF, #CC0000 to red = 204, green = 0, blue = 0
+ *
+ * @param string $color
+ * @return array
+ */
+function mf_tournaments_colors_hex2dec($color) {
+	$dec['red'] = hexdec(substr($color, 1, 2));
+	$dec['green'] = hexdec(substr($color, 3, 2));
+	$dec['blue'] = hexdec(substr($color, 5, 2));
+	return $dec;
+}
