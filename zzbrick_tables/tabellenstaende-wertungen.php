@@ -1,9 +1,16 @@
 <?php 
 
-// Zugzwang Project
-// deutsche-schachjugend.de
-// Copyright (c) 2012, 2014, 2019-2021 Gustaf Mossakowski <gustaf@koenige.org>
-// Tabellenstände/Wertungen
+/**
+ * tournaments module
+ * table script: standings/ratings
+ *
+ * Part of »Zugzwang Project«
+ * https://www.zugzwang.org/modules/tournaments
+ *
+ * @author Gustaf Mossakowski <gustaf@koenige.org>
+ * @copyright Copyright © 2012, 2014, 2019-2021 Gustaf Mossakowski
+ * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+ */
 
 
 $zz['title'] = 'Tabellenstände/Wertungen';

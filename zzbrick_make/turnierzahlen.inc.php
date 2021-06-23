@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Zugzwang Project
+ * tournaments module
  * make script to update tournament ratings before tournament start
  *
+ * Part of »Zugwzang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>

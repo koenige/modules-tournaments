@@ -1,9 +1,16 @@
 <?php 
 
-// Zugzwang Project
-// deutsche-schachjugend.de
-// Copyright (c) 2014-2021 Gustaf Mossakowski <gustaf@koenige.org>
-// Schreiben von PGN-Dateien in die Datenbank
+/**
+ * tournaments module
+ * import PGN files to database
+ *
+ * Part of »Zugwzang Project«
+ * https://www.zugzwang.org/modules/tournaments
+ *
+ * @author Gustaf Mossakowski <gustaf@koenige.org>
+ * @copyright Copyright © 2014-2021 Gustaf Mossakowski
+ * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+ */
 
 
 /**

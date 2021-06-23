@@ -1,9 +1,16 @@
 <?php
 
-// Zugzwang Project
-// deutsche-schachjugend.de
-// Copyright (c) 2016, 2020-2021 Gustaf Mossakowski <gustaf@koenige.org>
-// Verzeichnisse für Live-PGNs automatisch erstellen
+/**
+ * tournaments module
+ * create folders for live PGNs
+ *
+ * Part of »Zugwzang Project«
+ * https://www.zugzwang.org/modules/tournaments
+ *
+ * @author Gustaf Mossakowski <gustaf@koenige.org>
+ * @copyright Copyright © 2016, 2020-2021 Gustaf Mossakowski
+ * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+ */
 
 
 /**

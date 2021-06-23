@@ -1,10 +1,18 @@
 <?php
 
-// Zugzwang Project
-// deutsche-schachjugend.de
-// Copyright (c) .... Jacob Roggon
-// Copyright (c) 2013-2014, 2016-2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
-// import rating data
+/**
+ * tournaments module
+ * import rating data
+ *
+ * Part of »Zugzwang Project«
+ * https://www.zugzwang.org/modules/tournaments
+ *
+ * @author Jacob Roggon
+ * @author Gustaf Mossakowski <gustaf@koenige.org>
+ * @copyright Copyright © ... Jacob Roggon
+ * @copyright Copyright © 2013-2014, 2016-2017, 2019-2020 Gustaf Mossakowski
+ * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+ */
 
 
 /**

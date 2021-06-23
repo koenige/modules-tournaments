@@ -1,9 +1,16 @@
 <?php 
 
-// Zugzwang Project
-// deutsche-schachjugend.de
-// Copyright (c) 2012-2021 Gustaf Mossakowski <gustaf@koenige.org>
-// Common functions for tournaments
+/**
+ * tournaments module
+ * common functions for tournaments
+ *
+ * Part of »Zugzwang Project«
+ * https://www.zugzwang.org/modules/tournaments
+ *
+ * @author Gustaf Mossakowski <gustaf@koenige.org>
+ * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+ */
 
 
 function mf_tournaments_current_round($identifier) {

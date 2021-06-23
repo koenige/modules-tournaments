@@ -1,8 +1,14 @@
-# Zugzwang Project
-# deutsche-schachjugend.de
-# Copyright (c) 2015, 2020 Gustaf Mossakowski <gustaf@koenige.org>
-# Copyright (c) 2017 Erik Kothe <erik@deutsche-schachjugend.de>
-# HTML-Ausgabe: Livepartien für ein Turnier
+# tournaments module
+# output: live games for a tournament
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @author Erik Kothe <kontakt@erikkothe.de>
+# @copyright Copyright © 2015, 2020 Gustaf Mossakowski
+# @copyright Copyright © 2017 Erik Kothe
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 # List of fields:
 # event_id, livebretter, identifier, event, year, teilnehmer,

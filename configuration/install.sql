@@ -1,7 +1,8 @@
 /**
- * Zugzwang Project
- * SQL for installation of tournaments module
+ * tournaments module
+ * SQL for installation
  *
+ * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>

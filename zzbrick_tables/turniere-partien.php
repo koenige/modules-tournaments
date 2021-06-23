@@ -1,9 +1,17 @@
 <?php 
 
-// Zugzwang Project
-// deutsche-schachjugend.de
-// Copyright (c) 2014, 2017, 2020-2021 Gustaf Mossakowski <gustaf@koenige.org>
-// Skript: Livepartien eines Turnieres
+/**
+ * tournaments module
+ * table script: live games for tournaments
+ *
+ * Part of »Zugzwang Project«
+ * https://www.zugzwang.org/modules/tournaments
+ *
+ * @author Gustaf Mossakowski <gustaf@koenige.org>
+ * @copyright Copyright © 2014-2015, 2017-2021 Gustaf Mossakowski
+ * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+ * @todo put into parameters
+ */
 
 
 $zz['title'] = 'Livepartien';

@@ -1,9 +1,16 @@
 <?php 
 
-// Zugzwang Project
-// deutsche-schachjugend.de
-// Copyright (c) 2014-2015, 2017, 2019-2020 Gustaf Mossakowski <gustaf@koenige.org>
-// Skript: Turnierdetails, nur SWT-Upload
+/**
+ * tournaments module
+ * form script: upload an SWT file
+ *
+ * Part of »Zugzwang Project«
+ * https://www.zugzwang.org/modules/tournaments
+ *
+ * @author Gustaf Mossakowski <gustaf@koenige.org>
+ * @copyright Copyright © 2014-2015, 2017, 2019-2020 Gustaf Mossakowski
+ * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+ */
 
 
 $event = my_event($brick['vars'][0], $brick['vars'][1]);

@@ -1,9 +1,10 @@
 <?php 
 
 /**
- * Zugzwang Project
- * table script for remarks
+ * tournaments module
+ * table script: remarks
  *
+ * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
