@@ -191,6 +191,7 @@ function mf_tournaments_export_pdf_tischkarten_team($ops) {
 	$teams = mf_tournaments_federations($teams, 'team_id');
 	
 	foreach ($teams as $team_id => $team) {
+		$teams[$team_id]['name'] = my_verein_saeubern($team['name']);
 		$teams[$team_id]['club'] = $team['federation'];
 		$teams[$team_id]['ratings'] = [];
 		parse_str($team['parameters'], $team['parameters']);
