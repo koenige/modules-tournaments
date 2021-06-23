@@ -65,21 +65,21 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			$pdf->Cell(257, 14, $event['main_series_long'], 0, 2, 'L');
 			$pdf->Cell(257, 14, $event['turnierort'].' '.$event['year'], 0, 2, 'L');
 			$pdf->SetXY(20 + $left, $pdf->GetY() + 40);
-			if (strlen($new['spieler']) > 26) {
+			if (strlen($new['name']) > 26) {
 				$pdf->setFont('FiraSans-SemiBold', '', 17);
 			} else {
 				$pdf->setFont('FiraSans-SemiBold', '', 18);
 			}
-			$pdf->Cell(257, 24, $new['spieler'], 0, 2, 'L');
+			$pdf->Cell(257, 24, $new['name'], 0, 2, 'L');
 			$pdf->setFont('FiraSans-Regular', '', 12);
-			$pdf->MultiCell(257, 16, $new['verein'], 0, 'L');
+			$pdf->MultiCell(257, 16, $new['club'], 0, 'L');
 
 			$pdf->SetXY(20 + $left, $top + 136);
 			$pdf->setFont('FiraSans-SemiBold', '', 18);
-			$pdf->Cell(257, 24, $new['lv'], 0, 2, 'R');
+			$pdf->Cell(257, 24, $new['federation_abbr'], 0, 2, 'R');
 			$pdf->SetTextColor(255, 255, 255);
-			$pdf->SetFillColor($new['red'], $new['green'], $new['blue']);
-			if ($new['red'] + $new['green'] + $new['blue'] > 458) {
+			$pdf->SetFillColor($new['colors']['red'], $new['colors']['green'], $new['colors']['blue']);
+			if ($new['colors']['red'] + $new['colors']['green'] + $new['colors']['blue'] > 458) {
 				$pdf->SetTextColor(0, 0, 0);
 			}
 			$y = $pdf->getY();
@@ -162,15 +162,15 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 
 	// Spieler
 	$new['fidetitel'] = !empty($nos['t_fidetitel']) ? $line[$nos['t_fidetitel']]['text'] : '';
-	$new['spieler'] = ($new['fidetitel'] ? $new['fidetitel'].' ' : '')
+	$new['name'] = ($new['fidetitel'] ? $new['fidetitel'].' ' : '')
 		.((!empty($nos['t_vorname']) AND !empty($line[$nos['t_vorname']]['text']))
 		? $line[$nos['t_vorname']]['text'].' '.$line[$nos['t_nachname']]['text']
 		: $line[$nos['person_id']]['text']);
 
 	// Verein
-	$new['verein'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
+	$new['club'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
 	if (function_exists('my_verein_saeubern')) {
-		$new['verein'] = my_verein_saeubern($new['verein']);
+		$new['club'] = my_verein_saeubern($new['club']);
 	}
 
 	// Gruppe
@@ -188,11 +188,11 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 		}
 	}
 
-	if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text']) AND $new['verein']) {
+	if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text']) AND $new['club']) {
 		$new['usergroup'] = $line[$nos['rolle']]['text'];
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Betreuer', 'Mitreisende'])) {
-		if (empty($new['verein']) AND !empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
-			$new['verein'] = $line[$nos['rolle']]['text'];
+		if (empty($new['club']) AND !empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
+			$new['club'] = $line[$nos['rolle']]['text'];
 		}
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Spieler'])) {
 		$new['usergroup'] = $line[$nos['event_id']]['text'];
@@ -202,17 +202,18 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 		}
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Schiedsrichter'])) {
 		if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
-			$new['verein'] = $line[$nos['rolle']]['text'];
+			$new['club'] = $line[$nos['rolle']]['text'];
 		}
 	} else {
 		if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
-			$new['verein'] = $line[$nos['rolle']]['text'];
+			$new['club'] = $line[$nos['rolle']]['text'];
 		} else {
-			$new['verein'] = $line['usergroup'];
+			$new['club'] = $line['usergroup'];
 		}
 		$new['usergroup'] = 'Organisationsteam';
 	}
-	$new['lv'] = !empty($nos['landesverband_org_id']) ? $line[$nos['landesverband_org_id']]['text'] : '';
+	$new['federation_abbr'] = !empty($nos['landesverband_org_id']) ? $line[$nos['landesverband_org_id']]['text'] : '';
+	
 	if (!empty($parameters['color'])) {
 		$color = '';
 		if (is_array($parameters['color'])) {
@@ -226,14 +227,10 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 		} else {
 			$color = $parameters['color'];
 		}
-		$new['red'] = hexdec(substr($color, 1, 2));
-		$new['green'] = hexdec(substr($color, 3, 2));
-		$new['blue'] = hexdec(substr($color, 5, 2));
 	} else {
-		$new['red'] = 204;
-		$new['green'] = 0;
-		$new['blue'] = 0;
+		$color = '#CC0000';
 	}
+	$new['colors'] = mf_tournaments_colors_hex2dec($color);
 	$new['zusaetzliche_ak'] = '';
 	if (!empty($parameters['aks'])) {
 		foreach ($parameters['aks'] as $ak) {

@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017, 2019-2020 Gustaf Mossakowski
+ * @copyright Copyright © 2017, 2019-2021 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -63,8 +63,8 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 		if ($line[$nos['t_dwz']]['text']) $wertungen['DWZ'] = ' '.$line[$nos['t_dwz']]['text'];
 		if ($line[$nos['t_elo']]['text']) $wertungen['Elo'] = ' '.$line[$nos['t_elo']]['text'];
 
-		if (!empty($line['lv'])) {
-			$line['flagge'] = sprintf('%s/flaggen/%s.png', $zz_setting['media_folder'], wrap_filename($line['lv']));
+		if (!empty($line['federation_abbr'])) {
+			$line['flagge'] = sprintf('%s/flaggen/%s.png', $zz_setting['media_folder'], wrap_filename($line['federation_abbr']));
 			if (!file_exists($line['flagge'])) {
 				$line['flagge'] = false;
 			} else {
@@ -88,17 +88,17 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 		$pdf->SetXY(20 + $left + 297.5/2 - 25, 15 + $top);
 		$pdf->MultiCell(118.5, 12, $event['main_series_long'].' '.$event['turnierort'].' '.$event['year'], 0, 'L');
 		
-		// Name + Verein
+		// name + club
 		$pdf->setFont('FiraSans-SemiBold', '', 25);
 		$pdf->SetXY(20 + $left, $pdf->GetY() + 10);
-		if ($pdf->GetStringWidth($line['spieler']) < 252) {
+		if ($pdf->GetStringWidth($line['name']) < 252) {
 			// 257 geht nicht, passt nicht immer
 			$pdf->SetXY(20 + $left, $pdf->GetY() + 12.5);
 		}
-		$pdf->MultiCell(257, 25, $line['spieler'], 0, 'C');
+		$pdf->MultiCell(257, 25, $line['name'], 0, 'C');
 		$pdf->SetXY(20 + $left, ($pdf->GetY() + 2));
 		$pdf->setFont('FiraSans-Regular', '', 12);
-		$pdf->MultiCell(257, 14, $line['verein'], 0, 'C');
+		$pdf->MultiCell(257, 14, $line['club'], 0, 'C');
 
 		// Wertungen
 		$width = 0;
@@ -128,14 +128,14 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 		$pdf->SetXY(20 + $left, $top + 155);
 		$pdf->setFont('FiraSans-SemiBold', '', 18);
 		$pdf->SetTextColor(255, 255, 255);
-		$pdf->SetFillColor($line['red'], $line['green'], $line['blue']);
-		if ($line['red'] + $line['green'] + $line['blue'] > 458) {
+		$pdf->SetFillColor($line['colors']['red'], $line['colors']['green'], $line['colors']['blue']);
+		if ($line['colors']['red'] + $line['colors']['green'] + $line['colors']['blue'] > 458) {
 			$pdf->SetTextColor(0, 0, 0);
 		}
 		$y = $pdf->getY();
 		$pdf->Cell(257, 28, ' '.$line['usergroup'], 0, 2, 'L', 1);
 		$pdf->SetXY($pdf->getX(), $y);
-		$pdf->Cell(257, 28, $line['lv'].' ', 0, 2, 'R');
+		$pdf->Cell(257, 28, $line['federation_abbr'].' ', 0, 2, 'R');
 		$k++;
 	}
 	$folder = $zz_setting['cache_dir'].'/schilder/'.$event['identifier'];
