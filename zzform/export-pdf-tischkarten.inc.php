@@ -27,24 +27,26 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	global $zz_setting;
 	global $zz_conf;
 	require_once __DIR__.'/export-pdf-teilnehmerschilder.inc.php';
-	$event = $zz_conf['event'];
-	$event['main_series_long'] = str_replace('-', '- ', $event['main_series_long']);
 	
 	// Feld-IDs raussuchen
 	$nos = mf_tournaments_export_pdf_teilnehmerschilder_nos($ops['output']['head']);
 	
 	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
 
+	// event information
+	$event = $zz_conf['event'];
+	$event_title = sprintf('%s %s %s'
+		, str_replace('-', '- ', $event['main_series_long'])
+		, $event['turnierort'], $event['year']
+	);
+	// A4 PDF, set fonts
 	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
 	$pdf->open();
 	$pdf->setCompression(true);
-	// Fira Sans!
 	$pdf->AddFont('FiraSans-Regular', '', 'FiraSans-Regular.ttf', true);
 	$pdf->AddFont('FiraSans-SemiBold', '', 'FiraSans-SemiBold.ttf', true);
-	$vorlagen = $zz_setting['media_folder'].'/urkunden-grafiken';
 
 	$hoehe_flagge = 34;
-
 	$k = 0;
 	foreach ($ops['output']['rows'] as $line) {
 		// ignoriere Orga vorab
@@ -73,7 +75,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 			}
 		}
 
-		// DSJ-Logo
+		// logo and tournament
 		$left = 297.5 * $col;
 		if (!empty($line['flagge'])) {
 			$imageleft = 20 + $left + 297.5/2 - 10 - $line['flagge_width'] - 25;
@@ -81,12 +83,12 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 			$pdf->Cell($line['flagge_width'], $hoehe_flagge, '', 1);
 			$pdf->image($line['flagge'], $imageleft, 15 + $top, $line['flagge_width'], $hoehe_flagge);
 		} else {
-			$pdf->image($vorlagen.'/DSJ-Logo.jpg', 20 + $left + 297.5/2 - 10 - 58 - 25, 15 + $top, 41, $hoehe_flagge);
+			$pdf->image($zz_setting['media_folder'].'/urkunden-grafiken/DSJ-Logo.jpg', 20 + $left + 297.5/2 - 10 - 58 - 25, 15 + $top, 41, $hoehe_flagge);
 		}
 		$pdf->setFont('FiraSans-Regular', '', 10);
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->SetXY(20 + $left + 297.5/2 - 25, 15 + $top);
-		$pdf->MultiCell(118.5, 12, $event['main_series_long'].' '.$event['turnierort'].' '.$event['year'], 0, 'L');
+		$pdf->MultiCell(118.5, 12, $event_title, 0, 'L');
 		
 		// name + club
 		$pdf->setFont('FiraSans-SemiBold', '', 25);
@@ -138,6 +140,8 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 		$pdf->Cell(257, 28, $line['federation_abbr'].' ', 0, 2, 'R');
 		$k++;
 	}
+
+	// write PDF to cache folder, send
 	$folder = $zz_setting['cache_dir'].'/schilder/'.$event['identifier'];
 	wrap_mkdir($folder);
 	if (file_exists($folder.'/tischkarten.pdf')) {
