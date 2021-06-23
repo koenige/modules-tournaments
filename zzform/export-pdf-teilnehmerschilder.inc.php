@@ -49,7 +49,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		) continue;
 
 		// Daten anpassen
-		$line = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos);
+		$new = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos);
 
 		// PDF setzen
 		$row = $i % 4;
@@ -65,31 +65,31 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			$pdf->Cell(257, 14, $event['main_series_long'], 0, 2, 'L');
 			$pdf->Cell(257, 14, $event['turnierort'].' '.$event['year'], 0, 2, 'L');
 			$pdf->SetXY(20 + $left, $pdf->GetY() + 40);
-			if (strlen($line['spieler']) > 26) {
+			if (strlen($new['spieler']) > 26) {
 				$pdf->setFont('FiraSans-SemiBold', '', 17);
 			} else {
 				$pdf->setFont('FiraSans-SemiBold', '', 18);
 			}
-			$pdf->Cell(257, 24, $line['spieler'], 0, 2, 'L');
+			$pdf->Cell(257, 24, $new['spieler'], 0, 2, 'L');
 			$pdf->setFont('FiraSans-Regular', '', 12);
-			$pdf->MultiCell(257, 16, $line['verein'], 0, 'L');
+			$pdf->MultiCell(257, 16, $new['verein'], 0, 'L');
 
 			$pdf->SetXY(20 + $left, $top + 136);
 			$pdf->setFont('FiraSans-SemiBold', '', 18);
-			$pdf->Cell(257, 24, $line['lv'], 0, 2, 'R');
+			$pdf->Cell(257, 24, $new['lv'], 0, 2, 'R');
 			$pdf->SetTextColor(255, 255, 255);
-			$pdf->SetFillColor($line['red'], $line['green'], $line['blue']);
-			if ($line['red'] + $line['green'] + $line['blue'] > 458) {
+			$pdf->SetFillColor($new['red'], $new['green'], $new['blue']);
+			if ($new['red'] + $new['green'] + $new['blue'] > 458) {
 				$pdf->SetTextColor(0, 0, 0);
 			}
 			$y = $pdf->getY();
-			if (!empty($line['filename'])) {
-				$line['usergroup'] .= '  ';
+			if (!empty($new['filename'])) {
+				$new['usergroup'] .= '  ';
 			}
-			$pdf->Cell(257, 28, $line['usergroup'], 0, 2, 'C', 1);
-			if (!empty($line['zusaetzliche_ak'])) {
+			$pdf->Cell(257, 28, $new['usergroup'], 0, 2, 'C', 1);
+			if (!empty($new['zusaetzliche_ak'])) {
 				$pdf->SetXY($pdf->getX(), $y);
-				$pdf->Cell(257, 28, 'U'.$line['zusaetzliche_ak'], 0, 2, 'R'); // 41
+				$pdf->Cell(257, 28, 'U'.$new['zusaetzliche_ak'], 0, 2, 'R'); // 41
 			}
 			if (array_key_exists('volljaehrig', $nos) AND !empty($line[$nos['volljaehrig']]['text'])) {
 				$pdf->SetXY($pdf->getX() + 5, $y);
@@ -101,8 +101,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				$pdf->Cell(5, 14, ' ', 0, 2, 'R', 1);
 			}
 
-			if (!empty($line['filename'])) {
-				$pdf->image($line['filename'], 297.5*($j+1) - $line['width'] - 24, 110 + $top, $line['width'], $line['height']);
+			if (!empty($new['filename'])) {
+				$pdf->image($new['filename'], 297.5*($j+1) - $new['width'] - 24, 110 + $top, $new['width'], $new['height']);
 			}
 		}
 		$i++;
@@ -161,16 +161,16 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 	}
 
 	// Spieler
-	$line['fidetitel'] = !empty($nos['t_fidetitel']) ? $line[$nos['t_fidetitel']]['text'] : '';
-	$line['spieler'] = ($line['fidetitel'] ? $line['fidetitel'].' ' : '')
+	$new['fidetitel'] = !empty($nos['t_fidetitel']) ? $line[$nos['t_fidetitel']]['text'] : '';
+	$new['spieler'] = ($new['fidetitel'] ? $new['fidetitel'].' ' : '')
 		.((!empty($nos['t_vorname']) AND !empty($line[$nos['t_vorname']]['text']))
 		? $line[$nos['t_vorname']]['text'].' '.$line[$nos['t_nachname']]['text']
 		: $line[$nos['person_id']]['text']);
 
 	// Verein
-	$line['verein'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
+	$new['verein'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
 	if (function_exists('my_verein_saeubern')) {
-		$line['verein'] = my_verein_saeubern($line['verein']);
+		$new['verein'] = my_verein_saeubern($new['verein']);
 	}
 
 	// Gruppe
@@ -179,75 +179,75 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 		$filename_2 = sprintf('%s/gruppen/%s.png', $zz_setting['media_folder'], wrap_filename($line[$nos['rolle']]['text']));
 		if (file_exists($filename_2)) $filename = $filename_2;
 	}
-	$line['usergroup'] = $line[$nos['usergroup_id']]['text'];
+	$new['usergroup'] = $line[$nos['usergroup_id']]['text'];
 	if (!empty($nos['geschlecht'])) {
 		if (!empty($parameters['weiblich']) AND  $line[$nos['geschlecht']]['text'] === 'weiblich') {
-			$line['usergroup'] = $parameters['weiblich'];
+			$new['usergroup'] = $parameters['weiblich'];
 		} elseif (!empty($parameters['männlich']) AND  $line[$nos['geschlecht']]['text'] === 'männlich') {
-			$line['usergroup'] = $parameters['männlich'];
+			$new['usergroup'] = $parameters['männlich'];
 		}
 	}
 
-	if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text']) AND $line['verein']) {
-		$line['usergroup'] = $line[$nos['rolle']]['text'];
+	if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text']) AND $new['verein']) {
+		$new['usergroup'] = $line[$nos['rolle']]['text'];
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Betreuer', 'Mitreisende'])) {
-		if (empty($line['verein']) AND !empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
-			$line['verein'] = $line[$nos['rolle']]['text'];
+		if (empty($new['verein']) AND !empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
+			$new['verein'] = $line[$nos['rolle']]['text'];
 		}
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Spieler'])) {
-		$line['usergroup'] = $line[$nos['event_id']]['text'];
+		$new['usergroup'] = $line[$nos['event_id']]['text'];
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Gast'])) {
 		if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
-			$line['usergroup'] = $line[$nos['rolle']]['text'];
+			$new['usergroup'] = $line[$nos['rolle']]['text'];
 		}
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Schiedsrichter'])) {
 		if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
-			$line['verein'] = $line[$nos['rolle']]['text'];
+			$new['verein'] = $line[$nos['rolle']]['text'];
 		}
 	} else {
 		if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
-			$line['verein'] = $line[$nos['rolle']]['text'];
+			$new['verein'] = $line[$nos['rolle']]['text'];
 		} else {
-			$line['verein'] = $line['usergroup'];
+			$new['verein'] = $line['usergroup'];
 		}
-		$line['usergroup'] = 'Organisationsteam';
+		$new['usergroup'] = 'Organisationsteam';
 	}
-	$line['lv'] = !empty($nos['landesverband_org_id']) ? $line[$nos['landesverband_org_id']]['text'] : '';
+	$new['lv'] = !empty($nos['landesverband_org_id']) ? $line[$nos['landesverband_org_id']]['text'] : '';
 	if (!empty($parameters['color'])) {
 		$color = '';
 		if (is_array($parameters['color'])) {
 			$rolle = !empty($nos['rolle']) ? $line[$nos['rolle']]['text'] : '';
 			if ($rolle) {
 				foreach ($parameters['color'] as $index => $my_color) {
-					if (strstr($rolle, $index)) $color = $my_color;
+					if ($index AND strstr($rolle, $index)) $color = $my_color;
 				}
 			}
 			if (!$color) $color = $parameters['color'][0];
 		} else {
 			$color = $parameters['color'];
 		}
-		$line['red'] = hexdec(substr($color, 1, 2));
-		$line['green'] = hexdec(substr($color, 3, 2));
-		$line['blue'] = hexdec(substr($color, 5, 2));
+		$new['red'] = hexdec(substr($color, 1, 2));
+		$new['green'] = hexdec(substr($color, 3, 2));
+		$new['blue'] = hexdec(substr($color, 5, 2));
 	} else {
-		$line['red'] = 204;
-		$line['green'] = 0;
-		$line['blue'] = 0;
+		$new['red'] = 204;
+		$new['green'] = 0;
+		$new['blue'] = 0;
 	}
-	$line['zusaetzliche_ak'] = '';
+	$new['zusaetzliche_ak'] = '';
 	if (!empty($parameters['aks'])) {
 		foreach ($parameters['aks'] as $ak) {
 			if ($ak >= $line[$nos['lebensalter']]['text']) {
-				$line['zusaetzliche_ak'] = $ak;
+				$new['zusaetzliche_ak'] = $ak;
 				break;
 			}
 		}
 	}
 	if ($filename AND file_exists($filename)) {
-		$line['filename'] = $filename;
-		$size = getimagesize($line['filename']);
-		$line['width'] = floor($size[0]/$size[1]*72);
-		$line['height'] = 72;
+		$new['filename'] = $filename;
+		$size = getimagesize($new['filename']);
+		$new['width'] = floor($size[0]/$size[1]*72);
+		$new['height'] = 72;
 	}
-	return $line;
+	return $new;
 }
