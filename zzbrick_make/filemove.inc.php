@@ -18,6 +18,7 @@ function mod_tournaments_make_filemove() {
 	$pgn_delay = wrap_get_setting('live_pgn_delay_mins') * 60;
 
 	// Laufende Turniere auslesen
+	// for C24, put JSON files to server 2 DAYs before start
 	$sql = 'SELECT event_id
 			, events.identifier
 			, REPLACE(events.identifier, "/", "-") AS pfad
@@ -29,7 +30,7 @@ function mod_tournaments_make_filemove() {
 			ON series.category_id = events.series_category_id
 		LEFT JOIN categories main_series
 			ON series.main_category_id = main_series.category_id
-		WHERE events.date_begin <= CURDATE()
+		WHERE events.date_begin <= DATE_ADD(CURDATE(), INTERVAL 2 DAY)
 		AND events.date_end >= CURDATE()
 		AND NOT ISNULL(tournaments.livebretter)
 		ORDER BY events.identifier';
@@ -106,6 +107,7 @@ function mod_tournaments_make_filemove() {
 			$source = $merged_source;
 		}
 		$dest_dir = sprintf($pgn_queue, $tournament['pfad']);
+		if (!file_exists($dest_dir)) wrap_mkdir($dest_dir);
 		$final_dir = sprintf($pgn_sys, $tournament['identifier']);
 		wrap_mkdir($final_dir);
 		$params = [];
