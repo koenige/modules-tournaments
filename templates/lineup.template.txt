@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2020 Gustaf Mossakowski
+# @copyright Copyright © 2020-2021 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 %%% condition if set_board_order %%%
@@ -103,7 +103,7 @@
 
 %%% condition if reselect_too_many_players %%%
 <div class="error"><ul>
-<li>Es können maximal %%% item boards_max %%% Personen aufgestellt werden.</li>
+<li>Es können maximal %%% item boards_min %%% Personen aufgestellt werden.</li>
 <ul></div>
 %%% condition endif %%%
 
