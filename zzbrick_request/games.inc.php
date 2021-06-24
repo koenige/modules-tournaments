@@ -39,7 +39,7 @@ function mod_tournaments_games($vars) {
 
 	// Reihe?
 	$sql = 'SELECT events.event_id, main_series.category_short AS series_short
-			, YEAR(date_begin) AS year
+			, IFNULL(event_year, YEAR(date_begin)) AS year
 			, events.identifier, runden, events.event
 			, place
 			, addresses.*
@@ -54,7 +54,7 @@ function mod_tournaments_games($vars) {
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = %d
-		WHERE YEAR(events.date_begin) = %d
+		WHERE IFNULL(event_year, YEAR(events.date_begin)) = %d
 		AND main_series.path = "reihen/%s"
 		AND (tournaments.notationspflicht = "ja" OR addresses.country_id = %d)
 	';
@@ -70,7 +70,7 @@ function mod_tournaments_games($vars) {
 	}
 
 	$sql = 'SELECT events.event_id, series.category_short AS series_short
-			, YEAR(date_begin) AS year
+			, IFNULL(event_year, YEAR(date_begin)) AS year
 			, events.identifier, runden, events.event
 			, place, tournament_id, livebretter
 			, IF(bretter_min, bretter_min, (SELECT COUNT(teilnahme_id)/2 FROM teilnahmen

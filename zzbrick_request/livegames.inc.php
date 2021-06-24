@@ -30,7 +30,7 @@ function mod_tournaments_livegames($vars) {
 
 	// alle Turniere der Reihe ausgeben
 	$sql = 'SELECT events.event_id, livebretter, events.identifier
-			, event, YEAR(date_begin) AS year
+			, event, IFNULL(event_year, YEAR(date_begin)) AS year
 			, (SELECT COUNT(teilnahme_id) FROM teilnahmen
 			WHERE teilnahmen.event_id = tournaments.event_id
 			AND usergroup_id = %d) AS teilnehmer
@@ -45,7 +45,7 @@ function mod_tournaments_livegames($vars) {
 		LEFT JOIN categories main_series
 			ON series.main_category_id = main_series.category_id
 		WHERE main_series.path = "reihen/%s"
-		AND YEAR(date_begin) = %d
+		AND IFNULL(event_year, YEAR(date_begin)) = %d
 		AND NOT ISNULL(livebretter)
 		ORDER BY series.sequence';
 	$sql = sprintf($sql,
