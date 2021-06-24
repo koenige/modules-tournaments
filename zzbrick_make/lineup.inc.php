@@ -214,6 +214,11 @@ function mod_tournaments_make_lineup_boards($data) {
 function mod_tournaments_make_lineup_round($data) {
 	global $zz_conf;
 
+	// remove players without board_no
+	foreach ($data['players'] as $participation_id => $player) {
+		if (empty($player['board_no'])) unset($data['players'][$participation_id]);
+	}
+
 	// lineup for this round already sent?
 	$person_ids = [];
 	foreach ($data['players'] as $player)
