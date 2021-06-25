@@ -665,7 +665,7 @@ function mod_tournaments_games_html($event, $request, $typ) {
  */
 function mod_tournaments_games_liveonly($partien, $event) {
 	$livebretter = mf_tournaments_live_boards($event['livebretter'], $event['bretter_max']);
-	if (wrap_substr($event['turnierform'], 'mannschaft-')) {
+	if (str_starts_with($event['turnierform'], 'mannschaft-')) {
 		$livebretter_old = $livebretter;
 		$livebretter = [];
 		foreach ($livebretter_old as $brett) {
