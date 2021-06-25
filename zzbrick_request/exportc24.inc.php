@@ -226,18 +226,36 @@ function mod_tournaments_exportc24($vars, $settings) {
 	$fidetitel = wrap_db_fetch($sql, '_dummy_', 'key/value');
 	
 	$data['videoSources'] = [];
-	$sql = 'SELECT "youtube" AS type, "de" AS language, "" AS autoPlay
-			, SUBSTRING_INDEX(direct_link, "watch?v=", -1) AS event
+	$sql = 'SELECT "de" AS language, "" AS autoPlay
+			, direct_link AS event
 			, SUBSTRING_INDEX(description, ": ", -1) AS commentators
 		FROM events
 		WHERE (events.event = "ChessyTV" OR events.event LIKE "Live-Kommentierung%%")
 		AND main_event_id = %d
-		AND direct_link LIKE "https://www.youtube.com/watch%%"
-		AND DATE_SUB(CONCAT(events.date_begin, " ", events.time_begin), INTERVAL 2 HOUR)  <= NOW()
+		AND NOT ISNULL(direct_link)
+		AND DATE_SUB(CONCAT(events.date_begin, " ", events.time_begin), INTERVAL 2 HOUR) <= NOW()
 		ORDER BY events.date_begin DESC, events.time_begin DESC
 		LIMIT 1';
 	$sql = sprintf($sql, $series_event_id);
 	$data['videoSources'] = wrap_db_fetch($sql, '_dummy_', 'numeric');
+	foreach ($data['videoSources'] as $index => $source) {
+		$url = parse_url($source['event']);
+		switch ($url['host']) {
+			case 'youtube.com':
+			case 'www.youtube.com':
+				$data['videoSources'][$index]['type'] = 'youtube';
+				$data['videoSources'][$index]['event'] = str_replace('v=', '', $url['query']);
+				break;
+			case 'twitch.tv':
+			case 'www.twitch.tv':
+				$data['videoSources'][$index]['type'] = 'iframe';
+				$data['videoSources'][$index]['src'] = sprintf(
+					"//player.twitch.tv/?channel=%s&parent=chess24.com&autoplay=false"
+					, substr($url['path'], 1)
+				);
+				break;
+		}
+	}
 	foreach ($data['videoSources'] as $index => $source) {
 		$data['videoSources'][$index]['autoPlay'] = false;
 		if (!$source['commentators']) continue;
