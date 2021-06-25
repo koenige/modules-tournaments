@@ -249,7 +249,7 @@ function mod_tournaments_make_games($vars) {
 				if (!empty($partien[$partie_id]['kommentar'])) continue;
 				if (!empty($partien[$partie_id]['pgn'])) continue;
 				$values['POST']['kommentar'] = $comment;
-			} elseif ($partien[$partie_id]['moves'] !== '*') {
+			} elseif (!in_array($partien[$partie_id]['moves'], ['*', '0-1', '1-0', '1/2-1/2'])) {
 				$values['POST']['pgn'] = $partien[$partie_id]['moves'];
 			}
 			$ergebnis = mf_tournaments_pgn_result($partien[$partie_id]['moves'], $partien[$partie_id]['head']['Result']);
