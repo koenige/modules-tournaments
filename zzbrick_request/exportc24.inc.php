@@ -5,7 +5,7 @@
  * Export tournament data for Chess24
  *
  * Part of »Zugzwang Project«
- * https://www.zugzwang.org/modules/default
+ * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2017-2021 Gustaf Mossakowski
