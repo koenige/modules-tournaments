@@ -239,6 +239,7 @@ function pgn_to_html($pgn, $extra_comment = []) {
 	}
 	$moves = $pgn['moves'];
 	$moves = preg_replace('/{\[\%emt \d+:\d+:\d+\]} /', '', $moves);
+	$moves = preg_replace('/{\[\%evp [^\]]+?]} /', '', $moves);
 	$moves = preg_replace('/\[\%eval [-\d#.]*\]/', '', $moves);
 	$moves = str_replace('Diagramm #', '', $moves);
 	$moves = str_replace('{', ' { ', $moves);
