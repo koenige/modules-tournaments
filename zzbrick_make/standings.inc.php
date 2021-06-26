@@ -70,6 +70,7 @@ function cms_tabellenstandupdate_uebersicht($vars) {
 	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
+	$zz_setting['logfile_name'] = $event['identifier'];
 
 	$sql = 'SELECT events.event_id, events.runde_no
 			, (SELECT COUNT(partie_id) FROM partien
@@ -129,6 +130,7 @@ function cms_tabellenstandupdate_runde($vars) {
 	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
+	$zz_setting['logfile_name'] = $event['identifier'];
 
 	if ($runde > $event['runden_gespielt']) {
 		my_job_finish('tabelle', 0, $event['event_id'], $runde);

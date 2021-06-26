@@ -37,7 +37,7 @@ function mod_tournaments_make_swtimport($vars) {
 		wrap_log(sprintf('SWT-Import: Falsche Zahl von Parametern: %s', $identifier));
 		return false;
 	}
-	$zz_setting['active_module_for_log'] = $identifier;
+	$zz_setting['logfile_name'] = $identifier;
 	
 	// @todo Einzel- oder Mannschaftsturnier aus Termine auslesen
 	// Datenherkunft aus Turniere

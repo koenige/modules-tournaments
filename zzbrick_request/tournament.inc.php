@@ -98,7 +98,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	);
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
-	$zz_setting['active_module_for_log'] = $event['identifier'];
+	$zz_setting['logfile_name'] = $event['identifier'];
 	if (!$intern AND !$event['tournament_id']) {
 		return wrap_redirect(
 			sprintf('%s/%s/', $zz_setting['events_path'], implode('/', $vars)), 307);
