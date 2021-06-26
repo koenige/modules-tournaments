@@ -23,6 +23,9 @@
  */
 function mod_tournaments_games($vars) {
 	global $zz_setting;
+	
+	$qs = mod_tournaments_games_check_qs();
+
 	$zz_setting['brick_formatting_functions'][] = 'pgn_wordwrap';
 	require_once __DIR__.'/../tournaments/pgn.inc.php';
 
@@ -99,7 +102,7 @@ function mod_tournaments_games($vars) {
 	if (!$event) return false;
 
 	if (substr($request, -4) === '.pgn') {
-		return mod_tournaments_games_file($event, substr($request, 0, -4), $typ);
+		return mod_tournaments_games_file($event, substr($request, 0, -4), $typ, $qs);
 	} elseif (substr($request, -5) === '.json') {
 		return mod_tournaments_games_json($event, $request);
 	} else {
@@ -226,11 +229,15 @@ function mod_tournaments_games_series($events, $request) {
  *		1-1.pgn = Runde 1, Brett 1 (Einzelturnier)
  *		1-1-1.pgn = Runde 1, Tisch 1, Brett 1 (Mannschaftsturnier)
  * @param string $typ (optional)
+ * @param array $qs (optional)
  * @return void
  */
-function mod_tournaments_games_file($event, $request, $typ = false) {
+function mod_tournaments_games_file($event, $request, $typ = false, $qs = []) {
 	global $zz_setting;
 	global $zz_conf;
+	
+	// ignore query strings behind .pgn
+	if ($qs) $page['query_strings'] = $qs;
 	
 	$events = [];
 	if ($event AND !array_key_exists('identifier', $event)) {
@@ -683,4 +690,27 @@ function mod_tournaments_games_liveonly($partien, $event) {
 		if (!in_array($board, $livebretter)) unset($partien[$index]);
 	}
 	return $partien;
+}
+
+/**
+ * check for query string attached to .pgn-requests
+ *
+ * some clever programmers thought this is a good idea to disable caching
+ * but this of course disables 304 requests, too, not so clever
+ *
+ * @return array
+ */
+function mod_tournaments_games_check_qs() {
+	global $zz_setting;
+	global $zz_page;
+
+	$url = parse_url($zz_setting['request_uri']);
+	if (!str_ends_with($url['path'], '.pgn')) return [];
+	if (empty($url['query'])) return [];
+	parse_str($url['query'], $qs);
+	$zz_page['url']['full']['query'] = false;
+	if (!empty($zz_setting['cache_age'])) {
+		wrap_send_cache($zz_setting['cache_age']);
+	}
+	return array_keys($qs);
 }
