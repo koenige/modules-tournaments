@@ -22,7 +22,6 @@ function mod_tournaments_make_filemove() {
 	$sql = 'SELECT event_id
 			, events.identifier
 			, REPLACE(events.identifier, "/", "-") AS pfad
-			, CONCAT(YEAR(events.date_begin), "-", IF(main_series.path != "reihen", SUBSTRING_INDEX(main_series.path, "/", -1), SUBSTRING_INDEX(series.path, "/", -1))) AS main_series
 			, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "-", IF(main_series.path != "reihen", SUBSTRING_INDEX(main_series.path, "/", -1), SUBSTRING_INDEX(series.path, "/", -1))) AS main_series
 			, tournaments.urkunde_parameter AS parameter
 		FROM tournaments
