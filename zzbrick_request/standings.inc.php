@@ -58,7 +58,7 @@ function mod_tournaments_standings($vars) {
 	if ($filter['error']) return false;
 
 	$sql = 'SELECT events.event_id, event, tournaments.runden, bretter_min, pseudo_dwz
-			, YEAR(events.date_begin) AS year
+			, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
 			, (SELECT COUNT(partie_id) FROM partien
@@ -96,7 +96,6 @@ function mod_tournaments_standings($vars) {
 	$sql = sprintf($sql, $runde, $runde, $runde, $zz_setting['website_id'], $vars[0], wrap_db_escape($vars[1]));
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
-	$zz_setting['active_module_for_log'] = $event['identifier'];
 	$event['runde_no'] = $runde;
 	mf_tournaments_cache($event);
 

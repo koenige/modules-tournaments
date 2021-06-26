@@ -56,6 +56,7 @@ function mod_tournaments_tournamentstats($vars) {
 			, (SELECT COUNT(nachricht_id) FROM spieler_nachrichten LEFT JOIN teilnahmen ON teilnahmen.teilnahme_id = spieler_nachrichten.teilnehmer_id WHERE teilnahmen.event_id = events.event_id) AS tn_nachrichten
 			, (SELECT COUNT(team_id) FROM teams WHERE teams.event_id = events.event_id AND teams.team_status = "Teilnehmer") AS teams
 			, (SELECT AVG(YEAR(events.date_begin)-YEAR(date_of_birth)) FROM teilnahmen LEFT JOIN personen USING (person_id) WHERE event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS average_age
+			, IF(events.event_year != YEAR(events.date_begin), CAST(events.event_year AS SIGNED) - YEAR(events.date_begin), NULL) AS different_year
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN categories series
@@ -191,7 +192,7 @@ function mod_tournaments_tournamentstats($vars) {
 			(SELECT COUNT(team_id) FROM teilnahmen LEFT JOIN teams USING (team_id) WHERE teilnahmen.event_id = events.event_id AND teams.team_status = "Teilnehmer") > 0
 			OR (SELECT COUNT(teilnahme_id) FROM teilnahmen WHERE teilnahmen.event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %d) > 0
 		)
-		ORDER BY YEAR(events.date_begin)
+		ORDER BY IFNULL(events.event_year, YEAR(events.date_begin))
 	';
 	$sql = sprintf($sql, wrap_db_escape($vars[1]), wrap_id('usergroups', 'spieler'));
 	$data['all_years'] = wrap_db_fetch($sql, 'year');

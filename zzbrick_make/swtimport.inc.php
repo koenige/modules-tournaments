@@ -41,7 +41,7 @@ function mod_tournaments_make_swtimport($vars) {
 	
 	// @todo Einzel- oder Mannschaftsturnier aus Termine auslesen
 	// Datenherkunft aus Turniere
-	$sql = 'SELECT event_id, event, events.identifier, YEAR(date_begin) AS year
+	$sql = 'SELECT event_id, event, events.identifier, IFNULL(event_year, YEAR(date_begin)) AS year
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, tournaments.wertung_spielfrei
 			, tournaments.urkunde_parameter AS parameter

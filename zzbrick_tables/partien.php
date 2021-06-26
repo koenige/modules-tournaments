@@ -34,7 +34,7 @@ $zz['fields'][3]['title'] = 'Termin';
 $zz['fields'][3]['field_name'] = 'event_id';
 $zz['fields'][3]['type'] = 'write_once';
 $zz['fields'][3]['type_detail'] = 'select';
-$zz['fields'][3]['sql'] = 'SELECT event_id, event, YEAR(date_begin)
+$zz['fields'][3]['sql'] = 'SELECT event_id, event, IFNULL(event_year, YEAR(date_begin))
 	FROM events
 	WHERE ISNULL(main_event_id)
 	ORDER BY date_begin, identifier';

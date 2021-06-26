@@ -23,7 +23,7 @@ $zz['fields'][1]['type'] = 'id';
 $zz['fields'][2]['title'] = 'Termin';
 $zz['fields'][2]['field_name'] = 'event_id';
 $zz['fields'][2]['type'] = 'select';
-$zz['fields'][2]['sql'] = 'SELECT event_id, event, YEAR(date_begin) AS year, identifier
+$zz['fields'][2]['sql'] = 'SELECT event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year, identifier
 	FROM events';
 $zz['fields'][2]['display_field'] = 'event';
 $zz['fields'][2]['sql_ignore'] = 'identifier';

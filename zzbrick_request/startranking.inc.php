@@ -23,7 +23,7 @@ function mod_tournaments_startranking($vars) {
 	
 	$sql = 'SELECT events.event_id, event
 			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
-			, YEAR(date_begin) AS year, IFNULL(date_end, date_begin) AS date_end
+			, IFNULL(event_year, YEAR(date_begin)) AS year, IFNULL(date_end, date_begin) AS date_end
 			, places.contact AS veranstaltungsort
 			, address, postcode, place, places.description
 			, latitude, longitude

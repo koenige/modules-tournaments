@@ -28,7 +28,7 @@ $zz['fields'][2]['sql'] = 'SELECT event_id, date_begin, event
 	WHERE ISNULL(main_event_id)
 	ORDER BY event';
 $zz['fields'][2]['display_field'] = 'turnier';
-$zz['fields'][2]['search'] = 'CONCAT(events.event, " ", YEAR(date_begin))';
+$zz['fields'][2]['search'] = 'CONCAT(events.event, " ", IFNULL(event_year, YEAR(date_begin)))';
 $zz['fields'][2]['unique'] = true;
 $zz['fields'][2]['if']['where']['hide_in_form'] = true;
 $zz['fields'][2]['link'] = [
@@ -408,7 +408,7 @@ $zz['fields'][51]['type'] = 'number';
 $zz['fields'][54]['field_name'] = 'main_tournament_id';
 $zz['fields'][54]['type'] = 'select';
 $zz['fields'][54]['sql'] = 'SELECT tournament_id
-		, CONCAT(event, " ", YEAR(date_begin)) AS tournament, identifier
+		, CONCAT(event, " ", IFNULL(event_year, YEAR(date_begin))) AS tournament, identifier
 	FROM tournaments
 	LEFT JOIN events USING (event_id)
 	ORDER BY date_begin, identifier DESC';
@@ -417,7 +417,7 @@ $zz['fields'][54]['hide_in_list'] = true;
 
 
 $zz['sql'] = 'SELECT tournaments.*
-		, CONCAT(events.event, " ", YEAR(date_begin)) AS turnier
+		, CONCAT(events.event, " ", IFNULL(event_year, YEAR(date_begin))) AS turnier
 		, events.identifier AS event_identifier
 		, modus.category_short AS modus
 		, turnierformen.category_short AS turnierform
@@ -467,19 +467,19 @@ $zz['filter'][2]['identifier'] = 'reihe';
 $zz['filter'][2]['type'] = 'list';
 $zz['filter'][2]['where'] = 'series.main_category_id';
 
-$zz['filter'][1]['sql'] = 'SELECT DISTINCT YEAR(date_begin) AS year_idf
-		, YEAR(date_begin) AS year
+$zz['filter'][1]['sql'] = 'SELECT DISTINCT IFNULL(event_year, YEAR(date_begin)) AS year_idf
+		, IFNULL(event_year, YEAR(date_begin)) AS year
 	FROM tournaments
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories series
 		ON events.series_category_id = series.category_id
 	LEFT JOIN categories main_series
 		ON series.main_category_id = main_series.category_id
-	ORDER BY YEAR(date_begin) DESC';
+	ORDER BY IFNULL(event_year, YEAR(date_begin)) DESC';
 $zz['filter'][1]['title'] = 'Jahr';
 $zz['filter'][1]['identifier'] = 'year';
 $zz['filter'][1]['type'] = 'list';
-$zz['filter'][1]['where'] = 'YEAR(date_begin)';
+$zz['filter'][1]['where'] = 'IFNULL(event_year, YEAR(date_begin))';
 $zz['filter'][1]['depends_on'] = 2;
 
 $zz['conditions'][1]['scope'] = 'record';

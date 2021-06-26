@@ -99,7 +99,7 @@ function mod_tournaments_make_games($vars) {
 	if ($brett_no) $error_msg .= sprintf(', Brett %s', wrap_html_escape($brett_no));
 
 	// Termin, Partien in Datenbank vorhanden?
-	$sql = 'SELECT event_id, events.identifier, event, YEAR(date_begin) AS year
+	$sql = 'SELECT event_id, events.identifier, event, IFNULL(event_year, YEAR(date_begin)) AS year
 			, COUNT(partie_id) AS partien
 			, SUBSTRING_INDEX(categories.path, "/", -1) AS event_category
 			, tournament_id

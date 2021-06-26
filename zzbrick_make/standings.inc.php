@@ -62,8 +62,8 @@ function cms_tabellenstandupdate_uebersicht($vars) {
 	global $zz_setting;
 	if (count($vars) !== 2) return false;
 
-	$sql = 'SELECT event_id, event
-			, YEAR(date_begin) AS year
+	$sql = 'SELECT event_id, event, identifier
+			, IFNULL(event_year, YEAR(date_begin)) AS year
 			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
 		FROM events
 		WHERE identifier = "%d/%s"';

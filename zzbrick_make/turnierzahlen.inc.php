@@ -28,7 +28,7 @@ function mod_tournaments_make_turnierzahlen($vars) {
 				IF(events.date_end < CURDATE(), 1, NULL),
 				IF(events.date_begin < CURDATE(), 1, NULL)
 			) AS event_over
-			, YEAR(date_begin) AS year
+			, IFNULL(event_year, YEAR(date_begin)) AS year
 			, event, identifier
 		FROM events
 		LEFT JOIN tournaments USING (event_id)

@@ -27,7 +27,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	$sql = 'SELECT events.event_id, event
 			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
 			, date_begin
-			, YEAR(date_begin) AS year
+			, IFNULL(event_year, YEAR(date_begin)) AS year
 			, places.contact AS veranstaltungsort
 			, address, postcode, place, places.description
 			, latitude, longitude, place_contact_id
@@ -244,7 +244,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	}
 	
 	// qualification tournaments?
-	$sql = 'SELECT event_id, event, YEAR(date_begin) AS year, identifier
+	$sql = 'SELECT event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year, identifier
 			, CONCAT(IFNULL(date_begin, ""), IFNULL(CONCAT("/", date_end), "")) AS duration
 			, TIME_FORMAT(time_begin, "%%H.%%i") AS time_begin
 			, TIME_FORMAT(time_end, "%%H.%%i") AS time_end

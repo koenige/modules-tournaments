@@ -99,7 +99,7 @@ function mod_tournaments_team($vars, $settings) {
 			, IF(teilnehmerliste = "ja", 1, 0) AS teilnehmerliste
 			, pseudo_dwz
 			, IFNULL(place, places.contact) AS turnierort
-			, YEAR(date_begin) AS year
+			, IFNULL(event_year, YEAR(date_begin)) AS year
 			, events.identifier AS event_identifier
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, main_series.category_short AS main_series

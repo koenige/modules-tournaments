@@ -16,7 +16,7 @@
 function mod_tournaments_tournamentphotos($vars) {
 	global $zz_setting;
 
-	$sql = 'SELECT event_id, event, YEAR(date_begin) AS year, events.identifier
+	$sql = 'SELECT event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year, events.identifier
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, main_series.category_short AS main_series
 			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration

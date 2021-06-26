@@ -24,12 +24,12 @@ $zz['fields'][1]['type'] = 'id';
 $zz['fields'][2]['field_name'] = 'tournament_id';
 $zz['fields'][2]['type'] = 'select';
 $zz['fields'][2]['sql'] = 'SELECT tournament_id
-		, CONCAT(event, " ", YEAR(date_begin)) AS turnier
+		, CONCAT(event, " ", IFNULL(event_year, YEAR(date_begin))) AS turnier
 	FROM tournaments
 	LEFT JOIN events USING (event_id)
 	ORDER BY date_begin, identifier DESC';
 $zz['fields'][2]['display_field'] = 'turnier';
-$zz['fields'][2]['search'] = 'CONCAT(event, " ", YEAR(date_begin))';
+$zz['fields'][2]['search'] = 'CONCAT(event, " ", IFNULL(event_year, YEAR(date_begin)))';
 
 $zz['fields'][3]['title'] = 'Link';
 $zz['fields'][3]['field_name'] = 'partien_pfad';
@@ -37,7 +37,7 @@ $zz['fields'][3]['explanation'] = 'Link zu einer Adresse, unter der Livepartien 
 
 
 $zz['sql'] = 'SELECT turniere_partien.*
-		, CONCAT(event, " ", YEAR(date_begin)) AS turnier
+		, CONCAT(event, " ", IFNULL(event_year, YEAR(date_begin))) AS turnier
 	FROM turniere_partien
 	LEFT JOIN tournaments USING (tournament_id)
 	LEFT JOIN events USING (event_id)

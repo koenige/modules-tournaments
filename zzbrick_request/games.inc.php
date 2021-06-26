@@ -381,7 +381,7 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 	$zz_conf['character_set'] = 'iso-8859-1';
 
 	$sql = 'SELECT partien.partie_id
-			, events.event, YEAR(events.date_begin) AS year
+			, events.event, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 			, DATE_FORMAT(events.date_begin, "%%Y.%%m.%%d") AS EventDate
 			, DATE_FORMAT(runden.date_begin, "%%Y.%%m.%%d") AS Date
 			, IF(ISNULL(url), IF(LOCATE("&virtual=1", place_categories.parameters), events.direct_link, place), url) AS Site

@@ -25,7 +25,7 @@ $zz['fields'][2]['type'] = 'memo';
 
 $zz['fields'][3]['field_name'] = 'team_id';
 $zz['fields'][3]['type'] = 'select';
-$zz['fields'][3]['sql'] = 'SELECT team_id, CONCAT(event, " ", YEAR(events.date_begin), ": ") AS event
+$zz['fields'][3]['sql'] = 'SELECT team_id, CONCAT(event, " ", IFNULL(events.event_year, YEAR(events.date_begin)), ": ") AS event
 		, CONCAT(team, IFNULL(CONCAT(" ", team_no),"")) AS team
 	FROM teams
 	LEFT JOIN events USING (event_id)

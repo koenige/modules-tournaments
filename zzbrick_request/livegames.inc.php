@@ -58,7 +58,7 @@ function mod_tournaments_livegames($vars) {
 	
 	// Einzelnes Turnier?
 	$sql = 'SELECT events.event_id, livebretter, events.identifier
-			, event, YEAR(date_begin) AS year
+			, event, IFNULL(event_year, YEAR(date_begin)) AS year
 			, (SELECT COUNT(teilnahme_id) FROM teilnahmen
 			WHERE teilnahmen.event_id = tournaments.event_id
 			AND usergroup_id = %d) AS teilnehmer

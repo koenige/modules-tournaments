@@ -334,7 +334,7 @@ function mf_tournaments_remarks_mail($ops) {
 		$sql = 'SELECT event
 				, places.contact AS ort
 				, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
-				, YEAR(events.date_begin) AS year
+				, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 				, events.identifier AS event_identifier
 				, team, team_no
 			FROM teams

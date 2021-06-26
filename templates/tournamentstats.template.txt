@@ -82,7 +82,7 @@
 <td class="tz">%%% item quote_remis wrap_percent %%%</td>
 <td class="tz">%%% item quote_siege_schwarz wrap_percent %%%</td>
 %%% comment <td class="tz">--- item tn_nachrichten ---</td> %%%
-<td class="tz">%%% item average_age wrap_number %%%</td>
+<td class="tz">%%% item average_age wrap_number %%%%%% condition if different_year %%% <abbr title="Dieses Turnier fand nicht im Turnierjahr statt.">*</abbr>%%% condition endif %%%</td>
 </tr>
 %%% loop end %%%
 </tbody>
