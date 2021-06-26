@@ -63,6 +63,7 @@ function pgn_find($file, $search) {
 function pgn_parse($pgn, $filename = false) {
 	$pgn = wrap_convert_string($pgn, 'iso-8859-1');
 	$pgn = pgn_correct_line_breaks($pgn);
+	$pgn = pgn_fix_headers($pgn);
 	$pgn = pgn_add_newlines($pgn);
 	$pgn = pgn_remove_double_emptylines($pgn);
 	$head = true;
@@ -372,4 +373,36 @@ function pgn_only_comment($moves, $result) {
 
 function pgn_wordwrap($string) {
 	return wordwrap($string, 79);
+}
+
+/**
+ * sometimes, database software messes up header lines and does not add newlines
+ *
+ * @param array $pgn
+ * @return array
+ */
+function pgn_fix_headers($pgn) {
+	$possible_missing_line_break = false;
+	$extra_lines = 0;
+	foreach ($pgn as $index => $line) {
+		$line = trim($line);
+		if ($possible_missing_line_break) {
+			$possible_missing_line_break = false;
+			if (!str_starts_with($line, '[Site')) continue;
+			$last_index = $index -1 + $extra_lines;
+			$extra = [];
+			// there might be more than one! (sigh)
+			while (strstr($pgn[$last_index], '[Event "')) {
+				$extra[] = trim(substr($pgn[$last_index], strrpos($pgn[$last_index], '[')))."\n";
+				$pgn[$last_index] = substr($pgn[$last_index], 0, strrpos($pgn[$last_index], '['));
+			}
+			$pgn[$last_index] = trim($pgn[$last_index])."\n";
+			$extra = array_unique($extra);
+			array_splice($pgn, $index + $extra_lines, 0, $extra);
+			$extra_lines += count($extra);
+		}
+		if (str_starts_with($line, '[') AND str_ends_with($line, ']')) continue;
+		if (strstr($line, '[Event "')) $possible_missing_line_break = true; 
+	}
+	return $pgn;
 }
