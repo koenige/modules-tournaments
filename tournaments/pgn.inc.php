@@ -61,7 +61,6 @@ function pgn_find($file, $search) {
  *			moves => string
  */
 function pgn_parse($pgn, $filename = false) {
-	$pgn = wrap_convert_string($pgn, 'iso-8859-1');
 	$pgn = pgn_correct_line_breaks($pgn);
 	$pgn = pgn_fix_headers($pgn);
 	$pgn = pgn_add_newlines($pgn);
@@ -99,6 +98,12 @@ function pgn_parse($pgn, $filename = false) {
 			$games[$i]['moves'] .= $line.' ';
 		}
 	}
+	foreach ($games as $index => $game) {
+		$games[$index]['moves'] = utf8_encode(wrap_convert_string($game['moves'], 'iso-8859-1'));
+		$games[$index]['head'] = wrap_convert_string($games[$index]['head'], 'iso-8859-1');
+		$games[$index]['head'] = wrap_convert_string($games[$index]['head'], 'utf-8');
+	}
+	
 	return $games;
 }
 
