@@ -320,21 +320,21 @@ function mf_tournaments_make_team_direct_encounter($event, $standings, $hauptwer
 function mf_tournaments_make_team_sonneborn_berger($event_id, $runde_no) {
 	// paarungen_ergebnisse_view gibt bei Gewinn 2 MP, bei Unentschieden 1 MP aus
 	// daher MP / 2 * gegnerische MP
-	$sql = 'SELECT paarungen_ergebnisse_view.team_id
-			, SUM(paarungen_ergebnisse_view.brettpunkte * tabellenstaende_view.wertung) AS sb
+	$sql = 'SELECT team_id
+			, SUM(brettpunkte * 
+				(SELECT SUM(mp.mannschaftspunkte)
+				FROM paarungen_ergebnisse_view mp
+				WHERE mp.team_id = paarungen_ergebnisse_view.gegner_team_id
+				AND mp.runde_no <= %d)
+			) AS sb
 		FROM paarungen_ergebnisse_view
-		LEFT JOIN tabellenstaende_view
-			ON paarungen_ergebnisse_view.gegner_team_id = tabellenstaende_view.team_id
-		WHERE paarungen_ergebnisse_view.event_id = %d
-		AND tabellenstaende_view.runde_no = %d
-		AND paarungen_ergebnisse_view.runde_no <= %d
-		AND tabellenstaende_view.wertung_category_id = %d
-		GROUP BY paarungen_ergebnisse_view.team_id
+		WHERE paarungen_ergebnisse_view.runde_no <= %d
+		GROUP BY team_id
 		ORDER BY sb DESC
 	';
 	$sql = sprintf($sql
-		, $event_id
-		, $runde_no, $runde_no
+		, $runde_no
+		, $runde_no
 		, wrap_category_id('turnierwertungen/mp')
 	);
 	$wertungen = wrap_db_fetch($sql, 'team_id', 'key/value');
