@@ -50,30 +50,26 @@ function mod_tournaments_make_standings_team($event) {
 	$turnierwertungen = cms_tabellenstandupdate_wertungen($event['event_id']);
 
 	// Wertungen aus Datenbank auslesen
-	$sql = 'SELECT tabellenstaende_view.wertung_category_id, team_id, wertung
-		FROM tabellenstaende_view
-		JOIN tournaments USING (event_id)
-		JOIN turniere_wertungen
-			ON turniere_wertungen.tournament_id = tournaments.tournament_id
-			AND turniere_wertungen.wertung_category_id = tabellenstaende_view.wertung_category_id
-		WHERE tabellenstaende_view.runde_no = %d
-		AND wertung IS NOT NULL
-		AND team_id IN (%s)
-		ORDER BY turniere_wertungen.reihenfolge, wertung DESC';
-	$sql = sprintf($sql, $event['runde_no'], implode(',', array_keys($standings)));
-	$wertungen = wrap_db_fetch($sql, ['wertung_category_id', 'team_id', 'wertung'], 'key/value');
-
-	// Weitere Wertungen ergänzen
 	foreach ($turnierwertungen as $category_id => $turnierwertung) {
 		switch ($category_id) {
+		case wrap_category_id('turnierwertungen/mp'):
+			$wertungen[$category_id] = mf_tournaments_make_team_mp($event['runde_no']); break;
+		case wrap_category_id('turnierwertungen/bp'):
+			$wertungen[$category_id] = mf_tournaments_make_team_bp($event['runde_no']); break;
+		case wrap_category_id('turnierwertungen/bhz'):
+			$wertungen[$category_id] = mf_tournaments_make_team_buchholz($event['runde_no']); break;
 		case wrap_category_id('turnierwertungen/bhz.2'):
 			$erste_wertung = reset($turnierwertungen);
 			if ($erste_wertung['category_id'] === wrap_category_id('turnierwertungen/bp')) {
-				$wertungen[$category_id] = mf_tournaments_make_team_buchholz_bp(
-					$event['event_id'], $event['runde_no']
-				);
+				$wertungen[$category_id] = mf_tournaments_make_team_buchholz_bp($event['runde_no']);
+			} else {
+				$wertungen[$category_id] = mf_tournaments_make_team_buchholz_mp($event['runde_no']);
 			}
 			break;
+		case wrap_category_id('turnierwertungen/sw'):
+			$wertungen[$category_id] = mf_tournaments_make_team_sw($event['runde_no']); break;
+		case wrap_category_id('turnierwertungen/bw'):
+			$wertungen[$category_id] = mf_tournaments_make_team_bw($event['runde_no']); break;
 		case wrap_category_id('turnierwertungen/dv'):
 			// direkter Vergleich erst nach Auswertung der anderen Wertungen
 			$wertungen[$category_id] = 1;
@@ -88,7 +84,7 @@ function mod_tournaments_make_standings_team($event) {
 			break;
 		case wrap_category_id('turnierwertungen/sobo'):
 			$wertungen[$category_id] = mf_tournaments_make_team_sonneborn_berger(
-				$event['event_id'], $event['runde_no']
+				$event['runde_no']
 			);
 			break;
 		}
@@ -310,14 +306,45 @@ function mf_tournaments_make_team_direct_encounter($event, $standings, $hauptwer
 }
 
 /**
+ * calculate match points for team tournaments
+ *
+ * @param int $round_no
+ * @return array list team_id => value
+ */
+function mf_tournaments_make_team_mp($round_no) {
+	$sql = 'SELECT team_id, SUM(mannschaftspunkte) AS rating
+	    FROM paarungen_ergebnisse_view
+	    WHERE runde_no <= %d
+	    GROUP BY team_id
+	    ORDER BY rating DESC, team_id';
+	$sql = sprintf($sql, $round_no);
+	return wrap_db_fetch($sql, 'team_id', 'key/value');
+}
+
+/**
+ * calculate board points for team tournaments
+ *
+ * @param int $round_no
+ * @return array list team_id => value
+ */
+function mf_tournaments_make_team_bp($round_no) {
+	$sql = 'SELECT team_id, SUM(brettpunkte) AS rating
+	    FROM paarungen_ergebnisse_view
+	    WHERE runde_no <= %d
+	    GROUP BY team_id
+	    ORDER BY rating DESC, team_id';
+	$sql = sprintf($sql, $round_no);
+	return wrap_db_fetch($sql, 'team_id', 'key/value');
+}
+
+/**
  * Sonneborn-Berger für Mannschaftsturniere berechnen
  * = Erzielte Brettpunkte x Mannschaftspunktzahl der Gegner nach der aktuellen Runde
  *
- * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @return array Liste team_id => value
  */
-function mf_tournaments_make_team_sonneborn_berger($event_id, $runde_no) {
+function mf_tournaments_make_team_sonneborn_berger($round_no) {
 	// paarungen_ergebnisse_view gibt bei Gewinn 2 MP, bei Unentschieden 1 MP aus
 	// daher MP / 2 * gegnerische MP
 	$sql = 'SELECT team_id
@@ -330,25 +357,54 @@ function mf_tournaments_make_team_sonneborn_berger($event_id, $runde_no) {
 		FROM paarungen_ergebnisse_view
 		WHERE paarungen_ergebnisse_view.runde_no <= %d
 		GROUP BY team_id
-		ORDER BY sb DESC
+		ORDER BY sb DESC, team_id
 	';
 	$sql = sprintf($sql
-		, $runde_no
-		, $runde_no
+		, $round_no
+		, $round_no
 		, wrap_category_id('turnierwertungen/mp')
 	);
-	$wertungen = wrap_db_fetch($sql, 'team_id', 'key/value');
-	return $wertungen;
+	return wrap_db_fetch($sql, 'team_id', 'key/value');
+}
+
+/**
+ * calculate buchholz points based on match points for team tournaments
+ * without correction (?)
+ *
+ * @param int $round_no
+ * @return array list team_id => value
+ */
+function mf_tournaments_make_team_buchholz($round_no) {
+	$sql = 'SELECT team_id, buchholz
+		FROM buchholz_view
+		WHERE runde_no = %d
+		ORDER BY buchholz_mit_korrektur DESC, team_id';
+	$sql = sprintf($sql, $round_no);
+	return wrap_db_fetch($sql, 'team_id', 'key/value');
+}
+
+/**
+ * calculate buchholz points based on match points for team tournaments
+ *
+ * @param int $round_no
+ * @return array list team_id => value
+ */
+function mf_tournaments_make_team_buchholz_mp($round_no) {
+	$sql = 'SELECT team_id, buchholz_mit_korrektur
+	    FROM buchholz_view
+	    WHERE runde_no = %d
+	    ORDER BY buchholz_mit_korrektur DESC, team_id';
+	$sql = sprintf($sql, $round_no);
+	return wrap_db_fetch($sql, 'team_id', 'key/value');
 }
 
 /**
  * Buchholz für Mannschaftsturniere berechnen bei Erstwertung Brettpunkte
  *
- * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @return array Liste team_id => value
  */
-function mf_tournaments_make_team_buchholz_bp($event_id, $runde_no) {
+function mf_tournaments_make_team_buchholz_bp($round_no) {
 	// @todo
 	// check if there's a correction here as well
 	//			, SUM(IF((gegners_paarungen.kampflos = 1), 1, gegners_paarungen.brettpunkte))
@@ -365,6 +421,43 @@ function mf_tournaments_make_team_buchholz_bp($event_id, $runde_no) {
 		AND tabellenstaende_termine_view.runde_no = %d
 		GROUP BY tabellenstaende_termine_view.team_id
 		ORDER BY buchholz DESC';
-	$sql = sprintf($sql, $runde_no);
+	$sql = sprintf($sql, $round_no);
 	return wrap_db_fetch($sql, '_dummy_', 'key/value');
 }
+
+/**
+ * calculate wins for team tournaments
+ *
+ * @param int $round_no
+ * @return array list team_id => value
+ */
+function mf_tournaments_make_team_sw($round_no) {
+	$sql = 'SELECT team_id, gewonnen
+		FROM tabellenstaende_guv_view
+		WHERE runde_no = %d
+		ORDER BY gewonnen DESC, team_id';
+	$sql = sprintf($sql, $round_no);
+	return wrap_db_fetch($sql, 'team_id', 'key/value');
+}
+
+/**
+ * calculate berlin rating for team tournaments
+ *
+ * @param int $round_no
+ * @return array list team_id => value
+ */
+function mf_tournaments_make_team_bw($round_no) {
+	$sql = 'SELECT team_id, SUM(CASE ergebnis
+				WHEN 1 THEN ((1 + tournaments.bretter_min) - results.brett_no)
+				WHEN 0.5 THEN (((1 + tournaments.bretter_min) - results.brett_no) / 2)
+				WHEN 0 THEN 0 END
+			) AS rating
+		FROM partien_ergebnisse_view results
+		LEFT JOIN tournaments USING (event_id)
+		WHERE runde_no <= %d
+		GROUP BY team_id
+		ORDER BY rating DESC, team_id';
+	$sql = sprintf($sql, $round_no);
+	return wrap_db_fetch($sql, 'team_id', 'key/value');
+}
+

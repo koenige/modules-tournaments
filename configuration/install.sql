@@ -356,25 +356,3 @@ CREATE OR REPLACE VIEW `buchholz_view` AS
 	SELECT `buchholz_mit_kampflosen_view`.`event_id`, `buchholz_mit_kampflosen_view`.`team_id`, `buchholz_mit_kampflosen_view`.`runde_no`, IFNULL(SUM(`buchholz_mit_kampflosen_view`.`buchholz_mit_korrektur`),0) AS `buchholz_mit_korrektur`, IFNULL(SUM(`buchholz_mit_kampflosen_view`.`buchholz`),0) AS `buchholz`
 	FROM `buchholz_mit_kampflosen_view`
 	GROUP BY `event_id`, `team_id`, `runde_no`;
-
-
-CREATE OR REPLACE VIEW `tabellenstaende_view` AS
-	SELECT `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`, `turniere_wertungen`.`reihenfolge` AS `reihenfolge`, `turniere_wertungen`.`wertung_category_id` AS `wertung_category_id`,
-		(CASE `turniere_wertungen`.`wertung_category_id`
-			WHEN 144 THEN SUM(`paarungen_ergebnisse_view`.`mannschaftspunkte`)
-			WHEN 145 THEN SUM(`paarungen_ergebnisse_view`.`brettpunkte`)
-			WHEN 146 THEN (SELECT `buchholz_view`.`buchholz_mit_korrektur` FROM `buchholz_view` WHERE ((`buchholz_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) AND (`buchholz_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) AND (`buchholz_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`)))
-			WHEN 215 THEN (SELECT `buchholz_view`.`buchholz` FROM `buchholz_view` WHERE ((`buchholz_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) AND (`buchholz_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) AND (`buchholz_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`)))
-			WHEN 147 THEN (SELECT SUM((CASE `partien_ergebnisse_view`.`ergebnis` WHEN 1 THEN ((1 + `tournaments`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) WHEN 0.5 THEN (((1 + `tournaments`.`bretter_min`) - `partien_ergebnisse_view`.`brett_no`) / 2) WHEN 0 THEN 0 END)) AS `berliner_wertung` FROM `partien_ergebnisse_view` WHERE ((`partien_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) AND (`partien_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`) AND (`partien_ergebnisse_view`.`team_id` = `paarungen_ergebnisse_view`.`team_id`)))
-			WHEN 150 THEN (SELECT `tabellenstaende_guv_view`.`gewonnen` FROM `tabellenstaende_guv_view` WHERE ((`tabellenstaende_guv_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`) AND (`tabellenstaende_guv_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`) AND (`tabellenstaende_guv_view`.`runde_no` = `tabellenstaende_termine_view`.`runde_no`)))
-		END) AS `wertung`
-	FROM `paarungen_ergebnisse_view`
-	LEFT JOIN `tabellenstaende_termine_view`
-		ON `paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`
-		AND `paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`
-		AND `paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`
-	LEFT JOIN `tournaments`
-		ON `tournaments`.`event_id` = `tabellenstaende_termine_view`.`event_id`
-	LEFT JOIN `turniere_wertungen`
-		ON `turniere_wertungen`.`tournament_id` = `tournaments`.`tournament_id`
-	GROUP BY `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`, `turniere_wertungen`.`reihenfolge`, `turniere_wertungen`.`wertung_category_id`,`paarungen_ergebnisse_view`.`team_id`;
