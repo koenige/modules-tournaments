@@ -296,7 +296,7 @@ function mod_tournaments_team_public($page, $data) {
 				, schwarz_person_id
 				, IF(partiestatus_category_id = %d, 1, NULL) AS haengepartie
 				, category AS partiestatus
-				, IF(pgn, IF(partiestatus_category_id != %d, 1, NULL), NULL) AS pgn
+				, IF(NOT ISNULL(pgn), IF(partiestatus_category_id != %d, 1, NULL), NULL) AS pgn
 				, schwarz_status.t_dwz AS schwarz_dwz
 				, schwarz_status.t_elo AS schwarz_elo
 				, weiss_status.t_dwz AS weiss_dwz
