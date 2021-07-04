@@ -58,11 +58,11 @@ function mod_tournaments_tournamentmap($vars) {
 		LEFT JOIN categories
 			ON events.series_category_id = categories.category_id
 		LEFT JOIN contacts
-			ON teilnahmen.verein_org_id = contacts.org_id
+			ON teilnahmen.club_contact_id = contacts.contact_id
 		LEFT JOIN teams USING (team_id)
 		WHERE IFNULL(events.event_year, YEAR(events.date_begin)) = %d
 		AND (ISNULL(teams.team_id) OR teams.meldung = "komplett" OR teams.meldung = "teiloffen")
-		AND NOT ISNULL(teilnahmen.verein_org_id)
+		AND NOT ISNULL(teilnahmen.club_contact_id)
 		AND categories.main_category_id = %d
 		AND usergroup_id = %d
 		%s';
@@ -117,9 +117,14 @@ function mod_tournaments_tournamentmap_json($params) {
 		';
 		$org_ids = wrap_db_children($org_ids, $sql);
 		if (!$org_ids) return false;
+		
+		$sql = 'SELECT contact_id FROM contacts
+			WHERE org_id IN (%s)';
+		$sql = sprintf($sql, implode(',', $org_ids));
+		$contact_ids = wrap_db_fetch($sql, 'contact_id', 'single value');
 	}
 
-	$sql = 'SELECT contacts.org_id
+	$sql = 'SELECT contacts.contact_id
 			, contacts.contact, contacts.website, longitude, latitude
 			, ok.identifier AS zps_code, contacts.identifier
 		FROM contacts
@@ -138,13 +143,13 @@ function mod_tournaments_tournamentmap_json($params) {
 	$sql = sprintf($sql,
 		wrap_category_id('kennungen/zps')
 	);
-	$organisationen = wrap_db_fetch($sql, 'org_id');
+	$organisationen = wrap_db_fetch($sql, 'contact_id');
 
 	$sql = 'SELECT teilnahmen.teilnahme_id AS tt_id
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
 			, CONCAT(event, " ", IFNULL(events.event_year, YEAR(events.date_begin))) AS turniername
 			, zps.identifier AS zps_code
-			, IFNULL(teilnahmen.verein_org_id, teams.verein_org_id) AS verein_org_id
+			, IFNULL(teilnahmen.club_contact_id, teams.club_contact_id) AS club_contact_id
 			, fide.identifier AS fide_id
 			, t_verein AS verein
 			, t_dwz AS dwz, t_elo AS elo
@@ -181,30 +186,30 @@ function mod_tournaments_tournamentmap_json($params) {
 		wrap_category_id('kennungen/fide-id'),
 		wrap_db_escape($params[1]), $params[0],
 		wrap_id('usergroups', 'spieler'),
-		$federation ? sprintf(' AND (teilnahmen.verein_org_id IN (%s) OR teams.verein_org_id IN (%s)) ', implode(',', $org_ids), implode(',', $org_ids)) : ''
+		$federation ? sprintf(' AND (teilnahmen.club_contact_id IN (%s) OR teams.club_contact_id IN (%s)) ', implode(',', $contact_ids), implode(',', $contact_ids)) : ''
 	);
 	$spieler = wrap_db_fetch($sql, 'tt_id');
 
 	foreach ($spieler as $id => $person) {
-		if (!empty($organisationen[$person['verein_org_id']])) {
-			$spieler[$id] = array_merge($person, $organisationen[$person['verein_org_id']]);
+		if (!empty($organisationen[$person['club_contact_id']])) {
+			$spieler[$id] = array_merge($person, $organisationen[$person['club_contact_id']]);
 		}
-		if (empty($spieler[$id]['latitude']) AND !empty($person['verein_org_id'])) {
+		if (empty($spieler[$id]['latitude']) AND !empty($person['club_contact_id'])) {
 			if ($person['year'] > date('Y') - 6) {
 				// just log errors for players in the last 6 years
 				wrap_log(sprintf(
 					'Keine Koordinaten für Verein %s (Org-ID %s), Spieler %s beim Turnier %s.', 
 					(isset($spieler[$id]['contact']) ? $spieler[$id]['contact'] : 'unbekannt'),
-					$person['verein_org_id'], $spieler[$id]['spieler'], $spieler[$id]['turniername']
+					$person['club_contact_id'], $spieler[$id]['spieler'], $spieler[$id]['turniername']
 				));
 			}
 		}
 	}
 	$data = [];
 	foreach ($spieler as $person) {
-		if (empty($person['org_id'])) continue;
-		if (empty($data[$person['org_id']])) {
-			$data[$person['org_id']] = [
+		if (empty($person['contact_id'])) continue;
+		if (empty($data[$person['contact_id']])) {
+			$data[$person['contact_id']] = [
 				'title' => $person['contact'],
 				'style' => 'verein',
 				'website' => $person['website'],
@@ -215,7 +220,7 @@ function mod_tournaments_tournamentmap_json($params) {
 				'spieler' => []
 			];
 		}
-		$data[$person['org_id']]['spieler'][] = [
+		$data[$person['contact_id']]['spieler'][] = [
 			'spieler' => $person['spieler'],
 			'zps_code' => !empty($person['Mgl_Nr']) ? $person['zps']."-".$person['Mgl_Nr'] : $person['zps_code'],
 			'dwz' => $person['dwz'],

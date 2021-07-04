@@ -532,7 +532,7 @@ function mf_tournaments_federations($data, $id_field) {
 	foreach ($data as $line) {
 		$contact_ids[$line[$id_field]] = $line['contact_id'];
 	}
-	$sql = 'SELECT vereine.org_id AS contact_id, country, landesverbaende.contact_abbr
+	$sql = 'SELECT vereine.contact_id, country, landesverbaende.contact_abbr
 	    FROM contacts vereine
 		LEFT JOIN organisationen_kennungen
 			ON organisationen_kennungen.org_id = vereine.org_id
@@ -544,7 +544,7 @@ function mf_tournaments_federations($data, $id_field) {
 			ON landesverbaende.org_id = lv_kennungen.org_id
 		LEFT JOIN countries
 			ON landesverbaende.country_id = countries.country_id
-	    WHERE vereine.org_id IN (%s)';
+	    WHERE vereine.contact_id IN (%s)';
 	$sql = sprintf($sql, implode(',', $contact_ids));
 	$federations = wrap_db_fetch($sql, 'contact_id');
 	foreach ($contact_ids as $id_field => $contact_id) {

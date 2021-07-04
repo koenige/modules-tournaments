@@ -112,7 +112,7 @@ function mod_tournaments_standings($vars) {
 			FROM tabellenstaende
 			JOIN teams USING (team_id)
 			LEFT JOIN contacts
-				ON teams.verein_org_id = contacts.org_id
+				ON teams.club_contact_id = contacts.contact_id
 			LEFT JOIN organisationen_kennungen v_ok
 				ON v_ok.org_id = contacts.org_id
 				AND v_ok.current = "yes"
@@ -160,7 +160,7 @@ function mod_tournaments_standings($vars) {
 			LEFT JOIN personen
 				ON tabellenstaende.person_id = personen.person_id
 			LEFT JOIN contacts organisationen
-				ON teilnahmen.verein_org_id = organisationen.org_id
+				ON teilnahmen.club_contact_id = organisationen.contact_id
 			LEFT JOIN organisationen_kennungen v_ok
 				ON v_ok.org_id = organisationen.org_id
 				AND v_ok.current = "yes"

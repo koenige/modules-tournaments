@@ -101,7 +101,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 				AND teilnahmen.usergroup_id = %d
 				AND teilnahmen.teilnahme_status = "Teilnehmer"
 				AND (ISNULL(team_id) OR teams.meldung = "teiloffen" OR teams.meldung = "komplett")
-				AND (NOT ISNULL(teilnahmen.verein_org_id))
+				AND (NOT ISNULL(teilnahmen.club_contact_id))
 			) AS spieler_mit_verein
 			, (SELECT COUNT(kontingent_id) FROM kontingente WHERE kontingente.event_id = events.event_id) AS kontingente
 			, tournament_id, main_tournament_id

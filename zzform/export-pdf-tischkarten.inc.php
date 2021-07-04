@@ -179,7 +179,7 @@ function mf_tournaments_export_pdf_tischkarten_team($ops) {
 	$sql = 'SELECT team_id
 			, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS name
 			, event AS usergroup
-			, verein_org_id AS contact_id
+			, club_contact_id AS contact_id
 			, categories.parameters
 	    FROM teams
 	    LEFT JOIN events USING (event_id)

@@ -115,7 +115,7 @@ CREATE TABLE `tabellenstaende_wertungen` (
 CREATE TABLE `teams` (
   `team_id` int unsigned NOT NULL AUTO_INCREMENT,
   `event_id` int unsigned NOT NULL,
-  `verein_org_id` int unsigned DEFAULT NULL,
+  `club_contact_id` int unsigned DEFAULT NULL,
   `team` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `team_no` varchar(7) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `kennung` varchar(63) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
@@ -139,7 +139,7 @@ CREATE TABLE `teams` (
   UNIQUE KEY `meldung_hash` (`meldung_hash`),
   UNIQUE KEY `kennung` (`kennung`),
   KEY `termin_id` (`event_id`),
-  KEY `verein_org_id` (`verein_org_id`),
+  KEY `club_contact_id` (`club_contact_id`),
   KEY `berechtigung_kategorie_id` (`berechtigung_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

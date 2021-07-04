@@ -31,20 +31,23 @@ $zz['fields'][2]['if']['where']['hide_in_form'] = true;
 $zz['fields'][2]['if']['where']['hide_in_list'] = true;
 
 $zz['fields'][3]['title'] = 'Organisation';
-$zz['fields'][3]['field_name'] = 'verein_org_id';
+$zz['fields'][3]['field_name'] = 'club_contact_id';
 $zz['fields'][3]['type'] = 'select';
-$zz['fields'][3]['sql'] = 'SELECT contacts.org_id, contact
+$zz['fields'][3]['sql'] = 'SELECT contacts.contact_id, contact
 		, organisationen_kennungen.identifier AS zps_code
 	FROM contacts
 	LEFT JOIN organisationen_kennungen
 		ON organisationen_kennungen.org_id = contacts.org_id
 		AND organisationen_kennungen.current = "yes"
+	LEFT JOIN categories
+		ON contacts.contact_category_id = categories.category_id
+	WHERE categories.parameters LIKE "%&organisation=1%"
 	ORDER BY organisationen_kennungen.identifier, contact_abbr';
 $zz['fields'][3]['display_field'] = 'organisation';
-$zz['fields'][3]['id_field_name'] = 'contacts.org_id';
+$zz['fields'][3]['id_field_name'] = 'contacts.contact_id';
 $zz['fields'][3]['search'] = 'vereine.contact';
 $zz['fields'][3]['character_set'] = 'utf8';
-$zz['fields'][3]['sql_fieldnames_ignore'] = ['contacts.org_id'];
+$zz['fields'][3]['sql_fieldnames_ignore'] = ['contacts.contact_id'];
 $zz['fields'][3]['hide_in_list'] = true;
 $zz['fields'][3]['add_details'] = '/intern/db/organisationen';
 
@@ -60,7 +63,7 @@ $zz['fields'][4]['unless']['export_mode']['list_prefix'] = '<strong>';
 $zz['fields'][4]['if'][1]['link'] = false;
 $zz['fields'][4]['function'] = 'my_teamname';
 $zz['fields'][4]['explanation'] = 'Falls leer, wird hier Name der Organisation genommen.';
-$zz['fields'][4]['fields'] = ['team', 'verein_org_id', 'team_no'];
+$zz['fields'][4]['fields'] = ['team', 'club_contact_id', 'team_no'];
 $zz['fields'][4]['required'] = false;
 
 $zz['fields'][5]['field_name'] = 'team_no';
@@ -368,7 +371,7 @@ $zz['sql'] = 'SELECT teams.*
 	LEFT JOIN categories
 		ON teams.berechtigung_category_id = categories.category_id
 	LEFT JOIN contacts vereine
-		ON teams.verein_org_id = vereine.org_id
+		ON teams.club_contact_id = vereine.contact_id
 	LEFT JOIN organisationen_kennungen
 		ON organisationen_kennungen.org_id = vereine.org_id
 		AND organisationen_kennungen.current = "yes"

@@ -347,7 +347,7 @@ function mod_tournaments_make_swtimport_teams($event, $tournament) {
 							$values['POST']['team'], 0, -strlen($values['POST']['team_no'])
 						));
 					}
-					$values['POST']['verein_org_id'] = $verein['org_id'];
+					$values['POST']['club_contact_id'] = $verein['contact_id'];
 				}
 			}
 			$values['POST']['meldung'] = 'komplett'; // @todo evtl. auf NULL setzen
@@ -356,7 +356,7 @@ function mod_tournaments_make_swtimport_teams($event, $tournament) {
 		$values['POST']['team_status'] = 'Teilnehmer';
 		$values['POST']['setzliste_no'] = $team[1012];
 		$values['POST']['fremdschluessel'] = $team[1012];
-		$values['ids'] = ['event_id', 'verein_org_id', 'team_id'];
+		$values['ids'] = ['event_id', 'club_contact_id', 'team_id'];
 		$ops = zzform_multi('teams', $values);
 		if (!$ops['id']) {
 			wrap_error(sprintf('Team %s (Key: %s) konnte nicht hinzugefügt werden.',
@@ -655,7 +655,7 @@ function mod_tournaments_make_swtimport_teilnahmen($event, $spielerliste, $ids) 
 			$verein = mod_tournaments_make_swtimport_verein_name($spieler[2001]);
 		}
 		if ($verein) {
-			$values['POST']['verein_org_id'] = $verein['org_id'];
+			$values['POST']['club_contact_id'] = $verein['contact_id'];
 		} elseif (!$spieler[2010]) {
 			// Notice senden, falls keine ZPS-Nr. für Verein gefunden wird;
 			// kann korrekt sein bspw. bei Schulmannschaften
@@ -690,7 +690,7 @@ function mod_tournaments_make_swtimport_teilnahmen($event, $spielerliste, $ids) 
 		$values['POST']['teilnahme_status'] = 'Teilnehmer';
 		$values['POST']['fremdschluessel'] = hexdec($spieler[2020]);
 		$values['ids'] = [
-			'usergroup_id', 'event_id', 'team_id', 'person_id', 'verein_org_id'
+			'usergroup_id', 'event_id', 'team_id', 'person_id', 'club_contact_id'
 		];
 		$ops = zzform_multi('teilnahmen', $values);
 		if (!$ops['id']) {
@@ -1157,22 +1157,22 @@ function mod_tournaments_make_swtimport_verein($team, $spielerliste) {
  *
  * @param string $zps
  * @return array
- *		int 'org_id', string 'contact'
+ *		int 'contact_id', string 'contact'
  */
 function mod_tournaments_make_swtimport_verein_zps($zps) {
-	$sql = 'SELECT org_id, contact
+	$sql = 'SELECT contact_id, contact
 		FROM contacts
 		LEFT JOIN organisationen_kennungen ok
-			USING (org_id)
+			USING (contact_id)
 		WHERE ok.identifier = "%s"
 		AND current = "yes"';
 	$sql = sprintf($sql, wrap_db_escape($zps));
 	$verein = wrap_db_fetch($sql);
 	if (!$verein) {
-		$sql = 'SELECT org_id, contact
+		$sql = 'SELECT contact_id, contact
 			FROM contacts
 			LEFT JOIN organisationen_kennungen ok
-				USING (org_id)
+				USING (contact_id)
 			WHERE ok.identifier = "%s"';
 		$sql = sprintf($sql, wrap_db_escape($zps));
 		$verein = wrap_db_fetch($sql);
@@ -1193,7 +1193,7 @@ function mod_tournaments_make_swtimport_verein_zps($zps) {
  * @return array
  */
 function mod_tournaments_make_swtimport_verein_name($verein) {
-	$sql = 'SELECT org_id, contact
+	$sql = 'SELECT contact_id, contact
 		FROM contacts
 		WHERE contact LIKE "%%%s%%"';
 	$sql = sprintf($sql, wrap_db_escape($verein));

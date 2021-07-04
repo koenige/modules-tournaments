@@ -29,7 +29,7 @@ function mod_tournaments_team($vars, $settings) {
 			, datum_abreise, TIME_FORMAT(uhrzeit_abreise, "%%H:%%i") AS uhrzeit_abreise
 			, setzliste_no
 			, platz_no
-			, v_ok.identifier AS zps_code, contacts.org_id
+			, v_ok.identifier AS zps_code, contacts.org_id, contacts.contact_id
 			, teams.kennung AS team_identifier
 			, SUBSTRING_INDEX(teams.kennung, "/", -1) AS team_identifier_short
 			, meldung_datum, regionalgruppe
@@ -47,7 +47,7 @@ function mod_tournaments_team($vars, $settings) {
 			, teams.team_status
 		FROM teams
 		LEFT JOIN contacts
-			ON teams.verein_org_id = contacts.org_id
+			ON teams.club_contact_id = contacts.contact_id
 		LEFT JOIN organisationen_kennungen v_ok
 			ON v_ok.org_id = contacts.org_id AND v_ok.current = "yes"
 		LEFT JOIN organisationen_kennungen lv_ok
@@ -473,7 +473,7 @@ function mod_tournaments_team_intern($page, $data) {
 	$data = array_merge($data, my_team_buchungen($data['team_id'], $data));
 
 	// Team + Vereinsbetreuer auslesen
-	$data = array_merge($data, my_team_teilnehmer([$data['team_id'] => $data['org_id']], $data));
+	$data = array_merge($data, my_team_teilnehmer([$data['team_id'] => $data['contact_id']], $data));
 
 	$data['komplett'] = my_team_meldung_komplett($data);
 	if ($data['meldung'] === 'komplett') $data['pdfupload'] = true;

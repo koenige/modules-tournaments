@@ -294,7 +294,7 @@ function mod_tournaments_tournament($vars, $settings) {
 				ON tabellenstaende_wertungen.tabellenstand_id = tabellenstaende.tabellenstand_id
 				AND tabellenstaende_wertungen.wertung_category_id = %d
 			LEFT JOIN contacts organisationen
-				ON teilnahmen.verein_org_id = organisationen.org_id
+				ON teilnahmen.club_contact_id = organisationen.contact_id
 			LEFT JOIN organisationen_kennungen v_ok
 				ON v_ok.org_id = organisationen.org_id AND v_ok.current = "yes"
 			LEFT JOIN organisationen_kennungen lv_ok
@@ -339,7 +339,7 @@ function mod_tournaments_tournament($vars, $settings) {
 				, platz_no, tabellenstand_id
 			FROM teams
 			LEFT JOIN contacts organisationen
-				ON teams.verein_org_id = organisationen.org_id
+				ON teams.club_contact_id = organisationen.contact_id
 			LEFT JOIN organisationen_kennungen v_ok
 				ON v_ok.org_id = organisationen.org_id AND v_ok.current = "yes"
 			LEFT JOIN organisationen_kennungen lv_ok
