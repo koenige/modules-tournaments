@@ -32,7 +32,7 @@ function mod_tournaments_tournamentmap($vars) {
 		$sql = 'SELECT org_id
 				, contact, identifier AS org_kennung, contact_short
 				, country_id
-			FROM organisationen
+			FROM contacts
 			WHERE identifier = "%s"
 			AND mutter_org_id = %d';
 		$sql = sprintf($sql
@@ -43,7 +43,7 @@ function mod_tournaments_tournamentmap($vars) {
 		if (!$federation) return false;
 		$org_ids[] = $federation['org_id'];
 		$sql = 'SELECT org_id
-			FROM organisationen
+			FROM contacts
 			WHERE mutter_org_id IN (%s)
 		';
 		$org_ids = wrap_db_children($org_ids, $sql);
@@ -57,8 +57,8 @@ function mod_tournaments_tournamentmap($vars) {
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories
 			ON events.series_category_id = categories.category_id
-		LEFT JOIN organisationen
-			ON teilnahmen.verein_org_id = organisationen.org_id
+		LEFT JOIN contacts
+			ON teilnahmen.verein_org_id = contacts.org_id
 		LEFT JOIN teams USING (team_id)
 		WHERE IFNULL(events.event_year, YEAR(events.date_begin)) = %d
 		AND (ISNULL(teams.team_id) OR teams.meldung = "komplett" OR teams.meldung = "teiloffen")
@@ -107,31 +107,31 @@ function mod_tournaments_tournamentmap_json($params) {
 
 	if ($federation) {
 		$sql = 'SELECT org_id
-			FROM organisationen
+			FROM contacts
 			WHERE identifier = "%s"';
 		$sql = sprintf($sql, wrap_db_escape($federation));
 		$org_ids = wrap_db_fetch($sql);
 		$sql = 'SELECT org_id
-			FROM organisationen
+			FROM contacts
 			WHERE mutter_org_id IN (%s)
 		';
 		$org_ids = wrap_db_children($org_ids, $sql);
 		if (!$org_ids) return false;
 	}
 
-	$sql = 'SELECT organisationen.org_id
-			, organisationen.contact, organisationen.website, longitude, latitude
-			, ok.identifier AS zps_code, organisationen.identifier
-		FROM organisationen
+	$sql = 'SELECT contacts.org_id
+			, contacts.contact, contacts.website, longitude, latitude
+			, ok.identifier AS zps_code, contacts.identifier
+		FROM contacts
 		LEFT JOIN organisationen_orte USING (org_id)
 		LEFT JOIN contacts places
 			ON organisationen_orte.contact_id = places.contact_id
 		LEFT JOIN addresses
 			ON places.contact_id = addresses.contact_id
 		LEFT JOIN organisationen_kennungen ok
-			ON ok.org_id = organisationen.org_id AND current = "yes"
+			ON ok.org_id = contacts.org_id AND current = "yes"
 			AND identifier_category_id = %d
-		WHERE NOT ISNULL(organisationen.contact)
+		WHERE NOT ISNULL(contacts.contact)
 		AND organisationen_orte.published = "yes"
 		ORDER BY ok.identifier
 	';

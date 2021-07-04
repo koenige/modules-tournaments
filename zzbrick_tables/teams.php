@@ -33,18 +33,18 @@ $zz['fields'][2]['if']['where']['hide_in_list'] = true;
 $zz['fields'][3]['title'] = 'Organisation';
 $zz['fields'][3]['field_name'] = 'verein_org_id';
 $zz['fields'][3]['type'] = 'select';
-$zz['fields'][3]['sql'] = 'SELECT organisationen.org_id, contact
+$zz['fields'][3]['sql'] = 'SELECT contacts.org_id, contact
 		, organisationen_kennungen.identifier AS zps_code
-	FROM organisationen
+	FROM contacts
 	LEFT JOIN organisationen_kennungen
-		ON organisationen_kennungen.org_id = organisationen.org_id
+		ON organisationen_kennungen.org_id = contacts.org_id
 		AND organisationen_kennungen.current = "yes"
 	ORDER BY organisationen_kennungen.identifier, contact_abbr';
 $zz['fields'][3]['display_field'] = 'organisation';
-$zz['fields'][3]['id_field_name'] = 'organisationen.org_id';
+$zz['fields'][3]['id_field_name'] = 'contacts.org_id';
 $zz['fields'][3]['search'] = 'vereine.contact';
 $zz['fields'][3]['character_set'] = 'utf8';
-$zz['fields'][3]['sql_fieldnames_ignore'] = ['organisationen.org_id'];
+$zz['fields'][3]['sql_fieldnames_ignore'] = ['contacts.org_id'];
 $zz['fields'][3]['hide_in_list'] = true;
 $zz['fields'][3]['add_details'] = '/intern/db/organisationen';
 
@@ -367,7 +367,7 @@ $zz['sql'] = 'SELECT teams.*
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories
 		ON teams.berechtigung_category_id = categories.category_id
-	LEFT JOIN organisationen vereine
+	LEFT JOIN contacts vereine
 		ON teams.verein_org_id = vereine.org_id
 	LEFT JOIN organisationen_kennungen
 		ON organisationen_kennungen.org_id = vereine.org_id
@@ -375,7 +375,7 @@ $zz['sql'] = 'SELECT teams.*
 	LEFT JOIN organisationen_kennungen lv_kennungen
 		ON CONCAT(SUBSTRING(organisationen_kennungen.identifier, 1, 1), "00") = lv_kennungen.identifier 
 		AND lv_kennungen.current = "yes"
-	LEFT JOIN organisationen landesverbaende
+	LEFT JOIN contacts landesverbaende
 		ON landesverbaende.org_id = lv_kennungen.org_id
 	LEFT JOIN regionalgruppen 
 		ON landesverbaende.org_id = regionalgruppen.landesverband_org_id

@@ -453,7 +453,8 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 			ON places.contact_category_id = place_categories.category_id
 		LEFT JOIN addresses
 			ON events.place_contact_id = addresses.contact_id
-		LEFT JOIN countries USING (country_id)
+		LEFT JOIN countries
+			ON addresses.country_id = countries.country_id
 		LEFT JOIN paarungen USING (paarung_id)
 		LEFT JOIN teams heim_teams
 			ON paarungen.heim_team_id = heim_teams.team_id

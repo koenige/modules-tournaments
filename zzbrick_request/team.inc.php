@@ -29,13 +29,13 @@ function mod_tournaments_team($vars, $settings) {
 			, datum_abreise, TIME_FORMAT(uhrzeit_abreise, "%%H:%%i") AS uhrzeit_abreise
 			, setzliste_no
 			, platz_no
-			, v_ok.identifier AS zps_code, organisationen.org_id
+			, v_ok.identifier AS zps_code, contacts.org_id
 			, teams.kennung AS team_identifier
 			, SUBSTRING_INDEX(teams.kennung, "/", -1) AS team_identifier_short
 			, meldung_datum, regionalgruppe
 			, meldung
-			, organisationen.website, organisationen.contact
-			, organisationen.identifier AS organisation_kennung
+			, contacts.website, contacts.contact
+			, contacts.identifier AS organisation_kennung
 			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, country
@@ -46,21 +46,21 @@ function mod_tournaments_team($vars, $settings) {
 				AND tournaments.tabellenstand_runde_no = tournaments.runden, 1, NULL) AS endstand 
 			, teams.team_status
 		FROM teams
-		LEFT JOIN organisationen
-			ON teams.verein_org_id = organisationen.org_id
+		LEFT JOIN contacts
+			ON teams.verein_org_id = contacts.org_id
 		LEFT JOIN organisationen_kennungen v_ok
-			ON v_ok.org_id = organisationen.org_id AND v_ok.current = "yes"
+			ON v_ok.org_id = contacts.org_id AND v_ok.current = "yes"
 		LEFT JOIN organisationen_kennungen lv_ok
 			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
-		LEFT JOIN organisationen landesverbaende
+		LEFT JOIN contacts landesverbaende
 			ON lv_ok.org_id = landesverbaende.org_id
 			AND landesverbaende.mutter_org_id = %d
 		LEFT JOIN countries
-			ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
+			ON IFNULL(landesverbaende.country_id, contacts.country_id) 
 				= countries.country_id
 		LEFT JOIN regionalgruppen
 			ON regionalgruppen.landesverband_org_id = landesverbaende.org_id
-		LEFT JOIN organisationen landesverbaende_rueckwaerts
+		LEFT JOIN contacts landesverbaende_rueckwaerts
 			ON countries.country_id = landesverbaende_rueckwaerts.country_id
 			AND landesverbaende_rueckwaerts.contact_category_id = %d
 			AND landesverbaende_rueckwaerts.mutter_org_id = %d
@@ -173,7 +173,7 @@ function mod_tournaments_team_public($page, $data) {
 		LEFT JOIN addresses USING (contact_id)
 		LEFT JOIN organisationen_orte
 			ON organisationen_orte.contact_id = contacts.contact_id
-		WHERE org_id = %d
+		WHERE organisationen_orte.org_id = %d
 		AND organisationen_orte.published = "yes"
 		ORDER BY contacts.contact_id LIMIT 1';
 	$sql = sprintf($sql, $data['org_id']);

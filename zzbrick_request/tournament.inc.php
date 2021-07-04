@@ -67,7 +67,7 @@ function mod_tournaments_tournament($vars, $settings) {
 			, main_tournament_id
 		FROM events
 		LEFT JOIN websites USING (website_id)
-		LEFT JOIN organisationen website_org USING (org_id)
+		LEFT JOIN contacts website_org USING (org_id)
 		LEFT JOIN categories event_categories
 			ON events.event_category_id = event_categories.category_id
 		LEFT JOIN tournaments USING (event_id)
@@ -158,11 +158,11 @@ function mod_tournaments_tournament($vars, $settings) {
 
 	$sql = 'SELECT event_contact_id
 			, contact
-			, organisationen.website AS website
+			, contacts.website AS website
 			, category AS rolle
 		FROM events_contacts
-		LEFT JOIN organisationen
-			ON organisationen.org_id = events_contacts.org_id
+		LEFT JOIN contacts
+			ON contacts.org_id = events_contacts.org_id
 		LEFT JOIN categories
 			ON categories.category_id = events_contacts.role_category_id
 		WHERE event_id = %d
@@ -293,19 +293,19 @@ function mod_tournaments_tournament($vars, $settings) {
 			LEFT JOIN tabellenstaende_wertungen
 				ON tabellenstaende_wertungen.tabellenstand_id = tabellenstaende.tabellenstand_id
 				AND tabellenstaende_wertungen.wertung_category_id = %d
-			LEFT JOIN organisationen
+			LEFT JOIN contacts organisationen
 				ON teilnahmen.verein_org_id = organisationen.org_id
 			LEFT JOIN organisationen_kennungen v_ok
 				ON v_ok.org_id = organisationen.org_id AND v_ok.current = "yes"
 			LEFT JOIN organisationen_kennungen lv_ok
 				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
-			LEFT JOIN organisationen landesverbaende
+			LEFT JOIN contacts landesverbaende
 				ON lv_ok.org_id = landesverbaende.org_id
 				AND landesverbaende.mutter_org_id = %d
 			LEFT JOIN countries
 				ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
 					= countries.country_id
-			LEFT JOIN organisationen landesverbaende_rueckwaerts
+			LEFT JOIN contacts landesverbaende_rueckwaerts
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
 				AND landesverbaende_rueckwaerts.contact_category_id = %d
 				AND landesverbaende_rueckwaerts.mutter_org_id = %d
@@ -338,19 +338,19 @@ function mod_tournaments_tournament($vars, $settings) {
 				, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 				, platz_no, tabellenstand_id
 			FROM teams
-			LEFT JOIN organisationen
+			LEFT JOIN contacts organisationen
 				ON teams.verein_org_id = organisationen.org_id
 			LEFT JOIN organisationen_kennungen v_ok
 				ON v_ok.org_id = organisationen.org_id AND v_ok.current = "yes"
 			LEFT JOIN organisationen_kennungen lv_ok
 				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
-			LEFT JOIN organisationen landesverbaende
+			LEFT JOIN contacts landesverbaende
 				ON lv_ok.org_id = landesverbaende.org_id
 				AND landesverbaende.mutter_org_id = %d
 			LEFT JOIN countries
 				ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
 					= countries.country_id
-			LEFT JOIN organisationen landesverbaende_rueckwaerts
+			LEFT JOIN contacts landesverbaende_rueckwaerts
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
 				AND landesverbaende_rueckwaerts.contact_category_id = %d
 				AND landesverbaende_rueckwaerts.mutter_org_id = %d

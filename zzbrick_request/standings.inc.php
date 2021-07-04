@@ -111,21 +111,21 @@ function mod_tournaments_standings($vars) {
 				, team_status AS status
 			FROM tabellenstaende
 			JOIN teams USING (team_id)
-			LEFT JOIN organisationen
-				ON teams.verein_org_id = organisationen.org_id
+			LEFT JOIN contacts
+				ON teams.verein_org_id = contacts.org_id
 			LEFT JOIN organisationen_kennungen v_ok
-				ON v_ok.org_id = organisationen.org_id
+				ON v_ok.org_id = contacts.org_id
 				AND v_ok.current = "yes"
 			LEFT JOIN organisationen_kennungen lv_ok
 				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
 				AND lv_ok.current = "yes"
-			LEFT JOIN organisationen landesverbaende
+			LEFT JOIN contacts landesverbaende
 				ON lv_ok.org_id = landesverbaende.org_id
 				AND landesverbaende.mutter_org_id = %d
 			LEFT JOIN countries
-				ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
+				ON IFNULL(landesverbaende.country_id, contacts.country_id) 
 					= countries.country_id
-			LEFT JOIN organisationen landesverbaende_rueckwaerts
+			LEFT JOIN contacts landesverbaende_rueckwaerts
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
 				AND landesverbaende_rueckwaerts.contact_category_id = %d
 				AND landesverbaende_rueckwaerts.mutter_org_id = %d
@@ -159,7 +159,7 @@ function mod_tournaments_standings($vars) {
 				AND teilnahmen.usergroup_id = %d
 			LEFT JOIN personen
 				ON tabellenstaende.person_id = personen.person_id
-			LEFT JOIN organisationen
+			LEFT JOIN contacts organisationen
 				ON teilnahmen.verein_org_id = organisationen.org_id
 			LEFT JOIN organisationen_kennungen v_ok
 				ON v_ok.org_id = organisationen.org_id
@@ -167,13 +167,13 @@ function mod_tournaments_standings($vars) {
 			LEFT JOIN organisationen_kennungen lv_ok
 				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
 				AND lv_ok.current = "yes"
-			LEFT JOIN organisationen landesverbaende
+			LEFT JOIN contacts landesverbaende
 				ON lv_ok.org_id = landesverbaende.org_id
 				AND landesverbaende.mutter_org_id = %d
 			LEFT JOIN countries
 				ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
 					= countries.country_id
-			LEFT JOIN organisationen landesverbaende_rueckwaerts
+			LEFT JOIN contacts landesverbaende_rueckwaerts
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
 				AND landesverbaende_rueckwaerts.contact_category_id = %d
 				AND landesverbaende_rueckwaerts.mutter_org_id = %d

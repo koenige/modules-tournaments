@@ -35,7 +35,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 			, (SELECT COUNT(*) FROM categories WHERE categories.main_category_id = series.category_id) AS sub_series
 		FROM events
 		LEFT JOIN websites USING (website_id)
-		LEFT JOIN organisationen website_org USING (org_id)
+		LEFT JOIN contacts website_org USING (org_id)
 		JOIN events_websites
 			ON events.event_id = events_websites.event_id
 			AND events_websites.website_id = %d
