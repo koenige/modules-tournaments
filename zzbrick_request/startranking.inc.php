@@ -138,7 +138,7 @@ function mod_tournaments_startranking_single($event) {
 		LEFT JOIN contacts landesverbaende
 			ON lv_ok.org_id = landesverbaende.org_id
 			AND lv_ok.current = "yes"
-			AND landesverbaende.mutter_org_id = %d
+			AND landesverbaende.mother_contact_id = %d
 		LEFT JOIN countries
 			ON landesverbaende.country_id = countries.country_id
 		LEFT JOIN organisationen_orte
@@ -160,7 +160,7 @@ function mod_tournaments_startranking_single($event) {
 		AND teilnahme_status IN (%s"Teilnehmer", "disqualifiziert", "geblockt")
 		ORDER BY setzliste_no, IFNULL(t_dwz, t_elo) DESC, t_elo DESC, t_nachname, t_vorname';
 	$sql = sprintf($sql
-		, $zz_setting['org_ids']['dsb']
+		, $zz_setting['contact_ids']['dsb']
 		, $event['event_id']
 		, wrap_id('usergroups', 'spieler')
 		, ($event['date_end'] >= date('Y-m-d')) ? '"angemeldet", ' : ''
@@ -208,14 +208,14 @@ function mod_tournaments_startranking_team($event) {
 			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
 		LEFT JOIN contacts landesverbaende
 			ON lv_ok.org_id = landesverbaende.org_id
-			AND landesverbaende.mutter_org_id = %d
+			AND landesverbaende.mother_contact_id = %d
 		LEFT JOIN countries
 			ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
 				= countries.country_id
 		LEFT JOIN contacts landesverbaende_rueckwaerts
 			ON countries.country_id = landesverbaende_rueckwaerts.country_id
 			AND landesverbaende_rueckwaerts.contact_category_id = %d
-			AND landesverbaende_rueckwaerts.mutter_org_id = %d
+			AND landesverbaende_rueckwaerts.mother_contact_id = %d
 		LEFT JOIN organisationen_orte
 			ON organisationen_orte.org_id = organisationen.org_id
 			AND organisationen_orte.published = "yes"
@@ -233,9 +233,9 @@ function mod_tournaments_startranking_team($event) {
 		AND spielfrei = "nein"
 		ORDER BY setzliste_no, place, team';
 	$sql = sprintf($sql
-		, $zz_setting['org_ids']['dsb']
+		, $zz_setting['contact_ids']['dsb']
 		, wrap_category_id('contact/federation')
-		, $zz_setting['org_ids']['dsb']
+		, $zz_setting['contact_ids']['dsb']
 		, $event['event_id']
 	);
 	// @todo Klären, was passiert wenn mehr als 1 Ort zu Verein in Datenbank! (Reihenfolge-Feld einführen)

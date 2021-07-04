@@ -29,26 +29,26 @@ function mod_tournaments_tournamentmap($vars) {
 	if (!$event) return false;
 	
 	if ($federation) {
-		$sql = 'SELECT org_id
+		$sql = 'SELECT contact_id
 				, contact, identifier AS org_kennung, contact_short
 				, country_id
 			FROM contacts
 			WHERE identifier = "%s"
-			AND mutter_org_id = %d';
+			AND mother_contact_id = %d';
 		$sql = sprintf($sql
 			, wrap_db_escape($federation)
-			, $zz_setting['org_ids']['dsb']
+			, $zz_setting['contact_ids']['dsb']
 		);
 		$federation = wrap_db_fetch($sql);
 		if (!$federation) return false;
-		$org_ids[] = $federation['org_id'];
-		$sql = 'SELECT org_id
+		$contact_ids[] = $federation['contact_id'];
+		$sql = 'SELECT contact_id
 			FROM contacts
-			WHERE mutter_org_id IN (%s)
+			WHERE mother_contact_id IN (%s)
 		';
-		$org_ids = wrap_db_children($org_ids, $sql);
+		$contact_ids = wrap_db_children($contact_ids, $sql);
 		// no member organisations?
-		if (count($org_ids) === 1) return false;
+		if (count($contact_ids) === 1) return false;
 	}
 
 	// gibt es Teilnehmer?
@@ -70,8 +70,8 @@ function mod_tournaments_tournamentmap($vars) {
 		$event['year'], $event['series_category_id'],
 		wrap_id('usergroups', 'spieler'),
 		($federation ? sprintf(
-			'AND (org_id IN (%s) OR country_id = %d)',
-			implode(',', $org_ids), $federation['country_id']) : '')
+			'AND (contact_id IN (%s) OR country_id = %d)',
+			implode(',', $contact_ids), $federation['country_id']) : '')
 	);
 	$tn = wrap_db_fetch($sql, '', 'single value');
 	if (!$tn) return false;
@@ -106,21 +106,21 @@ function mod_tournaments_tournamentmap_json($params) {
 	if (count($params) !== 2) return false;
 
 	if ($federation) {
-		$sql = 'SELECT org_id
+		$sql = 'SELECT contact_id
 			FROM contacts
 			WHERE identifier = "%s"';
 		$sql = sprintf($sql, wrap_db_escape($federation));
-		$org_ids = wrap_db_fetch($sql);
-		$sql = 'SELECT org_id
+		$contact_ids = wrap_db_fetch($sql);
+		$sql = 'SELECT contact_id
 			FROM contacts
-			WHERE mutter_org_id IN (%s)
+			WHERE mother_contact_id IN (%s)
 		';
-		$org_ids = wrap_db_children($org_ids, $sql);
-		if (!$org_ids) return false;
+		$contact_ids = wrap_db_children($contact_ids, $sql);
+		if (!$contact_ids) return false;
 		
 		$sql = 'SELECT contact_id FROM contacts
-			WHERE org_id IN (%s)';
-		$sql = sprintf($sql, implode(',', $org_ids));
+			WHERE contact_id IN (%s)';
+		$sql = sprintf($sql, implode(',', $contact_ids));
 		$contact_ids = wrap_db_fetch($sql, 'contact_id', 'single value');
 	}
 

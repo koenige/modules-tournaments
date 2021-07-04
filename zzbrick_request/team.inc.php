@@ -54,7 +54,7 @@ function mod_tournaments_team($vars, $settings) {
 			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
 		LEFT JOIN contacts landesverbaende
 			ON lv_ok.org_id = landesverbaende.org_id
-			AND landesverbaende.mutter_org_id = %d
+			AND landesverbaende.mother_contact_id = %d
 		LEFT JOIN countries
 			ON IFNULL(landesverbaende.country_id, contacts.country_id) 
 				= countries.country_id
@@ -63,7 +63,7 @@ function mod_tournaments_team($vars, $settings) {
 		LEFT JOIN contacts landesverbaende_rueckwaerts
 			ON countries.country_id = landesverbaende_rueckwaerts.country_id
 			AND landesverbaende_rueckwaerts.contact_category_id = %d
-			AND landesverbaende_rueckwaerts.mutter_org_id = %d
+			AND landesverbaende_rueckwaerts.mother_contact_id = %d
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN events_websites
@@ -80,9 +80,9 @@ function mod_tournaments_team($vars, $settings) {
 		%s
 	';
 	$sql = sprintf($sql
-		, $zz_setting['org_ids']['dsb']
+		, $zz_setting['contact_ids']['dsb']
 		, wrap_category_id('contact/federation')
-		, $zz_setting['org_ids']['dsb']
+		, $zz_setting['contact_ids']['dsb']
 		, $zz_setting['website_id']
 		, wrap_db_escape(implode('/', $vars))
 		, $sql_condition

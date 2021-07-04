@@ -301,14 +301,14 @@ function mod_tournaments_tournament($vars, $settings) {
 				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
 			LEFT JOIN contacts landesverbaende
 				ON lv_ok.org_id = landesverbaende.org_id
-				AND landesverbaende.mutter_org_id = %d
+				AND landesverbaende.mother_contact_id = %d
 			LEFT JOIN countries
 				ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
 					= countries.country_id
 			LEFT JOIN contacts landesverbaende_rueckwaerts
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
 				AND landesverbaende_rueckwaerts.contact_category_id = %d
-				AND landesverbaende_rueckwaerts.mutter_org_id = %d
+				AND landesverbaende_rueckwaerts.mother_contact_id = %d
 			WHERE teilnahmen.event_id = %d
 			AND usergroup_id = %d
 			AND teilnahme_status = "Teilnehmer"
@@ -317,9 +317,9 @@ function mod_tournaments_tournament($vars, $settings) {
 		$sql = sprintf($sql
 			, $runde
 			, $event['haupt_wertung_category_id']
-			, $zz_setting['org_ids']['dsb']
+			, $zz_setting['contact_ids']['dsb']
 			, wrap_category_id('contact/federation')
-			, $zz_setting['org_ids']['dsb']
+			, $zz_setting['contact_ids']['dsb']
 			, $event['event_id']
 			, wrap_id('usergroups', 'spieler')
 		);
@@ -346,14 +346,14 @@ function mod_tournaments_tournament($vars, $settings) {
 				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
 			LEFT JOIN contacts landesverbaende
 				ON lv_ok.org_id = landesverbaende.org_id
-				AND landesverbaende.mutter_org_id = %d
+				AND landesverbaende.mother_contact_id = %d
 			LEFT JOIN countries
 				ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
 					= countries.country_id
 			LEFT JOIN contacts landesverbaende_rueckwaerts
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
 				AND landesverbaende_rueckwaerts.contact_category_id = %d
-				AND landesverbaende_rueckwaerts.mutter_org_id = %d
+				AND landesverbaende_rueckwaerts.mother_contact_id = %d
 			LEFT JOIN organisationen_orte
 				ON organisationen_orte.org_id = organisationen.org_id
 				AND organisationen_orte.published = "yes"
@@ -375,9 +375,9 @@ function mod_tournaments_tournament($vars, $settings) {
 			ORDER BY platz_no, setzliste_no, place, team, team_no
 		';
 		$sql = sprintf($sql
-			, $zz_setting['org_ids']['dsb']
+			, $zz_setting['contact_ids']['dsb']
 			, wrap_category_id('contact/federation')
-			, $zz_setting['org_ids']['dsb']
+			, $zz_setting['contact_ids']['dsb']
 			, $runde
 			, $event['event_id']
 		);

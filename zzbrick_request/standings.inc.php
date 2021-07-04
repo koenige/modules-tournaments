@@ -121,23 +121,23 @@ function mod_tournaments_standings($vars) {
 				AND lv_ok.current = "yes"
 			LEFT JOIN contacts landesverbaende
 				ON lv_ok.org_id = landesverbaende.org_id
-				AND landesverbaende.mutter_org_id = %d
+				AND landesverbaende.mother_contact_id = %d
 			LEFT JOIN countries
 				ON IFNULL(landesverbaende.country_id, contacts.country_id) 
 					= countries.country_id
 			LEFT JOIN contacts landesverbaende_rueckwaerts
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
 				AND landesverbaende_rueckwaerts.contact_category_id = %d
-				AND landesverbaende_rueckwaerts.mutter_org_id = %d
+				AND landesverbaende_rueckwaerts.mother_contact_id = %d
 			WHERE teams.event_id = %d
 			AND tabellenstaende.runde_no = %d
 			AND spielfrei = "nein"
 			ORDER BY platz_no, team, team_no
 		';
 		$sql = sprintf($sql
-			, $zz_setting['org_ids']['dsb']
+			, $zz_setting['contact_ids']['dsb']
 			, wrap_category_id('contact/federation')
-			, $zz_setting['org_ids']['dsb']
+			, $zz_setting['contact_ids']['dsb']
 			, $event['event_id'], $runde
 		);
 	} else {
@@ -169,14 +169,14 @@ function mod_tournaments_standings($vars) {
 				AND lv_ok.current = "yes"
 			LEFT JOIN contacts landesverbaende
 				ON lv_ok.org_id = landesverbaende.org_id
-				AND landesverbaende.mutter_org_id = %d
+				AND landesverbaende.mother_contact_id = %d
 			LEFT JOIN countries
 				ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
 					= countries.country_id
 			LEFT JOIN contacts landesverbaende_rueckwaerts
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
 				AND landesverbaende_rueckwaerts.contact_category_id = %d
-				AND landesverbaende_rueckwaerts.mutter_org_id = %d
+				AND landesverbaende_rueckwaerts.mother_contact_id = %d
 			WHERE tabellenstaende.event_id = %d
 			AND tabellenstaende.runde_no = %d
 			%s
@@ -184,9 +184,9 @@ function mod_tournaments_standings($vars) {
 		';
 		$sql = sprintf($sql
 			, wrap_id('usergroups', 'spieler')
-			, $zz_setting['org_ids']['dsb']
+			, $zz_setting['contact_ids']['dsb']
 			, wrap_category_id('contact/federation')
-			, $zz_setting['org_ids']['dsb']
+			, $zz_setting['contact_ids']['dsb']
 			, $event['event_id'], $runde
 			, $filter['where'] ? ' AND '.implode(' AND ', $filter['where']) : ''
 		);
