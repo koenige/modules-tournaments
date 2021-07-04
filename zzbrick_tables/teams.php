@@ -44,7 +44,7 @@ $zz['fields'][3]['display_field'] = 'organisation';
 $zz['fields'][3]['id_field_name'] = 'organisationen.org_id';
 $zz['fields'][3]['search'] = 'vereine.contact';
 $zz['fields'][3]['character_set'] = 'utf8';
-$zz['fields'][3]['sql_fieldnames_ignore'] = ['org_id'];
+$zz['fields'][3]['sql_fieldnames_ignore'] = ['organisationen.org_id'];
 $zz['fields'][3]['hide_in_list'] = true;
 $zz['fields'][3]['add_details'] = '/intern/db/organisationen';
 
