@@ -131,7 +131,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
 	$fields = [
 		'usergroup_id', 'parameters', 't_vorname', 't_nachname', 'person_id',
-		't_fidetitel', 't_verein', 'event_id', 'landesverband_org_id',
+		't_fidetitel', 't_verein', 'event_id', 'federation_contact_id',
 		'lebensalter', 'rolle', 't_dwz', 't_elo', 'geschlecht', 'volljaehrig',
 		'evtl_volljaehrig'
 	];
@@ -212,7 +212,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 		}
 		$new['usergroup'] = 'Organisationsteam';
 	}
-	$new['federation_abbr'] = !empty($nos['landesverband_org_id']) ? $line[$nos['landesverband_org_id']]['text'] : '';
+	$new['federation_abbr'] = !empty($nos['federation_contact_id']) ? $line[$nos['federation_contact_id']]['text'] : '';
 	
 	if (!empty($parameters['color'])) {
 		$color = '';

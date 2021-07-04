@@ -378,7 +378,7 @@ $zz['sql'] = 'SELECT teams.*
 	LEFT JOIN contacts landesverbaende
 		ON landesverbaende.org_id = lv_kennungen.org_id
 	LEFT JOIN regionalgruppen 
-		ON landesverbaende.org_id = regionalgruppen.landesverband_org_id
+		ON landesverbaende.contact_id = regionalgruppen.federation_contact_id
 	LEFT JOIN countries
 		ON landesverbaende.country_id = countries.country_id
 ';

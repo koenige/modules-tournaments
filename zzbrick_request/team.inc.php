@@ -59,7 +59,7 @@ function mod_tournaments_team($vars, $settings) {
 			ON IFNULL(landesverbaende.country_id, contacts.country_id) 
 				= countries.country_id
 		LEFT JOIN regionalgruppen
-			ON regionalgruppen.landesverband_org_id = landesverbaende.org_id
+			ON regionalgruppen.federation_contact_id = landesverbaende.contact_id
 		LEFT JOIN contacts landesverbaende_rueckwaerts
 			ON countries.country_id = landesverbaende_rueckwaerts.country_id
 			AND landesverbaende_rueckwaerts.contact_category_id = %d
