@@ -156,20 +156,8 @@ function mod_tournaments_tournament($vars, $settings) {
 	$sql = sprintf($sql, $event['tournament_id']);
 	$event['bedenkzeit'] = wrap_db_fetch($sql, 'tb_id');
 
-	$sql = 'SELECT event_contact_id
-			, contact
-			, contacts.website AS website
-			, category AS rolle
-		FROM events_contacts
-		LEFT JOIN contacts
-			ON contacts.contact_id = events_contacts.contact_id
-		LEFT JOIN categories
-			ON categories.category_id = events_contacts.role_category_id
-		WHERE event_id = %d
-		ORDER BY sequence';
-	$sql = sprintf($sql, $event['event_id']);
-	$event['organisationen'] = wrap_db_fetch($sql, ['rolle', 'event_contact_id'], 'list rolle organisation');
-	$event['organisationen'] = array_values($event['organisationen']);
+	require_once $zz_setting['custom'].'/zzbrick_request/termin.inc.php';
+	$event['organisationen'] = cms_event_organisations($event['event_id']);
 
 	$sql = 'SELECT events.event_id, event
 			, CONCAT(IFNULL(date_begin, ""), IFNULL(CONCAT("/", date_end), "")) AS duration

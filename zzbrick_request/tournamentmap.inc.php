@@ -125,8 +125,11 @@ function mod_tournaments_tournamentmap_json($params) {
 	}
 
 	$sql = 'SELECT contacts.contact_id
-			, contacts.contact, contacts.website, longitude, latitude
+			, contacts.contact, longitude, latitude
 			, ok.identifier AS zps_code, contacts.identifier
+			, (SELECT identification FROM contactdetails
+				WHERE contactdetails.contact_id = contacts.contact_id
+				AND provider_category_id = %d) AS website
 		FROM contacts
 		LEFT JOIN contacts_contacts
 			ON contacts_contacts.main_contact_id = contacts.contact_id
@@ -141,8 +144,9 @@ function mod_tournaments_tournamentmap_json($params) {
 		AND contacts_contacts.published = "yes"
 		ORDER BY ok.identifier
 	';
-	$sql = sprintf($sql,
-		wrap_category_id('kennungen/zps')
+	$sql = sprintf($sql
+		, wrap_category_id('provider/website')
+		, wrap_category_id('kennungen/zps')
 	);
 	$organisationen = wrap_db_fetch($sql, 'contact_id');
 

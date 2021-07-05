@@ -34,7 +34,7 @@ function mod_tournaments_team($vars, $settings) {
 			, SUBSTRING_INDEX(teams.kennung, "/", -1) AS team_identifier_short
 			, meldung_datum, regionalgruppe
 			, meldung
-			, contacts.website, contacts.contact
+			, contacts.contact
 			, contacts.identifier AS organisation_kennung
 			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
@@ -90,6 +90,7 @@ function mod_tournaments_team($vars, $settings) {
 	$team = wrap_db_fetch($sql);
 	if (!$team) return false;
 	$team[str_replace('-', '_', $team['turnierform'])] = true;
+	$team += mf_contacts_contactdetails($team['contact_id']);
 
 	array_pop($vars);
 	$sql = 'SELECT event_id, event, bretter_min, bretter_max, alter_max, alter_min

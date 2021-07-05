@@ -17,7 +17,7 @@
 # series_description, series_path, main_series_path, main_series, runden,
 # modus, spielerphotos, intern, einzel, einzel, turnier, fide_id, dwz_code,
 # bedenkzeit { tb_id, phase, bedenkzeit, zeitbonus, zuege }, organisationen {
-# rolle, organisation { event_contact_id, contact, website, rolle } }, events {
+# rolle, organisationen { event_contact_id, contact, website, rolle } }, events {
 # event_id, event, duration, time_begin, time_end,
 # event_category_id, date_begin, date_end, runde_no, paarungen, partien, tabelle,
 # faellt_aus, pgn, intern }, partien, links, teams, einzelteilnehmerliste,
@@ -444,9 +444,10 @@ Plätze frei sind oder eine Warteliste existiert.
 <dl>
 %%% loop organisationen %%%
 <dt>%%% item rolle %%%:</dt>
-%%% loop organisation %%%
-<dd><strong>%%% item website "<a href='%s'>" %%%
-%%% item contact %%% %%% item website "</a>" %%%</strong></dd>
+%%% loop organisationen %%%
+<dd><strong>
+%%% loop url 1 %%%<a href="%%% item identification wrap_punycode_decode %%%">%%% loop end %%%
+%%% item contact %%% %%% condition if url %%%</a>%%% condition endif %%%</strong></dd>
 %%% loop end %%%
 %%% loop end %%%
 
