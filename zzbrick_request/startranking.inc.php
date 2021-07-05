@@ -131,18 +131,18 @@ function mod_tournaments_startranking_single($event) {
 		LEFT JOIN contacts organisationen
 			ON teilnahmen.club_contact_id = organisationen.contact_id
 		LEFT JOIN organisationen_kennungen v_ok
-			ON v_ok.org_id = organisationen.org_id
+			ON v_ok.contact_id = organisationen.contact_id
 			AND v_ok.current = "yes"
 		LEFT JOIN organisationen_kennungen lv_ok
 			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
 		LEFT JOIN contacts landesverbaende
-			ON lv_ok.org_id = landesverbaende.org_id
+			ON lv_ok.contact_id = landesverbaende.contact_id
 			AND lv_ok.current = "yes"
 			AND landesverbaende.mother_contact_id = %d
 		LEFT JOIN countries
 			ON landesverbaende.country_id = countries.country_id
 		LEFT JOIN organisationen_orte
-			ON organisationen_orte.org_id = organisationen.org_id
+			ON organisationen_orte.main_contact_id = organisationen.contact_id
 			AND organisationen_orte.published = "yes"
 		LEFT JOIN contacts places
 			ON organisationen_orte.contact_id = places.contact_id
@@ -203,11 +203,11 @@ function mod_tournaments_startranking_team($event) {
 		LEFT JOIN contacts organisationen
 			ON teams.club_contact_id = organisationen.contact_id
 		LEFT JOIN organisationen_kennungen v_ok
-			ON v_ok.org_id = organisationen.org_id AND v_ok.current = "yes"
+			ON v_ok.contact_id = organisationen.contact_id AND v_ok.current = "yes"
 		LEFT JOIN organisationen_kennungen lv_ok
 			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
 		LEFT JOIN contacts landesverbaende
-			ON lv_ok.org_id = landesverbaende.org_id
+			ON lv_ok.contact_id = landesverbaende.contact_id
 			AND landesverbaende.mother_contact_id = %d
 		LEFT JOIN countries
 			ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
@@ -217,7 +217,7 @@ function mod_tournaments_startranking_team($event) {
 			AND landesverbaende_rueckwaerts.contact_category_id = %d
 			AND landesverbaende_rueckwaerts.mother_contact_id = %d
 		LEFT JOIN organisationen_orte
-			ON organisationen_orte.org_id = organisationen.org_id
+			ON organisationen_orte.main_contact_id = organisationen.contact_id
 			AND organisationen_orte.published = "yes"
 		LEFT JOIN contacts places
 			ON organisationen_orte.contact_id = places.contact_id

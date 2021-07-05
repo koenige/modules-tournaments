@@ -29,7 +29,7 @@ function mod_tournaments_team($vars, $settings) {
 			, datum_abreise, TIME_FORMAT(uhrzeit_abreise, "%%H:%%i") AS uhrzeit_abreise
 			, setzliste_no
 			, platz_no
-			, v_ok.identifier AS zps_code, contacts.org_id, contacts.contact_id
+			, v_ok.identifier AS zps_code, contacts.contact_id, contacts.contact_id
 			, teams.kennung AS team_identifier
 			, SUBSTRING_INDEX(teams.kennung, "/", -1) AS team_identifier_short
 			, meldung_datum, regionalgruppe
@@ -49,11 +49,11 @@ function mod_tournaments_team($vars, $settings) {
 		LEFT JOIN contacts
 			ON teams.club_contact_id = contacts.contact_id
 		LEFT JOIN organisationen_kennungen v_ok
-			ON v_ok.org_id = contacts.org_id AND v_ok.current = "yes"
+			ON v_ok.contact_id = contacts.contact_id AND v_ok.current = "yes"
 		LEFT JOIN organisationen_kennungen lv_ok
 			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
 		LEFT JOIN contacts landesverbaende
-			ON lv_ok.org_id = landesverbaende.org_id
+			ON lv_ok.contact_id = landesverbaende.contact_id
 			AND landesverbaende.mother_contact_id = %d
 		LEFT JOIN countries
 			ON IFNULL(landesverbaende.country_id, contacts.country_id) 
@@ -173,10 +173,10 @@ function mod_tournaments_team_public($page, $data) {
 		LEFT JOIN addresses USING (contact_id)
 		LEFT JOIN organisationen_orte
 			ON organisationen_orte.contact_id = contacts.contact_id
-		WHERE organisationen_orte.org_id = %d
+		WHERE organisationen_orte.main_contact_id = %d
 		AND organisationen_orte.published = "yes"
 		ORDER BY contacts.contact_id LIMIT 1';
-	$sql = sprintf($sql, $data['org_id']);
+	$sql = sprintf($sql, $data['contact_id']);
 	$data = array_merge($data, wrap_db_fetch($sql));
 
 	// Bilder auslesen

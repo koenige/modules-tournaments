@@ -114,13 +114,13 @@ function mod_tournaments_standings($vars) {
 			LEFT JOIN contacts
 				ON teams.club_contact_id = contacts.contact_id
 			LEFT JOIN organisationen_kennungen v_ok
-				ON v_ok.org_id = contacts.org_id
+				ON v_ok.contact_id = contacts.contact_id
 				AND v_ok.current = "yes"
 			LEFT JOIN organisationen_kennungen lv_ok
 				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
 				AND lv_ok.current = "yes"
 			LEFT JOIN contacts landesverbaende
-				ON lv_ok.org_id = landesverbaende.org_id
+				ON lv_ok.contact_id = landesverbaende.contact_id
 				AND landesverbaende.mother_contact_id = %d
 			LEFT JOIN countries
 				ON IFNULL(landesverbaende.country_id, contacts.country_id) 
@@ -162,13 +162,13 @@ function mod_tournaments_standings($vars) {
 			LEFT JOIN contacts organisationen
 				ON teilnahmen.club_contact_id = organisationen.contact_id
 			LEFT JOIN organisationen_kennungen v_ok
-				ON v_ok.org_id = organisationen.org_id
+				ON v_ok.contact_id = organisationen.contact_id
 				AND v_ok.current = "yes"
 			LEFT JOIN organisationen_kennungen lv_ok
 				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
 				AND lv_ok.current = "yes"
 			LEFT JOIN contacts landesverbaende
-				ON lv_ok.org_id = landesverbaende.org_id
+				ON lv_ok.contact_id = landesverbaende.contact_id
 				AND landesverbaende.mother_contact_id = %d
 			LEFT JOIN countries
 				ON IFNULL(landesverbaende.country_id, organisationen.country_id) 

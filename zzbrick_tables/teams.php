@@ -37,7 +37,7 @@ $zz['fields'][3]['sql'] = 'SELECT contacts.contact_id, contact
 		, organisationen_kennungen.identifier AS zps_code
 	FROM contacts
 	LEFT JOIN organisationen_kennungen
-		ON organisationen_kennungen.org_id = contacts.org_id
+		ON organisationen_kennungen.contact_id = contacts.contact_id
 		AND organisationen_kennungen.current = "yes"
 	LEFT JOIN categories
 		ON contacts.contact_category_id = categories.category_id
@@ -373,13 +373,13 @@ $zz['sql'] = 'SELECT teams.*
 	LEFT JOIN contacts vereine
 		ON teams.club_contact_id = vereine.contact_id
 	LEFT JOIN organisationen_kennungen
-		ON organisationen_kennungen.org_id = vereine.org_id
+		ON organisationen_kennungen.contact_id = vereine.contact_id
 		AND organisationen_kennungen.current = "yes"
 	LEFT JOIN organisationen_kennungen lv_kennungen
 		ON CONCAT(SUBSTRING(organisationen_kennungen.identifier, 1, 1), "00") = lv_kennungen.identifier 
 		AND lv_kennungen.current = "yes"
 	LEFT JOIN contacts landesverbaende
-		ON landesverbaende.org_id = lv_kennungen.org_id
+		ON landesverbaende.contact_id = lv_kennungen.contact_id
 	LEFT JOIN regionalgruppen 
 		ON landesverbaende.contact_id = regionalgruppen.federation_contact_id
 	LEFT JOIN countries
