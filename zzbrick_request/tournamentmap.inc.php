@@ -134,7 +134,7 @@ function mod_tournaments_tournamentmap_json($params) {
 			ON contacts_contacts.contact_id = places.contact_id
 		LEFT JOIN addresses
 			ON places.contact_id = addresses.contact_id
-		LEFT JOIN organisationen_kennungen ok
+		LEFT JOIN contacts_identifiers ok
 			ON ok.contact_id = contacts.contact_id AND current = "yes"
 			AND identifier_category_id = %d
 		WHERE NOT ISNULL(contacts.contact)

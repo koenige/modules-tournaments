@@ -113,10 +113,10 @@ function mod_tournaments_standings($vars) {
 			JOIN teams USING (team_id)
 			LEFT JOIN contacts
 				ON teams.club_contact_id = contacts.contact_id
-			LEFT JOIN organisationen_kennungen v_ok
+			LEFT JOIN contacts_identifiers v_ok
 				ON v_ok.contact_id = contacts.contact_id
 				AND v_ok.current = "yes"
-			LEFT JOIN organisationen_kennungen lv_ok
+			LEFT JOIN contacts_identifiers lv_ok
 				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
 				AND lv_ok.current = "yes"
 			LEFT JOIN contacts landesverbaende
@@ -161,10 +161,10 @@ function mod_tournaments_standings($vars) {
 				ON tabellenstaende.person_id = personen.person_id
 			LEFT JOIN contacts organisationen
 				ON teilnahmen.club_contact_id = organisationen.contact_id
-			LEFT JOIN organisationen_kennungen v_ok
+			LEFT JOIN contacts_identifiers v_ok
 				ON v_ok.contact_id = organisationen.contact_id
 				AND v_ok.current = "yes"
-			LEFT JOIN organisationen_kennungen lv_ok
+			LEFT JOIN contacts_identifiers lv_ok
 				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
 				AND lv_ok.current = "yes"
 			LEFT JOIN contacts landesverbaende

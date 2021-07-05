@@ -34,15 +34,15 @@ $zz['fields'][3]['title'] = 'Organisation';
 $zz['fields'][3]['field_name'] = 'club_contact_id';
 $zz['fields'][3]['type'] = 'select';
 $zz['fields'][3]['sql'] = 'SELECT contacts.contact_id, contact
-		, organisationen_kennungen.identifier AS zps_code
+		, contacts_identifiers.identifier AS zps_code
 	FROM contacts
-	LEFT JOIN organisationen_kennungen
-		ON organisationen_kennungen.contact_id = contacts.contact_id
-		AND organisationen_kennungen.current = "yes"
+	LEFT JOIN contacts_identifiers
+		ON contacts_identifiers.contact_id = contacts.contact_id
+		AND contacts_identifiers.current = "yes"
 	LEFT JOIN categories
 		ON contacts.contact_category_id = categories.category_id
 	WHERE categories.parameters LIKE "%&organisation=1%"
-	ORDER BY organisationen_kennungen.identifier, contact_abbr';
+	ORDER BY contacts_identifiers.identifier, contact_abbr';
 $zz['fields'][3]['display_field'] = 'organisation';
 $zz['fields'][3]['id_field_name'] = 'contacts.contact_id';
 $zz['fields'][3]['search'] = 'vereine.contact';
@@ -372,11 +372,11 @@ $zz['sql'] = 'SELECT teams.*
 		ON teams.berechtigung_category_id = categories.category_id
 	LEFT JOIN contacts vereine
 		ON teams.club_contact_id = vereine.contact_id
-	LEFT JOIN organisationen_kennungen
-		ON organisationen_kennungen.contact_id = vereine.contact_id
-		AND organisationen_kennungen.current = "yes"
-	LEFT JOIN organisationen_kennungen lv_kennungen
-		ON CONCAT(SUBSTRING(organisationen_kennungen.identifier, 1, 1), "00") = lv_kennungen.identifier 
+	LEFT JOIN contacts_identifiers
+		ON contacts_identifiers.contact_id = vereine.contact_id
+		AND contacts_identifiers.current = "yes"
+	LEFT JOIN contacts_identifiers lv_kennungen
+		ON CONCAT(SUBSTRING(contacts_identifiers.identifier, 1, 1), "00") = lv_kennungen.identifier 
 		AND lv_kennungen.current = "yes"
 	LEFT JOIN contacts landesverbaende
 		ON landesverbaende.contact_id = lv_kennungen.contact_id

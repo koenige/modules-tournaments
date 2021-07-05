@@ -1162,7 +1162,7 @@ function mod_tournaments_make_swtimport_verein($team, $spielerliste) {
 function mod_tournaments_make_swtimport_verein_zps($zps) {
 	$sql = 'SELECT contact_id, contact
 		FROM contacts
-		LEFT JOIN organisationen_kennungen ok
+		LEFT JOIN contacts_identifiers ok
 			USING (contact_id)
 		WHERE ok.identifier = "%s"
 		AND current = "yes"';
@@ -1171,7 +1171,7 @@ function mod_tournaments_make_swtimport_verein_zps($zps) {
 	if (!$verein) {
 		$sql = 'SELECT contact_id, contact
 			FROM contacts
-			LEFT JOIN organisationen_kennungen ok
+			LEFT JOIN contacts_identifiers ok
 				USING (contact_id)
 			WHERE ok.identifier = "%s"';
 		$sql = sprintf($sql, wrap_db_escape($zps));

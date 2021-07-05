@@ -534,11 +534,11 @@ function mf_tournaments_federations($data, $id_field) {
 	}
 	$sql = 'SELECT vereine.contact_id, country, landesverbaende.contact_abbr
 	    FROM contacts vereine
-		LEFT JOIN organisationen_kennungen
-			ON organisationen_kennungen.contact_id = vereine.contact_id
-			AND organisationen_kennungen.current = "yes"
-		LEFT JOIN organisationen_kennungen lv_kennungen
-			ON CONCAT(SUBSTRING(organisationen_kennungen.identifier, 1, 1), "00") = lv_kennungen.identifier 
+		LEFT JOIN contacts_identifiers
+			ON contacts_identifiers.contact_id = vereine.contact_id
+			AND contacts_identifiers.current = "yes"
+		LEFT JOIN contacts_identifiers lv_kennungen
+			ON CONCAT(SUBSTRING(contacts_identifiers.identifier, 1, 1), "00") = lv_kennungen.identifier 
 			AND lv_kennungen.current = "yes"
 		LEFT JOIN contacts landesverbaende
 			ON landesverbaende.contact_id = lv_kennungen.contact_id
