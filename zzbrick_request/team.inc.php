@@ -171,10 +171,10 @@ function mod_tournaments_team_public($page, $data) {
 			, place, address, postcode
 		FROM contacts
 		LEFT JOIN addresses USING (contact_id)
-		LEFT JOIN organisationen_orte
-			ON organisationen_orte.contact_id = contacts.contact_id
-		WHERE organisationen_orte.main_contact_id = %d
-		AND organisationen_orte.published = "yes"
+		LEFT JOIN contacts_contacts
+			ON contacts_contacts.contact_id = contacts.contact_id
+		WHERE contacts_contacts.main_contact_id = %d
+		AND contacts_contacts.published = "yes"
 		ORDER BY contacts.contact_id LIMIT 1';
 	$sql = sprintf($sql, $data['contact_id']);
 	$data = array_merge($data, wrap_db_fetch($sql));

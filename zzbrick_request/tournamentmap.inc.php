@@ -128,17 +128,17 @@ function mod_tournaments_tournamentmap_json($params) {
 			, contacts.contact, contacts.website, longitude, latitude
 			, ok.identifier AS zps_code, contacts.identifier
 		FROM contacts
-		LEFT JOIN organisationen_orte
-			ON organisationen_orte.main_contact_id = contacts.contact_id
+		LEFT JOIN contacts_contacts
+			ON contacts_contacts.main_contact_id = contacts.contact_id
 		LEFT JOIN contacts places
-			ON organisationen_orte.contact_id = places.contact_id
+			ON contacts_contacts.contact_id = places.contact_id
 		LEFT JOIN addresses
 			ON places.contact_id = addresses.contact_id
 		LEFT JOIN organisationen_kennungen ok
 			ON ok.contact_id = contacts.contact_id AND current = "yes"
 			AND identifier_category_id = %d
 		WHERE NOT ISNULL(contacts.contact)
-		AND organisationen_orte.published = "yes"
+		AND contacts_contacts.published = "yes"
 		ORDER BY ok.identifier
 	';
 	$sql = sprintf($sql,

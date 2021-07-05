@@ -354,11 +354,11 @@ function mod_tournaments_tournament($vars, $settings) {
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
 				AND landesverbaende_rueckwaerts.contact_category_id = %d
 				AND landesverbaende_rueckwaerts.mother_contact_id = %d
-			LEFT JOIN organisationen_orte
-				ON organisationen_orte.contact_id = organisationen.contact_id
-				AND organisationen_orte.published = "yes"
+			LEFT JOIN contacts_contacts
+				ON contacts_contacts.contact_id = organisationen.contact_id
+				AND contacts_contacts.published = "yes"
 			LEFT JOIN contacts places
-				ON organisationen_orte.contact_id = places.contact_id
+				ON contacts_contacts.contact_id = places.contact_id
 			LEFT JOIN addresses
 				ON places.contact_id = addresses.contact_id
 			LEFT JOIN events USING (event_id)
