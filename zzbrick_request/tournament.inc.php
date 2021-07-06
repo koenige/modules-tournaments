@@ -131,8 +131,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	}
 
 	// Kontaktdetails
-	require_once $zz_setting['custom_wrap_dir'].'/personen.inc.php';
-	$details = my_contactdetails($event['place_contact_id']);
+	$details = mf_contacts_contactdetails($event['place_contact_id']);
 	$event += $details;
 
 	// Auswertungen
