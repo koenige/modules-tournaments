@@ -22,19 +22,19 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.12\n"
 
-#: docs/sql/settings.cfg
+#: configuration/settings.cfg
 msgid "URL under which the current FIDE Elo data is available in TXT format"
 msgstr ""
 
-#: docs/sql/settings.cfg
+#: configuration/settings.cfg
 msgid "URL under which the current DWZ data of the German Chess Federation is available in SQL format"
 msgstr ""
 
-#: docs/sql/settings.cfg
+#: configuration/settings.cfg
 msgid "Last imported status of the FIDE Elo database"
 msgstr ""
 
-#: docs/sql/settings.cfg
+#: configuration/settings.cfg
 msgid "Last imported status of the German DWZ database"
 msgstr ""
 

@@ -11,7 +11,7 @@ Administration and display of chess tournaments
 * You'll need a copy of Zugzwang Project running. This module depends on other modules:
   * `events` events module
   * `contacts` contacts module
-* Required tables for the database can be found in the docs/sql folder
+* Required tables for the database can be found in the `configuration` folder
 
 ### Contribution guidelines ###
 
