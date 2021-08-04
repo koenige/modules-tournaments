@@ -80,6 +80,11 @@
 %%% condition if access_codes %%%
 <li><a href="access-codes/">Download-Zugriffscodes</a></li>
 %%% condition endif %%%
+%%% rights - %%%
+%%% rights Öffentlichkeitsarbeit event:* %%%
+<li><a href="zeitplan/">Rahmen-Zeitplan des Gesamtturniers</a></li>
+%%% rights - %%%
+%%% rights Schiedsrichter Technik Organisator Information Turnierleitung Öffentlichkeitsarbeit event:* %%%
 </ul>
 </div>
 
