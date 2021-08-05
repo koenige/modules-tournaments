@@ -114,7 +114,7 @@ function mod_tournaments_make_standings_team($event) {
 		FROM tabellenstaende
 		WHERE event_id = %d AND runde_no = %d AND NOT ISNULL(team_id)';
 	$sql = sprintf($sql, $event['event_id'], $event['runde_no']);
-	$vorhandene_daten = wrap_db_fetch($sql, '_dummy_', 'key/value');
+	$existing_standings = wrap_db_fetch($sql, '_dummy_', 'key/value');
 
 	foreach ($standings as $stand) {
 		$unwanted_keys = [
@@ -126,15 +126,15 @@ function mod_tournaments_make_standings_team($event) {
 		$values = [];
 		$values['POST'] = $stand;
 		$values['ids'] = ['team_id', 'event_id'];
-		if (!empty($vorhandene_daten[$stand['team_id']])) {
-			$values['POST']['tabellenstand_id'] = $vorhandene_daten[$stand['team_id']];
+		if (!empty($existing_standings[$stand['team_id']])) {
+			$values['POST']['tabellenstand_id'] = $existing_standings[$stand['team_id']];
 			// überflüssige Tabellenstände löschen
 			// @todo irgendwann so etwas direkt in zzform mit Funktion lösen
 			// (alle anderen Datensätze, die nicht aktualisiert werden, löschen)
 			$sql = 'SELECT * FROM
 				tabellenstaende_wertungen
 				WHERE tabellenstand_id = %d';
-			$sql = sprintf($sql, $vorhandene_daten[$stand['team_id']]);
+			$sql = sprintf($sql, $existing_standings[$stand['team_id']]);
 			$data = wrap_db_fetch($sql, 'tsw_id');
 			foreach ($data as $tsw_id => $bestandswertung) {
 				if (in_array($bestandswertung['wertung_category_id'], array_keys($stand['wertungen']))) continue;
@@ -314,7 +314,9 @@ function mf_tournaments_make_team_direct_encounter($event, $standings, $hauptwer
 function mf_tournaments_make_team_mp($round_no) {
 	$sql = 'SELECT team_id, SUM(mannschaftspunkte) AS rating
 	    FROM paarungen_ergebnisse_view
+		LEFT JOIN teams USING (team_id)
 	    WHERE runde_no <= %d
+		AND team_status = "Teilnehmer"
 	    GROUP BY team_id
 	    ORDER BY rating DESC, team_id';
 	$sql = sprintf($sql, $round_no);
@@ -330,7 +332,9 @@ function mf_tournaments_make_team_mp($round_no) {
 function mf_tournaments_make_team_bp($round_no) {
 	$sql = 'SELECT team_id, SUM(brettpunkte) AS rating
 	    FROM paarungen_ergebnisse_view
+		LEFT JOIN teams USING (team_id)
 	    WHERE runde_no <= %d
+		AND team_status = "Teilnehmer"
 	    GROUP BY team_id
 	    ORDER BY rating DESC, team_id';
 	$sql = sprintf($sql, $round_no);
@@ -348,15 +352,16 @@ function mf_tournaments_make_team_sonneborn_berger($round_no) {
 	// paarungen_ergebnisse_view gibt bei Gewinn 2 MP, bei Unentschieden 1 MP aus
 	// daher MP / 2 * gegnerische MP
 	$sql = 'SELECT team_id
-			, SUM(brettpunkte * 
+			, (brettpunkte * 
 				(SELECT SUM(mp.mannschaftspunkte)
 				FROM paarungen_ergebnisse_view mp
 				WHERE mp.team_id = paarungen_ergebnisse_view.gegner_team_id
 				AND mp.runde_no <= %d)
 			) AS sb
 		FROM paarungen_ergebnisse_view
+		LEFT JOIN teams USING (team_id)
 		WHERE paarungen_ergebnisse_view.runde_no <= %d
-		GROUP BY team_id
+		AND team_status = "Teilnehmer"
 		ORDER BY sb DESC, team_id
 	';
 	$sql = sprintf($sql
@@ -364,6 +369,7 @@ function mf_tournaments_make_team_sonneborn_berger($round_no) {
 		, $round_no
 		, wrap_category_id('turnierwertungen/mp')
 	);
+	$data = wrap_db_fetch($sql, 'team_id', 'key/value');
 	return wrap_db_fetch($sql, 'team_id', 'key/value');
 }
 
@@ -377,7 +383,9 @@ function mf_tournaments_make_team_sonneborn_berger($round_no) {
 function mf_tournaments_make_team_buchholz($round_no) {
 	$sql = 'SELECT team_id, buchholz
 		FROM buchholz_view
+		LEFT JOIN teams USING (team_id)
 		WHERE runde_no = %d
+		AND team_status = "Teilnehmer"
 		ORDER BY buchholz_mit_korrektur DESC, team_id';
 	$sql = sprintf($sql, $round_no);
 	return wrap_db_fetch($sql, 'team_id', 'key/value');
@@ -392,7 +400,9 @@ function mf_tournaments_make_team_buchholz($round_no) {
 function mf_tournaments_make_team_buchholz_mp($round_no) {
 	$sql = 'SELECT team_id, buchholz_mit_korrektur
 	    FROM buchholz_view
+		LEFT JOIN teams USING (team_id)
 	    WHERE runde_no = %d
+		AND team_status = "Teilnehmer"
 	    ORDER BY buchholz_mit_korrektur DESC, team_id';
 	$sql = sprintf($sql, $round_no);
 	return wrap_db_fetch($sql, 'team_id', 'key/value');
@@ -417,8 +427,10 @@ function mf_tournaments_make_team_buchholz_bp($round_no) {
 		LEFT JOIN tabellenstaende_termine_view USING (team_id)
 		LEFT JOIN paarungen_ergebnisse_view gegners_paarungen
 			ON gegners_paarungen.team_id = paarungen_ergebnisse_view.gegner_team_id
+		LEFT JOIN teams USING (team_id)
 		WHERE paarungen_ergebnisse_view.runde_no <= tabellenstaende_termine_view.runde_no
 		AND tabellenstaende_termine_view.runde_no = %d
+		AND team_status = "Teilnehmer"
 		GROUP BY tabellenstaende_termine_view.team_id
 		ORDER BY buchholz DESC';
 	$sql = sprintf($sql, $round_no);
@@ -434,7 +446,9 @@ function mf_tournaments_make_team_buchholz_bp($round_no) {
 function mf_tournaments_make_team_sw($round_no) {
 	$sql = 'SELECT team_id, gewonnen
 		FROM tabellenstaende_guv_view
+		LEFT JOIN teams USING (team_id)
 		WHERE runde_no = %d
+		AND team_status = "Teilnehmer"
 		ORDER BY gewonnen DESC, team_id';
 	$sql = sprintf($sql, $round_no);
 	return wrap_db_fetch($sql, 'team_id', 'key/value');
@@ -450,14 +464,18 @@ function mf_tournaments_make_team_bw($round_no) {
 	$sql = 'SELECT team_id, SUM(CASE ergebnis
 				WHEN 1 THEN ((1 + tournaments.bretter_min) - results.brett_no)
 				WHEN 0.5 THEN (((1 + tournaments.bretter_min) - results.brett_no) / 2)
-				WHEN 0 THEN 0 END
+				WHEN 0 THEN 0
+				ELSE 0 END
 			) AS rating
 		FROM partien_ergebnisse_view results
 		LEFT JOIN tournaments USING (event_id)
+		LEFT JOIN teams USING (team_id)
 		WHERE runde_no <= %d
+		AND team_status = "Teilnehmer"
 		GROUP BY team_id
 		ORDER BY rating DESC, team_id';
 	$sql = sprintf($sql, $round_no);
+	$data = wrap_db_fetch($sql, 'team_id', 'key/value');
 	return wrap_db_fetch($sql, 'team_id', 'key/value');
 }
 
