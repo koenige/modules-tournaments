@@ -125,6 +125,8 @@ function mod_tournaments_make_standings_team($event) {
 		}
 		$values = [];
 		$values['POST'] = $stand;
+		$values['POST']['event_id'] = $event['event_id'];
+		$values['POST']['runde_no'] = $event['runde_no'];
 		$values['ids'] = ['team_id', 'event_id'];
 		if (!empty($existing_standings[$stand['team_id']])) {
 			$values['POST']['tabellenstand_id'] = $existing_standings[$stand['team_id']];
@@ -267,20 +269,20 @@ function mf_tournaments_make_team_direct_encounter($event, $standings, $hauptwer
 			$stop = false;
 			foreach ($betrachtete_teams as $team_id => $punkte) {
 				if ($stop) {
-					$teams[$letztes_team] = 'n. a.';
+					$teams[$letztes_team] = 'n. a.';
 				} elseif ($letzte_punkte === '') {
 					$teams[$letztes_team] = '-';
 				} elseif ($letzte_punkte !== false) {
 					// falls punktgleich, wird hier abgebrochen
 					if ($punkte === $letzte_punkte) {
 						$stop = true;
-						$teams[$letztes_team] = 'n. a.';
+						$teams[$letztes_team] = 'n. a.';
 					} else {
 						// check, ob jemand mehr Punkte erreichen kann
 						foreach ($moegliche_punkte as $m_team_id => $m_punkte) {
 							if ($m_punkte >= $letzte_punkte) {
 								$stop = true;
-								$teams[$letztes_team] = 'n. a.';
+								$teams[$letztes_team] = 'n. a.';
 							}
 						}
 						if (!$stop) {
@@ -293,7 +295,7 @@ function mf_tournaments_make_team_direct_encounter($event, $standings, $hauptwer
 				unset($moegliche_punkte[$team_id]);
 			}
 			if ($stop) {
-				$teams[$letztes_team] = 'n. a.';
+				$teams[$letztes_team] = 'n. a.';
 			} elseif ($letzte_punkte === '') {
 				$teams[$letztes_team] = '-';
 			} else {
