@@ -211,7 +211,8 @@ function mod_tournaments_make_filemove() {
  * @return bool
  */
 function mod_tournaments_make_filemove_concat_pgn($source) {
-	if (file_exists($source)) return false;
+	// test against filesize, too, livechess creates empty games.pgn
+	if (file_exists($source) AND filesize($source)) return false;
 	$folder = dirname($source); // media_folder/pgn-live/[tournament]/
 	$pgn_files = mod_tournaments_make_filemove_scandir($folder);
 	if (!$pgn_files) return false;
@@ -245,7 +246,8 @@ function mod_tournaments_make_filemove_scandir($folder) {
 	$pgn_files = [];
 	foreach ($files as $file) {
 		if (substr($file, 0, 1) === '.') continue;
-		if ($file === 'games.pgn') return [$folder.'/'.$file];
+		if ($file === 'games.pgn' AND filesize($folder.'/'.$file))
+			return [$folder.'/'.$file];
 		// LiveChess 2, separate files for each game
 		if (preg_match('~^game-\d+\.pgn$~', $file)) {
 			$pgn_files[] = $folder.'/'.$file;
