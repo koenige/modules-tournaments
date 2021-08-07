@@ -58,9 +58,9 @@
 <tr>
 <th></th><th colspan="%%% condition if gastspieler_status %%%6%%% condition else %%%5%%% condition endif %%%">Brettpunkte</th>
 %%% loop paarungen %%%
-<th class="number">%%% item punkte my_ergebnis_format %%%%%% item spielfrei * %%%</th>
+<th class="number">%%% item punkte mf_tournaments_result_format %%%%%% item spielfrei * %%%</th>
 %%% loop end %%%
-<th class="tsum">%%% item summe_bp my_ergebnis_format %%%</th>
+<th class="tsum">%%% item summe_bp mf_tournaments_result_format %%%</th>
 </tr>
 <tr>
 <th></th><th colspan="%%% condition if gastspieler_status %%%6%%% condition else %%%5%%% condition endif %%%">Mannschaftspunkte</th>
@@ -107,13 +107,13 @@
 %%% condition if runde_no %%%%%% condition if pgn %%%
 <a href="../partien/%%% item runde_no %%%-%%% item tisch_no %%%-%%% item brett_no %%%/">
 %%% condition endif %%%%%% condition endif %%%
-<span class="%%% item farbe_kennung %%%">&nbsp;</span>%%% item ergebnis my_ergebnis_format %%%
+<span class="%%% item farbe_kennung %%%">&nbsp;</span>%%% item ergebnis mf_tournaments_result_format %%%
 %%% condition if live %%%<em>live</em>%%% condition endif %%%
 %%% item haengepartie "(<abbr title="Hängepartie">H</abbr>)" %%% %%% item partie_spielfrei "*" %%%
 %%% condition if runde_no %%%%%% item pgn "</a>" %%%%%% condition endif %%%
 </td>
 %%% loop end %%%
-<td class="tsum">%%% item summe_bp my_ergebnis_format %%%</td>
+<td class="tsum">%%% item summe_bp mf_tournaments_result_format %%%</td>
 %%% condition endif %%%
 </tr>
 %%% loop end %%%

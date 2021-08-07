@@ -54,7 +54,7 @@ Die Partien werden ohne Verzögerung übertragen!
 	<td class="tm">
 	%%% condition if pgn %%%<a href="../../../%%% item identifier %%%/partien/%%% item runde_no %%%-%%% item brett_no %%%/">%%% condition endif %%%
 	%%% condition if weiss_ergebnis | schwarz_ergebnis %%%
-	%%% item weiss_ergebnis my_ergebnis_format %%%:%%% item schwarz_ergebnis my_ergebnis_format %%%
+	%%% item weiss_ergebnis mf_tournaments_result_format %%%:%%% item schwarz_ergebnis mf_tournaments_result_format %%%
 	%%% condition else %%%
 	LIVE
 	%%% condition endif %%%
