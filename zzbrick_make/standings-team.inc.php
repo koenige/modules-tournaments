@@ -351,28 +351,54 @@ function mf_tournaments_make_team_bp($round_no) {
  * @return array Liste team_id => value
  */
 function mf_tournaments_make_team_sonneborn_berger($round_no) {
-	// paarungen_ergebnisse_view gibt bei Gewinn 2 MP, bei Unentschieden 1 MP aus
-	// daher MP / 2 * gegnerische MP
-	$sql = 'SELECT team_id
-			, (brettpunkte * 
-				(SELECT SUM(mp.mannschaftspunkte)
-				FROM paarungen_ergebnisse_view mp
-				WHERE mp.team_id = paarungen_ergebnisse_view.gegner_team_id
-				AND mp.runde_no <= %d)
-			) AS sb
-		FROM paarungen_ergebnisse_view
-		LEFT JOIN teams USING (team_id)
-		WHERE paarungen_ergebnisse_view.runde_no <= %d
-		AND team_status = "Teilnehmer"
-		ORDER BY sb DESC, team_id
-	';
-	$sql = sprintf($sql
-		, $round_no
-		, $round_no
-		, wrap_category_id('turnierwertungen/mp')
-	);
-	$data = wrap_db_fetch($sql, 'team_id', 'key/value');
-	return wrap_db_fetch($sql, 'team_id', 'key/value');
+	// @deprecated, second query does not work in old MySQL/MariaDB databases
+	// because of GROUP BY
+	$deprecated = true;
+	if ($deprecated) {
+		$sql = 'SELECT team_id, (brettpunkte * (SELECT SUM(mannschaftspunkte)
+					FROM paarungen_ergebnisse_view opponents
+					WHERE opponents.team_id = paarungen_ergebnisse_view.gegner_team_id
+					AND opponents.runde_no <= %d
+				))  AS points
+			FROM paarungen_ergebnisse_view
+			LEFT JOIN teams USING (team_id)
+			WHERE paarungen_ergebnisse_view.runde_no <= %d
+			AND team_status = "Teilnehmer"';
+		$sql = sprintf($sql, $round_no, $round_no);
+		$board_points = wrap_db_fetch($sql, ['team_id', '_dummy_'], 'numeric');
+		
+		$data = [];
+		foreach ($board_points as $team_id => $points) {
+			$data[$team_id] = 0;
+			foreach ($points as $round) {
+				$data[$team_id] += $round['points'];
+			}
+		}
+		arsort($data);
+	} else {
+		// paarungen_ergebnisse_view gibt bei Gewinn 2 MP, bei Unentschieden 1 MP aus
+		// daher MP / 2 * gegnerische MP
+		$sql = 'SELECT team_id
+				, SUM(brettpunkte * 
+					(SELECT SUM(mp.mannschaftspunkte)
+					FROM paarungen_ergebnisse_view mp
+					WHERE mp.team_id = paarungen_ergebnisse_view.gegner_team_id
+					AND mp.runde_no <= %d)
+				) AS sb
+			FROM paarungen_ergebnisse_view
+			LEFT JOIN teams USING (team_id)
+			WHERE paarungen_ergebnisse_view.runde_no <= %d
+			AND team_status = "Teilnehmer"
+			GROUP BY team_id
+			ORDER BY sb DESC, team_id
+		';
+		$sql = sprintf($sql
+			, $round_no
+			, $round_no
+		);
+		$data = wrap_db_fetch($sql, 'team_id', 'key/value');
+	}
+	return $data;
 }
 
 /**
