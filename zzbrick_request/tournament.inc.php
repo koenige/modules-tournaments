@@ -376,7 +376,9 @@ function mod_tournaments_tournament($vars, $settings) {
 				if (empty($team['tabellenstand_id'])) continue;
 				$tabelle[$team['tabellenstand_id']] = $team['team_id'];
 			}
-			$sql = 'SELECT tsw_id, tabellenstand_id, wertung_category_id, wertung
+			// format 0 points as 0.00 to get points displayed
+			$sql = 'SELECT tsw_id, tabellenstand_id, wertung_category_id
+					, IF(wertung = "0", "0.00", wertung) AS wertung
 				FROM tabellenstaende_wertungen
 				WHERE tabellenstand_id IN (%s)';
 			$sql = sprintf($sql, implode(',', array_keys($tabelle)));
