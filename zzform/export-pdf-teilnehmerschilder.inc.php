@@ -58,7 +58,14 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		for ($j = 0; $j < 2; $j++) {
 			// DSJ-Logo
 			$left = 297.5 * $j;
-			$pdf->image($vorlagen.'/DSJ-Logo.jpg', 297.5*($j+1) - 78, 20 + $top, 58, 48);
+			if ($j & 1) {
+				$image = mf_tournaments_p_qrcode($line['id_value']);
+				$width = 48;
+			} else {
+				$image = $vorlagen.'/DSJ-Logo.jpg';
+				$width = 58;
+			}
+			$pdf->image($image, 297.5*($j+1) - 20 - $width, 20 + $top, $width, 48);
 			$pdf->setFont('FiraSans-Regular', '', 11);
 			$pdf->SetTextColor(0, 0, 0);
 			$pdf->SetXY(20 + $left, 20 + $top);
@@ -208,7 +215,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 		if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
 			$new['club'] = $line[$nos['rolle']]['text'];
 		} else {
-			$new['club'] = $line['usergroup'];
+			$new['club'] = $line[$nos['usergroup_id']]['text'];
 		}
 		$new['usergroup'] = 'Organisationsteam';
 	}
@@ -247,4 +254,24 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 		$new['height'] = 72;
 	}
 	return $new;
+}
+
+/**
+ * mf_tournaments_p_qrcode(https://r.schach.in/p/12345, 12345)
+ */
+function mf_tournaments_p_qrcode($id) {
+	global $zz_setting;
+	global $zz_conf;
+	require_once $zz_setting['lib'].'/phpqrcode/lib/full/qrlib.php';
+	$folder = $zz_setting['cache_dir'].'/tournaments/qr-codes';
+	wrap_mkdir($folder);
+	$file = $folder.'/'.$id.'.png';
+	if (file_exists($file)) return $file;
+	$url = sprintf('https://r.schach.in/p/%d', $id);
+
+	QRcode::png($url, $file, QR_ECLEVEL_L, 4, 0);
+	// resize a bit to make it not blurry in PDF
+	$command = 'convert -scale 300x300 %s %s';
+	exec(sprintf($command, $file, $file));
+	return $file;
 }
