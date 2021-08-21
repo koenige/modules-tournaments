@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017, 2019-2020 Gustaf Mossakowski
+ * @copyright Copyright © 2017, 2019-2021 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -112,7 +112,7 @@ function mf_tournaments_export_pdf_ergebniszettel($ops) {
 		$k++;
 		$i++;
 	}
-	$folder = $zz_setting['cache_dir'].'/ergebniszettel/'.$event['identifier'];
+	$folder = $zz_setting['tmp_dir'].'/ergebniszettel/'.$event['identifier'];
 	wrap_mkdir($folder);
 	if (file_exists($folder.'/runde-'.$runde_no.'.pdf')) {
 		unlink($folder.'/runde-'.$runde_no.'.pdf');

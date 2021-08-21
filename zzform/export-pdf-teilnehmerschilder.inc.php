@@ -114,7 +114,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		}
 		$i++;
 	}
-	$folder = $zz_setting['cache_dir'].'/schilder/'.$event['identifier'];
+	$folder = $zz_setting['tmp_dir'].'/schilder/'.$event['identifier'];
 	wrap_mkdir($folder);
 	if (file_exists($folder.'/teilnehmerschilder.pdf')) {
 		unlink($folder.'/teilnehmerschilder.pdf');
@@ -263,7 +263,7 @@ function mf_tournaments_p_qrcode($id) {
 	global $zz_setting;
 	global $zz_conf;
 	require_once $zz_setting['lib'].'/phpqrcode/lib/full/qrlib.php';
-	$folder = $zz_setting['cache_dir'].'/tournaments/qr-codes';
+	$folder = $zz_setting['tmp_dir'].'/tournaments/qr-codes';
 	wrap_mkdir($folder);
 	$file = $folder.'/'.$id.'.png';
 	if (file_exists($file)) return $file;

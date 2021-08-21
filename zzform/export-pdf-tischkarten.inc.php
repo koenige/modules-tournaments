@@ -137,7 +137,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	}
 
 	// write PDF to cache folder, send
-	$folder = $zz_setting['cache_dir'].'/schilder/'.$event['identifier'];
+	$folder = $zz_setting['tmp_dir'].'/schilder/'.$event['identifier'];
 	wrap_mkdir($folder);
 	if (file_exists($folder.'/tischkarten.pdf')) {
 		unlink($folder.'/tischkarten.pdf');
