@@ -10,7 +10,7 @@
  * @author Jacob Roggon
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © ... Jacob Roggon
- * @copyright Copyright © 2013-2014, 2016-2017, 2019-2020 Gustaf Mossakowski
+ * @copyright Copyright © 2013-2014, 2016-2017, 2019-2021 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -57,10 +57,10 @@ function mod_tournaments_make_ratings_import($params) {
  * @return mixed string $dest_folder = successful, false: error
  */
 function mod_tournaments_make_ratings_unzip($rating, $archive) {
-	global $zz_conf;
+	global $zz_setting;
 
 	$path = strtolower($rating);
-	$tmp_dir = $zz_conf['tmp_dir'].'/'.$path;
+	$tmp_dir = $zz_setting['tmp_dir'].'/'.$path;
 	if (!file_exists($tmp_dir)) mkdir($tmp_dir);
 	$dest_folder = tempnam($tmp_dir, $path);
 	unlink($dest_folder);
