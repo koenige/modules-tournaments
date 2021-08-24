@@ -24,7 +24,7 @@
 %%% loop spieler %%%
 %%% condition if setzliste_no %%%<a href="../spieler/%%% item setzliste_no %%%/" title="%%% item spieler %%%">%%% condition endif %%%
 %%% condition if preview_filename %%%
-<img src="%%% page mediabase %%%/%%% item base_filename %%%.160.%%% item preview_extension %%%" alt="Photo %%% item spieler %%%" title="%%% item spieler %%%">
+<img src="%%% page mediabase %%%/%%% item base_filename %%%.160.%%% item preview_extension %%%?v=%%% item version %%%" srcset="%%% page mediabase %%%/%%% item base_filename %%%.160.%%% item preview_extension %%%?v=%%% item version %%% 1x, %%% page mediabase %%%/%%% item base_filename %%%.320.%%% item preview_extension %%%?v=%%% item version %%% 2x" alt="Photo %%% item spieler %%%" title="%%% item spieler %%%">
 %%% condition else %%%
 <img src="%%% page mediabase %%%/DSJ/Chessy/53-Fragezeichen.160.png" height="106" alt="%%% item spieler %%%">
 %%% condition endif %%%
