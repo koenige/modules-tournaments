@@ -26,8 +26,13 @@ function mod_tournaments_make_filemove() {
 			, REPLACE(events.identifier, "/", "-") AS pfad
 			, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "-", IF(main_series.path != "reihen", SUBSTRING_INDEX(main_series.path, "/", -1), SUBSTRING_INDEX(series.path, "/", -1))) AS main_series
 			, tournaments.urkunde_parameter AS parameter
+			, IFNULL((SELECT setting_value FROM _settings
+				WHERE setting_key = "canonical_hostname"
+				AND _settings.website_id = websites.website_id
+			), domain) AS domain
 		FROM tournaments
 		JOIN events USING (event_id)
+		LEFT JOIN websites USING (website_id)
 		LEFT JOIN categories series
 			ON series.category_id = events.series_category_id
 		LEFT JOIN categories main_series
@@ -95,7 +100,7 @@ function mod_tournaments_make_filemove() {
 				$params['log_destination'] = false;
 				$success_other = false;
 				$source = trim($ftp_other['source']);
-				if (substr($source, 0, 1) === '/') $source = $zz_setting['host_base'].$source;
+				if (substr($source, 0, 1) === '/') $source = 'https://'.$tournament['domain'].$source;
 				$dest = sprintf(trim($ftp_other['dest']), $tournament['pfad']);
 				$success_other = wrap_watchdog($source, $dest, $params, false);
 				wrap_log(sprintf('filemove watchdog ftp_other %s %s => %s'
@@ -181,8 +186,8 @@ function mod_tournaments_make_filemove() {
 				$params['log_destination'] = false;
 				$success = [];
 				for ($i = 1; $i <= $tournament['current_round']['runde_no']; $i++) {
-					$source = sprintf('%s/%s/partien/%d-utf8.pgn'
-						, $zz_setting['host_base'], $tournament['identifier']
+					$source = sprintf('https://%s/%s/partien/%d-utf8.pgn'
+						, $tournament['domain'], $tournament['identifier']
 						, $i
 					);
 					$round = sprintf('%02d', $i);
