@@ -43,20 +43,32 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	}
 	
 	$sql = 'SELECT teilnahme_id
-		, IF(IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) > 18, 1,
-			IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_begin, 1, NULL)
-		) AS volljaehrig
-		, IF(SUBSTRING(date_of_birth, 5, 6) = "-00-00" AND IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) = 18, 1, 
-			IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_end AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) >= events.date_begin, 1, NULL)
-		) AS evtl_volljaehrig
+			, IF(IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) > 18, 1,
+				IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_begin, 1, NULL)
+			) AS volljaehrig
+			, IF(SUBSTRING(date_of_birth, 5, 6) = "-00-00" AND IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) = 18, 1, 
+				IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_end AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) >= events.date_begin, 1, NULL)
+			) AS evtl_volljaehrig
+			, dwz_spieler.FIDE_Titel
 		FROM teilnahmen
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN personen USING (person_id)
+		LEFT JOIN contacts_identifiers
+			ON contacts_identifiers.contact_id = personen.contact_id
+			AND contacts_identifiers.current = "yes"
+			AND contacts_identifiers.identifier_category_id = %d
+		LEFT JOIN dwz_spieler
+			ON contacts_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", dwz_spieler.Mgl_Nr)
 		WHERE teilnahme_id IN (%s)';
-	$sql = sprintf($sql, implode(',', array_keys($data)));
+	$sql = sprintf($sql
+		, wrap_category_id('kennungen/zps')
+		, implode(',', array_keys($data))
+	);
 	$more_data = wrap_db_fetch($sql, 'teilnahme_id');
 	foreach ($more_data as $id => $line) {
 		$data[$id] += $more_data[$id];
+		if (empty($data[$id]['fidetitel']) AND !empty($data[$id]['FIDE_Titel']))
+			$data[$id]['name'] = $data[$id]['FIDE_Titel'].' '.$data[$id]['name'];
 	}
 
 	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
