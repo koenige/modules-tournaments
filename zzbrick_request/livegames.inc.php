@@ -200,6 +200,7 @@ function mod_tournaments_livegames_bretter($turnier) {
 	$turnier['livepaarungen'] = wrap_db_fetch($sql, 'partie_id');
 	foreach ($turnier['livepaarungen'] as $partie_id => $partie) {
 		$pgn = preg_replace('/{\[\%clk \d+:\d+:\d+\]} /', '', $partie['pgn']);
+		$pgn = preg_replace('/{\[\%emt \d+:\d+:\d+\]} /', '', $pgn);
 		$pgn = explode(' ', $pgn);
 		$aktuelle_zuege = array_slice($pgn, count($pgn) -10, count($pgn));
 		foreach ($aktuelle_zuege as $index => $zug) {
