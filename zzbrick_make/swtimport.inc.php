@@ -392,6 +392,8 @@ function mod_tournaments_make_swtimport_delete($ids, $event_id, $type) {
 		$id_source = 'team_hex';
 		$key = 'Teams';
 		$where = '';
+		$status_field_name = 'team_status';
+		$status = 'Löschung';
 		break;
 	case 'teilnahmen':
 		$id_field = 'teilnahme_id';
@@ -399,6 +401,8 @@ function mod_tournaments_make_swtimport_delete($ids, $event_id, $type) {
 		$id_source = 'teilnahmen';
 		$key = 'Teilnahmen (Spieler)';
 		$where = sprintf(' AND usergroup_id = %d', wrap_id('usergroups', 'spieler'));
+		$status_field_name = 'teilnahme_status';
+		$status = 'gelöscht';
 		break;
 	default:
 		wrap_error(sprintf('Löschen: Typ nicht unterstützt (%s)', $typ));
@@ -417,6 +421,7 @@ function mod_tournaments_make_swtimport_delete($ids, $event_id, $type) {
 		$values = [];
 		$values['action'] = 'delete';
 		$values['POST'][$id_field] = $id;
+		$values['POST'][$status_field_name] = $status;
 		$ops = zzform_multi($table, $values);
 		if (!$ops['id']) {
 			wrap_error(sprintf('ID %d (%s) konnte nicht gelöscht werden.', $id, $table));
