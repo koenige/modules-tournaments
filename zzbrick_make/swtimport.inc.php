@@ -643,42 +643,44 @@ function mod_tournaments_make_swtimport_teilnahmen($event, $spielerliste, $ids) 
 			$values['action'] = 'insert';
 		}
 		$spielername = explode(',', $spieler[2000]);
-		$values['POST']['usergroup_id'] = wrap_id('usergroups', 'spieler');
-		$values['POST']['event_id'] = $event['event_id'];
 		if ($event['turnierform'] !== 'e') {
 			$values['POST']['team_id'] = $ids['team_dec'][$spieler[2016]];
 		}
-		$values['POST']['person_id'] = $person_id;
-		if (!empty($spielername[1])) {
-			$values['POST']['t_vorname'] = $spielername[1];
-		}
-		$values['POST']['t_nachname'] = $spielername[0];
-		$verein = [];
-		if ($spieler[2010])
-			$verein = mod_tournaments_make_swtimport_verein_zps($spieler[2010]);
-		if (!$verein) {
-			$verein = mod_tournaments_make_swtimport_verein_name($spieler[2001]);
-		}
-		if ($verein) {
-			$values['POST']['club_contact_id'] = $verein['contact_id'];
-		} elseif (!$spieler[2010]) {
-			// Notice senden, falls keine ZPS-Nr. für Verein gefunden wird;
-			// kann korrekt sein bspw. bei Schulmannschaften
-			// @todo Error abhängig machen von Turnierform (nur DSB-Mitglieder, alle)
-			wrap_error(sprintf('Für Person %s (Key: %s) wurde kein Verein mit ZPS-Nr. angegeben.',
-				$spieler[2000], $s_key), E_USER_NOTICE
-			);
-		}
-		// @todo ggf. Team-No. löschen
-		$values['POST']['t_verein'] = $spieler[2001];
-		// @todo testen, ggf. nur am Anfang (SAbt) bzw. Ende (e.V., SAbt) löschen
-		$replacements = [
-			' e.V., Abt. Schach', ' e.V.', ' e.V', ' eV', 'SAbt ', ' Abt. Schach',
-			' e. V.', 'Sabt', 'SABT'
-		];
-		foreach ($replacements as $replace) {
-			if (!strstr($values['POST']['t_verein'], $replace)) continue;
-			$values['POST']['t_verein'] = str_replace($replace, '', $values['POST']['t_verein']);
+		if ($values['action'] === 'insert') {
+			$values['POST']['usergroup_id'] = wrap_id('usergroups', 'spieler');
+			$values['POST']['person_id'] = $person_id;
+			$values['POST']['event_id'] = $event['event_id'];
+			if (!empty($spielername[1])) {
+				$values['POST']['t_vorname'] = $spielername[1];
+			}
+			$values['POST']['t_nachname'] = $spielername[0];
+			$verein = [];
+			if ($spieler[2010])
+				$verein = mod_tournaments_make_swtimport_verein_zps($spieler[2010]);
+			if (!$verein) {
+				$verein = mod_tournaments_make_swtimport_verein_name($spieler[2001]);
+			}
+			if ($verein) {
+				$values['POST']['club_contact_id'] = $verein['contact_id'];
+			} elseif (!$spieler[2010]) {
+				// Notice senden, falls keine ZPS-Nr. für Verein gefunden wird;
+				// kann korrekt sein bspw. bei Schulmannschaften
+				// @todo Error abhängig machen von Turnierform (nur DSB-Mitglieder, alle)
+				wrap_error(sprintf('Für Person %s (Key: %s) wurde kein Verein mit ZPS-Nr. angegeben.',
+					$spieler[2000], $s_key), E_USER_NOTICE
+				);
+			}
+			// @todo ggf. Team-No. löschen
+			$values['POST']['t_verein'] = $spieler[2001];
+			// @todo testen, ggf. nur am Anfang (SAbt) bzw. Ende (e.V., SAbt) löschen
+			$replacements = [
+				' e.V., Abt. Schach', ' e.V.', ' e.V', ' eV', 'SAbt ', ' Abt. Schach',
+				' e. V.', 'Sabt', 'SABT'
+			];
+			foreach ($replacements as $replace) {
+				if (!strstr($values['POST']['t_verein'], $replace)) continue;
+				$values['POST']['t_verein'] = str_replace($replace, '', $values['POST']['t_verein']);
+			}
 		}
 		$values['POST']['t_dwz'] = $spieler[2004];
 		$values['POST']['t_elo'] = $spieler[2003];
