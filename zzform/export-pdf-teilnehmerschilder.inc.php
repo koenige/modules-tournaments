@@ -30,7 +30,35 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	
 	// Feld-IDs raussuchen
 	$nos = mf_tournaments_export_pdf_teilnehmerschilder_nos($ops['output']['head']);
+	// get data
+	$data = [];
+	foreach ($ops['output']['rows'] as $line) {
+		// ignoriere Orga vorab
+		if (in_array($line[$nos['usergroup_id']]['text'],
+			['Landesverband: Organisator', 'Verein: Organisator', 'Bewerber'])
+		) continue;
+		// Daten anpassen
+		$new = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos);
+		$data[$line['id_value']] = $new;
+	}
 	
+	$sql = 'SELECT teilnahme_id
+		, IF(IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) > 18, 1,
+			IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_begin, 1, NULL)
+		) AS volljaehrig
+		, IF(SUBSTRING(date_of_birth, 5, 6) = "-00-00" AND IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) = 18, 1, 
+			IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_end AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) >= events.date_begin, 1, NULL)
+		) AS evtl_volljaehrig
+		FROM teilnahmen
+		LEFT JOIN events USING (event_id)
+		LEFT JOIN personen USING (person_id)
+		WHERE teilnahme_id IN (%s)';
+	$sql = sprintf($sql, implode(',', array_keys($data)));
+	$more_data = wrap_db_fetch($sql, 'teilnahme_id');
+	foreach ($more_data as $id => $line) {
+		$data[$id] += $more_data[$id];
+	}
+
 	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
 
 	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
@@ -39,18 +67,9 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	// Fira Sans!
 	$pdf->AddFont('FiraSans-Regular', '', 'FiraSans-Regular.ttf', true);
 	$pdf->AddFont('FiraSans-SemiBold', '', 'FiraSans-SemiBold.ttf', true);
-	$vorlagen = $zz_setting['media_folder'].'/urkunden-grafiken';
 
 	$i = 0;
-	foreach ($ops['output']['rows'] as $line) {
-		// ignoriere Orga vorab
-		if (in_array($line[$nos['usergroup_id']]['text'],
-			['Landesverband: Organisator', 'Verein: Organisator', 'Bewerber'])
-		) continue;
-
-		// Daten anpassen
-		$new = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos);
-
+	foreach ($data as $line) {
 		// PDF setzen
 		$row = $i % 4;
 		if (!$row) $pdf->addPage();
@@ -59,10 +78,10 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			// DSJ-Logo
 			$left = 297.5 * $j;
 			if ($j & 1) {
-				$image = mf_tournaments_p_qrcode($line['id_value']);
+				$image = mf_tournaments_p_qrcode($line['teilnahme_id']);
 				$width = 48;
 			} else {
-				$image = $vorlagen.'/DSJ-Logo.jpg';
+				$image = $zz_setting['media_folder'].'/urkunden-grafiken/DSJ-Logo.jpg';
 				$width = 58;
 			}
 			$pdf->image($image, 297.5*($j+1) - 20 - $width, 20 + $top, $width, 48);
@@ -72,44 +91,44 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			$pdf->Cell(257, 14, $event['main_series_long'], 0, 2, 'L');
 			$pdf->Cell(257, 14, $event['turnierort'].' '.$event['year'], 0, 2, 'L');
 			$pdf->SetXY(20 + $left, $pdf->GetY() + 40);
-			if (strlen($new['name']) > 26) {
+			if (strlen($line['name']) > 26) {
 				$pdf->setFont('FiraSans-SemiBold', '', 17);
 			} else {
 				$pdf->setFont('FiraSans-SemiBold', '', 18);
 			}
-			$pdf->Cell(257, 24, $new['name'], 0, 2, 'L');
+			$pdf->Cell(257, 24, $line['name'], 0, 2, 'L');
 			$pdf->setFont('FiraSans-Regular', '', 12);
-			$pdf->MultiCell(257, 16, $new['club'], 0, 'L');
+			$pdf->MultiCell(257, 16, $line['club'], 0, 'L');
 
 			$pdf->SetXY(20 + $left, $top + 136);
 			$pdf->setFont('FiraSans-SemiBold', '', 18);
-			$pdf->Cell(257, 24, $new['federation_abbr'], 0, 2, 'R');
+			$pdf->Cell(257, 24, $line['federation_abbr'], 0, 2, 'R');
 			$pdf->SetTextColor(255, 255, 255);
-			$pdf->SetFillColor($new['colors']['red'], $new['colors']['green'], $new['colors']['blue']);
-			if ($new['colors']['red'] + $new['colors']['green'] + $new['colors']['blue'] > 458) {
+			$pdf->SetFillColor($line['colors']['red'], $line['colors']['green'], $line['colors']['blue']);
+			if ($line['colors']['red'] + $line['colors']['green'] + $line['colors']['blue'] > 458) {
 				$pdf->SetTextColor(0, 0, 0);
 			}
 			$y = $pdf->getY();
-			if (!empty($new['filename'])) {
-				$new['usergroup'] .= '  ';
+			if (!empty($line['filename'])) {
+				$line['usergroup'] .= '  ';
 			}
-			$pdf->Cell(257, 28, $new['usergroup'], 0, 2, 'C', 1);
-			if (!empty($new['zusaetzliche_ak'])) {
+			$pdf->Cell(257, 28, $line['usergroup'], 0, 2, 'C', 1);
+			if (!empty($line['zusaetzliche_ak'])) {
 				$pdf->SetXY($pdf->getX(), $y);
-				$pdf->Cell(257, 28, 'U'.$new['zusaetzliche_ak'], 0, 2, 'R'); // 41
+				$pdf->Cell(257, 28, 'U'.$line['zusaetzliche_ak'], 0, 2, 'R'); // 41
 			}
-			if (array_key_exists('volljaehrig', $nos) AND !empty($line[$nos['volljaehrig']]['text'])) {
+			if ($line['volljaehrig']) {
 				$pdf->SetXY($pdf->getX() + 5, $y);
 				$pdf->SetFillColor(255, 255, 255);
 				$pdf->Cell(5, 28, ' ', 0, 2, 'R', 1);
-			} elseif (array_key_exists('evtl_volljaehrig', $nos) AND !empty($line[$nos['evtl_volljaehrig']]['text'])) {
+			} elseif ($line['evtl_volljaehrig']) {
 				$pdf->SetXY($pdf->getX() + 5, $y + 14);
 				$pdf->SetFillColor(255, 255, 255);
 				$pdf->Cell(5, 14, ' ', 0, 2, 'R', 1);
 			}
 
-			if (!empty($new['filename'])) {
-				$pdf->image($new['filename'], 297.5*($j+1) - $new['width'] - 24, 110 + $top, $new['width'], $new['height']);
+			if (!empty($line['filename'])) {
+				$pdf->image($line['filename'], 297.5*($j+1) - $line['width'] - 24, 110 + $top, $line['width'], $line['height']);
 			}
 		}
 		$i++;
@@ -139,8 +158,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
 	$fields = [
 		'usergroup_id', 'parameters', 't_vorname', 't_nachname', 'person_id',
 		't_fidetitel', 't_verein', 'event_id', 'federation_contact_id',
-		'lebensalter', 'rolle', 't_dwz', 't_elo', 'geschlecht', 'volljaehrig',
-		'evtl_volljaehrig'
+		'lebensalter', 'rolle', 't_dwz', 't_elo', 'geschlecht'
 	];
 	$nos = [];
 	foreach ($head as $index => $field) {
