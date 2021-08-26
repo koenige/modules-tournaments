@@ -70,7 +70,7 @@ function mf_tournaments_job_create($category, $event_id, $runde_no = false, $pri
 	$success = wrap_db_query($sql);
 	if (!$success) return false;
 
-	wrap_trigger_protected_url('https://in.schach.in/_jobs/trigger/', $zz_setting['robot_username'], false);
+	mf_tournaments_job_trigger();
 	return true;
 }
 
@@ -109,6 +109,17 @@ function mf_tournaments_job_finish($category, $success, $event_id, $runde_no = f
 	wrap_unlock($realm);
 	
 	// Nächsten Lauf anstoßen
-	wrap_trigger_protected_url('https://in.schach.in/_jobs/trigger/', $zz_setting['robot_username'], false);
+	mf_tournaments_job_trigger();
 	return true;
+}
+
+/**
+ * trigger jobs
+ *
+ * @param void
+ * @return void
+ */
+function mf_tournaments_job_trigger() {
+	global $zz_setting;
+	wrap_trigger_protected_url('https://in.schach.in/_jobs/trigger/', $zz_setting['robot_username'], false);
 }
