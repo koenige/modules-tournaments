@@ -27,6 +27,7 @@ function mod_tournaments_make_swtimport($vars) {
 	global $zz_setting;
 	global $zz_conf;
 	$zz_setting['cache'] = false;
+	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 
 	if (!brick_access_rights(['Webmaster'])) wrap_quit(403);
 	ignore_user_abort(1);
@@ -89,7 +90,7 @@ function mod_tournaments_make_swtimport($vars) {
 		$page['text'] = '<p class="error">Die SWT-Datei für dieses Turnier existiert (noch) nicht. Bitte lade erst eine hoch.</p>';
 		$page['status'] = 404;
 		if ($_SESSION['username'] === $zz_setting['robot_username'])
-			my_job_finish('swt', 0, $event['event_id']);
+			mf_tournaments_job_finish('swt', 0, $event['event_id']);
 		return $page;
 	}
 
@@ -202,7 +203,7 @@ function mod_tournaments_make_swtimport($vars) {
 	$import['identifier'] = $identifier;
 	$page['text'] = wrap_template('swtimport', $import);
 	if ($_SESSION['username'] === $zz_setting['robot_username'])
-		my_job_finish('swt', 1, $event['event_id']);
+		mf_tournaments_job_finish('swt', 1, $event['event_id']);
 	return $page;
 }
 

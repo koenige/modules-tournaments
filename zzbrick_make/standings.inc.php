@@ -91,10 +91,11 @@ function cms_tabellenstandupdate_uebersicht($vars) {
 	$page['text'] = wrap_template('standings-update', $event);
 	
 	if (!empty($_POST) AND is_array($_POST)) {
+		require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 		$runde = key($_POST);
 		if (substr($runde, 0, 6) === 'runde_') {
 			$runde = substr($runde, 6);
-			my_job_create('tabelle', $event['event_id'], $runde);
+			mf_tournaments_job_create('tabelle', $event['event_id'], $runde);
 			wrap_redirect_change();
 		}
 	}
@@ -110,6 +111,7 @@ function cms_tabellenstandupdate_uebersicht($vars) {
 function cms_tabellenstandupdate_runde($vars) {
 	global $zz_conf;
 	$time = microtime(true);
+	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 
 	// Zugriffsberechtigt?
 	if (!brick_access_rights(['Webmaster'])) wrap_quit(403);
@@ -133,11 +135,11 @@ function cms_tabellenstandupdate_runde($vars) {
 	$zz_setting['logfile_name'] = $event['identifier'];
 
 	if ($runde > $event['runden_gespielt']) {
-		my_job_finish('tabelle', 0, $event['event_id'], $runde);
+		mf_tournaments_job_finish('tabelle', 0, $event['event_id'], $runde);
 		wrap_quit(404);
 	}
 	if ($runde > $event['runden']) {
-		my_job_finish('tabelle', 0, $event['event_id'], $runde);
+		mf_tournaments_job_finish('tabelle', 0, $event['event_id'], $runde);
 		wrap_error(sprintf('Tabellenstand-Update: Runde %d/%d nicht möglich (Termin %d/%s)',
 			$runde, $event['runden'], $vars[0], $vars[1]), E_USER_ERROR);
 	}
@@ -154,7 +156,7 @@ function cms_tabellenstandupdate_runde($vars) {
 	);
 	$games_played_in_round = wrap_db_fetch($sql, '', 'single value');
 	if (!$games_played_in_round) {
-		my_job_finish('tabelle', 0, $event['event_id'], $runde);
+		mf_tournaments_job_finish('tabelle', 0, $event['event_id'], $runde);
 		wrap_quit(404);
 	}
 
@@ -165,12 +167,12 @@ function cms_tabellenstandupdate_runde($vars) {
 		require_once __DIR__.'/standings-single.inc.php';
 		$tabelle = cms_tabellenstand_calculate_einzel($event, $runde);
 		if (!$tabelle) {
-			my_job_finish('tabelle', 0, $event['event_id'], $runde);
+			mf_tournaments_job_finish('tabelle', 0, $event['event_id'], $runde);
 			return cms_tabellenstandupdate_return(false, $time, $type);
 		}
 		$success = cms_tabellenstand_write_einzel($event['event_id'], $runde, $tabelle);
 		if (!$success) {
-			my_job_finish('tabelle', 0, $event['event_id'], $runde);
+			mf_tournaments_job_finish('tabelle', 0, $event['event_id'], $runde);
 			return cms_tabellenstandupdate_return(false, $time, $type);
 		}
 	} else {
@@ -178,9 +180,9 @@ function cms_tabellenstandupdate_runde($vars) {
 		require_once __DIR__.'/standings-team.inc.php';
 		mod_tournaments_make_standings_team($event);
 	}
-	my_job_finish('tabelle', 1, $event['event_id'], $runde);
+	mf_tournaments_job_finish('tabelle', 1, $event['event_id'], $runde);
 	if ($runde < $event['runden_gespielt']) {
-		my_job_create('tabelle', $event['event_id'], $runde + 1);
+		mf_tournaments_job_create('tabelle', $event['event_id'], $runde + 1);
 	}
 	
 	// Aktuelle runde_no von Tabellenstand speichern

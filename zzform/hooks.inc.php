@@ -101,6 +101,7 @@ function mf_tournaments_standings_update($ops) {
 		}
 	}
 	if ($update) {
+		require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 		$where = [];
 		if ($tournament_ids) {
 			$tournament_ids = array_unique($tournament_ids);
@@ -122,11 +123,11 @@ function mf_tournaments_standings_update($ops) {
 		foreach ($events as $event_id => $event_identifier) {
 			if ($runde_nos) {
 				foreach ($runde_nos as $runde) {
-					my_job_create('tabelle', $event_id, $runde, $prioritaet);
+					mf_tournaments_job_create('tabelle', $event_id, $runde, $prioritaet);
 				}
 			} else {
 				// Start in der 1. Runde
-				my_job_create('tabelle', $event_id, 1, $prioritaet);
+				mf_tournaments_job_create('tabelle', $event_id, 1, $prioritaet);
 			}
 		}
 	}
@@ -162,7 +163,8 @@ function mf_tournaments_games_update($ops) {
 	
 	// PGN-Import in Datenbank anstoßen
 	if ($event_id) {
-		my_job_create('partien', $event_id, $runde_no);
+		require_once __DIR__.'/../tournaments/cronjobs.inc.php';
+		mf_tournaments_job_create('partien', $event_id, $runde_no);
 	}
 }
 
@@ -314,7 +316,8 @@ function mf_tournaments_round_event($ops) {
 function mf_tournaments_swtimport($ops) {
 	if (empty($ops['record_new'][0]['event_id'])) return [];
 	
-	my_job_create('swt', $ops['record_new'][0]['event_id']);
+	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
+	mf_tournaments_job_create('swt', $ops['record_new'][0]['event_id']);
 	return [];
 }
 

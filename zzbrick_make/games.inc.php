@@ -27,6 +27,7 @@ function mod_tournaments_make_games($vars) {
 	global $zz_conf;
 	$zz_setting['cache'] = false;
 	if (empty($vars)) return false;
+	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 
 	// Zugriffsberechtigt?
 	if (!brick_access_rights(['Webmaster'])) wrap_quit(403);
@@ -125,7 +126,7 @@ function mod_tournaments_make_games($vars) {
 		$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
 		$event = wrap_db_fetch($sql);
 		if ($event) {
-			my_job_finish('partien', 0, $event['event_id'], $runde_url);
+			mf_tournaments_job_finish('partien', 0, $event['event_id'], $runde_url);
 		}
 		return $page;
 	}
@@ -149,7 +150,7 @@ function mod_tournaments_make_games($vars) {
 			'PGN-Import: PGN-Datei nicht vorhanden (%s).', $error_msg
 		);
 		$page['status'] = 404;
-		my_job_finish('partien', 0, $event['event_id'], $runde_url);
+		mf_tournaments_job_finish('partien', 0, $event['event_id'], $runde_url);
 		return $page;
 	}
 
@@ -354,7 +355,7 @@ function mod_tournaments_make_games($vars) {
 	if ($brett_no) $event['brett_no'] = $brett_no;
 	$zz_conf['error_handling'] = $old_error_handling;
 	$page['text'] = wrap_template('games-update', $event);
-	my_job_finish('partien', 1, $event['event_id'], $runde_url);
+	mf_tournaments_job_finish('partien', 1, $event['event_id'], $runde_url);
 	return $page;
 }
 
@@ -474,9 +475,9 @@ function cms_partienupdate_trigger() {
 	foreach ($tournaments as $event_id => $turnier) {
 		if (!$turnier['laufend']) continue;
 		// @todo maybe disable next two lines to reduce server load
-		my_job_create('partien', $turnier['event_id'], $turnier['runde_no']);
+		mf_tournaments_job_create('partien', $turnier['event_id'], $turnier['runde_no']);
 		sleep(1);
-		my_job_create('partien', $turnier['event_id'], $turnier['runde_no'].'-live', -5);
+		mf_tournaments_job_create('partien', $turnier['event_id'], $turnier['runde_no'].'-live', -5);
 		sleep(1);
 	}
 	$page['text'] = 'Update in progress';
