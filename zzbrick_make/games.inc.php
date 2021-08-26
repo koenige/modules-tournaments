@@ -476,9 +476,8 @@ function cms_partienupdate_trigger() {
 		if (!$turnier['laufend']) continue;
 		// @todo maybe disable next two lines to reduce server load
 		mf_tournaments_job_create('partien', $turnier['event_id'], $turnier['runde_no']);
-		sleep(1);
 		mf_tournaments_job_create('partien', $turnier['event_id'], $turnier['runde_no'].'-live', -5);
-		sleep(1);
+		mf_tournaments_job_trigger();
 	}
 	$page['text'] = 'Update in progress';
 	return $page;

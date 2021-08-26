@@ -96,6 +96,7 @@ function cms_tabellenstandupdate_uebersicht($vars) {
 		if (substr($runde, 0, 6) === 'runde_') {
 			$runde = substr($runde, 6);
 			mf_tournaments_job_create('tabelle', $event['event_id'], $runde);
+			mf_tournaments_job_trigger();
 			wrap_redirect_change();
 		}
 	}
@@ -183,6 +184,7 @@ function cms_tabellenstandupdate_runde($vars) {
 	mf_tournaments_job_finish('tabelle', 1, $event['event_id'], $runde);
 	if ($runde < $event['runden_gespielt']) {
 		mf_tournaments_job_create('tabelle', $event['event_id'], $runde + 1);
+		mf_tournaments_job_trigger();
 	}
 	
 	// Aktuelle runde_no von Tabellenstand speichern

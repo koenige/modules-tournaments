@@ -129,6 +129,7 @@ function mf_tournaments_standings_update($ops) {
 				// Start in der 1. Runde
 				mf_tournaments_job_create('tabelle', $event_id, 1, $prioritaet);
 			}
+			mf_tournaments_job_trigger();
 		}
 	}
 	return [];
@@ -165,6 +166,7 @@ function mf_tournaments_games_update($ops) {
 	if ($event_id) {
 		require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 		mf_tournaments_job_create('partien', $event_id, $runde_no);
+		mf_tournaments_job_trigger();
 	}
 }
 
@@ -318,6 +320,7 @@ function mf_tournaments_swtimport($ops) {
 	
 	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 	mf_tournaments_job_create('swt', $ops['record_new'][0]['event_id']);
+	mf_tournaments_job_trigger();
 	return [];
 }
 

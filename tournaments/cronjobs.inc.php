@@ -69,8 +69,6 @@ function mf_tournaments_job_create($category, $event_id, $runde_no = false, $pri
 	);
 	$success = wrap_db_query($sql);
 	if (!$success) return false;
-
-	mf_tournaments_job_trigger();
 	return true;
 }
 
