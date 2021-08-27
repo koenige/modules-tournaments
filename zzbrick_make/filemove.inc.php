@@ -103,10 +103,12 @@ function mod_tournaments_make_filemove() {
 				if (substr($source, 0, 1) === '/') $source = 'https://'.$tournament['domain'].$source;
 				$dest = sprintf(trim($ftp_other['dest']), $tournament['pfad']);
 				$success_other = wrap_watchdog($source, $dest, $params, false);
-				wrap_log(sprintf('filemove watchdog ftp_other %s %s => %s'
-					, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
-					, $source, $dest
-				), E_USER_NOTICE, 'cron');
+				if ($success_other) {
+					wrap_log(sprintf('filemove watchdog ftp_other %s %s => %s'
+						, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
+						, $source, $dest
+					), E_USER_NOTICE, 'cron');
+				}
 			}
 		}
 
@@ -123,11 +125,13 @@ function mod_tournaments_make_filemove() {
 		wrap_mkdir($final_dir);
 		$params = [];
 		$params['destination'] = ['timestamp'];
-		wrap_watchdog($source, $dest_dir.'/games-%s.pgn', $params, true);
-		wrap_log(sprintf('filemove watchdog queue-in %s %s => %s'
-			, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
-			, $source, $dest_dir
-		), E_USER_NOTICE, 'cron');
+		$success = wrap_watchdog($source, $dest_dir.'/games-%s.pgn', $params, true);
+		if ($success) {
+			wrap_log(sprintf('filemove watchdog queue-in %s %s => %s'
+				, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
+				, $source, $dest_dir
+			), E_USER_NOTICE, 'cron');
+		}
 
 		// 2. move queued files on
 		$files = array_diff(scandir($dest_dir), ['.', '..']);
@@ -168,11 +172,11 @@ function mod_tournaments_make_filemove() {
 					$source = sprintf($s_filename, $i);
 					$dest = $final_dir.'/'.$i.'.pgn';
 					$success = wrap_watchdog($source, $dest, $params, false);
-					wrap_log(sprintf('filemove watchdog bulletin %s %s => %s'
-						, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
-						, $source, $dest
-					), E_USER_NOTICE, 'cron');
 					if ($success) {
+						wrap_log(sprintf('filemove watchdog bulletin %s %s => %s'
+							, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
+							, $source, $dest
+						), E_USER_NOTICE, 'cron');
 						$partien_url = sprintf('/_jobs/partien/%s/%s/', $tournament['identifier'], $i);
 						wrap_trigger_protected_url($partien_url);
 					}
@@ -193,10 +197,12 @@ function mod_tournaments_make_filemove() {
 					$round = sprintf('%02d', $i);
 					$dest = sprintf($ftp_pgn, $tournament['pfad'], $round);
 					$success[$i] = wrap_watchdog($source, $dest, $params, false);
-					wrap_log(sprintf('filemove watchdog ftp_pgn %s %s => %s'
-						, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
-						, $source, $dest
-					), E_USER_NOTICE, 'cron');
+					if ($success[$i]) {
+						wrap_log(sprintf('filemove watchdog ftp_pgn %s %s => %s'
+							, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
+							, $source, $dest
+						), E_USER_NOTICE, 'cron');
+					}
 				}
 			}
 		}
