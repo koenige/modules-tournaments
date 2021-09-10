@@ -66,45 +66,16 @@ function mod_tournaments_make_ratings_unzip($rating, $archive) {
 	unlink($dest_folder);
 	mkdir($dest_folder);
 
-	if (class_exists('ZipArchive')) {
-		$zip = new ZipArchive;
-		$res = $zip->open($archive);
-		if ($res === true) {
-			$zip->extractTo($dest_folder);
-			$zip->close();
-			return $dest_folder;
-		}
+	if (!class_exists('ZipArchive')) {
+		wrap_error(sprintf('php with ZipArchive class needed to extract files. (%s)', __FUNCTION__), E_USER_ERROR);
+	}
+	$zip = new ZipArchive;
+	$res = $zip->open($archive);
+	if ($res !== true) {
 		wrap_error(sprintf(wrap_text('Error while unpacking file %s, Code %s'), $archive, $res), E_USER_ERROR);
 		return false;
 	}
-	global $zz_setting;
-	require_once $zz_setting['lib'].'/unzip/unzip.lib.php';
-
-	$oU = new SimpleUnzip($archive);
-	$bF = FALSE;
-	foreach ($oU->Entries as $oI) {
-		/*printf("%sFile :\n" .
-		" * Error = %d\n" .
-		" * Errormessage = %s\n" .
-		" * Filename = %s\n" .
-		" * Path = %s\n" .
-		" * Filetime = %s\n" .
-		" * Data = #not displayed#\n",
-		$nI ? "\n" : '',
-		$oI->Error,
-		$oI->ErrorMsg,
-		$oI->Name,
-		$oI->Path,
-		date('Y-m-d H:i:s', $oI->Time));*/
-		if ($oI->Error != 0) {
-			$error_unzip = true;
-			continue;
-		}
-		$bF = TRUE;
-		$oF = fopen($dest_folder.'/'.$oI->Name, "w");
-		fwrite($oF, $oI->Data);
-		fclose($oF); 
-	}
-	if (isset($error_unzip)) return false;
+	$zip->extractTo($dest_folder);
+	$zip->close();
 	return $dest_folder;
 }
