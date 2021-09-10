@@ -275,10 +275,10 @@
 %%% condition if fide_id %%%
 <p><a href="http://ratings.fide.com/tournament_details.phtml?event=%%% item fide_id %%%">Elo-Auswertung bei der FIDE</a></p>
 %%% condition endif %%%
-%%% condition if dwz_code & dwz_db_archiv %%%
-<p><a href="http://altdwz.schachbund.net/turniere/%%% item year %%%.html?code=%%% item dwz_code %%%">DWZ-Auswertung beim Schachbund</a></p>
-%%% condition elseif dwz_code %%%
-<p><a href="http://www.schachbund.de/turnier/%%% item dwz_code %%%.html">DWZ-Auswertung beim Schachbund</a></p>
+%%% condition if dwz & dwz_db_archiv %%%
+<p><a href="http://altdwz.schachbund.net/turniere/%%% item year %%%.html?code=%%% item dwz %%%">DWZ-Auswertung beim Schachbund</a></p>
+%%% condition elseif dwz %%%
+<p><a href="http://www.schachbund.de/turnier/%%% item dwz %%%.html">DWZ-Auswertung beim Schachbund</a></p>
 %%% condition endif %%%
 </div>
 

@@ -135,7 +135,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	$event += $details;
 
 	// Auswertungen
-	$sql = 'SELECT REPLACE(categories.path, "-", "_") AS category
+	$sql = 'SELECT REPLACE(SUBSTRING_INDEX(categories.path, "/", -1), "-", "_") AS category
 			, turniere_kennungen.kennung AS turnierkennung
 		FROM turniere_kennungen
 		LEFT JOIN categories
@@ -143,7 +143,7 @@ function mod_tournaments_tournament($vars, $settings) {
 		WHERE tournament_id = %d';
 	$sql = sprintf($sql, $event['tournament_id']);
 	$event = array_merge($event, wrap_db_fetch($sql, '_dummy_', 'key/value'));
-	if ($event['year'] < 2011 AND array_key_exists('dwz_code', $event)) {
+	if ($event['year'] < 2011 AND array_key_exists('dwz', $event)) {
 		$event['dwz_db_archiv'] = true;
 	}
 	
