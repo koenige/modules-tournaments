@@ -52,7 +52,8 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 
 	$hoehe_flagge = 34;
 	$k = 0;
-	foreach ($data as $line) {
+	foreach ($data as $id => $line) {
+		if (!is_numeric($id)) continue;
 		$i = floor($k / 2);
 		$col = $k % 2;
 		// PDF setzen
@@ -90,6 +91,13 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 		$pdf->SetXY(20 + $left, $pdf->GetY() + 10);
 		if ($pdf->GetStringWidth($line['name']) < 252) {
 			// 257 geht nicht, passt nicht immer
+			$pdf->SetXY(20 + $left, $pdf->GetY() + 12.5);
+		} else {
+			// @todo this can be done way better
+			if (!strstr($line['name'], ' '))
+				$line['name'] = str_replace('-', '- ', $line['name']);
+		}
+		if (empty($data['has_club_line'])) {
 			$pdf->SetXY(20 + $left, $pdf->GetY() + 12.5);
 		}
 		$pdf->MultiCell(257, 25, $line['name'], 0, 'C');
@@ -178,7 +186,7 @@ function mf_tournaments_export_pdf_tischkarten_team($ops) {
 	}
 	$sql = 'SELECT team_id
 			, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS name
-			, event AS usergroup
+			, IF(LENGTH(event) > 12, category_short, event) AS usergroup
 			, club_contact_id AS contact_id
 			, categories.parameters
 	    FROM teams
@@ -192,11 +200,13 @@ function mf_tournaments_export_pdf_tischkarten_team($ops) {
 	
 	foreach ($teams as $team_id => $team) {
 		$teams[$team_id]['name'] = my_verein_saeubern($team['name']);
-		$teams[$team_id]['club'] = $team['federation'];
+		$teams[$team_id]['club'] = $team['federation'] !== $teams[$team_id]['name'] ? $team['federation'] : '';
 		$teams[$team_id]['ratings'] = [];
 		parse_str($team['parameters'], $team['parameters']);
 		if (empty($team['parameters']['color'])) $team['parameters']['color'] = '#CC0000';
 		$teams[$team_id]['colors'] = mf_tournaments_colors_hex2dec($team['parameters']['color']);
+		if ($teams[$team_id]['club'])
+			$teams['has_club_line'] = true;
 	}
 	return $teams;
 }
