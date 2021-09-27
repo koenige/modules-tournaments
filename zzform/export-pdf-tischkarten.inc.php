@@ -176,6 +176,7 @@ function mf_tournaments_export_pdf_tischkarten_single($ops) {
 		if ($line[$nos['t_dwz']]['text']) $data[$index]['ratings']['DWZ'] = ' '.$line[$nos['t_dwz']]['text'];
 		if ($line[$nos['t_elo']]['text']) $data[$index]['ratings']['Elo'] = ' '.$line[$nos['t_elo']]['text'];
 	}
+	$data['has_club_line'] = true;
 	return $data;
 }
 
