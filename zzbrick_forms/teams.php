@@ -13,9 +13,6 @@
  */
 
 
-$event = my_event($brick['vars'][0], $brick['vars'][1]);
-if (!$event) wrap_quit(404);
-
 $zz = zzform_include_table('teams');
 
 $zz['details'][0]['title'] = 'Spieler';
@@ -44,17 +41,14 @@ $zz['details'][3]['link'] = [
 
 $zz['if'][1]['details'] = false;
 
-my_event_breadcrumbs($event);
-$zz_conf['breadcrumbs'][] = ['linktext' => $zz['title']];
-
-$zz['where']['event_id'] = $event['event_id'];
+$zz['where']['event_id'] = $brick['data']['event_id'];
 
 $zz['fields'][1]['show_id'] = true;
 
 $zz['fields'][2]['class'] = 'hidden';
 $zz['fields'][2]['hide_in_list'] = true;
 
-switch ($event['turnierform']) {
+switch ($brick['data']['turnierform']) {
 case 'm-s':
 	$zz['fields'][3]['title'] = 'Schule';
 	$zz['fields'][4]['explanation'] = 'Falls leer, wird hier Name der Schule genommen.';
@@ -82,16 +76,16 @@ $zz['fields'][14]['hide_in_list'] = false;
 $zz['fields'][15]['hide_in_list'] = false;
 $zz['fields'][35]['hide_in_list'] = false;
 
-if (!$event['gastspieler']) unset($zz['fields'][30]); // keine Gastspielgenehmigung
+if (!$brick['data']['gastspieler']) unset($zz['fields'][30]); // keine Gastspielgenehmigung
 
 // Einschränkungen, Admin + Gremien + Webmaster dürfen alles
-if (!brick_access_rights('Gremien') AND brick_access_rights(['Technik', 'Organisator'], $event['event_rights'])) {
+if (!brick_access_rights('Gremien') AND brick_access_rights(['Technik', 'Organisator'], $brick['data']['event_rights'])) {
 	$zz['fields'][21]['subselect']['sql'] .= 
 		' AND FIND_IN_SET(sichtbarkeit, "Organisator")';
 	$zz['fields'][21]['sql'] .= 
 		' WHERE FIND_IN_SET(sichtbarkeit, "Organisator")';
 
-} elseif (!brick_access_rights('Gremien') AND brick_access_rights(['Turnierleitung', 'Schiedsrichter'], $event['event_rights'])) {
+} elseif (!brick_access_rights('Gremien') AND brick_access_rights(['Turnierleitung', 'Schiedsrichter'], $brick['data']['event_rights'])) {
 	$zz['fields'][21]['subselect']['sql'] .= 
 		' AND FIND_IN_SET(sichtbarkeit, "Organisator")';
 	$zz['fields'][21]['sql'] .= 
@@ -123,12 +117,12 @@ if (!empty($zz['filter'][1])) {
 		WHERE event_id = %d
 		AND team_status = "Teilnehmer"
 		GROUP BY meldung
-		ORDER BY meldung', $event['event_id']);
+		ORDER BY meldung', $brick['data']['event_id']);
 }
 $zz_conf['limit'] = 40;
 $zz_conf['export'][] = 'CSV Excel';
 $zz_conf['export'][] = 'PDF Tischkarten';
-$zz_conf['event'] = $event;
+$zz_conf['event'] = $brick['data'];
 
 $zz['filter'][2]['title'] = 'Status';
 $zz['filter'][2]['type'] = 'list';
@@ -139,7 +133,7 @@ $zz['filter'][2]['sql'] = sprintf('SELECT team_status, CONCAT(team_status, " (",
 	FROM teams
 	WHERE event_id = %d
 	GROUP BY team_status
-	ORDER BY team_status', $event['event_id']);
+	ORDER BY team_status', $brick['data']['event_id']);
 
 require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
 $zz['conditions'][2]['scope'] = 'access';
