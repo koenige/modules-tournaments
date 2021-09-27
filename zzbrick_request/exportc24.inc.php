@@ -13,13 +13,11 @@
  */
 
 
-function mod_tournaments_exportc24($vars, $settings) {
+function mod_tournaments_exportc24($vars, $settings, $event) {
 	global $zz_setting;
 
 	if ($settings['type'] !== 'json') return false;
 	if (count($vars) !== 2) return false;
-	$event = my_event($vars[0], $vars[1]);
-	if (!$event) return false;
 	$event['path'] = str_replace('/', '-', $event['identifier']);
 	
 	parse_str($event['tournament_parameter'], $parameter);
