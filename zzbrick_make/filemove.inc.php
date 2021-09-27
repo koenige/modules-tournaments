@@ -29,7 +29,8 @@ function mod_tournaments_make_filemove() {
 			, IFNULL((SELECT setting_value FROM _settings
 				WHERE setting_key = "canonical_hostname"
 				AND _settings.website_id = websites.website_id
-			), domain) AS domain
+			), domain) AS host_name
+			, domain
 		FROM tournaments
 		JOIN events USING (event_id)
 		LEFT JOIN websites USING (website_id)
@@ -100,7 +101,7 @@ function mod_tournaments_make_filemove() {
 				$params['log_destination'] = false;
 				$success_other = false;
 				$source = trim($ftp_other['source']);
-				if (substr($source, 0, 1) === '/') $source = 'https://'.$tournament['domain'].$source;
+				if (substr($source, 0, 1) === '/') $source = 'https://'.$tournament['host_name'].$source;
 				$dest = sprintf(trim($ftp_other['dest']), $tournament['pfad']);
 				$success_other = wrap_watchdog($source, $dest, $params, false);
 				if ($success_other) {
@@ -185,14 +186,15 @@ function mod_tournaments_make_filemove() {
 		}
 
 		// Upload auf FTP, results.pgn
+		$website_id = $zz_setting['website_id'];
 		if (!empty($parameter['ftp_pgn'])) {
 			foreach ($parameter['ftp_pgn'] as $ftp_pgn) {
 				$params['log_destination'] = false;
 				$success = [];
 				for ($i = 1; $i <= $tournament['current_round']['runde_no']; $i++) {
-					$source = sprintf('https://%s/%s/partien/%d-utf8.pgn'
-						, $tournament['domain'], $tournament['identifier']
-						, $i
+					$zz_setting['website_id'] = wrap_id('websites', $tournament['domain']);
+					$source = sprintf('brick games %s %d-live-utf8.pgn'
+						, str_replace('/', ' ', $tournament['identifier']), $i
 					);
 					$round = sprintf('%02d', $i);
 					$dest = sprintf($ftp_pgn, $tournament['pfad'], $round);
@@ -206,7 +208,7 @@ function mod_tournaments_make_filemove() {
 				}
 			}
 		}
-
+		$zz_setting['website_id'] = $website_id;
 	}
 	$page['text'] = '<p>PGN-Dateien verschoben</p>';
 	return $page;
