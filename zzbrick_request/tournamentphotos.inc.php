@@ -47,20 +47,12 @@ function mod_tournaments_tournamentphotos($vars) {
 	$event['spieler'] = wrap_db_fetch($sql, 'person_id');
 	if (!$event['spieler']) return false;
 
-	$url = sprintf($zz_setting['mediaserver_website'], $event['year'].'/'.$event['main_series_path'], 'Website/Spieler');
-// 	$url .=  '?meta=*'.$event['identifier'];
-	$zz_setting['brick_cms_input'] = 'json';
-	$bilder = brick_request_external($url, $zz_setting);
-	unset($bilder['_']); // metadata
-	if (!$bilder) return false;
-
-	foreach ($bilder as $bild) {
-		foreach ($bild['meta'] as $meta) {
-			if ($meta['category_identifier'] !== 'person') continue;
-			if (!in_array($meta['foreign_key'], array_keys($event['spieler']))) continue;
-			$event['spieler'][$meta['foreign_key']] += $bild;
-			continue 2;
-		}
+	$photos = mf_mediadblink_media(
+		$event['year'].'/'.$event['main_series_path'], 'Website/Spieler', 'person', array_keys($event['spieler'])
+	);
+	if (!$photos) return false;
+	foreach ($photos as $id => $photo) {
+		$event['spieler'][$id] += $photo;
 	}
 
 	$page['extra']['realm'] = 'sports';
