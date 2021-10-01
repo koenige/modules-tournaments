@@ -150,7 +150,7 @@ nicht abschließend geprüft.)</em></p>
 
 <p class="teamphoto">
 %%% loop bilder 1 %%%
-<img src="%%% page mediabase %%%/%%% item base_filename %%%.600.%%% item preview_extension %%%" alt="">
+<img src="%%% setting mediadblink_base_url %%%/%%% item base_filename %%%.600.%%% item preview_extension %%%" alt="">
 %%% loop end %%%
 </p>
 %%% condition endif %%%
