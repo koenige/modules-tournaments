@@ -13,26 +13,8 @@
  */
 
 
-function mod_tournaments_tournamentphotos($vars) {
-	global $zz_setting;
-
-	$sql = 'SELECT event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year, events.identifier
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
-			, main_series.category_short AS main_series
-			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
-			, IFNULL(place, places.contact) AS turnierort
-		FROM events
-		LEFT JOIN contacts places
-			ON events.place_contact_id = places.contact_id
-		LEFT JOIN addresses
-			ON places.contact_id = addresses.contact_id
-		LEFT JOIN categories series
-			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON main_series.category_id = series.main_category_id
-		WHERE events.identifier = "%d/%s"';
-	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
-	$event = wrap_db_fetch($sql);
+function mod_tournaments_tournamentphotos($vars, $settings, $event) {
+	if (count($vars) !== 2) return false;
 	if (!$event) return false;
 
 	$sql = 'SELECT person_id, setzliste_no,
@@ -57,11 +39,6 @@ function mod_tournaments_tournamentphotos($vars) {
 
 	$page['extra']['realm'] = 'sports';
 	$page['title'] = 'Teilnehmerphotos '.$event['event'].' '.$event['year'];
-	$page['breadcrumbs'][] = '<a href="../../">'.$event['year'].'</a>';
-	if ($event['main_series']) {
-		$page['breadcrumbs'][] = '<a href="../../'.$event['main_series_path'].'/">'.$event['main_series'].'</a>';
-	}
-	$page['breadcrumbs'][] = '<a href="../">'.$event['event'].'</a>';
 	$page['breadcrumbs'][] = 'Photos der Teilnehmer';
 	$page['dont_show_h1'] = true;
 	$page['text'] = wrap_template('tournamentphotos', $event);
