@@ -180,18 +180,7 @@ function mod_tournaments_team_public($page, $data) {
 	$sql = sprintf($sql, $data['contact_id']);
 	$data = array_merge($data, wrap_db_fetch($sql));
 
-	// Bilder auslesen
-	$url = sprintf($zz_setting['mediaserver_website'], $data['event_identifier'], 'Website');
-	$zz_setting['brick_cms_input'] = 'json';
-	$bilder = brick_request_external($url, $zz_setting);
-	unset($bilder['_']); // metadata
-	foreach ($bilder as $bild) {
-		foreach ($bild['meta'] as $meta) {
-			if ($meta['foreign_key'] !== $data['team_id']) continue;
-			if ($meta['category_identifier'] !== 'group') continue;
-			$data['bilder'][] = $bild;
-		}
-	}
+	$data['bilder'] = mf_mediadblink_media($data['event_identifier'], 'Website', 'group', $data['team_id']);
 
 	// Prev/Next-Navigation
 	$sql = 'SELECT team_id, kennung
