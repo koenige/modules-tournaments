@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2020 Gustaf Mossakowski
+# @copyright Copyright © 2020-2021 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 msgid ""
@@ -40,6 +40,10 @@ msgstr ""
 
 #: zzbrick_make/ratings.inc.php
 msgid "Error while unpacking file %s, Code %s"
+msgstr ""
+
+#: zzbrick_make/ratings.inc.php
+msgid "Please wait. Rating sync is only allowed to run once every %s."
 msgstr ""
 
 #: zzbrick_make/ratings-download.inc.php

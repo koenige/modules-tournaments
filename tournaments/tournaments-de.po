@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2020 Gustaf Mossakowski
+# @copyright Copyright © 2020-2021 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 msgid ""
@@ -44,6 +44,12 @@ msgstr "Letzter importierter Stand der DSB-DWZ-Datenbank"
 msgid "Error while unpacking file %s, Code %s"
 msgstr "Fehler beim entpacken der Datei %s, Code %s"
 
+#: zzbrick_make/ratings.inc.php
+msgid "Please wait. Rating sync is only allowed to run once every %s."
+msgstr ""
+"Bitte warten. Die Synchronisierung der Ratingzahlen darf nur einmal alle %s "
+"laufen."
+
 #: zzbrick_make/ratings-download.inc.php
 msgid "Failed to download rating file for %s."
 msgstr "Herunterladen der Rating-Datei für %s fehlgeschlagen."
@@ -58,8 +64,8 @@ msgstr "Datei %s für den Rating-Import nicht gefunden."
 
 #: zzbrick_request/livegames.inc.php
 msgid ""
-"The tournament is over. All live games are integrated into the <a href="../">tournament "
-"pages</a>."
+"The tournament is over. All live games are integrated into the <a href=\"../"
+"\">tournament pages</a>."
 msgstr ""
-"Das Turnier ist vorbei. Alle Live-Partien wurden in die <a href="../">Turnierseiten</a> "
-"integriert."
+"Das Turnier ist vorbei. Alle Live-Partien wurden in die <a href=\"../"
+"\">Turnierseiten</a> integriert."
