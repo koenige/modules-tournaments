@@ -628,7 +628,8 @@ function mod_tournaments_games_html($event, $request, $typ) {
 	} else {
 		// PGN from file, Latin 1
 		if ($zz_conf['character_set'] === 'utf-8') {
-			$pgn['moves'] = utf8_encode($pgn['moves']);
+			if (!mb_detect_encoding($pgn['moves'], 'UTF-8', true))
+				$pgn['moves'] = utf8_encode($pgn['moves']);
 		}
 	}
 	$partie = array_merge($event, $partie);

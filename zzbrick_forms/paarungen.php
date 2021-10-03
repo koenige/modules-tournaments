@@ -13,22 +13,19 @@
  */
 
 
-$event = my_event($brick['vars'][0], $brick['vars'][1]);
-if (!$event) wrap_quit(404);
-
-$values['where'] = sprintf('WHERE event_id = %d', $event['event_id']);
+$values['where'] = sprintf('WHERE event_id = %d', $brick['data']['event_id']);
 $zz = zzform_include_table('paarungen', $values);
-$zz['where']['event_id'] = $event['event_id'];
+$zz['where']['event_id'] = $brick['data']['event_id'];
 $zz['where']['runde_no'] = $brick['vars'][2];
 
-my_event_breadcrumbs($event);
 $zz_conf['breadcrumbs'][] = [
 	'linktext' => 'Runden',
-	'url' => '/intern/termine/'.$event['identifier'].'/runde/'
+	'url' => '/intern/termine/'.$brick['data']['identifier'].'/runde/'
 ];
 $zz_conf['breadcrumbs'][] = ['linktext' => $brick['vars'][2]];
+$zz_conf['dont_show_title_as_breadcrumb'] = true;
 
-if ($brick['vars'][2] < $event['runden_max']) {
+if ($brick['vars'][2] < $brick['data']['runden_max']) {
 	$zz['page']['link']['next'][0]['href'] = '../'.($brick['vars'][2] + 1).'/';	
 	$zz['page']['link']['next'][0]['title'] = 'Nächste Runde';
 }

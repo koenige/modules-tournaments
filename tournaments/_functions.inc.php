@@ -543,7 +543,7 @@ function mf_tournaments_federations($data, $id_field) {
 			ON CONCAT(SUBSTRING(contacts_identifiers.identifier, 1, 1), "00") = lv_kennungen.identifier 
 			AND lv_kennungen.current = "yes"
 		LEFT JOIN contacts landesverbaende
-			ON landesverbaende.contact_id = lv_kennungen.contact_id
+			ON landesverbaende.contact_id = IFNULL(lv_kennungen.contact_id, vereine.mother_contact_id)
 		LEFT JOIN countries
 			ON landesverbaende.country_id = countries.country_id
 	    WHERE vereine.contact_id IN (%s)';

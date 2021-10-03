@@ -13,12 +13,10 @@
  */
 
 
-function mod_tournaments_exportcb($params) {
+function mod_tournaments_exportcb($params, $settings, $event) {
 	global $zz_setting;
 
 	if (count($params) !== 2) return false;
-	$event = my_event($params[0], $params[1]);
-	if (!$event) return false;
 	$event['path'] = str_replace('/', '-', $event['identifier']);
 	parse_str($event['parameters'], $parameters);
 	if ($parameters) $event += $parameters;

@@ -303,9 +303,7 @@ function pgn_to_html($pgn, $extra_comment = []) {
 			}
 		} elseif (substr($move, 0, 1) === '$') {
 			if (!isset($nag)) {
-//				wrap_log('PGN: NAG file not found. {'.$_SERVER['REQUEST_URI'].'}');
-				require_once $zz_setting['lib'].'/pgnreader/nag.php';
-				$nag = get_pgn_basics();
+				$nag = mf_chess_pgn_basics();
 			}
 			if (substr($game['html'], -1) === ' ')
 				$game['html'] = substr($game['html'], 0, -1);
