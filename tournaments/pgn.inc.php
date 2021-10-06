@@ -303,6 +303,7 @@ function pgn_to_html($pgn, $extra_comment = []) {
 			}
 		} elseif (substr($move, 0, 1) === '$') {
 			if (!isset($nag)) {
+				require_once $zz_setting['modules_dir'].'/chess/chess/pgn.inc.php';
 				$nag = mf_chess_pgn_basics();
 			}
 			if (substr($game['html'], -1) === ' ')
