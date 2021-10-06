@@ -23,7 +23,7 @@
  * @return array $page
  * @todo Einzelturniere unterstützen
  */
-function mod_tournaments_make_swtimport($vars) {
+function mod_tournaments_make_swtimport($vars, $settings, $event) {
 	global $zz_setting;
 	global $zz_conf;
 	$zz_setting['cache'] = false;
@@ -33,42 +33,26 @@ function mod_tournaments_make_swtimport($vars) {
 	ignore_user_abort(1);
 	ini_set('max_execution_time', 180);
 
-	$identifier = implode('/', $vars);
 	if (count($vars) !== 2) {
-		wrap_log(sprintf('SWT-Import: Falsche Zahl von Parametern: %s', $identifier));
+		wrap_log(sprintf('SWT-Import: Falsche Zahl von Parametern: %s', implode('/', $vars)));
 		return false;
 	}
-	$zz_setting['logfile_name'] = $identifier;
-	
-	// @todo Einzel- oder Mannschaftsturnier aus Termine auslesen
-	// Datenherkunft aus Turniere
-	$sql = 'SELECT event_id, event, events.identifier, IFNULL(event_year, YEAR(date_begin)) AS year
-			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
-			, tournaments.wertung_spielfrei
-			, tournaments.urkunde_parameter AS parameter
-		FROM events
-		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN categories turnierformen
-			ON turnierformen.category_id = tournaments.turnierform_category_id
-		WHERE events.identifier = "%s"';
-	$sql = sprintf($sql, wrap_db_escape($identifier));
-	$event = wrap_db_fetch($sql);
+	$zz_setting['logfile_name'] = implode('/', $vars);
 	if (empty($event['event_id'])) {
 		wrap_log('SWT-Import: Kein Termin für diese Parameter in der Datenbank');
 		return false;
 	}
-	parse_str($event['parameter'], $parameter);
+	
+	// @todo Einzel- oder Mannschaftsturnier aus Termine auslesen
+	// Datenherkunft aus Turniere
+	$sql = 'SELECT tournaments.wertung_spielfrei
+		FROM tournaments
+		WHERE tournaments.event_id = %d';
+	$sql = sprintf($sql, wrap_db_escape($event['event_id']));
+	$event['wertung_spielfrei'] = wrap_db_fetch($sql, '', 'single value');
+	parse_str($event['tournament_parameter'], $parameter);
 	if ($parameter) $event += $parameter;
 
-	$page['breadcrumbs'][] = '<a href="/intern/termine/">Termine</a>';
-	$page['breadcrumbs'][] = sprintf(
-		'<a href="/intern/termine/%d/">%d</a>',
-		$event['year'], $event['year']
-	);
-	$page['breadcrumbs'][] = sprintf(
-		'<a href="/intern/termine/%s/">%s</a>',
-		$event['identifier'], $event['event']
-	);
 	$page['breadcrumbs'][] = 'SWT-Import';
 
 	$sql = 'SELECT category_id, categories.path
@@ -110,7 +94,8 @@ function mod_tournaments_make_swtimport($vars) {
 	mod_tournaments_make_swtimport_turniercheck($event, $form, $tournament['out']);
 
 	require_once $zz_conf['dir'].'/zzform.php';
-	$zz_conf['user'] = sprintf('SWT-Import: %s', $identifier);
+	$zz_conf['user'] = sprintf('SWT-Import: %s', $event['identifier']);
+
 	$old_error_handling = $zz_conf['error_handling'];
 	$zz_conf['error_handling'] = 'output';
 	$ids = [];
