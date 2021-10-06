@@ -8,6 +8,11 @@
 # @copyright Copyright © 2013, 2015, 2020-2021 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
+%%% condition if no_post %%%
+<form method="POST" action="">
+<input type="submit" value="%%% text Start import from SWT file %%%">
+</form>
+%%% condition else %%%
 %%% condition if importiert %%%
 <dl>
 %%% loop importiert %%%
@@ -26,3 +31,4 @@ vorher in die SWT-Datei schreiben</a> und die Datei danach herunterladen.</p>
 %%% condition endif %%%
 
 <p>SWT-Import abgeschlossen.</p>
+%%% condition endif %%%

@@ -93,6 +93,28 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
 	// Check: richtiges Turnier?
 	mod_tournaments_make_swtimport_turniercheck($event, $form, $tournament['out']);
 
+	if ($_SERVER['REQUEST_METHOD'] === 'POST')
+		$import = mod_tournaments_make_swtimport_import($event, $form, $tournament);
+	else
+		$import['no_post'] = true;
+
+	$import['identifier'] = $event['identifier'];
+	$page['text'] = wrap_template('swtimport', $import);
+	if ($_SESSION['username'] === $zz_setting['robot_username'])
+		mf_tournaments_job_finish('swt', 1, $event['event_id']);
+	return $page;
+}
+
+/**
+ * actual import of data from SWT file
+ *
+ * @param array $event
+ * @param string $form
+ * @param array $tournament
+ * @return array
+ */
+function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
+	global $zz_conf;
 	require_once $zz_conf['dir'].'/zzform.php';
 	$zz_conf['user'] = sprintf('SWT-Import: %s', $event['identifier']);
 
@@ -185,11 +207,7 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
 		}
 		$import['importiert'][] = $importiert;
 	}
-	$import['identifier'] = $identifier;
-	$page['text'] = wrap_template('swtimport', $import);
-	if ($_SESSION['username'] === $zz_setting['robot_username'])
-		mf_tournaments_job_finish('swt', 1, $event['event_id']);
-	return $page;
+	return $import;
 }
 
 /**
