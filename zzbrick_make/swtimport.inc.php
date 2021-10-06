@@ -301,9 +301,9 @@ function mod_tournaments_make_swtimport_teams($event, $tournament) {
 	$t_teams_last = [];
 	$t_teams_first = [];
 	foreach ($tournament['Teams'] as $t_key => $team) {
-		if (empty($event['swisschess']['ignore_ids'])) {
-			$team_id = mod_tournaments_make_swtimport_team_id($team, $tournament['Spieler'], $event['event_id']);
-		}
+		$team_id = empty($event['swisschess']['ignore_ids'])
+			? mod_tournaments_make_swtimport_team_id($team, $tournament['Spieler'], $event['event_id'])
+			: false;
 		$tournament['Teams'][$t_key]['team_id'] = $team_id;
 		$team_ids[$t_key] = $team_id;
 		if ($team_id) {
