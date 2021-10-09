@@ -1,0 +1,63 @@
+# tournaments module
+# HTML output: team tournament results per round
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2012-2016, 2020-2021 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+<h1>Ergebnisse %%% item round_event %%%%%% item live " (Live)" %%%
+<br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
+
+%%% condition if live %%%
+<p>Liveergebnisse: Die Ergebnisse sind vorläufig und ohne Gewähr.<!-- <br>
+Stand: %%% item livedatum %%%. Diese Seite wird minütlich automatisch aktualisiert. --> </p>
+%%% condition endif %%%
+
+<p>%%% item wochentag %%%, %%% item date_begin wrap_date %%% %%% item time_begin %%%%%% item time_end "–%s" %%%
+%%% condition if time_begin | time_end %%% Uhr%%% condition endif %%%</p>
+
+</div>
+<div class="tournament">
+%%% loop paarungen %%%
+<table class="team_ergebnis">
+<thead>
+<tr>
+	<th class="tz">%%% item tisch_no %%%</th>
+	<th class="th" colspan="2">%%% item heim_kennung "<a href='../../../../%s/'>" %%%%%% item heim_team %%%%%% item heim_kennung "</a>" %%%</th>
+	<th class="tm">%%% item heim_m_ergebnis mf_tournaments_result_format %%% : %%% item auswaerts_m_ergebnis mf_tournaments_result_format %%%</th>
+	<th class="ta" colspan="2">%%% item auswaerts_kennung "<a href='../../../../%s/'>" %%%%%% item auswaerts_team %%%%%% item auswaerts_kennung "</a>" %%%</th>
+</tr>
+</thead>
+<tbody>
+%%% loop bretter %%%
+	<tr>
+		<td class="tz">%%% item brett_no %%%</td>
+		<td><span class="%%% item heim_farbe %%%">&nbsp;</span></td>
+		<td class="th">%%% item heim_spieler %%% %%% item heim_gastspieler "<abbr title='Gastspielerin'>(G)</abbr> " %%%</td>
+		<td class="tm">%%% condition if partie %%%<a href="../../partien/%%% item runde_no %%%-%%% item tisch_no %%%-%%% item brett_no %%%/">%%% condition endif %%%%%% item heim_ergebnis mf_tournaments_result_format %%% : %%% item auswaerts_ergebnis mf_tournaments_result_format %%% %%% item haengepartie "(<abbr title="Hängepartie">H</abbr>)" %%%%%% item partie "</a>" %%%</td>
+		<td class="ta">%%% item auswaerts_spieler %%% %%% item auswaerts_gastspieler "<abbr title='Gastspielerin'>(G)</abbr> " %%%</td>
+		<td><span class="%%% item auswaerts_farbe %%%">&nbsp;</span></td>
+	</tr>
+%%% loop end %%%
+</tbody>
+</table>
+%%% loop end %%%
+</div>
+<div class="text">
+<nav>
+<div class="relnav">
+%%% condition if tabelle %%%
+<p class="prev"><a href="../../tabelle/%%% item runde_no %%%/">Tabelle der %%% item round_event %%%</a></p>
+%%% condition endif %%%
+<p class="prev">%%% condition if prev %%%<a href="../%%% item prev %%%/">vorherige Runde</a>
+%%% condition else %%%<a href="../../">Übersicht</a>%%% condition endif %%%</p>
+<p class="next">%%% condition if next %%%<a href="../%%% item next %%%/">nächste Runde</a>
+%%% condition else %%%<a href="../../">Übersicht</a>%%% condition endif %%%</p>
+</div>
+</nav>
+%%% condition unless live %%%
+<script src="%%% setting behaviour_path %%%/default/link-rel-nav.js"></script>
+%%% condition endif %%%
