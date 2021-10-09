@@ -376,10 +376,6 @@ function pgn_only_comment($moves, $result) {
 	return substr($moves, 1, -1);
 }
 
-function pgn_wordwrap($string) {
-	return wordwrap($string, 79);
-}
-
 /**
  * sometimes, database software messes up header lines and does not add newlines
  *

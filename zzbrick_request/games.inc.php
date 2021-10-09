@@ -26,7 +26,6 @@ function mod_tournaments_games($vars) {
 	
 	$qs = mod_tournaments_games_check_qs();
 
-	$zz_setting['brick_formatting_functions'][] = 'pgn_wordwrap';
 	require_once __DIR__.'/../tournaments/pgn.inc.php';
 
 	$typ = false;
@@ -165,6 +164,7 @@ function mod_tournaments_games_json($event, $request) {
 //	}
 //	$pgn[$id]['moves'] = implode(' ', $moves);
 
+	$zz_setting['active_module'] = 'chess';
 	$partie['PGN'] = wrap_template('pgn', $pgn);
 	$pgn = [
 		'moves' => $partie['Moves']
@@ -192,6 +192,9 @@ function mod_tournaments_games_json($event, $request) {
  * @param string $request
  */
 function mod_tournaments_games_series($events, $request) {
+	global $zz_setting;
+	$zz_setting['active_module'] = 'chess';
+
 	switch ($request) {
 		case 'gesamt.pgn': $character_encoding = 'iso-8859-1'; break;
 		case 'gesamt-utf8.pgn': $character_encoding = 'utf-8'; break;
@@ -355,6 +358,7 @@ function mod_tournaments_games_file($event, $request, $typ = false, $qs = []) {
 		}
 	} else {
 		// create PGN file
+		$zz_setting['active_module'] = 'chess';
 		$page['text'] = wrap_template('pgn', $partien);
 	}
 
