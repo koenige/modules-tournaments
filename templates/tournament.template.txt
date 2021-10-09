@@ -346,7 +346,7 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% condition endif %%%</td>
 %%% condition endif %%%
 %%% condition if wertung %%%
-<td class="number">%%% item wertung mf_tournaments_result_format %%%</td>
+<td class="number">%%% item wertung result_format %%%</td>
 %%% condition endif %%%
 </tr>
 %%% loop end %%%
@@ -403,7 +403,7 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% condition if main_series_path & lv_kennung %%%
 </a>
 %%% condition endif %%%</td>
-<td class="number">%%% item wertung mf_tournaments_result_format %%%</td>
+<td class="number">%%% item wertung result_format %%%</td>
 </tr>
 %%% loop end %%%
 %%% condition if mehr_spieler %%%

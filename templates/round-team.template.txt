@@ -27,7 +27,7 @@ Stand: %%% item livedatum %%%. Diese Seite wird minütlich automatisch aktualisi
 <tr>
 	<th class="tz">%%% item tisch_no %%%</th>
 	<th class="th" colspan="2">%%% item heim_kennung "<a href='../../../../%s/'>" %%%%%% item heim_team %%%%%% item heim_kennung "</a>" %%%</th>
-	<th class="tm">%%% item heim_m_ergebnis mf_tournaments_result_format %%% : %%% item auswaerts_m_ergebnis mf_tournaments_result_format %%%</th>
+	<th class="tm">%%% item heim_m_ergebnis result_format %%% : %%% item auswaerts_m_ergebnis result_format %%%</th>
 	<th class="ta" colspan="2">%%% item auswaerts_kennung "<a href='../../../../%s/'>" %%%%%% item auswaerts_team %%%%%% item auswaerts_kennung "</a>" %%%</th>
 </tr>
 </thead>
@@ -37,7 +37,7 @@ Stand: %%% item livedatum %%%. Diese Seite wird minütlich automatisch aktualisi
 		<td class="tz">%%% item brett_no %%%</td>
 		<td><span class="%%% item heim_farbe %%%">&nbsp;</span></td>
 		<td class="th">%%% item heim_spieler %%% %%% item heim_gastspieler "<abbr title='Gastspielerin'>(G)</abbr> " %%%</td>
-		<td class="tm">%%% condition if partie %%%<a href="../../partien/%%% item runde_no %%%-%%% item tisch_no %%%-%%% item brett_no %%%/">%%% condition endif %%%%%% item heim_ergebnis mf_tournaments_result_format %%% : %%% item auswaerts_ergebnis mf_tournaments_result_format %%% %%% item haengepartie "(<abbr title="Hängepartie">H</abbr>)" %%%%%% item partie "</a>" %%%</td>
+		<td class="tm">%%% condition if partie %%%<a href="../../partien/%%% item runde_no %%%-%%% item tisch_no %%%-%%% item brett_no %%%/">%%% condition endif %%%%%% item heim_ergebnis result_format %%% : %%% item auswaerts_ergebnis result_format %%% %%% item haengepartie "(<abbr title="Hängepartie">H</abbr>)" %%%%%% item partie "</a>" %%%</td>
 		<td class="ta">%%% item auswaerts_spieler %%% %%% item auswaerts_gastspieler "<abbr title='Gastspielerin'>(G)</abbr> " %%%</td>
 		<td><span class="%%% item auswaerts_farbe %%%">&nbsp;</span></td>
 	</tr>

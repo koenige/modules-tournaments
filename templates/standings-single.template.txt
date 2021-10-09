@@ -69,7 +69,7 @@
 		<td class="tm bxv wertung">%%% item spiele_v %%%</td>
 %%% condition endif %%%
 		%%% loop wertungen %%%
-		<td class="tm wertung">%%% item wertung mf_tournaments_result_format %%%</td>
+		<td class="tm wertung">%%% item wertung result_format %%%</td>
 		%%% loop end %%%
 	</tr>
 %%% loop end %%%

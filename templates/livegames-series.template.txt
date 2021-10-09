@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2014-2016, 2018, 2020 Gustaf Mossakowski
+# @copyright Copyright © 2014-2016, 2018, 2020-2021 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 # List of fields:
@@ -54,7 +54,7 @@ Die Partien werden ohne Verzögerung übertragen!
 	<td class="tm">
 	%%% condition if pgn %%%<a href="../../../%%% item identifier %%%/partien/%%% item runde_no %%%-%%% item brett_no %%%/">%%% condition endif %%%
 	%%% condition if weiss_ergebnis | schwarz_ergebnis %%%
-	%%% item weiss_ergebnis mf_tournaments_result_format %%%:%%% item schwarz_ergebnis mf_tournaments_result_format %%%
+	%%% item weiss_ergebnis result_format %%%:%%% item schwarz_ergebnis result_format %%%
 	%%% condition else %%%
 	LIVE
 	%%% condition endif %%%

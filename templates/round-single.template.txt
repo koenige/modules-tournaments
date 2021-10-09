@@ -58,20 +58,20 @@ Stand: %%% item livedatum %%%</p>
 %%% condition elseif show_elo %%%
 	<td class="tu">%%% item heim_elo %%%</td>
 %%% condition endif %%%
-	<td class="tu">%%% item weiss_punkte mf_tournaments_result_format  %%%</td>
+	<td class="tu">%%% item weiss_punkte result_format  %%%</td>
 	<td class="th">%%% item heim_setzliste_no "<a href='../../spieler/%d/'>" %%%%%% item heim_spieler %%%%%% item heim_setzliste_no "</a>" %%%</td>
 	<td class="tm">%%% condition if partie %%%<a href="../../partien/%%% item runde_no %%%-%%% item brett_no %%%/">%%% condition endif %%%
 	%%% condition if heim_ergebnis | auswaerts_ergebnis %%%
-	%%% item heim_ergebnis mf_tournaments_result_format %%% : %%% item auswaerts_ergebnis mf_tournaments_result_format %%%
+	%%% item heim_ergebnis result_format %%% : %%% item auswaerts_ergebnis result_format %%%
 	%%% condition elseif live %%%
 	LIVE
 	%%% condition else %%%
-	%%% item heim_ergebnis mf_tournaments_result_format %%% : %%% item auswaerts_ergebnis mf_tournaments_result_format %%%
+	%%% item heim_ergebnis result_format %%% : %%% item auswaerts_ergebnis result_format %%%
 	%%% condition endif %%%
 	%%% item haengepartie "(<abbr title="Hängepartie">H</abbr>)" %%%%%% item partie "</a>" %%%
 	</td>
 	<td class="ta">%%% item auswaerts_setzliste_no "<a href='../../spieler/%d/'>" %%%%%% item auswaerts_spieler %%%%%% item auswaerts_setzliste_no "</a>" %%%</td>
-	<td class="tu">%%% item schwarz_punkte mf_tournaments_result_format %%%</td>
+	<td class="tu">%%% item schwarz_punkte result_format %%%</td>
 %%% condition if show_dwz %%%
 	<td class="tu">%%% item auswaerts_dwz %%%</td>
 %%% condition elseif show_elo %%%

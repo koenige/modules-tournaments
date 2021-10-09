@@ -33,7 +33,7 @@
 <tbody>
 %%% loop ergebnisse %%%
 %%% condition if heim_team %%%
-<tr class="teamname"><td>%%% item tisch_no %%%</td><td colspan="2">%%% item heim_team %%%–%%% item auswaerts_team %%%</td><td colspan="2">%%% item heim_ergebnis mf_tournaments_result_format %%%:%%% item auswaerts_ergebnis mf_tournaments_result_format %%%</td></tr>
+<tr class="teamname"><td>%%% item tisch_no %%%</td><td colspan="2">%%% item heim_team %%%–%%% item auswaerts_team %%%</td><td colspan="2">%%% item heim_ergebnis result_format %%%:%%% item auswaerts_ergebnis result_format %%%</td></tr>
 %%% condition endif %%%
 %%% loop partien %%%
 <tr class='%%% loopposition uneven "un" %%%even%%% item gespeichert " grau"%%%'>
@@ -62,7 +62,7 @@ spielfrei
 spielfrei
 %%% condition endif %%%
 </td>
-<td>%%% condition if gespeichert %%%%%% item weiss_ergebnis mf_tournaments_result_format %%%:%%% item schwarz_ergebnis mf_tournaments_result_format %%%%%% condition endif %%%</td>
+<td>%%% condition if gespeichert %%%%%% item weiss_ergebnis result_format %%%:%%% item schwarz_ergebnis result_format %%%%%% condition endif %%%</td>
 <td>
 <input type="text" name="%%% item partie_id %%%" size="1" maxlength="1" value="%%% item weiss_ergebnis %%%">
 </td></tr>

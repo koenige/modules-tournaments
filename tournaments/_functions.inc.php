@@ -13,8 +13,6 @@
  */
 
 
-require_once __DIR__.'/format.inc.php';
-
 function mf_tournaments_current_round($identifier) {
 	$sql = 'SELECT MAX(tabellenstaende.runde_no)
 		FROM events
