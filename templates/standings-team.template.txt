@@ -38,7 +38,7 @@
 %%% loop start %%%
 	<tr class="%%% loopposition uneven "un" %%%even%%% item live " live" %%%" id="%%% item team_identifier_short %%%">
 	<td class="tz tableposition">%%% item platz_no_identisch "<span class='identical_place'>" %%%%%% item platz_no %%%%%% item platz_no_identisch "</span>" %%%
- %%% condition if platz_wechsel %%% <img src="/_layout/tabelle-%%% item platz_wechsel %%%.png" alt="%%% item platz_symbol %%%" class="%%% item platz_wechsel %%%"> %%% condition endif %%%</td>
+ %%% condition if platz_wechsel %%% <img src="%%% setting layout_path %%%/tournaments/standings-%%% item platz_wechsel %%%.png" alt="%%% item platz_symbol %%%" class="%%% item platz_wechsel %%%"> %%% condition endif %%%</td>
 <td>%%% condition if aktiv %%%<a href="../../../%%% item pfad %%%%%% item team_identifier %%%/">%%% condition endif %%%
 %%% item team %%%%%% item aktiv "</a>" %%%</td>
 %%% condition if dwz_schnitt %%%

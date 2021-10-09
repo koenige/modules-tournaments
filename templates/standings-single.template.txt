@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2014-2020 Gustaf Mossakowski
+# @copyright Copyright © 2014-2021 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Tabellenstand nach der %%% item runde_no %%%. Runde%%% item untertitel ": %s" %%%%%% item endstand " (Endstand)" %%%%%% item live " (LIVE!)" %%%
@@ -41,7 +41,7 @@
 		%%% condition else %%%
 		%%% item platz_no_identisch "<span class='identical_place'>" %%%%%% item platz_no %%%%%% item platz_no_identisch "</span>" %%%
 		%%% condition endif %%%
- %%% condition if platz_wechsel %%% <img src="/_layout/tabelle-%%% item platz_wechsel %%%.png" alt="%%% item platz_symbol %%%" class="%%% item platz_wechsel %%%"> %%% condition endif %%%
+ %%% condition if platz_wechsel %%% <img src="%%% setting layout_path %%%/tournaments/standings-%%% item platz_wechsel %%%.png" alt="%%% item platz_symbol %%%" class="%%% item platz_wechsel %%%"> %%% condition endif %%%
 		</td>
 
 %%% condition if zeige_setzliste %%%
