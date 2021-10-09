@@ -102,7 +102,7 @@ if (count($brick['vars']) === 4) {
 	$zz_conf['breadcrumbs'][] = ['linktext' => 'Runde '.$brick['vars'][2]];
 }
 $zz_conf['dont_show_title_as_breadcrumb'] = true;
-$zz_conf['footer_text'] = '<script type="text/javascript" src="/_behaviour/link-rel-nav.js"></script>';
+$zz_conf['footer_text'] = wrap_template('link-rel-nav');
 
 if (count($brick['vars']) === 3) {
 	// Einzelturnier

@@ -227,5 +227,5 @@ nicht abschließend geprüft.)</em></p>
 </div>
 %%% condition endif %%%
 %%% condition endif %%%
-<script type="text/javascript" src="/_behaviour/link-rel-nav.js"></script>
+<script src="%%% setting behaviour_path %%%/default/link-rel-nav.js"></script>
 %%% condition endif %%%

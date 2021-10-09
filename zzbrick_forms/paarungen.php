@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014, 2017, 2019-2020 Gustaf Mossakowski
+ * @copyright Copyright © 2014, 2017, 2019-2021 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -33,4 +33,4 @@ if ($brick['vars'][2] > 1) {
 	$zz['page']['link']['prev'][0]['href'] = '../'.($brick['vars'][2] - 1).'/';	
 	$zz['page']['link']['prev'][0]['title'] = 'Vorherige Runde';
 }
-$zz_conf['footer_text'] = '<script type="text/javascript" src="/_behaviour/link-rel-nav.js"></script>';
+$zz_conf['footer_text'] = wrap_template('link-rel-nav');

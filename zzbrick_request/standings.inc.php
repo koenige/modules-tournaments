@@ -372,13 +372,13 @@ function mod_tournaments_standings($vars) {
 			$tabelle_id = $stand[$id];
 			if (empty($vorige_runde[$tabelle_id])) continue;
 			if ($stand['platz_no'] > $vorige_runde[$tabelle_id]['platz_no']) {
-				$tabelle[$ts_id]['platz_wechsel'] = 'schlechter';
+				$tabelle[$ts_id]['platz_wechsel'] = 'worse';
 				$tabelle[$ts_id]['platz_symbol'] = '-';
 			} elseif ($stand['platz_no'] < $vorige_runde[$tabelle_id]['platz_no']) {
-				$tabelle[$ts_id]['platz_wechsel'] = 'besser';
+				$tabelle[$ts_id]['platz_wechsel'] = 'better';
 				$tabelle[$ts_id]['platz_symbol'] = '+';
 			} else {
-				$tabelle[$ts_id]['platz_wechsel'] = 'gleich';
+				$tabelle[$ts_id]['platz_wechsel'] = 'equal';
 				$tabelle[$ts_id]['platz_symbol'] = '=';
 			}
 		}

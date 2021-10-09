@@ -116,7 +116,7 @@ Spielerinnen und Spieler ohne Wertung werden bei der Berechnung des Schnitts nic
 %%% condition if next %%%<p class="next"><a href="%%% item next %%%">Statistik des Turniers im folgenden Jahr</a></p>%%% condition endif %%%
 </div>
 
-<script type="text/javascript" src="/_behaviour/link-rel-nav.js"></script>
+<script src="%%% setting behaviour_path %%%/default/link-rel-nav.js"></script>
 
 <script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/core.js"></script>
 <script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/widgets/sortable.js"></script>
