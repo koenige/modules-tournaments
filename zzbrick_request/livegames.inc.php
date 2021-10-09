@@ -24,7 +24,7 @@
  */
 function mod_tournaments_livegames($vars) {
 	global $zz_setting;
-	require_once __DIR__.'/../tournaments/pgn.inc.php';
+	require_once $zz_setting['modules_dir'].'/chess/chess/pgn.inc.php';
 
 	if (count($vars) !== 2) return false;
 
@@ -204,7 +204,7 @@ function mod_tournaments_livegames_bretter($turnier) {
 		$pgn = explode(' ', $pgn);
 		$aktuelle_zuege = array_slice($pgn, count($pgn) -10, count($pgn));
 		foreach ($aktuelle_zuege as $index => $zug) {
-			$aktuelle_zuege[$index] = pgn_translate_pieces($zug, 'de');
+			$aktuelle_zuege[$index] = mf_chess_pgn_translate_pieces($zug, 'de');
 		}
 		$turnier['livepaarungen'][$partie_id]['aktuelle_zuege'] 
 			= implode(' ', $aktuelle_zuege);

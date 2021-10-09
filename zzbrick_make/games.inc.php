@@ -140,8 +140,8 @@ function mod_tournaments_make_games($vars) {
 		$pgn = file($pgn_filename);
 	} elseif ($live) {
 		// Gibt es Live-Links in Tabelle?
-		require_once __DIR__.'/../tournaments/pgn.inc.php';
-		$pgn = explode("\n", pgn_file_from_tournament($event['tournament_id']));
+		require_once $zz_setting['modules_dir'].'/chess/chess/pgn.inc.php';
+		$pgn = explode("\n", mf_chess_pgn_file_from_tournament($event['tournament_id']));
 	} else {
 		$pgn = false;
 	}
@@ -196,15 +196,15 @@ function mod_tournaments_make_games($vars) {
 	$partien = wrap_db_fetch($sql, 'partie_id');
 
 	// Datei Partie für Partie auswerten
-	require_once __DIR__.'/../tournaments/pgn.inc.php';
-	$games = pgn_parse($pgn, $pgn_filename);
+	require_once $zz_setting['modules_dir'].'/chess/chess/pgn.inc.php';
+	$games = mf_chess_pgn_parse($pgn, $pgn_filename);
 	if (!empty($event['pgn_preparation_function']))
 		$games = $event['pgn_preparation_function']($games, $event['event_id']);
 
 	if (!empty($pgn_filename_not_live)) {
 		$pgn_not_live = sprintf($pgn_path, $pgn_filename_not_live);
 		if (file_exists($pgn_not_live)) {
-			$games_not_live = pgn_parse(file($pgn_not_live), $pgn_not_live);
+			$games_not_live = mf_chess_pgn_parse(file($pgn_not_live), $pgn_not_live);
 		}
 	}
 
@@ -246,7 +246,7 @@ function mod_tournaments_make_games($vars) {
 			$values['action'] = 'update';
 			$values['POST']['partie_id'] = $partie_id;
 			// @todo check if it's only a comment
-			if ($comment = pgn_only_comment($partien[$partie_id]['moves'], $partien[$partie_id]['head']['Result'])) {
+			if ($comment = mf_chess_pgn_only_comment($partien[$partie_id]['moves'], $partien[$partie_id]['head']['Result'])) {
 				if (!empty($partien[$partie_id]['kommentar'])) continue;
 				if (!empty($partien[$partie_id]['pgn'])) continue;
 				$values['POST']['kommentar'] = $comment;
@@ -292,7 +292,7 @@ function mod_tournaments_make_games($vars) {
 					}
 				}
 			}
-			$moves = pgn_to_html($partien[$partie_id]);
+			$moves = mf_chess_pgn_to_html($partien[$partie_id]);
 			if ($partien[$partie_id]['moves'] !== '*') {
 				$values['POST']['eco'] = isset($partien[$partie_id]['head']['ECO']) ? $partien[$partie_id]['head']['ECO'] : '';
 				if ($values['POST']['eco'] === '*') $values['POST']['eco'] = '';

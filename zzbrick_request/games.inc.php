@@ -26,7 +26,7 @@ function mod_tournaments_games($vars) {
 	
 	$qs = mod_tournaments_games_check_qs();
 
-	require_once __DIR__.'/../tournaments/pgn.inc.php';
+	require_once $zz_setting['modules_dir'].'/chess/chess/pgn.inc.php';
 
 	$typ = false;
 	if (!empty($vars[2])) {
@@ -169,7 +169,7 @@ function mod_tournaments_games_json($event, $request) {
 	$pgn = [
 		'moves' => $partie['Moves']
 	];
-	$data = pgn_to_html($pgn);
+	$data = mf_chess_pgn_to_html($pgn);
 	$partie['PgnMoveText'] = $data['html'];
 	if ($zz_conf['character_set'] === 'utf-8') {
 		// PGN = Latin1
@@ -301,7 +301,7 @@ function mod_tournaments_games_file($event, $request, $typ = false, $qs = []) {
 		if (empty($file)) {
 			// maybe there's some path on the server / on an external server?
 			// read turniere_partien
-			$page['text'] = pgn_file_from_tournament($event['tournament_id']);
+			$page['text'] = mf_chess_pgn_file_from_tournament($event['tournament_id']);
 			if (!$page['text']) return false;
 			$page['headers']['filename'] =  ' (Live)';
 		} else {
@@ -534,7 +534,7 @@ function mod_tournaments_games_html($event, $request, $typ) {
 		if (!file_exists($filename)) {
 			return false;
 		}
-		$pgn = pgn_parse(file($filename), $filename);
+		$pgn = mf_chess_pgn_parse(file($filename), $filename);
 		if (!array_key_exists(($partie['partie_no'] - 1), $pgn)) return false;
 		$pgn = $pgn[$partie['partie_no'] - 1];
 		$partie['weiss'] = $pgn['head']['White'];
@@ -638,7 +638,7 @@ function mod_tournaments_games_html($event, $request, $typ) {
 	}
 	$partie = array_merge($event, $partie);
 
-	$partie = array_merge($partie, pgn_to_html($pgn));
+	$partie = array_merge($partie, mf_chess_pgn_to_html($pgn));
 	if (!$partie['pgn']) $page['status'] = 404;
 	
 	$page['query_strings'][] = 'minimal';
