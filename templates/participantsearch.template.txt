@@ -1,0 +1,59 @@
+# tournaments module
+# HTML output: search for participants
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2012-2016, 2020-2021 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+<h1>%%% condition if teilnehmer %%%
+Suche nach Teilnehmern oder Teams
+%%% condition else %%%
+Suche nach Teams
+%%% condition endif %%%
+<br><a href="../">%%% item main_series %%% (%%% item main_series_short %%%) %%% item year %%%</a></h1>
+
+<form method="GET" action="" id="suche" accept-charset="utf-8">
+<p><input type="search" size="30" name="q" value="%%% item q %%%"><input type="submit" value="suche"></p></form>
+
+%%% condition if q %%%
+%%% condition if teamsuche %%%
+<h2>Treffer für Teams</h2>
+%%% condition if teams %%%
+<ul>
+%%% loop teams %%%
+<li>%%% condition if teilnehmerliste %%%<a href="../../../%%% item team_identifier %%%/">%%% condition endif %%%%%% item team %%%%%% condition if teilnehmerliste %%%</a>%%% condition endif %%% (<a href="%%% condition if intern %%%/intern/termine%%% condition endif %%%/%%% item event_identifier %%%/">%%% item event %%%</a>)</li>
+%%% loop end %%%
+</ul>
+%%% condition else %%%
+<p>Leider kein Treffer für »%%% item q %%%« bei den Teams.</p>
+%%% condition endif %%%
+%%% condition endif %%%
+
+%%% condition if teilnehmer %%%
+<h2>Treffer für Spielerinnen und Spieler</h2>
+%%% condition if spieler %%%
+<ul>
+%%% loop spieler %%%
+<li>%%% condition if setzliste_no %%%<a href="../../../%%% item event_identifier %%%/spieler/%%% item setzliste_no %%%/">%%% condition endif %%%
+%%% item person %%%
+%%% condition if setzliste_no %%%</a>%%% condition endif %%%
+ (%%% condition if team %%%
+<a href="../../../%%% item team_identifier %%%/">%%% item team %%%</a>, 
+%%% condition endif %%%<a href="%%% condition if intern %%%/intern/termine%%% condition endif %%%/%%% item event_identifier %%%/">%%% item event %%%</a>)</li>
+%%% loop end %%%
+</ul>
+%%% condition else %%%
+<p>Leider kein Treffer für »%%% item q %%%« bei den Spielern.</p>
+%%% condition endif %%%
+%%% condition endif %%%
+
+%%% condition else %%%
+<p>Bitte geben Sie den Namen oder einen Teil des Namens eines Teams ein.
+%%% condition if teilnehmer %%%
+Oder geben Sie einen Namen einer Spielerin oder eines Spielers oder einen Teil davon ein.
+%%% condition endif %%%
+</p>	
+%%% condition endif %%%
