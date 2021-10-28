@@ -80,7 +80,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 				, teams.kennung AS team_identifier
 				, event
 				, events.identifier AS event_identifier
-				, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
+				, IF(teilnehmerliste = "ja", IF(team_status = "Teilnehmer", 1, NULL), NULL) AS teilnehmerliste
 			FROM teams
 			JOIN events USING (event_id)
 			LEFT JOIN tournaments USING (event_id)
