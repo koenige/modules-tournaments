@@ -51,19 +51,19 @@ INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `
 
 
 CREATE TABLE `paarungen` (
-  `paarung_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `event_id` int(10) unsigned NOT NULL,
-  `runde_no` tinyint(3) unsigned NOT NULL,
-  `place_contact_id` int(10) unsigned DEFAULT NULL,
+  `paarung_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int unsigned NOT NULL,
+  `runde_no` tinyint unsigned NOT NULL,
+  `place_contact_id` int unsigned DEFAULT NULL,
   `spielbeginn` time DEFAULT NULL,
-  `tisch_no` tinyint(3) unsigned NOT NULL,
-  `heim_team_id` int(10) unsigned DEFAULT NULL,
-  `auswaerts_team_id` int(10) unsigned DEFAULT NULL,
+  `tisch_no` tinyint unsigned NOT NULL,
+  `heim_team_id` int unsigned DEFAULT NULL,
+  `auswaerts_team_id` int unsigned DEFAULT NULL,
   `kommentar` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`paarung_id`),
   UNIQUE KEY `runde_no` (`event_id`,`runde_no`,`tisch_no`),
-  UNIQUE KEY `runde_event_id` (`event_id`,`heim_team_id`,`auswaerts_team_id`),
+  UNIQUE KEY `runde_termin_id` (`event_id`,`heim_team_id`,`auswaerts_team_id`),
   KEY `ort_id` (`place_contact_id`),
   KEY `heim_team_id` (`heim_team_id`),
   KEY `auswaerts_team_id` (`auswaerts_team_id`)
@@ -71,23 +71,23 @@ CREATE TABLE `paarungen` (
 
 
 CREATE TABLE `partien` (
-  `partie_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `event_id` int(10) unsigned NOT NULL,
-  `runde_no` tinyint(3) unsigned NOT NULL,
-  `paarung_id` int(10) unsigned DEFAULT NULL,
-  `brett_no` tinyint(3) unsigned DEFAULT NULL,
-  `weiss_person_id` int(10) unsigned DEFAULT NULL,
+  `partie_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int unsigned NOT NULL,
+  `runde_no` tinyint unsigned NOT NULL,
+  `paarung_id` int unsigned DEFAULT NULL,
+  `brett_no` tinyint unsigned DEFAULT NULL,
+  `weiss_person_id` int unsigned DEFAULT NULL,
   `weiss_ergebnis` decimal(2,1) unsigned DEFAULT NULL,
-  `schwarz_person_id` int(10) unsigned DEFAULT NULL,
+  `schwarz_person_id` int unsigned DEFAULT NULL,
   `schwarz_ergebnis` decimal(2,1) unsigned DEFAULT NULL,
   `heim_spieler_farbe` enum('weiß','schwarz') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `heim_wertung` decimal(2,1) unsigned DEFAULT NULL,
   `auswaerts_wertung` decimal(2,1) unsigned DEFAULT NULL,
-  `partiestatus_category_id` int(10) unsigned NOT NULL,
+  `partiestatus_category_id` int unsigned NOT NULL,
   `kommentar` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `pgn` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `eco` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `halbzuege` smallint(5) unsigned DEFAULT NULL,
+  `halbzuege` smallint unsigned DEFAULT NULL,
   `block_ergebnis_aus_pgn` enum('ja','nein') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'nein',
   `vertauschte_farben` enum('ja','nein') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'nein',
   `weiss_zeit` time DEFAULT NULL,
@@ -96,8 +96,9 @@ CREATE TABLE `partien` (
   `url` tinytext CHARACTER SET latin1 COLLATE latin1_general_ci,
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`partie_id`),
+  UNIQUE KEY `paarung_id_brett_no` (`paarung_id`,`brett_no`),
   KEY `paarung_id` (`paarung_id`),
-  KEY `event_id` (`event_id`),
+  KEY `termin_id` (`event_id`),
   KEY `weiss_person_id` (`weiss_person_id`),
   KEY `schwarz_person_id` (`schwarz_person_id`),
   KEY `partiestatus_kategorie_id` (`partiestatus_category_id`)
@@ -105,28 +106,28 @@ CREATE TABLE `partien` (
 
 
 CREATE TABLE `tabellenstaende` (
-  `tabellenstand_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `event_id` int(10) unsigned NOT NULL,
-  `runde_no` tinyint(3) unsigned NOT NULL,
-  `team_id` int(10) unsigned DEFAULT NULL,
-  `person_id` int(10) unsigned DEFAULT NULL,
-  `platz_no` tinyint(3) unsigned NOT NULL,
-  `platz_brett_no` tinyint(3) unsigned DEFAULT NULL,
-  `spiele_g` tinyint(3) unsigned DEFAULT NULL,
-  `spiele_u` tinyint(3) unsigned DEFAULT NULL,
-  `spiele_v` tinyint(3) unsigned DEFAULT NULL,
+  `tabellenstand_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int unsigned NOT NULL,
+  `runde_no` tinyint unsigned NOT NULL,
+  `team_id` int unsigned DEFAULT NULL,
+  `person_id` int unsigned DEFAULT NULL,
+  `platz_no` tinyint unsigned NOT NULL,
+  `platz_brett_no` tinyint unsigned DEFAULT NULL,
+  `spiele_g` tinyint unsigned DEFAULT NULL,
+  `spiele_u` tinyint unsigned DEFAULT NULL,
+  `spiele_v` tinyint unsigned DEFAULT NULL,
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`tabellenstand_id`),
-  UNIQUE KEY `team_id_event_id_runde_no` (`team_id`,`event_id`,`runde_no`),
-  UNIQUE KEY `person_id_event_id_runde_no` (`person_id`,`event_id`,`runde_no`),
-  KEY `event_id` (`event_id`)
+  UNIQUE KEY `team_id_termin_id_runde_no` (`team_id`,`event_id`,`runde_no`),
+  UNIQUE KEY `person_id_termin_id_runde_no` (`person_id`,`event_id`,`runde_no`),
+  KEY `termin_id` (`event_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `tabellenstaende_wertungen` (
-  `tsw_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `tabellenstand_id` int(10) unsigned NOT NULL,
-  `wertung_category_id` int(10) unsigned NOT NULL,
+  `tsw_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tabellenstand_id` int unsigned NOT NULL,
+  `wertung_category_id` int unsigned NOT NULL,
   `wertung` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`tsw_id`),
   UNIQUE KEY `tabellenstand_id` (`tabellenstand_id`,`wertung_category_id`),
@@ -211,66 +212,65 @@ CREATE TABLE `tournaments` (
 
 
 CREATE TABLE `turniere_bedenkzeiten` (
-  `tb_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `tournament_id` int(10) unsigned NOT NULL,
-  `phase` tinyint(3) unsigned NOT NULL,
-  `bedenkzeit_sec` smallint(5) unsigned NOT NULL,
-  `zeitbonus_sec` tinyint(3) unsigned DEFAULT NULL,
-  `zuege` tinyint(3) unsigned DEFAULT NULL,
-  PRIMARY KEY (`tb_id`)
+  `tb_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tournament_id` int unsigned NOT NULL,
+  `phase` tinyint unsigned NOT NULL,
+  `bedenkzeit_sec` smallint unsigned NOT NULL,
+  `zeitbonus_sec` tinyint unsigned DEFAULT NULL,
+  `zuege` tinyint unsigned DEFAULT NULL,
+  PRIMARY KEY (`tb_id`),
+  KEY `tournament_id` (`tournament_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `turniere_kennungen` (
-  `tk_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `tournament_id` int(10) unsigned NOT NULL,
+  `tk_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tournament_id` int unsigned NOT NULL,
   `kennung` varchar(15) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
-  `kennung_category_id` int(10) unsigned NOT NULL,
+  `kennung_category_id` int unsigned NOT NULL,
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`tk_id`),
-  UNIQUE KEY `tournament_id_kennung_kategorie_id` (`tournament_id`,`kennung_category_id`),
+  UNIQUE KEY `turnier_id_kennung_kategorie_id` (`tournament_id`,`kennung_category_id`),
   UNIQUE KEY `kennung_kennung_kategorie_id` (`kennung`,`kennung_category_id`),
   KEY `kennung_kategorie_id` (`kennung_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `turniere_partien` (
-  `tp_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `tournament_id` int(10) unsigned NOT NULL,
+  `tp_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tournament_id` int unsigned NOT NULL,
   `partien_pfad` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`tp_id`),
-  KEY `tournament_id` (`tournament_id`)
+  KEY `turnier_id` (`tournament_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `turniere_status` (
-  `turnier_status_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `tournament_id` int(10) unsigned NOT NULL,
-  `status_category_id` int(10) unsigned NOT NULL,
+  `turnier_status_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tournament_id` int unsigned NOT NULL,
+  `status_category_id` int unsigned NOT NULL,
   PRIMARY KEY (`turnier_status_id`),
-  UNIQUE KEY `tournament_id_status_kategorie_id` (`tournament_id`,`status_category_id`)
+  UNIQUE KEY `turnier_id_status_kategorie_id` (`tournament_id`,`status_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `turniere_wertungen` (
-  `tw_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `tournament_id` int(10) unsigned NOT NULL,
-  `wertung_category_id` int(10) unsigned NOT NULL,
-  `reihenfolge` tinyint(3) unsigned NOT NULL,
+  `tw_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tournament_id` int unsigned NOT NULL,
+  `wertung_category_id` int unsigned NOT NULL,
+  `reihenfolge` tinyint unsigned NOT NULL,
   `anzeigen` enum('immer','bei Gleichstand') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'immer',
   PRIMARY KEY (`tw_id`),
-  UNIQUE KEY `tournament_id` (`tournament_id`,`wertung_category_id`),
+  UNIQUE KEY `turnier_id` (`tournament_id`,`wertung_category_id`),
   KEY `reihenfolge` (`reihenfolge`),
   KEY `wertung_kategorie_id` (`wertung_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
-DELIMITER ;;
-CREATE FUNCTION `event_id`() RETURNS int(11)
+CREATE FUNCTION `event_id`() RETURNS int
     NO SQL
     DETERMINISTIC
-return @event_id ;;
-DELIMITER ;
+return @event_id;
 
 
 CREATE OR REPLACE VIEW `partien_einzelergebnisse` AS
