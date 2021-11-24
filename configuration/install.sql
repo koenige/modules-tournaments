@@ -27,9 +27,9 @@ CREATE TABLE `anmerkungen` (
   KEY `teilnahme_id` (`teilnahme_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `jobs` (
-  `job_id` int unsigned NOT NULL AUTO_INCREMENT,
-  `job_category_id` int unsigned NOT NULL,
+CREATE TABLE `cronjobs` (
+  `cronjob_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `cronjob_category_id` int unsigned NOT NULL,
   `event_id` int unsigned NOT NULL,
   `runde_no` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `prioritaet` tinyint NOT NULL DEFAULT '0',
@@ -37,17 +37,17 @@ CREATE TABLE `jobs` (
   `ende` datetime DEFAULT NULL,
   `erfolgreich` enum('ja','nein') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'nein',
   `request` tinyint unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`job_id`),
-  UNIQUE KEY `job_kategorie_id_termin_id_runde_no_start` (`job_category_id`,`event_id`,`runde_no`,`start`),
+  PRIMARY KEY (`cronjob_id`),
+  UNIQUE KEY `cronjob_category_id` (`cronjob_category_id`,`event_id`,`runde_no`,`start`),
   KEY `termin_id` (`event_id`),
   KEY `runde_no` (`runde_no`),
   KEY `prioritaet` (`prioritaet`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'jobs', 'job_id', 'job_category_id', 'no-delete');
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'events', 'event_id', (SELECT DATABASE()), 'jobs', 'job_id', 'event_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'cronjobs', 'cronjob_id', 'cronjob_category_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'events', 'event_id', (SELECT DATABASE()), 'cronjobs', 'cronjob_id', 'event_id', 'delete');
 
-INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `parameters`, `sequence`, `last_update`) VALUES ('Jobs', NULL, NULL, 'jobs', 'alias=jobs', NULL, NOW());
+INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `parameters`, `sequence`, `last_update`) VALUES ('Cronjobs', NULL, NULL, 'cronjobs', '&alias=cronjobs', NULL, NOW());
 
 
 CREATE TABLE `paarungen` (

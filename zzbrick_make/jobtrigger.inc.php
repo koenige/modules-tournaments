@@ -2,7 +2,7 @@
 
 /**
  * tournaments module
- * trigger a job
+ * trigger a cron job
  *
  * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
@@ -33,76 +33,76 @@ function mod_tournaments_make_jobtrigger($params) {
 	$sql = 'SELECT category_id, category
 			, SUBSTRING_INDEX(path, "/", -1) AS path
 			, parameters,
-			(SELECT COUNT(laufend.job_id) FROM jobs laufend
-				WHERE categories.category_id = laufend.job_category_id
+			(SELECT COUNT(laufend.cronjob_id) FROM cronjobs laufend
+				WHERE categories.category_id = laufend.cronjob_category_id
 				AND NOT ISNULL(laufend.start) AND ISNULL(laufend.ende)) AS laufend,
-			(SELECT COUNT(todo.job_id) FROM jobs todo
-				WHERE categories.category_id = todo.job_category_id
+			(SELECT COUNT(todo.cronjob_id) FROM cronjobs todo
+				WHERE categories.category_id = todo.cronjob_category_id
 				AND ISNULL(todo.start) AND ISNULL(todo.ende)) AS todo
 		FROM categories
 		WHERE main_category_id = %d
 		GROUP BY category_id
 	';
-	$sql = sprintf($sql, wrap_category_id('jobs'));
+	$sql = sprintf($sql, wrap_category_id('cronjobs'));
 	$categories = wrap_db_fetch($sql, 'category_id');
 	
 	foreach ($categories as $category) {
 		parse_str($category['parameters'], $parameter);
 		if (empty($parameter['max_requests'])) $parameter['max_requests'] = 1;
 		if (empty($parameter['max_time'])) $parameter['max_time'] = 30;
-		$job = [];
+		$cronjob = [];
 		if ($category['laufend'] < $parameter['max_requests']) {
-			$sql = 'SELECT job_id, events.identifier AS event_identifier, jobs.runde_no
-				FROM jobs
+			$sql = 'SELECT cronjob_id, events.identifier AS event_identifier, cronjobs.runde_no
+				FROM cronjobs
 				LEFT JOIN events USING (event_id)
-				WHERE ISNULL(jobs.start) AND ISNULL(jobs.ende)
-				AND job_category_id = %d
+				WHERE ISNULL(cronjobs.start) AND ISNULL(cronjobs.ende)
+				AND cronjob_category_id = %d
 				ORDER BY prioritaet
 				LIMIT 1';
 			$sql = sprintf($sql, $category['category_id']);
-			$job = wrap_db_fetch($sql);
+			$cronjob = wrap_db_fetch($sql);
 			$request = 1;
 		}
-		if (!$job) {
+		if (!$cronjob) {
 			// Laufen gerade Jobs im Rahmen der vorgegebenen Zeit?
-			$sql = 'SELECT job_id, events.identifier AS event_identifier, jobs.runde_no
-				FROM jobs
+			$sql = 'SELECT cronjob_id, events.identifier AS event_identifier, cronjobs.runde_no
+				FROM cronjobs
 				LEFT JOIN events USING (event_id)
-				WHERE job_category_id = %d
-				AND NOT ISNULL(jobs.start) AND ISNULL(jobs.ende)
+				WHERE cronjob_category_id = %d
+				AND NOT ISNULL(cronjobs.start) AND ISNULL(cronjobs.ende)
 				AND DATE_ADD(start, INTERVAL %d SECOND) > NOW()
 			';
 			$sql = sprintf($sql, $category['category_id'], $parameter['max_time']);
-			$laufend = wrap_db_fetch($sql, 'job_id');
+			$laufend = wrap_db_fetch($sql, 'cronjob_id');
 
 			if (count($laufend) >= $parameter['max_requests']) continue;
 			// abgestürzte Prozesse aus Job-Liste erneut aufrufen
-			$sql = 'SELECT job_id, events.identifier AS event_identifier, jobs.runde_no
-				FROM jobs
+			$sql = 'SELECT cronjob_id, events.identifier AS event_identifier, cronjobs.runde_no
+				FROM cronjobs
 				LEFT JOIN events USING (event_id)
-				WHERE job_category_id = %d
-				AND NOT ISNULL(jobs.start) AND ISNULL(jobs.ende)
+				WHERE cronjob_category_id = %d
+				AND NOT ISNULL(cronjobs.start) AND ISNULL(cronjobs.ende)
 				AND DATE_ADD(start, INTERVAL %d SECOND) < NOW()
 			';
 			$sql = sprintf($sql, $category['category_id'], $parameter['max_time']);
-			$jobs = wrap_db_fetch($sql, 'job_id');
+			$cronjobs = wrap_db_fetch($sql, 'cronjob_id');
 			// nur soviele Jobs wie max_requests
-			$job = array_shift($jobs);
+			$cronjob = array_shift($cronjobs);
 			// @todo nicht endlos probieren, sondern irgendwann auf inaktiv stellen!
 			$request = count($laufend) + 1;
 		}
-		if (!$job) continue;
+		if (!$cronjob) continue;
 		$realm = sprintf('%s-%d', $category['path'], $request);
 		$locked = wrap_lock($realm, 'sequential', $parameter['max_time']);
 		if ($locked) continue;
-		$sql = 'UPDATE jobs SET start = NOW(), request = %d WHERE job_id = %d';
-		$sql = sprintf($sql, $request, $job['job_id']);
+		$sql = 'UPDATE cronjobs SET start = NOW(), request = %d WHERE cronjob_id = %d';
+		$sql = sprintf($sql, $request, $cronjob['cronjob_id']);
 		$success = wrap_db_query($sql);
 		if (!$success) continue;
 
 		$url = sprintf('/_jobs/%s/%s/%s',
-			$category['path'], $job['event_identifier'],
-			$job['runde_no'] ? $job['runde_no'].'/' : ''
+			$category['path'], $cronjob['event_identifier'],
+			$cronjob['runde_no'] ? $cronjob['runde_no'].'/' : ''
 		);
 		wrap_trigger_protected_url($url);
 		sleep(5); // Warte etwas, bevor es weitergeht.

@@ -2,7 +2,7 @@
 
 /**
  * tournaments module
- * table script: jobs
+ * table script: cron jobs
  *
  * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
@@ -13,22 +13,22 @@
  */
 
 
-$zz['title'] = 'Jobs';
-$zz['table'] = 'jobs';
+$zz['title'] = 'Cron Jobs';
+$zz['table'] = 'cronjobs';
 
 $zz['fields'][1]['title'] = 'ID';
-$zz['fields'][1]['field_name'] = 'job_id';
+$zz['fields'][1]['field_name'] = 'cronjob_id';
 $zz['fields'][1]['type'] = 'id';
 
 $zz['fields'][2]['title'] = 'Kategorie';
-$zz['fields'][2]['field_name'] = 'job_category_id';
+$zz['fields'][2]['field_name'] = 'cronjob_category_id';
 $zz['fields'][2]['type'] = 'write_once';
 $zz['fields'][2]['type_detail'] = 'select';
 $zz['fields'][2]['sql'] = 'SELECT category_id, category, main_category_id
 	FROM categories';
 $zz['fields'][2]['display_field'] = 'category';
 $zz['fields'][2]['show_hierarchy'] = 'main_category_id';
-$zz['fields'][2]['show_hierarchy_subtree'] = wrap_category_id('jobs');
+$zz['fields'][2]['show_hierarchy_subtree'] = wrap_category_id('cronjobs');
 $zz['fields'][2]['key_field_name'] = 'category_id';
 
 $zz['fields'][3]['field_name'] = 'event_id';
@@ -61,22 +61,22 @@ $zz['fields'][8]['enum'] = ['ja', 'nein'];
 $zz['fields'][8]['default'] = 'nein';
 
 
-$zz['sql'] = 'SELECT jobs.*, categories.category
+$zz['sql'] = 'SELECT cronjobs.*, categories.category
 		, CONCAT(events.event, " ", IFNULL(event_year, YEAR(date_begin))) AS event
-	FROM jobs
+	FROM cronjobs
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories
-		ON categories.category_id = jobs.job_category_id
+		ON categories.category_id = cronjobs.cronjob_category_id
 ';
-$zz['sqlorder'] = ' ORDER BY category, IF(ISNULL(jobs.start), 0, 1), IF(ISNULL(jobs.ende), 0, 1), jobs.start DESC, jobs.ende DESC, prioritaet ASC, job_id';
+$zz['sqlorder'] = ' ORDER BY category, IF(ISNULL(cronjobs.start), 0, 1), IF(ISNULL(cronjobs.ende), 0, 1), cronjobs.start DESC, cronjobs.ende DESC, prioritaet ASC, cronjob_id';
 
 $zz['filter'][1]['title'] = 'Kategorie';
 $zz['filter'][1]['type'] = 'list';
-$zz['filter'][1]['where'] = 'job_category_id';
+$zz['filter'][1]['where'] = 'cronjob_category_id';
 $zz['filter'][1]['sql'] = 'SELECT DISTINCT category_id, category
 	FROM categories
-	JOIN jobs
-		ON categories.category_id = jobs.job_category_id
+	JOIN cronjobs
+		ON categories.category_id = cronjobs.cronjob_category_id
 	ORDER BY category';
 
 $zz_conf['logging'] = false;
