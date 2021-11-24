@@ -121,3 +121,14 @@ function mf_tournaments_job_trigger() {
 	global $zz_setting;
 	wrap_trigger_protected_url('https://in.schach.in/_jobs/trigger/', $zz_setting['robot_username'], false);
 }
+
+/**
+ * delete old cron jobs
+ *
+ * @return mixed
+ */
+function mf_tournaments_job_delete() {
+	$sql = 'DELETE FROM cronjobs WHERE ende < DATE_SUB(NOW(), INTERVAL 7 DAY)';
+	$result = wrap_db_query($sql);
+	return $result
+}
