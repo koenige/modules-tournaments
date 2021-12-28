@@ -45,7 +45,6 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 
 	// A4 PDF, set fonts
 	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
-	$pdf->open();
 	$pdf->setCompression(true);
 	$pdf->AddFont('FiraSans-Regular', '', 'FiraSans-Regular.ttf', true);
 	$pdf->AddFont('FiraSans-SemiBold', '', 'FiraSans-SemiBold.ttf', true);
@@ -154,7 +153,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	$file['send_as'] = $event['year'].' '.$event['series_short'].' Tischkarten.pdf';
 	$file['etag_generate_md5'] = true;
 
-	$pdf->output($file['name']);
+	$pdf->output('F', $file['name'], true);
 	wrap_file_send($file);
 	exit;
 }

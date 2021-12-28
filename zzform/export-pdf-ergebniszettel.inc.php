@@ -35,7 +35,6 @@ function mf_tournaments_export_pdf_ergebniszettel($ops) {
 	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
 
 	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
-	$pdf->open();
 	$pdf->setCompression(true);
 	// Fira Sans!
 	$pdf->AddFont('FiraSans-Regular', '', 'FiraSans-Regular.ttf', true);
@@ -121,7 +120,7 @@ function mf_tournaments_export_pdf_ergebniszettel($ops) {
 	$file['send_as'] = $event['year'].' '.$event['series_short'].' Ergebniszettel '.$runde_no.'.pdf';
 	$file['etag_generate_md5'] = true;
 
-	$pdf->output($file['name']);
+	$pdf->output('F', $file['name'], true);
 	wrap_file_send($file);
 	exit;
 }	
