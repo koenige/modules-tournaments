@@ -130,5 +130,5 @@ function mf_tournaments_job_trigger() {
 function mf_tournaments_job_delete() {
 	$sql = 'DELETE FROM cronjobs WHERE ende < DATE_SUB(NOW(), INTERVAL 7 DAY)';
 	$result = wrap_db_query($sql);
-	return $result
+	return $result;
 }
