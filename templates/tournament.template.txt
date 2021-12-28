@@ -82,16 +82,20 @@
 <li><a href="swt-upload/">Übernahme der Turnierdaten aus Swiss-Chess</a></li>
 %%% rights - %%%
 %%% condition endif %%%
-%%% rights Webmaster %%%
 %%% condition if turnier %%%
+%%% rights Webmaster "AK Spielbetrieb" %%%
 <ul>
 <li><a href="swtimport/">Import Turnierstand aus Swiss-Chess (.swt)</a> (Aufruf normalerweise nicht nötig, nur bei Fehlern!)</li>
+%%% rights - %%%
+%%% rights Webmaster %%%
 <li><a href="/intern/swtwriter/%%% item identifier %%%/?delete">Löschen der Person- und Team-IDs in der SwissChess-Datei</a> (Bei Fehlern der ID-Schreibung in der SWT-Datei)</li>
 <li><a href="swtreader/?view=data">Rohdaten-Ansicht der SwissChess-Datei</a></li>
+%%% rights - %%%
+%%% rights Webmaster "AK Spielbetrieb" %%%
 </ul>
 <li><a href="tabellenstandupdate/">Tabellenstände neu berechnen</a></li>
-%%% condition endif %%%
 %%% rights - %%%
+%%% condition endif %%%
 %%% rights Webmaster Vorstand "AK Spielbetrieb" Geschäftsstelle %%%
 %%% condition if turnier %%%
 <li><a href="urkunden/">Druck der Urkunden</a></li>
