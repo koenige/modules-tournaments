@@ -13,53 +13,28 @@
  */
 
 
-function mod_tournaments_startranking($vars) {
+function mod_tournaments_startranking($vars, $settings, $event) {
 	global $zz_conf;
 	global $zz_setting;
 
-	if (!empty($vars[2]) AND $vars[2] === 'startrangliste')
-		unset($vars[2]);
-	if (count($vars) !== 2) return false;
+	if (empty($event)) return false;
 	
-	$sql = 'SELECT events.event_id, event
-			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
-			, IFNULL(event_year, YEAR(date_begin)) AS year, IFNULL(date_end, date_begin) AS date_end
-			, places.contact AS veranstaltungsort
+	$sql = 'SELECT places.contact AS veranstaltungsort
 			, address, postcode, place, places.description
 			, latitude, longitude
-			, events.identifier
-			, IF(teilnehmerliste = "ja", 1, 0) AS teilnehmerliste
-			, IFNULL(place, places.contact) AS turnierort
-			, pseudo_dwz, bretter_min
-			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
-			, main_series.category_short AS main_series
+			, IF(teilnehmerliste = "ja", 1, 0) AS teilnehmerliste, pseudo_dwz
 		FROM events
-		LEFT JOIN categories series
-			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON main_series.category_id = series.main_category_id
 		LEFT JOIN tournaments USING (event_id)
-		JOIN events_websites
-			ON events_websites.event_id = events.event_id
-			AND events_websites.website_id = %d
-		LEFT JOIN categories turnierformen
-			ON tournaments.turnierform_category_id = turnierformen.category_id
 		LEFT JOIN contacts places
 			ON events.place_contact_id = places.contact_id
 		LEFT JOIN addresses USING (contact_id)
-		WHERE events.identifier = "%s"';
-	$sql = sprintf($sql, $zz_setting['website_id'], wrap_db_escape(implode('/', $vars)));
-	$event = wrap_db_fetch($sql);
-	if (!$event) return false;
+		WHERE event_id = %d';
+	$sql = sprintf($sql, $event['event_id']);
+	$event += wrap_db_fetch($sql);
+
 	$zz_setting['logfile_name'] = $event['identifier'];
 	$event[str_replace('-', '_', $event['turnierform'])] = true;
 
-	$page['breadcrumbs'][] = '<a href="../../">'.$event['year'].'</a>';
-	if ($event['main_series']) {
-		$page['breadcrumbs'][] = '<a href="../../'.$event['main_series_path'].'/">'.$event['main_series'].'</a>';
-	}
-	$page['breadcrumbs'][] = '<a href="../">'.$event['event'].'</a>';
 	$page['extra']['realm'] = 'sports';
 	$page['dont_show_h1'] = true;
 
