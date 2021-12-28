@@ -166,7 +166,6 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 		} else {
 			$event['teilnehmerliste'] = true;
 		}
-		if (!$series) break;
 	}
 	if ($series) {
 		$event['duration'] = !empty($event['date_begin']) ? $event['date_begin'] : '';
