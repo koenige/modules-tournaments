@@ -22,7 +22,7 @@ Stand: %%% item livedatum %%%. Diese Seite wird minütlich automatisch aktualisi
 </div>
 <div class="tournament">
 %%% loop paarungen %%%
-<table class="team_ergebnis">
+<table class="team_ergebnis" id="tisch-%%% item tisch_no %%%">
 <thead>
 <tr>
 	<th class="tz">%%% item tisch_no %%%</th>

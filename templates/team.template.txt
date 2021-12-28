@@ -47,7 +47,7 @@
 %%% condition if gastspieler_status %%% <th>Typ</th> %%% condition endif %%%
 %%% condition if paarungen %%%
 %%% loop paarungen %%%
-<th class="number"><a href="../runde/%%% item runde_no %%%/" title="Runde %%% item runde_no %%%, Gegner %%% item gegner %%%">%%% item runde_no %%%</a></th>
+<th class="number"><a href="../runde/%%% item runde_no %%%/#tisch-%%% item tisch_no %%%" title="Runde %%% item runde_no %%%, Gegner %%% item gegner %%%">%%% item runde_no %%%</a></th>
 %%% loop end %%%
 <th class="tsum"><abbr title="Summe">&Sigma;</abbr></th>
 %%% condition endif %%%
