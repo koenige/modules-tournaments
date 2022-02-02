@@ -58,7 +58,7 @@ function mod_tournaments_make_ratings_import_dwz($params) {
 			wrap_db_query($sql);
 			while ($line = fgets($handle)) {
 				$line = iconv("ISO-8859-1", "UTF-8", $line);
-				if (wrap_db_query($line)) continue;
+				if (wrap_db_query($line, E_USER_WARNING)) continue;
 //				if (mysql_errno() === 1065) continue;
 				$data['errors'][]['msg'] = mysqli_error($zz_conf['db_connection']).' '.$line;
 			}
