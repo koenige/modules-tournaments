@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -103,8 +103,10 @@ function mod_tournaments_tournament($vars, $settings) {
 		return wrap_redirect(
 			sprintf('%s/%s/', $zz_setting['events_path'], implode('/', $vars)), 307);
 	}
-	parse_str($event['series_parameter'], $series_parameter);
-	$event += $series_parameter;
+	if ($event['series_parameter']) {
+		parse_str($event['series_parameter'], $series_parameter);
+		$event += $series_parameter;
+	}
 	mf_tournaments_cache($event);
 	$event['intern'] = $intern ? true : false;
 	$event[str_replace('-', '_', $event['turnierform'])] = true;

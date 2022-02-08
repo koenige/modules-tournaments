@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -123,8 +123,10 @@ function mod_tournaments_team($vars, $settings) {
 	$sql = sprintf($sql, wrap_db_escape(implode('/', $vars)));
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
-	parse_str($event['parameters'], $parameters);
-	$event += $parameters;
+	if ($event['parameters']) {
+		parse_str($event['parameters'], $parameters);
+		$event += $parameters;
+	}
 
 	$page['title'] = $event['event'].' '.$event['year'].': '.$team['team'].' '.$team['team_no'];
 	$page['breadcrumbs'][] = '<a href="../../">'.$event['year'].'</a>';
