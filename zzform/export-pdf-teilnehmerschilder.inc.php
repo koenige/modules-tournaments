@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017-2020 Gustaf Mossakowski
+ * @copyright Copyright © 2017-2020, 2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -169,7 +169,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
 	$fields = [
 		'usergroup_id', 'parameters', 't_vorname', 't_nachname', 'person_id',
 		't_fidetitel', 't_verein', 'event_id', 'federation_contact_id',
-		'lebensalter', 'rolle', 't_dwz', 't_elo', 'geschlecht'
+		'lebensalter', 'rolle', 't_dwz', 't_elo', 'sex'
 	];
 	$nos = [];
 	foreach ($head as $index => $field) {
@@ -216,10 +216,10 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 		if (file_exists($filename_2)) $filename = $filename_2;
 	}
 	$new['usergroup'] = $line[$nos['usergroup_id']]['text'];
-	if (!empty($nos['geschlecht'])) {
-		if (!empty($parameters['weiblich']) AND  $line[$nos['geschlecht']]['text'] === 'weiblich') {
+	if (!empty($nos['sex'])) {
+		if (!empty($parameters['weiblich']) AND $line[$nos['sex']]['text'] === 'female') {
 			$new['usergroup'] = $parameters['weiblich'];
-		} elseif (!empty($parameters['männlich']) AND  $line[$nos['geschlecht']]['text'] === 'männlich') {
+		} elseif (!empty($parameters['männlich']) AND  $line[$nos['sex']]['text'] === 'male') {
 			$new['usergroup'] = $parameters['männlich'];
 		}
 	}

@@ -570,7 +570,7 @@ function mod_tournaments_make_swtimport_personen($event, $spielerliste, $ids, $i
 			$person['first_name'] = !empty($name[1]) ? trim($name[1]) : '';
 			$person['last_name'] = trim($name[0]);
 			$person['date_of_birth'] = trim(substr($spieler[2008], 0, 4));
-			$person['geschlecht'] = (strtolower($spieler[2013]) === 'w') ? 'weiblich' : 'männlich';
+			$person['sex'] = (strtolower($spieler[2013]) === 'w') ? 'female' : 'male';
 			list($person_id, $contact_id) = my_person_add($person);
 
 			$kennungen = [];

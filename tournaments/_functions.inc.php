@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -327,11 +327,11 @@ function mf_tournaments_standings_filter($filter_kennung = false) {
 	switch ($filter_kennung) {
 	// @todo nur Filter erlauben, die auch in tournaments.tabellenstand eingetragen sind
 	case 'w':
-		$filter['where'][] = 'personen.geschlecht = "weiblich"';
+		$filter['where'][] = 'personen.sex = "female"';
 		$filter['untertitel'] = 'weiblich';
 		break;
 	case 'm':
-		$filter['where'][] = 'personen.geschlecht = "männlich"';
+		$filter['where'][] = 'personen.sex = "male"';
 		$filter['untertitel'] = 'männlich';
 		break;
 	case 'alt':
@@ -375,13 +375,13 @@ function mf_tournaments_final_standings($event_ids) {
 				LEFT JOIN personen USING (person_id)
 				WHERE teilnahme_status = "Teilnehmer"
 				AND usergroup_id = %d
-				AND geschlecht = "männlich"
+				AND sex = "male"
 				AND teilnahmen.event_id = events.event_id) AS spieler
 			, (SELECT COUNT(teilnahme_id) FROM teilnahmen
 				LEFT JOIN personen USING (person_id)
 				WHERE teilnahme_status = "Teilnehmer"
 				AND usergroup_id = %d
-				AND geschlecht = "weiblich"
+				AND sex = "female"
 				AND teilnahmen.event_id = events.event_id) AS spielerinnen
 			, tournaments.tabellenstaende
 		FROM events
@@ -418,7 +418,7 @@ function mf_tournaments_final_standings($event_ids) {
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 				, teilnahmen.setzliste_no
 				, t_verein AS verein
-				, personen.geschlecht
+				, personen.sex
 			FROM tabellenstaende
 			LEFT JOIN tournaments USING (event_id)
 			LEFT JOIN teams USING (team_id)

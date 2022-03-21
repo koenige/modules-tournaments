@@ -43,8 +43,8 @@ function mod_tournaments_tournamentstats($vars) {
 			, IFNULL(series.category_short, event) AS event
 			, events.identifier
 			, (SELECT COUNT(teilnahme_id) FROM teilnahmen WHERE event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS tn_total
-			, (SELECT COUNT(teilnahme_id) FROM teilnahmen LEFT JOIN personen USING (person_id) WHERE event_id = events.event_id AND personen.geschlecht = "männlich" AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS tn_m
-			, (SELECT COUNT(teilnahme_id) FROM teilnahmen LEFT JOIN personen USING (person_id) WHERE event_id = events.event_id AND personen.geschlecht = "weiblich" AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS tn_w
+			, (SELECT COUNT(teilnahme_id) FROM teilnahmen LEFT JOIN personen USING (person_id) WHERE event_id = events.event_id AND personen.sex = "male" AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS tn_m
+			, (SELECT COUNT(teilnahme_id) FROM teilnahmen LEFT JOIN personen USING (person_id) WHERE event_id = events.event_id AND personen.sex = "female" AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS tn_w
 			, (SELECT ROUND(AVG(t_dwz)) FROM teilnahmen WHERE event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id))) AS dwz_schnitt
 			, (SELECT ROUND(AVG(t_elo)) FROM teilnahmen WHERE event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id))) AS elo_schnitt
 			, (SELECT COUNT(partie_id) FROM partien WHERE event_id = events.event_id AND partiestatus_category_id IN (%s) AND NOT ISNULL(weiss_ergebnis)) AS partien
