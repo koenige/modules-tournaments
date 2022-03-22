@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2008, 2012, 2014-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2008, 2012, 2014-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -164,7 +164,7 @@ function mod_tournaments_tournamentmap_json($params) {
 			, teams.kennung AS team_identifier
 			, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 		FROM teilnahmen
-		LEFT JOIN personen USING (person_id)
+		LEFT JOIN persons USING (person_id)
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN teams USING (team_id)
 		LEFT JOIN categories series
@@ -172,11 +172,11 @@ function mod_tournaments_tournamentmap_json($params) {
 		LEFT JOIN categories main_series
 			ON series.main_category_id = main_series.category_id
 		LEFT JOIN contacts_identifiers zps
-			ON personen.contact_id = zps.contact_id
+			ON persons.contact_id = zps.contact_id
 			AND zps.identifier_category_id = %d
 			AND zps.current = "yes"
 		LEFT JOIN contacts_identifiers fide
-			ON personen.contact_id = fide.contact_id
+			ON persons.contact_id = fide.contact_id
 			AND fide.identifier_category_id = %d
 			AND fide.current = "yes"
 		WHERE main_series.path = "reihen/%s"

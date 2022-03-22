@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -102,7 +102,7 @@ function mod_tournaments_startranking_single($event) {
 			, qualification.identifier AS qualification_event_identifier
 			, qualification
 		FROM teilnahmen
-		JOIN personen USING (person_id)
+		JOIN persons USING (person_id)
 		LEFT JOIN contacts organisationen
 			ON teilnahmen.club_contact_id = organisationen.contact_id
 		LEFT JOIN contacts_identifiers v_ok
@@ -141,7 +141,7 @@ function mod_tournaments_startranking_single($event) {
 		, ($event['date_end'] >= date('Y-m-d')) ? '"angemeldet", ' : ''
 	);
 	$event['spieler'] = wrap_db_fetch($sql, 'person_id');
-	$event['spieler'] = my_get_personen_kennungen($event['spieler'], ['fide-id', 'zps']);
+	$event['spieler'] = my_get_persons_kennungen($event['spieler'], ['fide-id', 'zps']);
 	$event['zeige_dwz'] = false;
 	$event['zeige_elo'] = false;
 	$event['zeige_titel'] = false;

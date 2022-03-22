@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2017-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -117,9 +117,9 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 			, IFNULL(federation, "GER") AS country
 			, %s AS no, team_id
 		FROM teilnahmen
-		LEFT JOIN personen USING (person_id)
+		LEFT JOIN persons USING (person_id)
 		LEFT JOIN contacts_identifiers
-			ON personen.contact_id = contacts_identifiers.contact_id
+			ON persons.contact_id = contacts_identifiers.contact_id
 			AND contacts_identifiers.current = "yes"
 			AND contacts_identifiers.identifier_category_id = %d
 		LEFT JOIN fide_players

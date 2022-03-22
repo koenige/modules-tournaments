@@ -52,9 +52,9 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			, dwz_spieler.FIDE_Titel
 		FROM teilnahmen
 		LEFT JOIN events USING (event_id)
-		LEFT JOIN personen USING (person_id)
+		LEFT JOIN persons USING (person_id)
 		LEFT JOIN contacts_identifiers
-			ON contacts_identifiers.contact_id = personen.contact_id
+			ON contacts_identifiers.contact_id = persons.contact_id
 			AND contacts_identifiers.current = "yes"
 			AND contacts_identifiers.identifier_category_id = %d
 		LEFT JOIN dwz_spieler

@@ -267,7 +267,7 @@ function mf_tournaments_games_sql($event, $where) {
 		FROM partien
 		LEFT JOIN categories
 			ON partien.partiestatus_category_id = categories.category_id
-		LEFT JOIN personen weiss
+		LEFT JOIN persons weiss
 			ON weiss.person_id = partien.weiss_person_id
 		LEFT JOIN contacts white_contact
 			ON weiss.contact_id = white_contact.contact_id
@@ -275,7 +275,7 @@ function mf_tournaments_games_sql($event, $where) {
 			ON weiss_status.person_id = weiss.person_id
 			AND weiss_status.usergroup_id = %d
 			AND weiss_status.event_id = %d
-		LEFT JOIN personen schwarz
+		LEFT JOIN persons schwarz
 			ON schwarz.person_id = partien.schwarz_person_id
 		LEFT JOIN contacts black_contact
 			ON schwarz.contact_id = black_contact.contact_id
@@ -327,19 +327,19 @@ function mf_tournaments_standings_filter($filter_kennung = false) {
 	switch ($filter_kennung) {
 	// @todo nur Filter erlauben, die auch in tournaments.tabellenstand eingetragen sind
 	case 'w':
-		$filter['where'][] = 'personen.sex = "female"';
+		$filter['where'][] = 'persons.sex = "female"';
 		$filter['untertitel'] = 'weiblich';
 		break;
 	case 'm':
-		$filter['where'][] = 'personen.sex = "male"';
+		$filter['where'][] = 'persons.sex = "male"';
 		$filter['untertitel'] = 'männlich';
 		break;
 	case 'alt':
-		$filter['where'][] = 'YEAR(personen.date_of_birth) = (IFNULL(events.event_year, YEAR(events.date_begin)) - alter_max)';
+		$filter['where'][] = 'YEAR(persons.date_of_birth) = (IFNULL(events.event_year, YEAR(events.date_begin)) - alter_max)';
 		$filter['untertitel'] = 'ältester Jahrgang';
 		break;
 	case 'jung':
-		$filter['where'][] = 'YEAR(personen.date_of_birth) > (IFNULL(events.event_year, YEAR(events.date_begin)) - alter_max)';
+		$filter['where'][] = 'YEAR(persons.date_of_birth) > (IFNULL(events.event_year, YEAR(events.date_begin)) - alter_max)';
 		$filter['untertitel'] = 'jüngere Jahrgänge';
 		break;
 	// @todo u12, u10, u...
@@ -372,13 +372,13 @@ function mf_tournaments_final_standings($event_ids) {
 				AND team_status = "Teilnehmer"
 				AND teams.event_id = events.event_id) AS teams
 			, (SELECT COUNT(teilnahme_id) FROM teilnahmen
-				LEFT JOIN personen USING (person_id)
+				LEFT JOIN persons USING (person_id)
 				WHERE teilnahme_status = "Teilnehmer"
 				AND usergroup_id = %d
 				AND sex = "male"
 				AND teilnahmen.event_id = events.event_id) AS spieler
 			, (SELECT COUNT(teilnahme_id) FROM teilnahmen
-				LEFT JOIN personen USING (person_id)
+				LEFT JOIN persons USING (person_id)
 				WHERE teilnahme_status = "Teilnehmer"
 				AND usergroup_id = %d
 				AND sex = "female"
@@ -418,7 +418,7 @@ function mf_tournaments_final_standings($event_ids) {
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 				, teilnahmen.setzliste_no
 				, t_verein AS verein
-				, personen.sex
+				, persons.sex
 			FROM tabellenstaende
 			LEFT JOIN tournaments USING (event_id)
 			LEFT JOIN teams USING (team_id)
@@ -426,8 +426,8 @@ function mf_tournaments_final_standings($event_ids) {
 				ON teilnahmen.person_id = tabellenstaende.person_id
 				AND teilnahmen.event_id = tabellenstaende.event_id
 				AND ISNULL(teilnahmen.team_id)
-			LEFT JOIN personen
-				ON tabellenstaende.person_id = personen.person_id 
+			LEFT JOIN persons
+				ON tabellenstaende.person_id = persons.person_id 
 			WHERE tabellenstaende.event_id IN (%s)
 			AND (ISNULL(teilnahmen.teilnahme_status) OR teilnahmen.teilnahme_status = "Teilnehmer")
 			AND (%s)

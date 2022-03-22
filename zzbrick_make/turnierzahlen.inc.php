@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -86,7 +86,7 @@ function mod_tournaments_make_turnierzahlen($vars) {
 			, CONCAT(last_name, ",", first_name) AS dwz_person
 			, anmerkung
 		FROM teilnahmen
-		LEFT JOIN personen USING (person_id)
+		LEFT JOIN persons USING (person_id)
 		LEFT JOIN contacts USING (contact_id)
 		LEFT JOIN contacts_identifiers
 			ON contacts.contact_id = contacts_identifiers.contact_id

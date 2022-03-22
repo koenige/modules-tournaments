@@ -434,7 +434,7 @@ function mod_tournaments_tournament($vars, $settings) {
 			, usergroup, usergroups.identifier AS group_identifier
 			%s
 		FROM teilnahmen
-		LEFT JOIN personen USING (person_id)
+		LEFT JOIN persons USING (person_id)
 		LEFT JOIN contacts USING (contact_id)
 		%s
 		LEFT JOIN usergroups USING (usergroup_id)

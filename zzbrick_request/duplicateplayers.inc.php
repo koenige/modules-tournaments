@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015-2016, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2015-2016, 2019-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -37,7 +37,7 @@ function mod_tournaments_duplicateplayers($vars) {
 
 	$sql = 'SELECT person_id
 		FROM teilnahmen
-		LEFT JOIN personen USING (person_id)
+		LEFT JOIN persons USING (person_id)
 		WHERE usergroup_id = %d
 		AND event_id IN (%s)
 		GROUP BY person_id

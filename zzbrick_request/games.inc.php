@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2005, 2012-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2005, 2012-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -472,16 +472,16 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 			ON partien.schwarz_person_id = schwarz.person_id AND schwarz.usergroup_id = %d
 			AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", heim_teams.team_id, auswaerts_teams.team_id))
 			AND schwarz.event_id = partien.event_id
-		LEFT JOIN personen weiss_personen
-			ON weiss_personen.person_id = weiss.person_id
-		LEFT JOIN personen schwarz_personen
-			ON schwarz_personen.person_id = schwarz.person_id
+		LEFT JOIN persons weiss_persons
+			ON weiss_persons.person_id = weiss.person_id
+		LEFT JOIN persons schwarz_persons
+			ON schwarz_persons.person_id = schwarz.person_id
 		LEFT JOIN contacts_identifiers weiss_fide_id
-			ON weiss_fide_id.contact_id = weiss_personen.contact_id
+			ON weiss_fide_id.contact_id = weiss_persons.contact_id
 			AND weiss_fide_id.current = "yes"
 			AND weiss_fide_id.identifier_category_id = %d
 		LEFT JOIN contacts_identifiers schwarz_fide_id
-			ON schwarz_fide_id.contact_id = schwarz_personen.contact_id
+			ON schwarz_fide_id.contact_id = schwarz_persons.contact_id
 			AND schwarz_fide_id.current = "yes"
 			AND schwarz_fide_id.identifier_category_id = %d
 		WHERE events.event_id = (%d)

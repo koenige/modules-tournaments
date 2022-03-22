@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -135,7 +135,7 @@ function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
 	}
 
 	// Fehlende Personen ergänzen
-	$ids = mod_tournaments_make_swtimport_personen($event, $tournament['out']['Spieler'], $ids, $import);
+	$ids = mod_tournaments_make_swtimport_persons($event, $tournament['out']['Spieler'], $ids, $import);
 
 	// Aufstellungen importieren
 	$ids = mod_tournaments_make_swtimport_teilnahmen($event, $tournament['out']['Spieler'], $ids);
@@ -448,11 +448,11 @@ function mod_tournaments_make_swtimport_delete($ids, $event_id, $type) {
  * @param array $import
  * @return array $ids
  */
-function mod_tournaments_make_swtimport_personen($event, $spielerliste, $ids, $import) {
+function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $import) {
 	global $zz_setting;
 	global $zz_conf;
 	require_once $zz_conf['dir_custom'].'/editing.inc.php';
-	require_once $zz_setting['custom_wrap_dir'].'/personen.inc.php';
+	require_once $zz_setting['custom_wrap_dir'].'/persons.inc.php';
 	
 	$ids['person_spielfrei'] = [];
 	$ids['person'] = [];
@@ -487,7 +487,7 @@ function mod_tournaments_make_swtimport_personen($event, $spielerliste, $ids, $i
 			if (array_key_exists('person_id', $infos)) {
 				$person_id = $infos['person_id'];
 				$sql = 'SELECT person_id
-					FROM personen
+					FROM persons
 					WHERE person_id = %d';
 				$sql = sprintf($sql, $person_id);
 				$person_id = wrap_db_fetch($sql, '', 'single value');
@@ -497,7 +497,7 @@ function mod_tournaments_make_swtimport_personen($event, $spielerliste, $ids, $i
 			// Existiert Person? PKZ 2034 -- FIDE-ID 2033 -- ZPS-Mgl-Nr. 2010-2011
 			$sql = 'SELECT DISTINCT person_id
 				FROM contacts_identifiers pk
-				LEFT JOIN personen USING (contact_id)
+				LEFT JOIN persons USING (contact_id)
 				WHERE (pk.identifier = "%s" AND identifier_category_id = %d)
 				OR (pk.identifier = "%s" AND identifier_category_id = %d)
 				OR (pk.identifier = "%s-%s" AND identifier_category_id = %d)

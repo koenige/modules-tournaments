@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2015, 2017, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2015, 2017, 2019-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -43,7 +43,7 @@ $zz['fields'][5]['sql'] = 'SELECT person_id
 		, contact
 		, IFNULL(YEAR(date_of_birth), "unbek.") AS geburtsjahr
 		, identifier
-	FROM personen
+	FROM persons
 	LEFT JOIN teilnahmen USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
 	WHERE teilnahmen.usergroup_id = %d

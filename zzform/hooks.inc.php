@@ -353,7 +353,7 @@ function mf_tournaments_remarks_mail($ops) {
 		$record = array_merge($record, wrap_db_fetch($sql));
 
 		$sql = 'SELECT contact, identification AS e_mail
-			FROM personen
+			FROM persons
 			LEFT JOIN contacts USING (contact_id)
 			LEFT JOIN contactdetails USING (contact_id)
 			WHERE person_id = %d

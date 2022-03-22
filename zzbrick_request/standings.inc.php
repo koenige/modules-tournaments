@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -157,8 +157,8 @@ function mod_tournaments_standings($vars) {
 				ON teilnahmen.person_id = tabellenstaende.person_id
 				AND teilnahmen.event_id = tabellenstaende.event_id
 				AND teilnahmen.usergroup_id = %d
-			LEFT JOIN personen
-				ON tabellenstaende.person_id = personen.person_id
+			LEFT JOIN persons
+				ON tabellenstaende.person_id = persons.person_id
 			LEFT JOIN contacts organisationen
 				ON teilnahmen.club_contact_id = organisationen.contact_id
 			LEFT JOIN contacts_identifiers v_ok

@@ -297,7 +297,7 @@ function mod_tournaments_team_public($page, $data) {
 			LEFT JOIN categories
 				ON partien.partiestatus_category_id = categories.category_id
 			LEFT JOIN paarungen USING (paarung_id)
-			LEFT JOIN personen weiss
+			LEFT JOIN persons weiss
 				ON weiss.person_id = partien.weiss_person_id
 			LEFT JOIN contacts white_contact
 				ON weiss.contact_id = white_contact.contact_id
@@ -305,7 +305,7 @@ function mod_tournaments_team_public($page, $data) {
 				ON weiss_status.person_id = weiss.person_id
 				AND weiss_status.usergroup_id = %d
 				AND weiss_status.event_id = %d
-			LEFT JOIN personen schwarz
+			LEFT JOIN persons schwarz
 				ON schwarz.person_id = partien.schwarz_person_id
 			LEFT JOIN contacts black_contact
 				ON schwarz.contact_id = black_contact.contact_id
@@ -579,7 +579,7 @@ function mf_tournaments_team_players($team_ids, $event) {
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN usergroups USING (usergroup_id)
 		LEFT JOIN teams USING (team_id)
-		LEFT JOIN personen USING (person_id)
+		LEFT JOIN persons USING (person_id)
 		WHERE usergroups.identifier = "spieler"
 		AND (ISNULL(spielberechtigt) OR spielberechtigt = "ja")
 		AND teilnahmen.teilnahme_status = "Teilnehmer"
@@ -589,7 +589,7 @@ function mf_tournaments_team_players($team_ids, $event) {
 	$alle_spieler = wrap_db_fetch($sql, ['team_id', 'person_id']);
 	if (!$alle_spieler) return [];
 	foreach ($alle_spieler as $id => $team_spieler) {
-		$team_spieler = my_get_personen_kennungen($team_spieler, ['fide-id', 'zps']);
+		$team_spieler = my_get_persons_kennungen($team_spieler, ['fide-id', 'zps']);
 
 		$teams[$id]['spielberechtigt'] = true;
 		$teams[$id]['dwz_schnitt'] = 0;

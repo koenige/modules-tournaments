@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -110,7 +110,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 				JOIN teams USING (team_id)
 				JOIN events
 					ON teams.event_id = events.event_id
-				JOIN personen USING (person_id)
+				JOIN persons USING (person_id)
 				JOIN contacts USING (contact_id)
 				WHERE teilnahmen.event_id IN (%s)
 				AND usergroup_id = %d
@@ -142,7 +142,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 				, teilnahmen.setzliste_no
 			FROM teilnahmen
 			JOIN events USING (event_id)
-			JOIN personen USING (person_id)
+			JOIN persons USING (person_id)
 			JOIN contacts USING (contact_id)
 			WHERE teilnahmen.event_id IN (%s)
 			AND usergroup_id = %d

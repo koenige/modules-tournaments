@@ -29,7 +29,7 @@ CREATE TABLE `anmerkungen` (
 
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'teams', 'team_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'team_id', 'no-delete');
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'teilnahmen', 'teilnahme_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'teilnahme_id', 'delete');
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'personen', 'person_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'autor_person_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'persons', 'person_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'autor_person_id', 'no-delete');
 
 
 CREATE TABLE `cronjobs` (

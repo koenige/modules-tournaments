@@ -235,11 +235,11 @@ $zz['fields'][21]['fields'][3]['type'] = 'foreign_key';
 unset($zz['fields'][21]['fields'][9]); // teilnahme_id
 // Zeige nur offene Anmerkungen in Liste
 $zz['fields'][21]['subselect']['sql'] = 'SELECT team_id
-		, CONCAT(SUBSTRING(personen.first_name, 1, 1), SUBSTRING(personen.last_name, 1, 1)) AS person, DATE_FORMAT(erstellt, "%d%m")
+		, CONCAT(SUBSTRING(persons.first_name, 1, 1), SUBSTRING(persons.last_name, 1, 1)) AS person, DATE_FORMAT(erstellt, "%d%m")
 		, anmerkung
 	FROM anmerkungen
-	LEFT JOIN personen
-		ON anmerkungen.autor_person_id = personen.person_id
+	LEFT JOIN persons
+		ON anmerkungen.autor_person_id = persons.person_id
 	WHERE anmerkung_status = "offen"
 ';
 $zz['fields'][21]['unless']['export_mode']['subselect']['prefix'] = '<p><em>Anmerkung:</em><br>';
@@ -279,7 +279,7 @@ $zz['fields'][25]['subselect']['sql'] = sprintf('SELECT team_id
 		) AS e_mail
 		, GROUP_CONCAT(CONCAT(category_short, ": ", identification) SEPARATOR "<br>") AS telefon
 	FROM teilnahmen
-	LEFT JOIN personen USING (person_id)
+	LEFT JOIN persons USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
 	LEFT JOIN logins USING (person_id)
 	LEFT JOIN contactdetails USING (contact_id)

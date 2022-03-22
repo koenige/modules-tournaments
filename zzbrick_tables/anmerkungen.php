@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012, 2014-2015, 2017, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012, 2014-2015, 2017, 2019-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -48,7 +48,7 @@ $zz['fields'][9]['field_name'] = 'teilnahme_id';
 $zz['fields'][9]['type'] = 'select';
 $zz['fields'][9]['sql'] = 'SELECT teilnahme_id, contact, event
 	FROM teilnahmen
-	LEFT JOIN personen USING (person_id)
+	LEFT JOIN persons USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
 	LEFT JOIN events USING (event_id)
 	ORDER BY contacts.identifier
@@ -63,7 +63,7 @@ $zz['fields'][4]['sql'] = 'SELECT person_id
 		, contact
 		, IFNULL(YEAR(date_of_birth), "unbek.") AS geburtsjahr
 		, identifier
-	FROM personen
+	FROM persons
 	LEFT JOIN contacts USING (contact_id)
 	ORDER BY last_name, first_name, YEAR(date_of_birth), identifier';
 $zz['fields'][4]['unique_ignore'] = ['geburtsjahr', 'identifier'];
@@ -110,8 +110,8 @@ $zz['sql'] = 'SELECT anmerkungen.*
 	FROM anmerkungen
 	LEFT JOIN teams USING (team_id)
 	LEFT JOIN events USING (event_id)
-	LEFT JOIN personen
-		ON anmerkungen.autor_person_id = personen.person_id
+	LEFT JOIN persons
+		ON anmerkungen.autor_person_id = persons.person_id
 	LEFT JOIN contacts USING (contact_id)
 ';
 $zz['sqlorder'] = ' ORDER BY erstellt DESC';
