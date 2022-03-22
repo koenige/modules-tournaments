@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -352,17 +352,19 @@ function mf_tournaments_remarks_mail($ops) {
 		$sql = sprintf($sql, $record['team_id']); // @todo teilnahme_id
 		$record = array_merge($record, wrap_db_fetch($sql));
 
-		$sql = 'SELECT contact AS person
-			, e_mail
+		$sql = 'SELECT contact, identification AS e_mail
 			FROM personen
 			LEFT JOIN contacts USING (contact_id)
-			WHERE person_id = %d';
-		$sql = sprintf($sql, $record['autor_person_id']);
+			LEFT JOIN contactdetails USING (contact_id)
+			WHERE person_id = %d
+			AND provider_category_id = %d
+			LIMIT 1';
+		$sql = sprintf($sql, $record['autor_person_id'], wrap_category_id('provider/e-mail'));
 		$record = array_merge($record, wrap_db_fetch($sql));
 
 		$msg = wrap_template('anmerkung-mail', $record);
 		$mail['message'] = $msg;
-		$mail['headers']['From']['name'] = $record['person'];
+		$mail['headers']['From']['name'] = $record['contact'];
 		$mail['headers']['From']['e_mail'] = $record['e_mail'];
 		$mail['to']['name'] = wrap_get_setting('project');
 		$mail['to']['e_mail'] = wrap_get_setting('tournaments_remarks_mail_to');

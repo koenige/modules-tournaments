@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2017, 2020-2021 Gustaf Mossakowski
+# @copyright Copyright © 2017, 2020-2022 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 Subject: %%% item event %%% %%% item year %%% %%% item team %%% %%% item team_no %%%
@@ -14,11 +14,11 @@ Subject: %%% item event %%% %%% item year %%% %%% item team %%% %%% item team_no
 eingegangen:
 
 Turnier:  %%% item event %%%, %%% item ort %%%, %%% item duration wrap_date %%% 
-           %%% setting host_base %%%/intern/termine/%%% item event_identifier %%%/
+          %%% setting host_base %%%/intern/termine/%%% item event_identifier %%%/
 %%% condition if team %%%
 Team:     %%% item team %%% %%% item team_no %%% 
 %%% condition endif %%%
-Absender: %%% item person %%% <%%% item e_mail %%%>
+Absender: %%% item contact %%% <%%% item e_mail %%%>
 
 –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 

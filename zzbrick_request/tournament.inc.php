@@ -410,10 +410,15 @@ function mod_tournaments_tournament($vars, $settings) {
 
 	// Organisatoren
 	if ($intern) {
-		$sql_fields = '
+		$sql_fields = sprintf('
 		, GROUP_CONCAT(category, ": ", identification SEPARATOR "<br>") AS telefon
-		, e_mail
-		';
+		, (SELECT identification FROM contactdetails
+			WHERE contactdetails.contact_id = contacts.contact_id
+			AND provider_category_id = %d
+			LIMIT 1
+		) AS e_mail'
+			, wrap_category_id('provider/e-mail')
+		);
 		$sql_join = '
 		LEFT JOIN contactdetails USING (contact_id)
 		LEFT JOIN categories

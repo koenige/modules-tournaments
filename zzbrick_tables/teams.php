@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -272,7 +272,11 @@ $zz['fields'][25]['subselect']['sql'] = sprintf('SELECT team_id
 		, contacts.identifier
 		, CONCAT(contact,
 			IF(logins.active = "yes", " (+)", " (-)")) AS person
-		, e_mail
+		, (SELECT identification FROM contactdetails
+			WHERE contactdetails.contact_id = contacts.contact_id
+			AND provider_category_id = %d
+			LIMIT 1
+		) AS e_mail
 		, GROUP_CONCAT(CONCAT(category_short, ": ", identification) SEPARATOR "<br>") AS telefon
 	FROM teilnahmen
 	LEFT JOIN personen USING (person_id)
@@ -282,8 +286,10 @@ $zz['fields'][25]['subselect']['sql'] = sprintf('SELECT team_id
 	LEFT JOIN categories
 		ON contactdetails.provider_category_id = categories.category_id
 	WHERE usergroup_id = %d
-	GROUP BY teilnahme_id
-', wrap_id('usergroups', 'team-organisator'));
+	GROUP BY teilnahme_id'
+	, wrap_category_id('provider/e-mail')
+	, wrap_id('usergroups', 'team-organisator')
+);
 $zz['fields'][25]['unless']['export_mode']['subselect']['prefix'] = '<p><em>Kontakt:</em><br>';
 $zz['fields'][25]['if']['export_mode']['subselect']['prefix'] = '';
 $zz['fields'][25]['if']['export_mode']['subselect']['suffix'] = '';
