@@ -63,6 +63,9 @@ function mod_tournaments_tournament($vars, $settings) {
 				WHERE turniere_wertungen.tournament_id = tournaments.tournament_id
 				AND turniere_wertungen.reihenfolge = 1) AS haupt_wertung_category_id
 			, website_org.contact_abbr
+			, (SELECT setting_value FROM _settings
+				WHERE setting_key = "canonical_hostname" AND _settings.website_id = events.website_id
+			) AS canonical_hostname
 			, IF(NOT ISNULL(IFNULL(events.description, series.description)), 1, NULL) AS ausschreibung
 			, main_tournament_id
 		FROM events
@@ -109,7 +112,8 @@ function mod_tournaments_tournament($vars, $settings) {
 	}
 	mf_tournaments_cache($event);
 	$event['intern'] = $intern ? true : false;
-	$event[str_replace('-', '_', $event['turnierform'])] = true;
+	if ($event['turnierform'])
+		$event[str_replace('-', '_', $event['turnierform'])] = true;
 	$event[str_replace('-', '_', $event['event_category'])] = true;
 	// @todo im Grunde überflüssig, da Auswahlskript hier eh nur Turniere ankommen läßt
 	$event['turnier'] = true;

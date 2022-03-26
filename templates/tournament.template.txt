@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2021 Gustaf Mossakowski
+# @copyright Copyright © 2012-2022 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 # List of fields:
@@ -105,7 +105,7 @@
 %%% condition endif %%%
 <li><a href="/medien/%%% item contact_abbr %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
 </ul>
-<p><a href="/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
+<p><a href="%%% condition if canonical_hostname %%%https://%%% item canonical_hostname %%%%%% condition endif %%%/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
 </div>
 
 %%% rights Schiedsrichter Technik Turnierleitung event:* %%%
@@ -135,7 +135,7 @@
 <li><a href="urkunden/">Druck der Urkunden</a></li>
 <li><a href="/medien/%%% item contact_abbr %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
 </ul>
-<p><a href="/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
+<p><a href="%%% condition if canonical_hostname %%%https://%%% item canonical_hostname %%%%%% condition endif %%%/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
 </div>
 
 %%% rights Bulletin event:* %%%
@@ -149,7 +149,7 @@
 <li><a href="/medien/%%% item contact_abbr %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
 </ul>
 
-<p><a href="/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
+<p><a href="%%% condition if canonical_hostname %%%https://%%% item canonical_hostname %%%%%% condition endif %%%/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
 </div>
 
 %%% rights Organisator event:* %%%
@@ -185,7 +185,7 @@
 <li><a href="/medien/%%% item contact_abbr %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
 </ul>
 
-<p><a href="/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
+<p><a href="%%% condition if canonical_hostname %%%https://%%% item canonical_hostname %%%%%% condition endif %%%/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
 </div>
 %%% rights - %%%
 %%% condition endif %%%
