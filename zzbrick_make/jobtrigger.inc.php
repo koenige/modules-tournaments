@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015-2017, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2015-2017, 2019-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -97,7 +97,7 @@ function mod_tournaments_make_jobtrigger($params) {
 		if ($locked) continue;
 		$sql = 'UPDATE cronjobs SET start = NOW(), request = %d WHERE cronjob_id = %d';
 		$sql = sprintf($sql, $request, $cronjob['cronjob_id']);
-		$success = wrap_db_query($sql);
+		$success = wrap_db_query($sql, E_USER_NOTICE);
 		if (!$success) continue;
 
 		$url = sprintf('/_jobs/%s/%s/%s',
