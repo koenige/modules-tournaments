@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -32,9 +32,8 @@ $zz['fields'][2]['search'] = 'CONCAT(events.event, " ", IFNULL(event_year, YEAR(
 $zz['fields'][2]['unique'] = true;
 $zz['fields'][2]['if']['where']['hide_in_form'] = true;
 $zz['fields'][2]['link'] = [
-	'string1' => '/intern/termine/',
-	'field1' => 'event_identifier',
-	'string2' => '/'
+	'area' => 'events_internal_event',
+	'fields' => ['event_identifier']
 ];
 $zz['fields'][2]['dont_show_where_class'] = true;
 
