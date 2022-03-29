@@ -351,6 +351,7 @@ function mf_tournaments_remarks_mail($ops) {
 		';
 		$sql = sprintf($sql, $record['team_id']); // @todo teilnahme_id
 		$record = array_merge($record, wrap_db_fetch($sql));
+		$record['event_link'] = wrap_path('events_internal_event', $record['event_identifier']);
 
 		$sql = 'SELECT contact, identification AS e_mail
 			FROM persons
@@ -362,11 +363,12 @@ function mf_tournaments_remarks_mail($ops) {
 		$sql = sprintf($sql, $record['autor_person_id'], wrap_category_id('provider/e-mail'));
 		$record = array_merge($record, wrap_db_fetch($sql));
 
-		$msg = wrap_template('anmerkung-mail', $record);
+		$msg = wrap_template('team-remarks-mail', $record);
 		$mail['message'] = $msg;
 		$mail['headers']['From']['name'] = $record['contact'];
 		$mail['headers']['From']['e_mail'] = $record['e_mail'];
 		$mail['to']['name'] = wrap_get_setting('project');
+		// @todo read from tournament settings, not general settings
 		$mail['to']['e_mail'] = wrap_get_setting('tournaments_remarks_mail_to');
 		$success = wrap_mail($mail);
 	}

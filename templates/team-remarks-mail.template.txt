@@ -14,7 +14,7 @@ Subject: %%% item event %%% %%% item year %%% %%% item team %%% %%% item team_no
 eingegangen:
 
 Turnier:  %%% item event %%%, %%% item ort %%%, %%% item duration wrap_date %%% 
-          %%% setting host_base %%%/intern/termine/%%% item event_identifier %%%/
+          %%% setting host_base %%%%%% item event_link %%% 
 %%% condition if team %%%
 Team:     %%% item team %%% %%% item team_no %%% 
 %%% condition endif %%%
