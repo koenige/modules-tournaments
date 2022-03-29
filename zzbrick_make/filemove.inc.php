@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2016-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -102,7 +102,7 @@ function mod_tournaments_make_filemove() {
 				$success_other = false;
 				$source = trim($ftp_other['source']);
 				if (substr($source, 0, 1) === '/') $source = 'https://'.$tournament['host_name'].$source;
-				$dest = sprintf(trim($ftp_other['dest']), $tournament['pfad']);
+				$dest = sprintf(trim($ftp_other['dest']), $tournament['pfad'], $tournament['pfad']);
 				$success_other = wrap_watchdog($source, $dest, $params, false);
 				if ($success_other) {
 					wrap_log(sprintf('filemove watchdog ftp_other %s %s => %s'
