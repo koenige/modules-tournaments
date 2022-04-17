@@ -135,6 +135,7 @@ $zz['fields'][11]['hide_in_list'] = true;
 $zz['fields'][53]['field_name'] = 'ratings_updated';
 $zz['fields'][53]['type'] = 'date';
 $zz['fields'][53]['hide_in_list'] = true;
+$zz['fields'][53]['if']['add']['hide_in_form'] = true;
 
 $zz['fields'][21] = zzform_include_table('turniere-wertungen');
 $zz['fields'][21]['title'] = 'Wertungen';
@@ -166,6 +167,7 @@ $zz['fields'][42]['fields'][2]['type'] = 'foreign_key';
 $zz['fields'][42]['sql'] .= $zz['fields'][42]['sqlorder'];
 $zz['fields'][42]['explanation_top'] = $zz['fields'][42]['fields'][3]['explanation'];
 unset($zz['fields'][42]['fields'][3]['explanation']);
+$zz['fields'][42]['if']['add']['hide_in_form'] = true;
 
 $zz['fields'][26]['field_name'] = 'turnierkennung';
 $zz['fields'][26]['explanation'] = 'Eigene Turnierkennung, wird z. B. für SWT-Dateiexport genutzt';
@@ -218,6 +220,7 @@ $zz['fields'][25]['image'][0]['path'] = $zz['fields'][25]['path'];
 $zz['fields'][25]['list_append_next'] = true;
 $zz['fields'][25]['list_suffix'] = '<br>';
 $zz['fields'][25]['title_tab'] = 'Dateien';
+$zz['fields'][25]['if']['add']['hide_in_form'] = true;
 
 $zz['fields'][22]['title'] = 'SWT-Datei';
 $zz['fields'][22]['field_name'] = 'swt';
@@ -241,6 +244,7 @@ $zz['fields'][22]['image'][0]['field_name'] = 'gross';
 $zz['fields'][22]['image'][0]['path'] = $zz['fields'][22]['path'];
 $zz['fields'][22]['if'][1]['separator'] = 'text <div>Für Mannschaftsturniere</div>';
 $zz['fields'][22]['if'][2]['separator'] = true;
+$zz['fields'][22]['if']['add']['hide_in_form'] = true;
 
 $zz['fields'][13]['title_tab'] = 'Bretter';
 $zz['fields'][13]['title_append'] = 'Bretter';
@@ -384,12 +388,14 @@ $zz['fields'][43]['subselect']['field_prefix'][0] = '<abbr title="';
 $zz['fields'][43]['subselect']['field_suffix'][0] = '">';
 $zz['fields'][43]['subselect']['field_suffix'][1] = '</abbr>';
 $zz['fields'][43]['subselect']['concat_rows'] = ' ';
+$zz['fields'][43]['if']['add']['hide_in_form'] = true;
 
 $zz['fields'][47]['field_name'] = 'fehler';
 $zz['fields'][47]['type'] = 'memo';
 $zz['fields'][47]['rows'] = 4;
 $zz['fields'][47]['format'] = 'markdown';
 $zz['fields'][47]['hide_in_list'] = true;
+$zz['fields'][47]['if']['add']['hide_in_form'] = true;
 
 $zz['fields'][48]['title_tab'] = 'K?';
 $zz['fields'][48]['field_name'] = 'komplett';
@@ -398,6 +404,7 @@ $zz['fields'][48]['dont_copy'] = true;
 $zz['fields'][48]['enum'] = ['ja', 'nein'];
 $zz['fields'][48]['default'] = 'nein';
 $zz['fields'][48]['explanation'] = 'Turnier abgeschlossen, gesperrt für Änderungen';
+$zz['fields'][48]['if']['add']['hide_in_form'] = true;
 
 $zz['fields'][51]['field_name'] = 'tabellenstand_runde_no';
 $zz['fields'][51]['hide_in_list'] = true;
