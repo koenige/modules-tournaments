@@ -481,7 +481,8 @@ function mod_tournaments_tournament($vars, $settings) {
 			if ($event['teilnehmerliste'] AND $team['team_status'] === 'Teilnehmer') $event['teams'][$id]['aktiv'] = 1;
 			elseif (in_array($id, $eigene_teams) AND $intern) $event['teams'][$id]['aktiv'] = 1;
 			elseif (brick_access_rights('Webmaster') AND $event['intern']) $event['teams'][$id]['aktiv'] = 1;
-			$event['teams'][$id][str_replace('-', '_', $event['turnierform'])] = true;
+			if (!empty($event['turnierform']))
+				$event['teams'][$id][str_replace('-', '_', $event['turnierform'])] = true;
 		}
 	}
 
