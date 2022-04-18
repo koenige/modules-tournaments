@@ -77,7 +77,7 @@ function mf_tournaments_live_round($livebretter, $brett_no, $tisch_no = false) {
  */
 function mf_tournaments_team_rating_average_dwz($event_id, $teams, $bretter_min, $pseudo_dwz) {
 	// DWZ-Schnitt der Teams berechnen
-	$sql = 'SELECT teilnahme_id, brett_no, rang_no, team_id, t_dwz
+	$sql = 'SELECT participation_id, brett_no, rang_no, team_id, t_dwz
 		FROM teilnahmen
 		LEFT JOIN teams USING (team_id)
 		WHERE teilnahmen.event_id = %d
@@ -87,7 +87,7 @@ function mf_tournaments_team_rating_average_dwz($event_id, $teams, $bretter_min,
 		AND teams.team_status = "Teilnehmer"
 		ORDER BY team_id, ISNULL(brett_no), brett_no, t_dwz DESC, t_elo DESC, rang_no';
 	$sql = sprintf($sql, $event_id, wrap_id('usergroups', 'spieler'));
-	$dwz = wrap_db_fetch($sql, ['team_id', 'teilnahme_id']);
+	$dwz = wrap_db_fetch($sql, ['team_id', 'participation_id']);
 	
 	$event_dwz_schnitt = 0;
 	$dwz_personen = 0;
@@ -371,13 +371,13 @@ function mf_tournaments_final_standings($event_ids) {
 				WHERE spielfrei = "nein"
 				AND team_status = "Teilnehmer"
 				AND teams.event_id = events.event_id) AS teams
-			, (SELECT COUNT(teilnahme_id) FROM teilnahmen
+			, (SELECT COUNT(*) FROM teilnahmen
 				LEFT JOIN persons USING (person_id)
 				WHERE teilnahme_status = "Teilnehmer"
 				AND usergroup_id = %d
 				AND sex = "male"
 				AND teilnahmen.event_id = events.event_id) AS spieler
-			, (SELECT COUNT(teilnahme_id) FROM teilnahmen
+			, (SELECT COUNT(*) FROM teilnahmen
 				LEFT JOIN persons USING (person_id)
 				WHERE teilnahme_status = "Teilnehmer"
 				AND usergroup_id = %d

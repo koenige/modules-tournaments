@@ -132,7 +132,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 		}
 	}
 	if (!empty($_GET['q']) AND $einzel) {
-		$sql = 'SELECT DISTINCT teilnahme_id, person_id
+		$sql = 'SELECT DISTINCT participation_id, person_id
 				, IF(ISNULL(t_vorname),
 					contact,
 					CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname)
@@ -159,7 +159,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 		$sql = sprintf($sql, implode(',', array_keys($events)), wrap_id('usergroups', 'spieler'),
 			wrap_db_escape($_GET['q']), wrap_db_escape($_GET['q']), wrap_db_escape($_GET['q']), wrap_db_escape($_GET['q'])
 		);
-		$event['spieler'] = wrap_db_fetch($sql, 'teilnahme_id');
+		$event['spieler'] = wrap_db_fetch($sql, 'participation_id');
 	}
 	$event['q'] = isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '';
 	$event['teamsuche'] = $mannschaft;

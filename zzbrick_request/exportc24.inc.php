@@ -109,7 +109,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		$where = '';
 	}
 
-	$sql = 'SELECT teilnahme_id
+	$sql = 'SELECT participation_id
 			, IFNULL(contacts_identifiers.identifier, CONCAT("ZZ-", teilnahmen.person_id)) AS fideId
 			, CONCAT(t_nachname, ", ", t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), "")) AS name
 			, t_fidetitel AS title
@@ -128,7 +128,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		AND usergroup_id = %d
 		AND teilnahme_status IN ("Teilnehmer", "disqualifiziert")
 		%s
-		ORDER BY team_id, brett_no, rang_no, IF(ISNULL(contacts_identifiers.identifier), 1, NULL), contacts_identifiers.identifier, teilnahme_id';
+		ORDER BY team_id, brett_no, rang_no, IF(ISNULL(contacts_identifiers.identifier), 1, NULL), contacts_identifiers.identifier, participation_id';
 	$sql = sprintf($sql
 		, $brett_no ? 'brett_no' : 'rang_no'
 		, wrap_category_id('kennungen/fide-id')
@@ -136,7 +136,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		, wrap_id('usergroups', 'spieler')
 		, $where
 	);
-	$players = wrap_db_fetch($sql, 'teilnahme_id');
+	$players = wrap_db_fetch($sql, 'participation_id');
 	foreach ($players as $line) {
 		if (empty($line['title'])) unset($line['title']);
 		if (!$line['elo']) unset($line['elo']);
@@ -148,7 +148,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		}
 		unset($line['no']);
 		unset($line['team_id']);
-		unset($line['teilnahme_id']);
+		unset($line['participation_id']);
 		$id = $line['fideId'];
 		if (is_numeric($id)) {
 			$id = intval($id);

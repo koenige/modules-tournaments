@@ -232,7 +232,7 @@ $zz['fields'][21]['title'] = 'Anmerkungen';
 $zz['fields'][21]['type'] = 'subtable';
 $zz['fields'][21]['min_records'] = 0;
 $zz['fields'][21]['fields'][3]['type'] = 'foreign_key';
-unset($zz['fields'][21]['fields'][9]); // teilnahme_id
+unset($zz['fields'][21]['fields'][9]); // participation_id
 // Zeige nur offene Anmerkungen in Liste
 $zz['fields'][21]['subselect']['sql'] = 'SELECT team_id
 		, CONCAT(SUBSTRING(persons.first_name, 1, 1), SUBSTRING(persons.last_name, 1, 1)) AS person, DATE_FORMAT(erstellt, "%d%m")
@@ -286,7 +286,7 @@ $zz['fields'][25]['subselect']['sql'] = sprintf('SELECT team_id
 	LEFT JOIN categories
 		ON contactdetails.provider_category_id = categories.category_id
 	WHERE usergroup_id = %d
-	GROUP BY teilnahme_id'
+	GROUP BY participation_id'
 	, wrap_category_id('provider/e-mail')
 	, wrap_id('usergroups', 'team-organisator')
 );

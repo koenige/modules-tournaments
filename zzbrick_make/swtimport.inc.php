@@ -400,7 +400,7 @@ function mod_tournaments_make_swtimport_delete($ids, $event_id, $type) {
 		$status = 'Löschung';
 		break;
 	case 'teilnahmen':
-		$id_field = 'teilnahme_id';
+		$id_field = 'participation_id';
 		$table = 'teilnahmen';
 		$id_source = 'teilnahmen';
 		$key = 'Teilnahmen (Spieler)';
@@ -622,7 +622,7 @@ function mod_tournaments_make_swtimport_teilnahmen($event, $spielerliste, $ids) 
 		if ($event['turnierform'] !== 'e') {
 			// Eine Spielerin darf in mehreren Teams pro Turnier gemeldet sein
 			// (2. Mannschaft)
-			$sql = 'SELECT teilnahme_id
+			$sql = 'SELECT participation_id
 				FROM teilnahmen
 				WHERE person_id = %d AND event_id = %d
 				AND usergroup_id = %d AND team_id = %d';
@@ -632,17 +632,17 @@ function mod_tournaments_make_swtimport_teilnahmen($event, $spielerliste, $ids) 
 				$ids['team_dec'][$spieler[2016]]
 			);
 		} else {
-			$sql = 'SELECT teilnahme_id
+			$sql = 'SELECT participation_id
 				FROM teilnahmen
 				WHERE person_id = %d AND event_id = %d
 				AND usergroup_id = %d';
 			$sql = sprintf($sql,
 				$person_id, $event['event_id'], wrap_id('usergroups', 'spieler'));
 		}
-		$teilnahme_id = wrap_db_fetch($sql, '', 'single value');
-		if ($teilnahme_id) {
+		$participation_id = wrap_db_fetch($sql, '', 'single value');
+		if ($participation_id) {
 			$values['action'] = 'update';
-			$values['POST']['teilnahme_id'] = $teilnahme_id;
+			$values['POST']['participation_id'] = $participation_id;
 		} else {
 			$values['action'] = 'insert';
 		}

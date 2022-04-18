@@ -42,7 +42,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		$data[$line['id_value']] = $new;
 	}
 	
-	$sql = 'SELECT teilnahme_id
+	$sql = 'SELECT participation_id
 			, IF(IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) > 18, 1,
 				IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_begin, 1, NULL)
 			) AS volljaehrig
@@ -59,12 +59,12 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			AND contacts_identifiers.identifier_category_id = %d
 		LEFT JOIN dwz_spieler
 			ON contacts_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", dwz_spieler.Mgl_Nr)
-		WHERE teilnahme_id IN (%s)';
+		WHERE participation_id IN (%s)';
 	$sql = sprintf($sql
 		, wrap_category_id('kennungen/zps')
 		, implode(',', array_keys($data))
 	);
-	$more_data = wrap_db_fetch($sql, 'teilnahme_id');
+	$more_data = wrap_db_fetch($sql, 'participation_id');
 	foreach ($more_data as $id => $line) {
 		$data[$id] += $more_data[$id];
 		if (empty($data[$id]['fidetitel']) AND !empty($data[$id]['FIDE_Titel']))
@@ -89,7 +89,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			// DSJ-Logo
 			$left = 297.5 * $j;
 			if ($j & 1) {
-				$image = mf_tournaments_p_qrcode($line['teilnahme_id']);
+				$image = mf_tournaments_p_qrcode($line['participation_id']);
 				$width = 48;
 			} else {
 				$image = $zz_setting['media_folder'].'/urkunden-grafiken/DSJ-Logo.jpg';

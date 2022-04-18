@@ -80,7 +80,7 @@ function mod_tournaments_make_turnierzahlen($vars) {
 		$data['meldezahlen_gespeichert'] = false;
 	}
 	
-	$sql = 'SELECT teilnahme_id, teilnahmen.person_id, t_dwz, t_elo
+	$sql = 'SELECT participation_id, teilnahmen.person_id, t_dwz, t_elo
 			, contacts_identifiers.identifier AS zps_code
 			, contact AS person
 			, CONCAT(last_name, ",", first_name) AS dwz_person
@@ -100,7 +100,7 @@ function mod_tournaments_make_turnierzahlen($vars) {
 		$event['event_id'],
 		wrap_id('usergroups', 'spieler')
 	);
-	$teilnahmen = wrap_db_fetch($sql, 'teilnahme_id');
+	$teilnahmen = wrap_db_fetch($sql, 'participation_id');
 	$zps_codes = [];
 	foreach ($teilnahmen as $teilnahme) {
 		$zps_codes[] = $teilnahme['zps_code'];
@@ -117,9 +117,9 @@ function mod_tournaments_make_turnierzahlen($vars) {
 	$zz_conf['user'] = 'Turnierzahlen '.implode('/', $vars);
 
 	$updated = false;
-	foreach ($teilnahmen as $teilnahme_id => $teilnahme) {
+	foreach ($teilnahmen as $participation_id => $teilnahme) {
 		$values = [];
-		$values['POST']['teilnahme_id'] = $teilnahme_id;
+		$values['POST']['participation_id'] = $participation_id;
 		if (!$data['meldezahlen_gespeichert']) {
 			// Schreiben von m_dwz und m_elo nur, falls Meldezahlen noch nicht
 			// gespeichert wurden. Bei wiederholter Aktualisierung der 

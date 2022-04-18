@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2020-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2020-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -15,7 +15,7 @@ CREATE TABLE `anmerkungen` (
   `anmerkung_id` int unsigned NOT NULL AUTO_INCREMENT,
   `anmerkung` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `team_id` int unsigned DEFAULT NULL,
-  `teilnahme_id` int unsigned DEFAULT NULL,
+  `participation_id` int unsigned DEFAULT NULL,
   `autor_person_id` int unsigned NOT NULL,
   `sichtbarkeit` set('Team','Organisator') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `anmerkung_status` enum('offen','erledigt') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'offen',
@@ -24,11 +24,11 @@ CREATE TABLE `anmerkungen` (
   PRIMARY KEY (`anmerkung_id`),
   KEY `team_id` (`team_id`),
   KEY `autor_person_id` (`autor_person_id`),
-  KEY `teilnahme_id` (`teilnahme_id`)
+  KEY `participation_id` (`participation_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'teams', 'team_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'team_id', 'no-delete');
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'teilnahmen', 'teilnahme_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'teilnahme_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'teilnahmen', 'participation_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'participation_id', 'delete');
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'persons', 'person_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'autor_person_id', 'no-delete');
 
 

@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2021 Gustaf Mossakowski
+ * @copyright Copyright © 2021-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -17,3 +17,6 @@
 /* 2021-11-24-3 */	UPDATE categories SET `category` = 'Cronjobs', `path` = 'cronjobs', `parameters` = REPLACE(`parameters`, 'alias=jobs', 'alias=cronjobs') WHERE path = 'jobs' OR parameters LIKE '%alias=jobs%';
 /* 2021-11-24-4 */	UPDATE _relations SET `detail_table` = 'cronjobs', `detail_id_field` = 'cronjob_id' WHERE `detail_table` = 'jobs';
 /* 2021-11-24-5 */	UPDATE _relations SET `detail_field` = 'cronjob_category_id' WHERE `detail_table` = 'cronjobs' AND `detail_field` = 'job_category_id';
+/* 2022-04-18-1 */	ALTER TABLE `anmerkungen` CHANGE `teilnahme_id` `participation_id` int unsigned NULL AFTER `team_id`;
+/* 2022-04-18-2 */	ALTER TABLE `anmerkungen` ADD INDEX `participation_id` (`participation_id`), DROP INDEX `teilnahme_id`;
+/* 2022-04-18-3 */	UPDATE _relations SET `detail_field` = 'participation_id', `master_field` = 'participation_id' WHERE `detail_table` = 'anmerkungen' AND `detail_field` = 'teilnahme_id' AND `master_field` = 'teilnahme_id';

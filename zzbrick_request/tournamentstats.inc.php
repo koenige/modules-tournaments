@@ -42,9 +42,9 @@ function mod_tournaments_tournamentstats($vars) {
 	$sql = 'SELECT event_id
 			, IFNULL(series.category_short, event) AS event
 			, events.identifier
-			, (SELECT COUNT(teilnahme_id) FROM teilnahmen WHERE event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS tn_total
-			, (SELECT COUNT(teilnahme_id) FROM teilnahmen LEFT JOIN persons USING (person_id) WHERE event_id = events.event_id AND persons.sex = "male" AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS tn_m
-			, (SELECT COUNT(teilnahme_id) FROM teilnahmen LEFT JOIN persons USING (person_id) WHERE event_id = events.event_id AND persons.sex = "female" AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS tn_w
+			, (SELECT COUNT(*) FROM teilnahmen WHERE event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS tn_total
+			, (SELECT COUNT(*) FROM teilnahmen LEFT JOIN persons USING (person_id) WHERE event_id = events.event_id AND persons.sex = "male" AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS tn_m
+			, (SELECT COUNT(*) FROM teilnahmen LEFT JOIN persons USING (person_id) WHERE event_id = events.event_id AND persons.sex = "female" AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS tn_w
 			, (SELECT ROUND(AVG(t_dwz)) FROM teilnahmen WHERE event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id))) AS dwz_schnitt
 			, (SELECT ROUND(AVG(t_elo)) FROM teilnahmen WHERE event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id))) AS elo_schnitt
 			, (SELECT COUNT(partie_id) FROM partien WHERE event_id = events.event_id AND partiestatus_category_id IN (%s) AND NOT ISNULL(weiss_ergebnis)) AS partien
@@ -53,7 +53,7 @@ function mod_tournaments_tournamentstats($vars) {
 			, (SELECT COUNT(partie_id) FROM partien WHERE event_id = events.event_id AND partiestatus_category_id IN (%s) AND NOT ISNULL(weiss_ergebnis) AND weiss_ergebnis = 0.5) AS remis
 			, (SELECT COUNT(partie_id) FROM partien WHERE event_id = events.event_id AND partiestatus_category_id IN (%s) AND NOT ISNULL(weiss_ergebnis) AND weiss_ergebnis = 1) AS siege_weiss
 			, (SELECT COUNT(partie_id) FROM partien WHERE event_id = events.event_id AND partiestatus_category_id IN (%s) AND NOT ISNULL(weiss_ergebnis) AND weiss_ergebnis = 0) AS siege_schwarz
-			, (SELECT COUNT(nachricht_id) FROM spieler_nachrichten LEFT JOIN teilnahmen ON teilnahmen.teilnahme_id = spieler_nachrichten.teilnehmer_id WHERE teilnahmen.event_id = events.event_id) AS tn_nachrichten
+			, (SELECT COUNT(nachricht_id) FROM spieler_nachrichten LEFT JOIN teilnahmen ON teilnahmen.participation_id = spieler_nachrichten.teilnehmer_id WHERE teilnahmen.event_id = events.event_id) AS tn_nachrichten
 			, (SELECT COUNT(team_id) FROM teams WHERE teams.event_id = events.event_id AND teams.team_status = "Teilnehmer") AS teams
 			, (SELECT AVG(YEAR(events.date_begin)-YEAR(date_of_birth)) FROM teilnahmen LEFT JOIN persons USING (person_id) WHERE event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %s) AS average_age
 			, IF(events.event_year != YEAR(events.date_begin), CAST(events.event_year AS SIGNED) - YEAR(events.date_begin), NULL) AS different_year
@@ -190,7 +190,7 @@ function mod_tournaments_tournamentstats($vars) {
 		AND (ISNULL(tournaments.urkunde_parameter) OR tournaments.urkunde_parameter NOT LIKE "%%statistik=0%%")
 		AND (
 			(SELECT COUNT(team_id) FROM teilnahmen LEFT JOIN teams USING (team_id) WHERE teilnahmen.event_id = events.event_id AND teams.team_status = "Teilnehmer") > 0
-			OR (SELECT COUNT(teilnahme_id) FROM teilnahmen WHERE teilnahmen.event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %d) > 0
+			OR (SELECT COUNT(*) FROM teilnahmen WHERE teilnahmen.event_id = events.event_id AND teilnahme_status = "Teilnehmer" AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = %d) > 0
 		)
 		ORDER BY IFNULL(events.event_year, YEAR(events.date_begin))
 	';

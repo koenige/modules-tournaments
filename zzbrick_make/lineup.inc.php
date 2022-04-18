@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2020-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2020-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -30,10 +30,10 @@ function mod_tournaments_make_lineup($params) {
 
 	$data['board_count'] = 0;
 	$data['player_count'] = 0;
-	foreach ($data['players'] as $teilnahme_id => $player) {
+	foreach ($data['players'] as $participation_id => $player) {
 		if ($player['board_no']) $data['board_count']++;
 		$data['player_count']++;
-		$data['players'][$teilnahme_id]['boards_max'] = $data['boards_max'];
+		$data['players'][$participation_id]['boards_max'] = $data['boards_max'];
 	}
 	if ($data['board_count'] < $data['boards_min']
 		AND $data['board_count'] < $data['player_count']) {
@@ -126,7 +126,7 @@ function mod_tournaments_make_lineup_active($params) {
 	$round = wrap_db_fetch($sql);
 	if (!$round['lineup_open']) return false;
 
-	$sql = 'SELECT teilnahme_id, rang_no, brett_no AS board_no
+	$sql = 'SELECT participation_id, rang_no, brett_no AS board_no
 			, CONCAT(t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), ""), " ", t_nachname) AS person
 			, person_id
 	    FROM teilnahmen
@@ -136,7 +136,7 @@ function mod_tournaments_make_lineup_active($params) {
 	    AND (ISNULL(spielberechtigt) OR spielberechtigt = "ja")
 	    ORDER BY brett_no, rang_no';
 	$sql = sprintf($sql, $data['team_id'], wrap_id('usergroups', 'spieler'));
-	$data['players'] = wrap_db_fetch($sql, 'teilnahme_id');
+	$data['players'] = wrap_db_fetch($sql, 'participation_id');
 	if (!$data['players']) return false;
 	
 	$data += $round;
@@ -161,31 +161,31 @@ function mod_tournaments_make_lineup_boards($data) {
 	if (empty($_POST['board'])) return $data;
 
 	$existing_boards = [];
-	foreach ($data['players'] as $teilnahme_id => $player) {
-		if (empty($_POST['board'][$teilnahme_id])) continue;
-		if (!is_numeric($_POST['board'][$teilnahme_id])) {
+	foreach ($data['players'] as $participation_id => $player) {
+		if (empty($_POST['board'][$participation_id])) continue;
+		if (!is_numeric($_POST['board'][$participation_id])) {
 			$data['error_no_numeric_values'] = true;
 			continue;
 		}
-		if (strstr($_POST['board'][$teilnahme_id], '.')) {
+		if (strstr($_POST['board'][$participation_id], '.')) {
 			$data['error_no_fractions'] = true;
 			continue;
 		}
-		if ($_POST['board'][$teilnahme_id] > $data['boards_max']) {
+		if ($_POST['board'][$participation_id] > $data['boards_max']) {
 			$data['error_board_no_too_high'] = true;
 			continue;
 		}
-		if ($_POST['board'][$teilnahme_id] < 1) {
+		if ($_POST['board'][$participation_id] < 1) {
 			$data['error_board_no_too_low'] = true;
 			continue;
 		}
-		if (in_array($_POST['board'][$teilnahme_id], $existing_boards)) {
+		if (in_array($_POST['board'][$participation_id], $existing_boards)) {
 			$data['error_board_no_duplicate'] = true;
 			continue;
 		}
-		$existing_boards[] = $_POST['board'][$teilnahme_id];
+		$existing_boards[] = $_POST['board'][$participation_id];
 		$data['board_count']++;
-		$data['players'][$teilnahme_id]['board_no'] = $_POST['board'][$teilnahme_id];
+		$data['players'][$participation_id]['board_no'] = $_POST['board'][$participation_id];
 	}
 	if ($data['board_count'] < $data['boards_min']
 		AND $data['board_count'] < $data['player_count']) {
@@ -194,15 +194,15 @@ function mod_tournaments_make_lineup_boards($data) {
 		require_once $zz_conf['dir'].'/zzform.php';
 		$values = [];
 		$values['action'] = 'update';
-		$values['ids'] = ['teilnahme_id'];
+		$values['ids'] = ['participation_id'];
 		foreach ($data['players'] as $player) {
-			$values['POST']['teilnahme_id'] = $player['teilnahme_id'];
+			$values['POST']['participation_id'] = $player['participation_id'];
 			$values['POST']['brett_no'] = $player['board_no'];
 			$ops = zzform_multi('teilnahmen', $values);
 			if (!$ops['id']) {
 				wrap_error(sprintf(
 					'Konnte Brettnummer nicht festlegen (Teilnahme-ID %d, Brett-Nr: %d)'
-					, $player['teilnahme_id'], $player['board_no']
+					, $player['participation_id'], $player['board_no']
 				), E_USER_ERROR);
 			}
 		}
@@ -238,18 +238,18 @@ function mod_tournaments_make_lineup_round($data) {
 	$games = wrap_db_fetch($sql, 'partie_id');
 	if ($games) {
 		$data['lineup_complete'] = true;
-		foreach ($data['players'] as $teilnahme_id => $player) {
+		foreach ($data['players'] as $participation_id => $player) {
 			foreach ($games as $game) {
 				if ($player['person_id'] === $game['weiss_person_id']) {
-					$data['players'][$teilnahme_id]['white'] = true;
+					$data['players'][$participation_id]['white'] = true;
 				} elseif ($player['person_id'] === $game['schwarz_person_id']) {
-					$data['players'][$teilnahme_id]['black'] = true;
+					$data['players'][$participation_id]['black'] = true;
 				} else {
 					continue;
 				}
-				$data['players'][$teilnahme_id]['board_no_round'] = $game['brett_no'];
+				$data['players'][$participation_id]['board_no_round'] = $game['brett_no'];
 				if ($game['partiestatus_category_id'] === wrap_category_id('partiestatus/kampflos')) {
-					$data['players'][$teilnahme_id]['bye'] = true;
+					$data['players'][$participation_id]['bye'] = true;
 				}
 			}
 		}
@@ -260,13 +260,13 @@ function mod_tournaments_make_lineup_round($data) {
 	if (empty($_POST['lineup'])) return $data;
 
 	$data['selected_players'] = 0;
-	foreach ($data['players'] as $teilnahme_id => $player) {
-		if (empty($_POST['lineup'][$teilnahme_id])) continue;
-		if ($_POST['lineup'][$teilnahme_id] !== 'on') continue;
-		$data['players'][$teilnahme_id]['lineup'] = true;
+	foreach ($data['players'] as $participation_id => $player) {
+		if (empty($_POST['lineup'][$participation_id])) continue;
+		if ($_POST['lineup'][$participation_id] !== 'on') continue;
+		$data['players'][$participation_id]['lineup'] = true;
 		$data['selected_players']++;
-		if (!empty($_POST['bye'][$teilnahme_id]) AND $_POST['bye'][$teilnahme_id] === 'on')
-			$data['players'][$teilnahme_id]['bye'] = true;
+		if (!empty($_POST['bye'][$participation_id]) AND $_POST['bye'][$participation_id] === 'on')
+			$data['players'][$participation_id]['bye'] = true;
 	}
 	if ($data['selected_players'] < $data['boards_min']
 		AND $data['selected_players'] < $data['player_count']) {

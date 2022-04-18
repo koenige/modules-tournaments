@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2020-2021 Gustaf Mossakowski
+# @copyright Copyright © 2020-2022 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 %%% condition if set_board_order %%%
@@ -44,7 +44,7 @@
 <tbody>
 %%% loop players %%%
 <tr>
-<td><input type="number" min="1" max="%%% item boards_max %%%" style="max-width: 4em;" name="board[%%% item teilnahme_id %%%]" value="%%% item board_no %%%"></td>
+<td><input type="number" min="1" max="%%% item boards_max %%%" style="max-width: 4em;" name="board[%%% item participation_id %%%]" value="%%% item board_no %%%"></td>
 <td>%%% item person %%%</td>
 </tr>
 %%% loop end %%%
@@ -113,10 +113,10 @@
 <tbody>
 %%% loop players %%%
 <tr>
-<td class="number"><input type="checkbox" name="lineup[%%% item teilnahme_id %%%]"%%% item lineup " checked" %%%></td>
+<td class="number"><input type="checkbox" name="lineup[%%% item participation_id %%%]"%%% item lineup " checked" %%%></td>
 <td class="number">%%% item board_no %%%</td>
 <td>%%% item person %%%</td>
-<td class="number"><input type="checkbox" name="bye[%%% item teilnahme_id %%%]"%%% item bye " checked" %%%></td>
+<td class="number"><input type="checkbox" name="bye[%%% item participation_id %%%]"%%% item bye " checked" %%%></td>
 </tr>
 %%% loop end %%%
 </tbody>

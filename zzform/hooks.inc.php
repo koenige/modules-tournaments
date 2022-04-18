@@ -349,7 +349,7 @@ function mf_tournaments_remarks_mail($ops) {
 				ON events.place_contact_id = places.contact_id
 			WHERE team_id = %d
 		';
-		$sql = sprintf($sql, $record['team_id']); // @todo teilnahme_id
+		$sql = sprintf($sql, $record['team_id']); // @todo participation_id
 		$record = array_merge($record, wrap_db_fetch($sql));
 		$record['event_link'] = wrap_path('events_internal_event', $record['event_identifier']);
 

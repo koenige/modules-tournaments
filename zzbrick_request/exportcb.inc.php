@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2019-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -37,7 +37,7 @@ function mod_tournaments_exportcb($params, $settings, $event) {
 		$teams[$team_id]['code'] = $code;
 	}
 
-	$sql = 'SELECT team_id, teilnahme_id
+	$sql = 'SELECT team_id, participation_id
 			, CONCAT(t_nachname, ",", t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), "")) AS player
 			, brett_no AS board
 		FROM teilnahmen
@@ -45,7 +45,7 @@ function mod_tournaments_exportcb($params, $settings, $event) {
 		AND teilnahme_status = "Teilnehmer"
 		ORDER BY team_id, brett_no';
 	$sql = sprintf($sql, implode(',', array_keys($teams)));
-	$players = wrap_db_fetch($sql, ['team_id', 'teilnahme_id']);
+	$players = wrap_db_fetch($sql, ['team_id', 'participation_id']);
 
 	foreach ($players as $team_id => $teamplayers) {
 		$teams[$team_id]['players'] = $teamplayers;

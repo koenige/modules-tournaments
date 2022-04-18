@@ -52,7 +52,7 @@ function mod_tournaments_tournamentmap($vars) {
 	}
 
 	// gibt es Teilnehmer?
-	$sql = 'SELECT COUNT(teilnahme_id)
+	$sql = 'SELECT COUNT(*)
 		FROM teilnahmen
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories
@@ -150,7 +150,7 @@ function mod_tournaments_tournamentmap_json($params) {
 	);
 	$organisationen = wrap_db_fetch($sql, 'contact_id');
 
-	$sql = 'SELECT teilnahmen.teilnahme_id AS tt_id
+	$sql = 'SELECT teilnahmen.participation_id AS tt_id
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
 			, CONCAT(event, " ", IFNULL(events.event_year, YEAR(events.date_begin))) AS turniername
 			, zps.identifier AS zps_code

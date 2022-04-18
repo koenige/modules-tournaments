@@ -18,7 +18,7 @@
 # gastspieler_status, duration, dauer_tage,
 # teilnehmerliste, pseudo_dwz, turnierort, year,
 # event_identifier, main_series_path, main_series, spieler { team_id,
-# teilnahme_id, person_id, usergroup, identifier, person, sex,
+# participation_id, person_id, usergroup, identifier, person, sex,
 # geburtsjahr, t_dwz, t_elo, t_fidetitel, rang_no, brett_no, gastspieler,
 # e_mail, telefon, status, spielberechtigt, zps_code, pflicht, position },
 # spielerzahl, aufstellung_komplett, zps_codes, verein-vorsitz { person, add

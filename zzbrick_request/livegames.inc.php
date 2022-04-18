@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2016, 2018-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2016, 2018-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -31,7 +31,7 @@ function mod_tournaments_livegames($vars) {
 	// alle Turniere der Reihe ausgeben
 	$sql = 'SELECT events.event_id, livebretter, events.identifier
 			, event, IFNULL(event_year, YEAR(date_begin)) AS year
-			, (SELECT COUNT(teilnahme_id) FROM teilnahmen
+			, (SELECT COUNT(*) FROM teilnahmen
 			WHERE teilnahmen.event_id = tournaments.event_id
 			AND usergroup_id = %d) AS teilnehmer
 			, (SELECT MAX(runde_no) FROM partien
@@ -59,7 +59,7 @@ function mod_tournaments_livegames($vars) {
 	// Einzelnes Turnier?
 	$sql = 'SELECT events.event_id, livebretter, events.identifier
 			, event, IFNULL(event_year, YEAR(date_begin)) AS year
-			, (SELECT COUNT(teilnahme_id) FROM teilnahmen
+			, (SELECT COUNT(*) FROM teilnahmen
 			WHERE teilnahmen.event_id = tournaments.event_id
 			AND usergroup_id = %d) AS teilnehmer
 			, (SELECT MAX(runde_no) FROM partien

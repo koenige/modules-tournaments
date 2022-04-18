@@ -51,7 +51,7 @@ function mod_tournaments_duplicateplayers($vars) {
 	if (!$doppelte) {
 		$data['keine_doppelten'] = true;
 	} else {
-		$sql = 'SELECT teilnahme_id, person_id
+		$sql = 'SELECT participation_id, person_id
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), IFNULL(t_nachname, "")) AS spieler
 				, event, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 				, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
@@ -72,9 +72,9 @@ function mod_tournaments_duplicateplayers($vars) {
 	 		wrap_id('usergroups', 'spieler'),
 			implode(',', array_keys($turniere))
 	 	);
-	 	$data = wrap_db_fetch($sql, ['person_id', 'teilnahme_id'], 'list person_id turniere');
+	 	$data = wrap_db_fetch($sql, ['person_id', 'participation_id'], 'list person_id turniere');
 	 	foreach ($data as $id => $spieler) {
-	 		foreach ($spieler['turniere'] as $teilnahme_id => $teilnahme) {
+	 		foreach ($spieler['turniere'] as $participation_id => $teilnahme) {
 	 			$data[$id]['spieler'] = $teilnahme['spieler'];
 	 		}
 	 	}

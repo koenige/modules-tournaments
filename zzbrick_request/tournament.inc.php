@@ -271,7 +271,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	if ($runde AND !$intern) $event['tabelle'] = true;
 
 	if ($event['turnierform'] === 'e') {
-		$sql = 'SELECT teilnahme_id, platz_no
+		$sql = 'SELECT participation_id, platz_no
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
 				, countries.country
 				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
@@ -316,7 +316,7 @@ function mod_tournaments_tournament($vars, $settings) {
 			, $event['event_id']
 			, wrap_id('usergroups', 'spieler')
 		);
-		$event['spieler'] = wrap_db_fetch($sql, 'teilnahme_id');
+		$event['spieler'] = wrap_db_fetch($sql, 'participation_id');
 		if (count($event['spieler']) > 25) {
 			$event['mehr_spieler'] = count($event['spieler']) - 20;
 			$event['spieler'] = array_slice($event['spieler'], 0, 20);
@@ -508,7 +508,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	}
 
 	if (!empty($event['einzel'])) {
-		$sql = 'SELECT COUNT(teilnahme_id) FROM teilnahmen
+		$sql = 'SELECT COUNT(*) FROM teilnahmen
 			WHERE usergroup_id = %d AND event_id = %d';
 		$sql = sprintf($sql, wrap_id('usergroups', 'spieler'), $event['event_id']);
 		$event['einzelteilnehmerliste'] = wrap_db_fetch($sql, '', 'single value');
