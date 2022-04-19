@@ -301,7 +301,7 @@ function mod_tournaments_team_public($page, $data) {
 				ON weiss.person_id = partien.weiss_person_id
 			LEFT JOIN contacts white_contact
 				ON weiss.contact_id = white_contact.contact_id
-			LEFT JOIN teilnahmen weiss_status
+			LEFT JOIN participations weiss_status
 				ON weiss_status.person_id = weiss.person_id
 				AND weiss_status.usergroup_id = %d
 				AND weiss_status.event_id = %d
@@ -309,7 +309,7 @@ function mod_tournaments_team_public($page, $data) {
 				ON schwarz.person_id = partien.schwarz_person_id
 			LEFT JOIN contacts black_contact
 				ON schwarz.contact_id = black_contact.contact_id
-			LEFT JOIN teilnahmen schwarz_status
+			LEFT JOIN participations schwarz_status
 				ON schwarz_status.person_id = schwarz.person_id
 				AND schwarz_status.usergroup_id = %d
 				AND schwarz_status.event_id = %d
@@ -571,18 +571,18 @@ function mf_tournaments_team_players($team_ids, $event) {
 	$sql = 'SELECT team_id, person_id
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 			, t_verein, t_dwz, t_elo, t_fidetitel, spielberechtigt, rang_no, brett_no
-			, IF(teilnahmen.gastspieler = "ja", 1, NULL) AS gastspieler
+			, IF(participations.gastspieler = "ja", 1, NULL) AS gastspieler
 			, IF(tournaments.gastspieler = "ja", 1, NULL) AS gastspieler_status
 			, YEAR(date_of_birth) AS geburtsjahr
 			, pseudo_dwz
-		FROM teilnahmen
+		FROM participations
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN usergroups USING (usergroup_id)
 		LEFT JOIN teams USING (team_id)
 		LEFT JOIN persons USING (person_id)
 		WHERE usergroups.identifier = "spieler"
 		AND (ISNULL(spielberechtigt) OR spielberechtigt = "ja")
-		AND teilnahmen.teilnahme_status = "Teilnehmer"
+		AND participations.teilnahme_status = "Teilnehmer"
 		AND team_id IN (%s)
 		ORDER BY ISNULL(brett_no), brett_no, rang_no, t_dwz DESC, t_elo DESC, t_nachname, t_vorname';
 	$sql = sprintf($sql, is_array($team_ids) ? implode(',', $team_ids) : $team_ids);

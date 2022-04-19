@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015-2016, 2018-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2015-2016, 2018-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -19,7 +19,7 @@ function mod_tournaments_tournamentphotos($vars, $settings, $event) {
 
 	$sql = 'SELECT person_id, setzliste_no,
 		CONCAT(t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), ""), " ", t_nachname) AS spieler
-		FROM teilnahmen
+		FROM participations
 		WHERE event_id = %d
 		AND usergroup_id = %d
 		AND teilnahme_status = "Teilnehmer"

@@ -138,7 +138,7 @@ function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
 	$ids = mod_tournaments_make_swtimport_persons($event, $tournament['out']['Spieler'], $ids, $import);
 
 	// Aufstellungen importieren
-	$ids = mod_tournaments_make_swtimport_teilnahmen($event, $tournament['out']['Spieler'], $ids);
+	$ids = mod_tournaments_make_swtimport_participations($event, $tournament['out']['Spieler'], $ids);
 
 	// Paarungen importieren
 	// @todo prüfen, ob aktuelle Runde erforderlich (falls nur 1. Runde ausgelost 
@@ -160,7 +160,7 @@ function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
 	if ($form === 'mannschaftsturnier') {
 		$ids = mod_tournaments_make_swtimport_delete($ids, $event['event_id'], 'teams');
 	}
-	$ids = mod_tournaments_make_swtimport_delete($ids, $event['event_id'], 'teilnahmen');
+	$ids = mod_tournaments_make_swtimport_delete($ids, $event['event_id'], 'participations');
 
 	foreach ($ids['t'] as $bereich => $anzahl) {
 		$importiert = [
@@ -237,7 +237,7 @@ function mod_tournaments_make_swtimport_turniercheck($event, $form, $data) {
 	if (!empty($event['swisschess']['ignore_ids'])) return true;
 	
 	if ($form === 'einzelturnier') {
-		$sql = 'SELECT person_id FROM teilnahmen
+		$sql = 'SELECT person_id FROM participations
 			WHERE usergroup_id = %d AND event_id = %d';
 		$sql = sprintf($sql,
 			wrap_id('usergroups', 'spieler'), $event['event_id']
@@ -399,10 +399,10 @@ function mod_tournaments_make_swtimport_delete($ids, $event_id, $type) {
 		$status_field_name = 'team_status';
 		$status = 'Löschung';
 		break;
-	case 'teilnahmen':
+	case 'participations':
 		$id_field = 'participation_id';
-		$table = 'teilnahmen';
-		$id_source = 'teilnahmen';
+		$table = 'participations';
+		$id_source = 'participations';
 		$key = 'Teilnahmen (Spieler)';
 		$where = sprintf(' AND usergroup_id = %d', wrap_id('usergroups', 'spieler'));
 		$status_field_name = 'teilnahme_status';
@@ -535,7 +535,7 @@ function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $im
 			// Wichtig bei Spielern ohne ZPS, die werden sonst immer wieder
 			// importiert.
 			$sql = 'SELECT person_id
-				FROM teilnahmen
+				FROM participations
 				WHERE event_id = %d AND usergroup_id = %d
 				AND fremdschluessel = "%s"';
 			$sql = sprintf($sql,
@@ -554,7 +554,7 @@ function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $im
 			// SUBOPTIMAL, vorgeschlagen wird, die SWT-Datei vom System schreiben
 			// zu lassen
 			$sql = 'SELECT person_id
-				FROM teilnahmen
+				FROM participations
 				WHERE event_id = %d AND usergroup_id = %d
 				AND t_vorname = "%s" AND t_nachname = "%s"';
 			$sql = sprintf($sql,
@@ -600,7 +600,7 @@ function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $im
  * @param array $ids
  * @return array $ids
  */
-function mod_tournaments_make_swtimport_teilnahmen($event, $spielerliste, $ids) {
+function mod_tournaments_make_swtimport_participations($event, $spielerliste, $ids) {
 	if ($event['turnierform'] !== 'e') {
 		$sql = 'SELECT IF(gastspieler = "ja", 1, 0)
 			FROM tournaments WHERE event_id = %d';
@@ -623,7 +623,7 @@ function mod_tournaments_make_swtimport_teilnahmen($event, $spielerliste, $ids) 
 			// Eine Spielerin darf in mehreren Teams pro Turnier gemeldet sein
 			// (2. Mannschaft)
 			$sql = 'SELECT participation_id
-				FROM teilnahmen
+				FROM participations
 				WHERE person_id = %d AND event_id = %d
 				AND usergroup_id = %d AND team_id = %d';
 			$sql = sprintf($sql,
@@ -633,7 +633,7 @@ function mod_tournaments_make_swtimport_teilnahmen($event, $spielerliste, $ids) 
 			);
 		} else {
 			$sql = 'SELECT participation_id
-				FROM teilnahmen
+				FROM participations
 				WHERE person_id = %d AND event_id = %d
 				AND usergroup_id = %d';
 			$sql = sprintf($sql,
@@ -707,7 +707,7 @@ function mod_tournaments_make_swtimport_teilnahmen($event, $spielerliste, $ids) 
 		if (!$ops['id']) {
 			wrap_error(sprintf('Aufstellung %s konnte nicht hinzugefügt werden.', $s_key));
 		}
-		$ids['teilnahmen'][] = $ops['id'];
+		$ids['participations'][] = $ops['id'];
 		if (!isset($ids['t']['Teilnahmen (Spieler)'][$ops['result']])) {
 			$ids['t']['Teilnahmen (Spieler)'][$ops['result']] = 0;
 		}

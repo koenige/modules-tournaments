@@ -78,9 +78,9 @@ function mf_tournaments_live_round($livebretter, $brett_no, $tisch_no = false) {
 function mf_tournaments_team_rating_average_dwz($event_id, $teams, $bretter_min, $pseudo_dwz) {
 	// DWZ-Schnitt der Teams berechnen
 	$sql = 'SELECT participation_id, brett_no, rang_no, team_id, t_dwz
-		FROM teilnahmen
+		FROM participations
 		LEFT JOIN teams USING (team_id)
-		WHERE teilnahmen.event_id = %d
+		WHERE participations.event_id = %d
 		AND usergroup_id = %d
 		AND (meldung = "komplett" OR meldung = "teiloffen")
 		AND (ISNULL(spielberechtigt) OR spielberechtigt != "nein")
@@ -271,7 +271,7 @@ function mf_tournaments_games_sql($event, $where) {
 			ON weiss.person_id = partien.weiss_person_id
 		LEFT JOIN contacts white_contact
 			ON weiss.contact_id = white_contact.contact_id
-		LEFT JOIN teilnahmen weiss_status
+		LEFT JOIN participations weiss_status
 			ON weiss_status.person_id = weiss.person_id
 			AND weiss_status.usergroup_id = %d
 			AND weiss_status.event_id = %d
@@ -279,7 +279,7 @@ function mf_tournaments_games_sql($event, $where) {
 			ON schwarz.person_id = partien.schwarz_person_id
 		LEFT JOIN contacts black_contact
 			ON schwarz.contact_id = black_contact.contact_id
-		LEFT JOIN teilnahmen schwarz_status
+		LEFT JOIN participations schwarz_status
 			ON schwarz_status.person_id = schwarz.person_id
 			AND schwarz_status.usergroup_id = %d
 			AND schwarz_status.event_id = %d
@@ -371,18 +371,18 @@ function mf_tournaments_final_standings($event_ids) {
 				WHERE spielfrei = "nein"
 				AND team_status = "Teilnehmer"
 				AND teams.event_id = events.event_id) AS teams
-			, (SELECT COUNT(*) FROM teilnahmen
+			, (SELECT COUNT(*) FROM participations
 				LEFT JOIN persons USING (person_id)
 				WHERE teilnahme_status = "Teilnehmer"
 				AND usergroup_id = %d
 				AND sex = "male"
-				AND teilnahmen.event_id = events.event_id) AS spieler
-			, (SELECT COUNT(*) FROM teilnahmen
+				AND participations.event_id = events.event_id) AS spieler
+			, (SELECT COUNT(*) FROM participations
 				LEFT JOIN persons USING (person_id)
 				WHERE teilnahme_status = "Teilnehmer"
 				AND usergroup_id = %d
 				AND sex = "female"
-				AND teilnahmen.event_id = events.event_id) AS spielerinnen
+				AND participations.event_id = events.event_id) AS spielerinnen
 			, tournaments.tabellenstaende
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
@@ -416,20 +416,20 @@ function mf_tournaments_final_standings($event_ids) {
 				, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
 				, IF(tournaments.teilnehmerliste = "ja", teams.kennung, "") AS team_identifier
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
-				, teilnahmen.setzliste_no
+				, participations.setzliste_no
 				, t_verein AS verein
 				, persons.sex
 			FROM tabellenstaende
 			LEFT JOIN tournaments USING (event_id)
 			LEFT JOIN teams USING (team_id)
-			LEFT JOIN teilnahmen
-				ON teilnahmen.person_id = tabellenstaende.person_id
-				AND teilnahmen.event_id = tabellenstaende.event_id
-				AND ISNULL(teilnahmen.team_id)
+			LEFT JOIN participations
+				ON participations.person_id = tabellenstaende.person_id
+				AND participations.event_id = tabellenstaende.event_id
+				AND ISNULL(participations.team_id)
 			LEFT JOIN persons
 				ON tabellenstaende.person_id = persons.person_id 
 			WHERE tabellenstaende.event_id IN (%s)
-			AND (ISNULL(teilnahmen.teilnahme_status) OR teilnahmen.teilnahme_status = "Teilnehmer")
+			AND (ISNULL(participations.teilnahme_status) OR participations.teilnahme_status = "Teilnehmer")
 			AND (%s)
 			ORDER BY platz_no';
 		$sql = sprintf($sql,

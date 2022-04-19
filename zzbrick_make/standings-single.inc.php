@@ -9,7 +9,7 @@
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
- * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022 Gustaf Mossakowski
  * @copyright Copyright © 2014 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
@@ -124,12 +124,12 @@ function cms_tabellenstand_write_einzel($event_id, $runde_no, $tabelle) {
 				IF(weiss_ergebnis = "0.5" AND weiss_person_id = person_id, 1, 0))) AS spiele_u
 			, SUM(IF(schwarz_ergebnis = "0.0" AND schwarz_person_id = person_id, 1, 
 				IF(weiss_ergebnis = "0.0" AND weiss_person_id = person_id, 1, 0))) AS spiele_v
-		FROM teilnahmen
+		FROM participations
 		LEFT JOIN partien
-			ON (partien.weiss_person_id = teilnahmen.person_id
-			OR partien.schwarz_person_id = teilnahmen.person_id)
-			AND partien.event_id = teilnahmen.event_id
-		WHERE teilnahmen.event_id = %d
+			ON (partien.weiss_person_id = participations.person_id
+			OR partien.schwarz_person_id = participations.person_id)
+			AND partien.event_id = participations.event_id
+		WHERE participations.event_id = %d
 		AND runde_no <= %d
 		AND teilnahme_status = "Teilnehmer"
 		AND usergroup_id = %d
@@ -222,7 +222,7 @@ class cms_tabellenstand_einzel {
 	function getSpieler($event_id) {
 		global $zz_setting;
 		$sql = 'SELECT event_id, person_id, t_vorname, t_nachname, setzliste_no
-			FROM teilnahmen
+			FROM participations
 			WHERE event_id = %d
 			AND usergroup_id = %d
 			AND teilnahme_status = "Teilnehmer"';
@@ -572,9 +572,9 @@ function mf_tournaments_make_single_fort($event_id, $runde_no, $tabelle) {
 function mf_tournaments_make_single_performance($event_id, $runde_no) {
 	$sql = 'SELECT partien_einzelergebnisse.person_id, ROUND(SUM(IFNULL(IFNULL(t_elo, t_dwz), 0))/COUNT(partie_id)) AS wertung
 		FROM partien_einzelergebnisse
-		LEFT JOIN teilnahmen
-			ON partien_einzelergebnisse.event_id = teilnahmen.event_id
-			AND partien_einzelergebnisse.gegner_id = teilnahmen.person_id
+		LEFT JOIN participations
+			ON partien_einzelergebnisse.event_id = participations.event_id
+			AND partien_einzelergebnisse.gegner_id = participations.person_id
 		WHERE runde_no <= %d
 		AND NOT ISNULL(partien_einzelergebnisse.person_id)
 		AND NOT ISNULL(partien_einzelergebnisse.gegner_id)
@@ -617,14 +617,14 @@ function mf_tournaments_make_single_sw($event_id, $runde_no, $tabelle) {
 function mf_tournaments_make_single_gespielte_partien($event_id, $runde_no) {
 	global $zz_setting;
 	$sql = 'SELECT person_id, COUNT(partie_id) AS partien
-		FROM teilnahmen
+		FROM participations
 		LEFT JOIN partien
-			ON (teilnahmen.person_id = partien.schwarz_person_id
-			OR teilnahmen.person_id = partien.weiss_person_id)
-			AND partien.event_id = teilnahmen.event_id
-		WHERE teilnahmen.event_id = %d
+			ON (participations.person_id = partien.schwarz_person_id
+			OR participations.person_id = partien.weiss_person_id)
+			AND partien.event_id = participations.event_id
+		WHERE participations.event_id = %d
 		AND partien.runde_no <= %d
-		AND teilnahmen.usergroup_id = %d
+		AND participations.usergroup_id = %d
 		GROUP BY person_id
 		ORDER BY COUNT(partie_id)';
 	$sql = sprintf($sql, $event_id, $runde_no, wrap_id('usergroups', 'spieler'));

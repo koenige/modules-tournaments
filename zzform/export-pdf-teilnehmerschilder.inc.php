@@ -50,7 +50,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_end AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) >= events.date_begin, 1, NULL)
 			) AS evtl_volljaehrig
 			, dwz_spieler.FIDE_Titel
-		FROM teilnahmen
+		FROM participations
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN persons USING (person_id)
 		LEFT JOIN contacts_identifiers

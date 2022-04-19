@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2017, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2017, 2019-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -47,7 +47,7 @@ unset($zz['fields'][34]); // Offen?
 unset($zz['fields'][10]); // Termine/Organisationen
 unset($zz['fields'][64]); // Termine/Links
 unset($zz['fields'][65]); // Termine/Teilnehmerzahlen
-unset($zz['fields'][61]); // Teilnahmen
+unset($zz['fields'][61]); // participations
 unset($zz['fields'][68]); // Termine/Bankkonten
 unset($zz['fields'][17]); // Anmeldeinfo
 

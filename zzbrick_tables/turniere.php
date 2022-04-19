@@ -432,8 +432,8 @@ $zz['sql'] = 'SELECT tournaments.*
 			AND team_status = "Teilnehmer"
 			AND spielfrei = "nein"
 		) AS teams
-		, (SELECT COUNT(*) FROM teilnahmen
-			WHERE teilnahmen.event_id = tournaments.event_id
+		, (SELECT COUNT(*) FROM participations
+			WHERE participations.event_id = tournaments.event_id
 			AND teilnahme_status = "Teilnehmer"
 			AND usergroup_id = %d
 		) AS spieler

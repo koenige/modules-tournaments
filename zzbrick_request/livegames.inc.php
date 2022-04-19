@@ -31,8 +31,8 @@ function mod_tournaments_livegames($vars) {
 	// alle Turniere der Reihe ausgeben
 	$sql = 'SELECT events.event_id, livebretter, events.identifier
 			, event, IFNULL(event_year, YEAR(date_begin)) AS year
-			, (SELECT COUNT(*) FROM teilnahmen
-			WHERE teilnahmen.event_id = tournaments.event_id
+			, (SELECT COUNT(*) FROM participations
+			WHERE participations.event_id = tournaments.event_id
 			AND usergroup_id = %d) AS teilnehmer
 			, (SELECT MAX(runde_no) FROM partien
 			WHERE partien.event_id = tournaments.event_id) AS aktuelle_runde_no
@@ -59,8 +59,8 @@ function mod_tournaments_livegames($vars) {
 	// Einzelnes Turnier?
 	$sql = 'SELECT events.event_id, livebretter, events.identifier
 			, event, IFNULL(event_year, YEAR(date_begin)) AS year
-			, (SELECT COUNT(*) FROM teilnahmen
-			WHERE teilnahmen.event_id = tournaments.event_id
+			, (SELECT COUNT(*) FROM participations
+			WHERE participations.event_id = tournaments.event_id
 			AND usergroup_id = %d) AS teilnehmer
 			, (SELECT MAX(runde_no) FROM partien
 			WHERE partien.event_id = tournaments.event_id) AS aktuelle_runde_no
@@ -173,10 +173,10 @@ function mod_tournaments_livegames_bretter($turnier) {
 			, partien.last_update, events.identifier
 		FROM partien
 		LEFT JOIN events USING (event_id)
-		LEFT JOIN teilnahmen weiss
+		LEFT JOIN participations weiss
 			ON partien.weiss_person_id = weiss.person_id AND weiss.usergroup_id = %d
 			AND weiss.event_id = partien.event_id
-		LEFT JOIN teilnahmen schwarz
+		LEFT JOIN participations schwarz
 			ON partien.schwarz_person_id = schwarz.person_id AND schwarz.usergroup_id = %d
 			AND schwarz.event_id = partien.event_id
 		WHERE partien.event_id = %d

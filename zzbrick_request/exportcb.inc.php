@@ -40,7 +40,7 @@ function mod_tournaments_exportcb($params, $settings, $event) {
 	$sql = 'SELECT team_id, participation_id
 			, CONCAT(t_nachname, ",", t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), "")) AS player
 			, brett_no AS board
-		FROM teilnahmen
+		FROM participations
 		WHERE team_id IN (%s) AND NOT ISNULL(brett_no)
 		AND teilnahme_status = "Teilnehmer"
 		ORDER BY team_id, brett_no';

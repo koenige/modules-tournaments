@@ -53,16 +53,16 @@ function mod_tournaments_tournamentmap($vars) {
 
 	// gibt es Teilnehmer?
 	$sql = 'SELECT COUNT(*)
-		FROM teilnahmen
+		FROM participations
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories
 			ON events.series_category_id = categories.category_id
 		LEFT JOIN contacts
-			ON teilnahmen.club_contact_id = contacts.contact_id
+			ON participations.club_contact_id = contacts.contact_id
 		LEFT JOIN teams USING (team_id)
 		WHERE IFNULL(events.event_year, YEAR(events.date_begin)) = %d
 		AND (ISNULL(teams.team_id) OR teams.meldung = "komplett" OR teams.meldung = "teiloffen")
-		AND NOT ISNULL(teilnahmen.club_contact_id)
+		AND NOT ISNULL(participations.club_contact_id)
 		AND categories.main_category_id = %d
 		AND usergroup_id = %d
 		%s';
@@ -150,20 +150,20 @@ function mod_tournaments_tournamentmap_json($params) {
 	);
 	$organisationen = wrap_db_fetch($sql, 'contact_id');
 
-	$sql = 'SELECT teilnahmen.participation_id AS tt_id
+	$sql = 'SELECT participations.participation_id AS tt_id
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
 			, CONCAT(event, " ", IFNULL(events.event_year, YEAR(events.date_begin))) AS turniername
 			, zps.identifier AS zps_code
-			, IFNULL(teilnahmen.club_contact_id, teams.club_contact_id) AS club_contact_id
+			, IFNULL(participations.club_contact_id, teams.club_contact_id) AS club_contact_id
 			, fide.identifier AS fide_id
 			, t_verein AS verein
 			, t_dwz AS dwz, t_elo AS elo
-			, teilnahmen.setzliste_no AS teilnehmer_nr
+			, participations.setzliste_no AS teilnehmer_nr
 			, events.identifier AS event_identifier
 			, CONCAT(teams.team, IFNULL(CONCAT(" ", team_no), "")) AS team
 			, teams.kennung AS team_identifier
 			, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
-		FROM teilnahmen
+		FROM participations
 		LEFT JOIN persons USING (person_id)
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN teams USING (team_id)
@@ -191,7 +191,7 @@ function mod_tournaments_tournamentmap_json($params) {
 		wrap_category_id('kennungen/fide-id'),
 		wrap_db_escape($params[1]), $params[0],
 		wrap_id('usergroups', 'spieler'),
-		$federation ? sprintf(' AND (teilnahmen.club_contact_id IN (%s) OR teams.club_contact_id IN (%s)) ', implode(',', $contact_ids), implode(',', $contact_ids)) : ''
+		$federation ? sprintf(' AND (participations.club_contact_id IN (%s) OR teams.club_contact_id IN (%s)) ', implode(',', $contact_ids), implode(',', $contact_ids)) : ''
 	);
 	$spieler = wrap_db_fetch($sql, 'tt_id');
 

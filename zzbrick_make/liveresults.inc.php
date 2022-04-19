@@ -10,7 +10,7 @@
  * @author Erik Kothe
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2008 Erik Kothe
- * @copyright Copyright © 2008, 2012, 2014, 2016-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2008, 2012, 2014, 2016-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -131,11 +131,11 @@ function mod_tournament_make_liveresults_tournament($params) {
 			, IF(heim_spieler_farbe = "schwarz", 1, NULL) AS heim_schwarz
 			, heim_wertung, auswaerts_wertung, heim_spieler_farbe
 		FROM partien
-		LEFT JOIN teilnahmen weiss
+		LEFT JOIN participations weiss
 			ON weiss.person_id = partien.weiss_person_id
 			AND weiss.event_id = partien.event_id
 			AND weiss.usergroup_id = %d
-		LEFT JOIN teilnahmen schwarz
+		LEFT JOIN participations schwarz
 			ON schwarz.person_id = partien.schwarz_person_id
 			AND schwarz.event_id = partien.event_id
 			AND schwarz.usergroup_id = %d

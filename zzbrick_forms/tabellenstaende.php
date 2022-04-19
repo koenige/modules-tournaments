@@ -44,9 +44,9 @@ $zz['fields'][5]['sql'] = 'SELECT person_id
 		, IFNULL(YEAR(date_of_birth), "unbek.") AS geburtsjahr
 		, identifier
 	FROM persons
-	LEFT JOIN teilnahmen USING (person_id)
+	LEFT JOIN participations USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
-	WHERE teilnahmen.usergroup_id = %d
+	WHERE participations.usergroup_id = %d
 	AND event_id = %d
 	ORDER BY last_name, first_name, YEAR(date_of_birth), identifier';
 $zz['fields'][5]['sql'] = sprintf($zz['fields'][5]['sql'], wrap_id('usergroups', 'spieler'), $brick['data']['event_id']);

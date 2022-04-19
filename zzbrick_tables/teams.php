@@ -255,7 +255,7 @@ $zz['fields'][21]['hide_in_list_if_empty'] = true;
 
 $zz['fields'][25]['title'] = 'Kontakt';
 $zz['fields'][25]['type'] = 'subtable';
-$zz['fields'][25]['table'] = 'teilnahmen';
+$zz['fields'][25]['table'] = 'participations';
 $zz['fields'][25]['fields'] = [];
 $zz['fields'][25]['fields'][2]['type'] = 'foreign_key';
 $zz['fields'][25]['fields'][2]['field_name'] = 'team_id';
@@ -278,7 +278,7 @@ $zz['fields'][25]['subselect']['sql'] = sprintf('SELECT team_id
 			LIMIT 1
 		) AS e_mail
 		, GROUP_CONCAT(CONCAT(category_short, ": ", identification) SEPARATOR "<br>") AS telefon
-	FROM teilnahmen
+	FROM participations
 	LEFT JOIN persons USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
 	LEFT JOIN logins USING (person_id)

@@ -55,8 +55,8 @@ function mod_tournaments_tournament($vars, $settings) {
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, main_series.category_short AS main_series
 			, runden, modus.category AS modus
-			, IF(spielerphotos = "ja", IF((SELECT COUNT(person_id) FROM teilnahmen
-				WHERE teilnahmen.event_id = events.event_id AND usergroup_id = %d AND NOT ISNULL(setzliste_no)), 1, NULL), NULL) AS spielerphotos
+			, IF(spielerphotos = "ja", IF((SELECT COUNT(person_id) FROM participations
+				WHERE participations.event_id = events.event_id AND usergroup_id = %d AND NOT ISNULL(setzliste_no)), 1, NULL), NULL) AS spielerphotos
 			, registration
 			, livebretter
 			, (SELECT wertung_category_id FROM turniere_wertungen
@@ -278,16 +278,16 @@ function mod_tournaments_tournament($vars, $settings) {
 				, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
 				, setzliste_no
 				, tabellenstaende_wertungen.wertung
-			FROM teilnahmen
+			FROM participations
 			LEFT JOIN tabellenstaende
-				ON teilnahmen.person_id = tabellenstaende.person_id
-				AND tabellenstaende.event_id = teilnahmen.event_id
+				ON participations.person_id = tabellenstaende.person_id
+				AND tabellenstaende.event_id = participations.event_id
 				AND tabellenstaende.runde_no = %d
 			LEFT JOIN tabellenstaende_wertungen
 				ON tabellenstaende_wertungen.tabellenstand_id = tabellenstaende.tabellenstand_id
 				AND tabellenstaende_wertungen.wertung_category_id = %d
 			LEFT JOIN contacts organisationen
-				ON teilnahmen.club_contact_id = organisationen.contact_id
+				ON participations.club_contact_id = organisationen.contact_id
 			LEFT JOIN contacts_identifiers v_ok
 				ON v_ok.contact_id = organisationen.contact_id AND v_ok.current = "yes"
 			LEFT JOIN contacts_identifiers lv_ok
@@ -302,7 +302,7 @@ function mod_tournaments_tournament($vars, $settings) {
 				ON countries.country_id = landesverbaende_rueckwaerts.country_id
 				AND landesverbaende_rueckwaerts.contact_category_id = %d
 				AND landesverbaende_rueckwaerts.mother_contact_id = %d
-			WHERE teilnahmen.event_id = %d
+			WHERE participations.event_id = %d
 			AND usergroup_id = %d
 			AND teilnahme_status = "Teilnehmer"
 			AND NOT ISNULL(platz_no)
@@ -437,14 +437,14 @@ function mod_tournaments_tournament($vars, $settings) {
 			, contact AS person
 			, usergroup, usergroups.identifier AS group_identifier
 			%s
-		FROM teilnahmen
+		FROM participations
 		LEFT JOIN persons USING (person_id)
 		LEFT JOIN contacts USING (contact_id)
 		%s
 		LEFT JOIN usergroups USING (usergroup_id)
 		WHERE event_id = %d
 		AND usergroup_id IN (%d, %d, %d)
-		GROUP BY teilnahmen.person_id, usergroups.usergroup_id
+		GROUP BY participations.person_id, usergroups.usergroup_id
 		ORDER BY last_name, first_name
 	';
 	$sql = sprintf($sql, $sql_fields, $sql_join, $event['event_id'],
@@ -508,7 +508,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	}
 
 	if (!empty($event['einzel'])) {
-		$sql = 'SELECT COUNT(*) FROM teilnahmen
+		$sql = 'SELECT COUNT(*) FROM participations
 			WHERE usergroup_id = %d AND event_id = %d';
 		$sql = sprintf($sql, wrap_id('usergroups', 'spieler'), $event['event_id']);
 		$event['einzelteilnehmerliste'] = wrap_db_fetch($sql, '', 'single value');
@@ -540,7 +540,7 @@ function mod_tournaments_tournament_own_teams($status = ['Teilnehmer', 'Teilnahm
 	}
 
 	$sql = 'SELECT team_id
-		FROM teilnahmen
+		FROM participations
 		LEFT JOIN teams USING (team_id)
 		WHERE usergroup_id = %d
 		AND person_id = %d

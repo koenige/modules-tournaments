@@ -88,20 +88,20 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 			, (SELECT COUNT(team_id) FROM teams
 				WHERE teams.event_id = events.event_id
 				AND teams.team_status = "Teilnehmer") AS teams
-			, (SELECT COUNT(*) FROM teilnahmen
+			, (SELECT COUNT(*) FROM participations
 				LEFT JOIN teams USING (team_id)
-				WHERE teilnahmen.event_id = events.event_id
-				AND teilnahmen.usergroup_id = %d
-				AND teilnahmen.teilnahme_status = "Teilnehmer"
+				WHERE participations.event_id = events.event_id
+				AND participations.usergroup_id = %d
+				AND participations.teilnahme_status = "Teilnehmer"
 				AND (ISNULL(team_id) OR teams.meldung = "teiloffen" OR teams.meldung = "komplett")
 			) AS spieler
-			, (SELECT COUNT(*) FROM teilnahmen
+			, (SELECT COUNT(*) FROM participations
 				LEFT JOIN teams USING (team_id)
-				WHERE teilnahmen.event_id = events.event_id
-				AND teilnahmen.usergroup_id = %d
-				AND teilnahmen.teilnahme_status = "Teilnehmer"
+				WHERE participations.event_id = events.event_id
+				AND participations.usergroup_id = %d
+				AND participations.teilnahme_status = "Teilnehmer"
 				AND (ISNULL(team_id) OR teams.meldung = "teiloffen" OR teams.meldung = "komplett")
-				AND (NOT ISNULL(teilnahmen.club_contact_id))
+				AND (NOT ISNULL(participations.club_contact_id))
 			) AS spieler_mit_verein
 			, (SELECT COUNT(kontingent_id) FROM kontingente WHERE kontingente.event_id = events.event_id) AS kontingente
 			, tournament_id, main_tournament_id

@@ -36,7 +36,7 @@ function mod_tournaments_duplicateplayers($vars) {
 	if (!$turniere) return false;
 
 	$sql = 'SELECT person_id
-		FROM teilnahmen
+		FROM participations
 		LEFT JOIN persons USING (person_id)
 		WHERE usergroup_id = %d
 		AND event_id IN (%s)
@@ -55,11 +55,11 @@ function mod_tournaments_duplicateplayers($vars) {
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), IFNULL(t_nachname, "")) AS spieler
 				, event, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 				, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
-				, teilnahmen.brett_no
-				, teilnahmen.rang_no
+				, participations.brett_no
+				, participations.rang_no
 				, events.identifier AS event_identifier
 				, teams.kennung AS team_identifier
-	 		FROM teilnahmen
+	 		FROM participations
 	 		LEFT JOIN events USING (event_id)
 	 		LEFT JOIN teams USING (team_id)
 	 		WHERE person_id IN (%s)

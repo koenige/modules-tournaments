@@ -47,7 +47,7 @@ if (!empty($_GET['where']['team_id'])) {
 $zz['fields'][9]['field_name'] = 'participation_id';
 $zz['fields'][9]['type'] = 'select';
 $zz['fields'][9]['sql'] = 'SELECT participation_id, contact, event
-	FROM teilnahmen
+	FROM participations
 	LEFT JOIN persons USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
 	LEFT JOIN events USING (event_id)

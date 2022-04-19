@@ -95,7 +95,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 
 	// brett or rang?
 	$sql = 'SELECT COUNT(brett_no)
-		FROM teilnahmen
+		FROM participations
 		WHERE event_id = %d
 		AND usergroup_id = %d';
 	$sql = sprintf($sql
@@ -110,13 +110,13 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 	}
 
 	$sql = 'SELECT participation_id
-			, IFNULL(contacts_identifiers.identifier, CONCAT("ZZ-", teilnahmen.person_id)) AS fideId
+			, IFNULL(contacts_identifiers.identifier, CONCAT("ZZ-", participations.person_id)) AS fideId
 			, CONCAT(t_nachname, ", ", t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), "")) AS name
 			, t_fidetitel AS title
 			, t_elo AS elo
 			, IFNULL(federation, "GER") AS country
 			, %s AS no, team_id
-		FROM teilnahmen
+		FROM participations
 		LEFT JOIN persons USING (person_id)
 		LEFT JOIN contacts_identifiers
 			ON persons.contact_id = contacts_identifiers.contact_id

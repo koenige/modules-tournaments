@@ -64,7 +64,7 @@ function mod_tournaments_make_turnierzahlen($vars) {
 	}
 
 	$sql = 'SELECT DISTINCT m_dwz, m_elo
-		FROM teilnahmen
+		FROM participations
 		WHERE event_id = %d';
 	$sql = sprintf($sql, $event['event_id']);
 	$meldezahlen = wrap_db_fetch($sql);
@@ -80,12 +80,12 @@ function mod_tournaments_make_turnierzahlen($vars) {
 		$data['meldezahlen_gespeichert'] = false;
 	}
 	
-	$sql = 'SELECT participation_id, teilnahmen.person_id, t_dwz, t_elo
+	$sql = 'SELECT participation_id, participations.person_id, t_dwz, t_elo
 			, contacts_identifiers.identifier AS zps_code
 			, contact AS person
 			, CONCAT(last_name, ",", first_name) AS dwz_person
 			, anmerkung
-		FROM teilnahmen
+		FROM participations
 		LEFT JOIN persons USING (person_id)
 		LEFT JOIN contacts USING (contact_id)
 		LEFT JOIN contacts_identifiers
@@ -100,9 +100,9 @@ function mod_tournaments_make_turnierzahlen($vars) {
 		$event['event_id'],
 		wrap_id('usergroups', 'spieler')
 	);
-	$teilnahmen = wrap_db_fetch($sql, 'participation_id');
+	$participations = wrap_db_fetch($sql, 'participation_id');
 	$zps_codes = [];
-	foreach ($teilnahmen as $teilnahme) {
+	foreach ($participations as $teilnahme) {
 		$zps_codes[] = $teilnahme['zps_code'];
 	}
 	
@@ -117,7 +117,7 @@ function mod_tournaments_make_turnierzahlen($vars) {
 	$zz_conf['user'] = 'Turnierzahlen '.implode('/', $vars);
 
 	$updated = false;
-	foreach ($teilnahmen as $participation_id => $teilnahme) {
+	foreach ($participations as $participation_id => $teilnahme) {
 		$values = [];
 		$values['POST']['participation_id'] = $participation_id;
 		if (!$data['meldezahlen_gespeichert']) {

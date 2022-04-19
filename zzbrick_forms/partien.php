@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -56,7 +56,7 @@ if (count($brick['vars']) === 3) {
 	$zz['fields'][6]['sql'] =
 	$zz['fields'][8]['sql'] = sprintf('SELECT person_id
 		, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
-		FROM teilnahmen
+		FROM participations
 		WHERE usergroup_id = %d
 		AND event_id = %d
 		ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'), $brick['data']['event_id']);
@@ -121,7 +121,7 @@ function mf_tournaments_get_paring_player($paarung, $farbe) {
 		$sql = sprintf($sql, $paarung['paarung_id']);
 		$partien = wrap_db_fetch($sql);
 
-		$sql = 'SELECT team_id, person_id FROM teilnahmen
+		$sql = 'SELECT team_id, person_id FROM participations
 			WHERE team_id IN (%d, %d)
 			AND NOT ISNULL(brett_no)
 			AND spielberechtigt = "ja"

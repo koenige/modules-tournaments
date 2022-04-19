@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2013-2016, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2013-2016, 2019-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -132,7 +132,7 @@ function mod_tournaments_make_swtwriter($vars) {
 				if ($result) $writer['changes_team_id']++;
 			} elseif ($token['content'] == 2020) {
 				// 2020 Spieler TNr.-ID hex
-				$person_id = mod_tournaments_make_swtwriter_read_id($handle, $token, 'person_id', 'teilnahmen', $event['event_id']);
+				$person_id = mod_tournaments_make_swtwriter_read_id($handle, $token, 'person_id', 'participations', $event['event_id']);
 			} elseif ($token['content'] == 2038) {
 				// 2038 Spieler Info4
 				$result = mod_tournaments_make_swtwriter_write($handle, $token, 'person_id', $person_id);

@@ -129,7 +129,7 @@ function mod_tournaments_make_lineup_active($params) {
 	$sql = 'SELECT participation_id, rang_no, brett_no AS board_no
 			, CONCAT(t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), ""), " ", t_nachname) AS person
 			, person_id
-	    FROM teilnahmen
+	    FROM participations
 	    WHERE team_id = %d
 	    AND usergroup_id = %d
 	    AND teilnahme_status = "Teilnehmer"

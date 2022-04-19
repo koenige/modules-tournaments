@@ -101,10 +101,10 @@ function mod_tournaments_startranking_single($event) {
 			, YEAR(qualification.date_begin) AS qualification_year
 			, qualification.identifier AS qualification_event_identifier
 			, qualification
-		FROM teilnahmen
+		FROM participations
 		JOIN persons USING (person_id)
 		LEFT JOIN contacts organisationen
-			ON teilnahmen.club_contact_id = organisationen.contact_id
+			ON participations.club_contact_id = organisationen.contact_id
 		LEFT JOIN contacts_identifiers v_ok
 			ON v_ok.contact_id = organisationen.contact_id
 			AND v_ok.current = "yes"
@@ -129,7 +129,7 @@ function mod_tournaments_startranking_single($event) {
 		LEFT JOIN categories main_series
 			ON series.main_category_id = main_series.category_id
 		LEFT JOIN events qualification
-			ON teilnahmen.qualification_event_id = qualification.event_id
+			ON participations.qualification_event_id = qualification.event_id
 		WHERE events.event_id = %d
 		AND usergroup_id = %d
 		AND teilnahme_status IN (%s"Teilnehmer", "disqualifiziert", "geblockt")

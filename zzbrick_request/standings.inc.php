@@ -147,20 +147,20 @@ function mod_tournaments_standings($vars) {
 				, countries.country
 				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
 				, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
-				, teilnahmen.setzliste_no
+				, participations.setzliste_no
 				, t_verein, tabellenstaende.person_id
 				, teilnahme_status AS status
 			FROM tabellenstaende
 			JOIN tournaments USING (event_id)
 			JOIN events USING (event_id)
-			LEFT JOIN teilnahmen
-				ON teilnahmen.person_id = tabellenstaende.person_id
-				AND teilnahmen.event_id = tabellenstaende.event_id
-				AND teilnahmen.usergroup_id = %d
+			LEFT JOIN participations
+				ON participations.person_id = tabellenstaende.person_id
+				AND participations.event_id = tabellenstaende.event_id
+				AND participations.usergroup_id = %d
 			LEFT JOIN persons
 				ON tabellenstaende.person_id = persons.person_id
 			LEFT JOIN contacts organisationen
-				ON teilnahmen.club_contact_id = organisationen.contact_id
+				ON participations.club_contact_id = organisationen.contact_id
 			LEFT JOIN contacts_identifiers v_ok
 				ON v_ok.contact_id = organisationen.contact_id
 				AND v_ok.current = "yes"

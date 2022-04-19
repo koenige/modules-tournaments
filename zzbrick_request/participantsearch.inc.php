@@ -106,13 +106,13 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 					, teams.kennung AS team_identifier
 					, events.identifier AS event_identifier
 					, event
-				FROM teilnahmen
+				FROM participations
 				JOIN teams USING (team_id)
 				JOIN events
 					ON teams.event_id = events.event_id
 				JOIN persons USING (person_id)
 				JOIN contacts USING (contact_id)
-				WHERE teilnahmen.event_id IN (%s)
+				WHERE participations.event_id IN (%s)
 				AND usergroup_id = %d
 				AND NOT ISNULL(brett_no)
 				AND (
@@ -139,12 +139,12 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 				) AS person
 				, events.identifier AS event_identifier
 				, event
-				, teilnahmen.setzliste_no
-			FROM teilnahmen
+				, participations.setzliste_no
+			FROM participations
 			JOIN events USING (event_id)
 			JOIN persons USING (person_id)
 			JOIN contacts USING (contact_id)
-			WHERE teilnahmen.event_id IN (%s)
+			WHERE participations.event_id IN (%s)
 			AND usergroup_id = %d
 			AND (
 				IF(ISNULL(t_vorname),

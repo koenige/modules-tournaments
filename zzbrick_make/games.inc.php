@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -175,11 +175,11 @@ function mod_tournaments_make_games($vars) {
 			, CONCAT (partien.runde_no, ".", IFNULL(CONCAT(paarungen.tisch_no, "."), ""), partien.brett_no) AS Round_With_Board
 		FROM partien
 		LEFT JOIN paarungen USING (paarung_id)
-		LEFT JOIN teilnahmen weiss
+		LEFT JOIN participations weiss
 			ON partien.weiss_person_id = weiss.person_id
 			AND weiss.usergroup_id = %d
 			AND weiss.event_id = partien.event_id
-		LEFT JOIN teilnahmen schwarz
+		LEFT JOIN participations schwarz
 			ON partien.schwarz_person_id = schwarz.person_id
 			AND schwarz.usergroup_id = %d
 			AND schwarz.event_id = partien.event_id

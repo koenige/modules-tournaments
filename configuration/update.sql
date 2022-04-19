@@ -20,3 +20,4 @@
 /* 2022-04-18-1 */	ALTER TABLE `anmerkungen` CHANGE `teilnahme_id` `participation_id` int unsigned NULL AFTER `team_id`;
 /* 2022-04-18-2 */	ALTER TABLE `anmerkungen` ADD INDEX `participation_id` (`participation_id`), DROP INDEX `teilnahme_id`;
 /* 2022-04-18-3 */	UPDATE _relations SET `detail_field` = 'participation_id', `master_field` = 'participation_id' WHERE `detail_table` = 'anmerkungen' AND `detail_field` = 'teilnahme_id' AND `master_field` = 'teilnahme_id';
+/* 2022-04-19-1 */	UPDATE _relations SET `master_table` = 'participations' WHERE `master_table` = 'teilnahmen';

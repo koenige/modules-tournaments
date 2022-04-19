@@ -75,7 +75,7 @@ function mod_tournaments_games($vars) {
 			, IFNULL(event_year, YEAR(date_begin)) AS year
 			, events.identifier, runden, events.event
 			, place, tournament_id, livebretter
-			, IF(bretter_min, bretter_min, (SELECT COUNT(*)/2 FROM teilnahmen
+			, IF(bretter_min, bretter_min, (SELECT COUNT(*)/2 FROM participations
 				WHERE event_id = events.event_id
 				AND usergroup_id = %d)) AS bretter_max
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
@@ -464,11 +464,11 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 			ON paarungen.heim_team_id = heim_teams.team_id
 		LEFT JOIN teams auswaerts_teams
 			ON paarungen.auswaerts_team_id = auswaerts_teams.team_id
-		JOIN teilnahmen weiss
+		JOIN participations weiss
 			ON partien.weiss_person_id = weiss.person_id AND weiss.usergroup_id = %d
 			AND (ISNULL(weiss.team_id) OR weiss.team_id = IF(heim_spieler_farbe = "schwarz", auswaerts_teams.team_id, heim_teams.team_id))
 			AND weiss.event_id = partien.event_id
-		JOIN teilnahmen schwarz
+		JOIN participations schwarz
 			ON partien.schwarz_person_id = schwarz.person_id AND schwarz.usergroup_id = %d
 			AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", heim_teams.team_id, auswaerts_teams.team_id))
 			AND schwarz.event_id = partien.event_id
@@ -604,11 +604,11 @@ function mod_tournaments_games_html($event, $request, $typ) {
 				ON paarungen.heim_team_id = heim_teams.team_id
 			LEFT JOIN teams auswaerts_teams
 				ON paarungen.auswaerts_team_id = auswaerts_teams.team_id
-			LEFT JOIN teilnahmen weiss
+			LEFT JOIN participations weiss
 				ON partien.weiss_person_id = weiss.person_id AND weiss.usergroup_id = %d
 				AND (ISNULL(weiss.team_id) OR weiss.team_id = IF(heim_spieler_farbe = "schwarz", auswaerts_teams.team_id, heim_teams.team_id))
 				AND weiss.event_id = partien.event_id
-			LEFT JOIN teilnahmen schwarz
+			LEFT JOIN participations schwarz
 				ON partien.schwarz_person_id = schwarz.person_id AND schwarz.usergroup_id = %d
 				AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", heim_teams.team_id, auswaerts_teams.team_id))
 				AND schwarz.event_id = partien.event_id
