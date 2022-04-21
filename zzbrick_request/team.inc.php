@@ -30,8 +30,8 @@ function mod_tournaments_team($vars, $settings) {
 			, setzliste_no
 			, platz_no
 			, v_ok.identifier AS zps_code, contacts.contact_id, contacts.contact_id
-			, teams.kennung AS team_identifier
-			, SUBSTRING_INDEX(teams.kennung, "/", -1) AS team_identifier_short
+			, teams.identifier AS team_identifier
+			, SUBSTRING_INDEX(teams.identifier, "/", -1) AS team_identifier_short
 			, meldung_datum, regionalgruppe
 			, meldung
 			, contacts.contact
@@ -75,7 +75,7 @@ function mod_tournaments_team($vars, $settings) {
 			ON tabellenstaende.team_id = teams.team_id
 			AND (ISNULL(tabellenstaende.runde_no)
 				OR tabellenstaende.runde_no = tournaments.tabellenstand_runde_no)
-		WHERE teams.kennung = "%s"
+		WHERE teams.identifier = "%s"
 		AND spielfrei = "nein"
 		%s
 	';
@@ -185,7 +185,7 @@ function mod_tournaments_team_public($page, $data) {
 	$data['bilder'] = mf_mediadblink_media($data['event_identifier'], 'Website', 'group', $data['team_id']);
 
 	// Prev/Next-Navigation
-	$sql = 'SELECT team_id, kennung
+	$sql = 'SELECT team_id, identifier
 		FROM teams
 		WHERE event_id = %d
 		AND team_status = "Teilnehmer"
@@ -196,9 +196,9 @@ function mod_tournaments_team_public($page, $data) {
 	$data = array_merge($data, wrap_get_prevnext_flat($teams, $data['team_id'], true));
 
 	$page['breadcrumbs'][] = $data['team'].' '.$data['team_no'];
-	$page['link']['next'][0]['href'] = '../../../'.$data['_next_kennung'].'/';	
+	$page['link']['next'][0]['href'] = '../../../'.$data['_next_identifier'].'/';	
 	$page['link']['next'][0]['title'] = 'Nächste/r in Setzliste';
-	$page['link']['prev'][0]['href'] = '../../../'.$data['_prev_kennung'].'/';	
+	$page['link']['prev'][0]['href'] = '../../../'.$data['_prev_identifier'].'/';	
 	$page['link']['prev'][0]['title'] = 'Vorherige/r in Setzliste';
 
 	if (!empty($data['latitude'])) {

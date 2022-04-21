@@ -103,8 +103,8 @@ function mod_tournaments_standings($vars) {
 		$sql = 'SELECT tabellenstand_id, platz_no
 				, spiele_g, spiele_u, spiele_v
 				, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
-				, teams.kennung AS team_identifier, team_id
-				, SUBSTRING_INDEX(teams.kennung, "/", -1) AS team_identifier_short
+				, teams.identifier AS team_identifier, team_id
+				, SUBSTRING_INDEX(teams.identifier, "/", -1) AS team_identifier_short
 				, countries.country
 				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
 				, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz

@@ -167,8 +167,8 @@ function mod_tournaments_startranking_team($event) {
 
 	$sql = 'SELECT team_id
 			, team, team_no
-			, IF(NOT ISNULL(teams.setzliste_no), teams.kennung, "") AS kennung, team_status, country
-			, SUBSTRING_INDEX(teams.kennung, "/", -1) AS team_identifier_short
+			, IF(NOT ISNULL(teams.setzliste_no), teams.identifier, "") AS team_identifier, team_status, country
+			, SUBSTRING_INDEX(teams.identifier, "/", -1) AS team_identifier_short
 			, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
 			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
 			, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz

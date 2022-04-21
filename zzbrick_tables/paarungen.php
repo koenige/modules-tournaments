@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2015, 2017, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2015, 2017, 2019-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -71,7 +71,7 @@ $zz['fields'][6]['sql'] = 'SELECT team_id, CONCAT(event, ": ") AS event
 	ORDER BY team_id';
 if ($values['where']) $zz['fields'][6]['sql_ignore'] = 'event';
 $zz['fields'][6]['display_field'] = 'heimteam';
-$zz['fields'][6]['search'] = 'heimteams.kennung';
+$zz['fields'][6]['search'] = 'heimteams.identifier';
 $zz['fields'][6]['character_set'] = 'latin1';
 
 $zz['fields'][7]['title'] = 'Auswärtsteam';
@@ -85,7 +85,7 @@ $zz['fields'][7]['sql'] = 'SELECT team_id, CONCAT(event, ": ") AS event
 	ORDER BY team_id';
 if ($values['where']) $zz['fields'][7]['sql_ignore'] = 'event';
 $zz['fields'][7]['display_field'] = 'auswaertsteam';
-$zz['fields'][7]['search'] = 'auswaertsteams.kennung';
+$zz['fields'][7]['search'] = 'auswaertsteams.identifier';
 $zz['fields'][7]['character_set'] = 'latin1';
 
 $zz['fields'][8]['field_name'] = 'kommentar';

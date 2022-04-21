@@ -86,7 +86,7 @@ function mod_tournaments_make_lineup_active($params) {
 	$data = wrap_db_fetch($sql);
 	if ($data['rounds'] < $current_round) return false;
 	
-	$sql = 'SELECT team_id FROM teams WHERE kennung = "%s"';
+	$sql = 'SELECT team_id FROM teams WHERE identifier = "%s"';
 	$sql = sprintf($sql, wrap_db_escape($team_identifier));
 	$data['team_id'] = wrap_db_fetch($sql, '', 'single value');
 	if (!$data['team_id']) return false;

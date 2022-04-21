@@ -151,7 +151,7 @@ CREATE TABLE `teams` (
   `club_contact_id` int unsigned DEFAULT NULL,
   `team` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `team_no` varchar(7) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `kennung` varchar(63) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+  `identifier` varchar(63) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   `berechtigung_category_id` int unsigned DEFAULT NULL,
   `team_status` enum('Teilnehmer','Nachrücker','Löschung','Teilnahmeberechtigt') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'Teilnehmer',
   `nachruecker_reihenfolge` smallint DEFAULT NULL,
@@ -170,7 +170,7 @@ CREATE TABLE `teams` (
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`team_id`),
   UNIQUE KEY `meldung_hash` (`meldung_hash`),
-  UNIQUE KEY `kennung` (`kennung`),
+  UNIQUE KEY `identifier` (`identifier`),
   KEY `termin_id` (`event_id`),
   KEY `club_contact_id` (`club_contact_id`),
   KEY `berechtigung_kategorie_id` (`berechtigung_category_id`)

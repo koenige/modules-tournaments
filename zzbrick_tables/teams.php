@@ -56,7 +56,7 @@ $zz['fields'][4]['append_next'] = true;
 $zz['fields'][4]['list_append_next'] = true;
 $zz['fields'][4]['link'] = [
 	'string1' => '/intern/termine/',
-	'field1' => 'kennung',
+	'field1' => 'identifier',
 	'string2' => '/'
 ];
 $zz['fields'][4]['unless']['export_mode']['list_prefix'] = '<strong>';
@@ -87,7 +87,7 @@ $zz['fields'][10]['list_prefix'] = ' (';
 $zz['fields'][10]['list_suffix'] = ')';
 $zz['fields'][10]['if']['add']['hide_in_form'] = true;
 
-$zz['fields'][6]['field_name'] = 'kennung';
+$zz['fields'][6]['field_name'] = 'identifier';
 $zz['fields'][6]['type'] = 'identifier';
 $zz['fields'][6]['fields'] = ['event_id[identifier]', 'team', 'team_no'];
 $zz['fields'][6]['conf_identifier']['concat'] = ['/', '/', '-'];
@@ -147,7 +147,7 @@ $zz['fields'][33]['field_name'] = 'meldung_hash';
 $zz['fields'][33]['type'] = 'hidden';
 $zz['fields'][33]['hide_in_list'] = true;
 $zz['fields'][33]['function'] = 'my_random_hash';
-$zz['fields'][33]['fields'] = ['kennung', 'team_id', 'meldung_hash'];
+$zz['fields'][33]['fields'] = ['identifier', 'team_id', 'meldung_hash'];
 
 $zz['fields'][40]['title'] = 'Fremdschlüssel';
 $zz['fields'][40]['title_tab'] = 'FS';
@@ -323,14 +323,14 @@ $zz['fields'][28]['type'] = 'upload_image';
 $zz['fields'][28]['path'] = [
 	'root' => $zz_setting['media_folder'].'/meldeboegen/',
 	'webroot' => '/intern/dateien/meldeboegen/',
-	'field1' => 'kennung',
+	'field1' => 'identifier',
 	'string1' => '.',
 	'string2' => 'pdf'
 ];
 $zz['fields'][28]['input_filetypes'] = ['pdf'];
 $zz['fields'][28]['link'] = [
 	'string1' => '/intern/dateien/meldeboegen/',
-	'field1' => 'kennung',
+	'field1' => 'identifier',
 	'string2' => '.',
 	'string3' => 'pdf'
 ];
@@ -418,4 +418,4 @@ if (!empty($zz_conf['multi'])) $zz_conf['delete'] = true;
 
 $zz['hooks']['after_update'] = 'mf_tournaments_standings_update';
 
-$zz['set_redirect'][] = ['old' => '/%s/', 'new' => '/%s/', 'field_name' => 'kennung'];
+$zz['set_redirect'][] = ['old' => '/%s/', 'new' => '/%s/', 'field_name' => 'identifier'];

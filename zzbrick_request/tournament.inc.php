@@ -323,7 +323,7 @@ function mod_tournaments_tournament($vars, $settings) {
 		}
 	} else {
 		$sql = 'SELECT teams.team_id
-				, team, team_no, teams.kennung AS team_identifier, team_status
+				, team, team_no, teams.identifier AS team_identifier, team_status
 				, countries.country
 				, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
 				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung

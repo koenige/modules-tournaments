@@ -61,7 +61,7 @@ $zz['fields'][4]['sql'] = 'SELECT team_id, CONCAT(event, ": ") AS event
 	LEFT JOIN events USING (event_id)
 	ORDER BY team, team_no';
 $zz['fields'][4]['display_field'] = 'team';
-$zz['fields'][4]['search'] = 'teams.kennung';
+$zz['fields'][4]['search'] = 'teams.identifier';
 $zz['fields'][4]['list_append_next'] = true;
 
 $zz['fields'][5]['field_name'] = 'person_id';

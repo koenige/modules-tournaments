@@ -58,7 +58,7 @@ function mod_tournaments_duplicateplayers($vars) {
 				, participations.brett_no
 				, participations.rang_no
 				, events.identifier AS event_identifier
-				, teams.kennung AS team_identifier
+				, teams.identifier AS team_identifier
 	 		FROM participations
 	 		LEFT JOIN events USING (event_id)
 	 		LEFT JOIN teams USING (team_id)

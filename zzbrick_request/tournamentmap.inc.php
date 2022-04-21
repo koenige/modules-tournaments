@@ -161,7 +161,7 @@ function mod_tournaments_tournamentmap_json($params) {
 			, participations.setzliste_no AS teilnehmer_nr
 			, events.identifier AS event_identifier
 			, CONCAT(teams.team, IFNULL(CONCAT(" ", team_no), "")) AS team
-			, teams.kennung AS team_identifier
+			, teams.identifier AS team_identifier
 			, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 		FROM participations
 		LEFT JOIN persons USING (person_id)

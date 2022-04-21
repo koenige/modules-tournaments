@@ -77,7 +77,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 	if (!empty($_GET['q']) AND $mannschaft) {
 		$sql = 'SELECT team_id
 				, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
-				, teams.kennung AS team_identifier
+				, teams.identifier AS team_identifier
 				, event
 				, events.identifier AS event_identifier
 				, IF(teilnehmerliste = "ja", IF(team_status = "Teilnehmer", 1, NULL), NULL) AS teilnehmerliste
@@ -103,7 +103,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 						CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname)
 					) AS person
 					, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
-					, teams.kennung AS team_identifier
+					, teams.identifier AS team_identifier
 					, events.identifier AS event_identifier
 					, event
 				FROM participations

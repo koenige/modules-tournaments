@@ -31,7 +31,7 @@ $zz['fields'][3]['sql'] = 'SELECT team_id, CONCAT(event, " ", IFNULL(events.even
 	LEFT JOIN events USING (event_id)
 	ORDER BY team_id';
 $zz['fields'][3]['display_field'] = 'teamname';
-$zz['fields'][3]['search'] = 'teams.kennung';
+$zz['fields'][3]['search'] = 'teams.identifier';
 if (!empty($_GET['where']['team_id'])) {
 	$zz['fields'][3]['hide_in_list'] = true;	
 } else {
@@ -103,7 +103,7 @@ $zz['fields'][99]['hide_in_list'] = true;
 
 $zz['sql'] = 'SELECT anmerkungen.*
 		, contact
-		, teams.kennung AS team_identifier
+		, teams.identifier AS team_identifier
 		, DATE_FORMAT(erstellt, "%d.%m.%Y") AS erstellt_de
 		, CONCAT(teams.team, IFNULL(CONCAT(" ", team_no), "")) AS teamname
 		, event

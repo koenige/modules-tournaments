@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -113,12 +113,12 @@ function mod_tournaments_round($params) {
 
 	if ($event['event_category'] !== 'einzel') {
 		$sql = 'SELECT paarung_id, tisch_no
-			, IF(heim_teams.spielfrei = "ja", "", heim_teams.kennung) AS heim_kennung
+			, IF(heim_teams.spielfrei = "ja", "", heim_teams.identifier) AS heim_kennung
 			, CONCAT(heim_teams.team, IFNULL(CONCAT(" ", heim_teams.team_no), "")) AS heim_team
 			, IF(auswaerts_teams.spielfrei = "ja", bretter_min,
 				IF(heim_teams.spielfrei = "ja", 0, SUM(heim_wertung))
 			) AS heim_m_ergebnis
-			, IF(auswaerts_teams.spielfrei = "ja", "", auswaerts_teams.kennung) AS auswaerts_kennung
+			, IF(auswaerts_teams.spielfrei = "ja", "", auswaerts_teams.identifier) AS auswaerts_kennung
 			, CONCAT(auswaerts_teams.team, IFNULL(CONCAT(" ", auswaerts_teams.team_no), "")) AS auswaerts_team
 			, IF(heim_teams.spielfrei = "ja", bretter_min, 
 				IF(auswaerts_teams.spielfrei = "ja", 0, SUM(auswaerts_wertung))

@@ -565,9 +565,9 @@ function mod_tournaments_games_html($event, $request, $typ) {
 				, weiss_ergebnis, schwarz_ergebnis
 				, partien.runde_no, tisch_no, partien.brett_no
 				, CONCAT(heim_teams.team, IFNULL(CONCAT(" ", heim_teams.team_no), "")) AS heim_team
-				, heim_teams.kennung AS heim_team_identifier
+				, heim_teams.identifier AS heim_team_identifier
 				, CONCAT(auswaerts_teams.team, IFNULL(CONCAT(" ", auswaerts_teams.team_no), "")) AS auswaerts_team
-				, auswaerts_teams.kennung AS auswaerts_team_identifier
+				, auswaerts_teams.identifier AS auswaerts_team_identifier
 				, weiss.t_dwz AS weiss_dwz
 				, weiss.t_elo AS weiss_elo
 				, schwarz.t_dwz AS schwarz_dwz

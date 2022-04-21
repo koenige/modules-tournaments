@@ -77,7 +77,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 	if ($event['turnierform'] !== 'e') {
 		$sql = 'SELECT CONCAT("T", team_id) AS team_id
 				, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS name
-				, CONCAT("%s/", teams.kennung, "/") AS link
+				, CONCAT("%s/", teams.identifier, "/") AS link
 			FROM teams
 			WHERE team_status = "Teilnehmer"
 			AND event_id = %d';
