@@ -39,11 +39,11 @@ bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absage
 <div><form method="POST" action="%%% page url_path %%%" class="berechtigung">
 <ul>
 <li><label for="zusage"><input type="radio" name="berechtigung" value="zusage" id="zusage">
-%%% item berechtigung_zusage %%%</label></li>
+%%% condition if berechtigung_zusage %%%%%% item berechtigung_zusage %%%%%% condition else %%%Wir nehmen teil und akzeptieren die Bedingungen aus der Ausschreibung.%%% condition endif %%%</label></li>
 <li><label for="absage"><input type="radio" name="berechtigung" value="absage" id="absage">
-%%% item berechtigung_absage %%%</label></li>
+%%% condition if berechtigung_absage %%%%%% item berechtigung_absage %%%%%% condition else %%%Wir nehmen nicht teil.%%% condition endif %%%</label></li>
 <li><label for="spaeter"><input type="radio" name="berechtigung" value="spaeter" id="spaeter">
-%%% item berechtigung_spaeter %%%</label></li>
+%%% condition if berechtigung_spaeter %%%%%% item berechtigung_spaeter %%%%%% condition else %%%Wir bitten um Verlängerung der Entscheidungsfrist.%%% condition endif %%%</label></li>
 </ul>
 <p>Bemerkungen:</p>
 <textarea rows="6" cols="80" name="bemerkungen">
