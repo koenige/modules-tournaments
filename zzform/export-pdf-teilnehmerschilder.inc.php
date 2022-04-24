@@ -41,6 +41,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		$new = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos);
 		$data[$line['id_value']] = $new;
 	}
+	if (!$data) wrap_quit(404, 'Es gibt keine Teilnehmerschilder für diese Personen.');
 	
 	$sql = 'SELECT participation_id
 			, IF(IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) > 18, 1,

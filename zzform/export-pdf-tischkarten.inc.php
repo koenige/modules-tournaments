@@ -42,6 +42,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 		case 'team_id': $data = mf_tournaments_export_pdf_tischkarten_team($ops); break;
 		default: return false;
 	}
+	if (!$data) wrap_quit(404, 'Es gibt keine Tischkarten für diese Personen.');
 
 	// A4 PDF, set fonts
 	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
@@ -175,7 +176,7 @@ function mf_tournaments_export_pdf_tischkarten_single($ops) {
 		if ($line[$nos['t_dwz']]['text']) $data[$index]['ratings']['DWZ'] = ' '.$line[$nos['t_dwz']]['text'];
 		if ($line[$nos['t_elo']]['text']) $data[$index]['ratings']['Elo'] = ' '.$line[$nos['t_elo']]['text'];
 	}
-	$data['has_club_line'] = true;
+	if ($data) $data['has_club_line'] = true;
 	return $data;
 }
 
