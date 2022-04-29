@@ -183,7 +183,7 @@ $zz['fields'][23]['field_name'] = 'pgn';
 $zz['fields'][23]['type'] = 'upload_image';
 $zz['fields'][23]['path'] = [
 	'root' => $zz_setting['media_folder'].'/pgn/',
-	'webroot' => '/intern/dateien/pgn/',
+	'webroot' => $zz_setting['media_internal_path'].'/pgn/',
 	'field1' => 'event_identifier', 
 	'string2' => '/',
 	'field2' => 'runde_no',
@@ -195,7 +195,7 @@ $zz['fields'][23]['path'] = [
 ];
 $zz['fields'][23]['if'][1]['path'] = [
 	'root' => $zz_setting['media_folder'].'/pgn/',
-	'webroot' => '/intern/dateien/pgn/',
+	'webroot' => $zz_setting['media_internal_path'].'/pgn/',
 	'field1' => 'event_identifier', 
 	'string2' => '/',
 	'field2' => 'runde_no',
@@ -207,7 +207,7 @@ $zz['fields'][23]['if'][1]['path'] = [
 ];
 $zz['fields'][23]['input_filetypes'] = ['pgn'];
 $zz['fields'][23]['link'] = [
-	'string1' => '/intern/dateien/pgn/',
+	'string1' => $zz_setting['media_internal_path'].'/pgn/',
 	'field1' => 'event_identifier',
 	'string2' => '/',
 	'field2' => 'runde_no',
@@ -218,7 +218,7 @@ $zz['fields'][23]['link'] = [
 	'string5' => '.pgn'
 ];
 $zz['fields'][23]['if'][1]['link'] = [
-	'string1' => '/intern/dateien/pgn/',
+	'string1' => $zz_setting['media_internal_path'].'/pgn/',
 	'field1' => 'event_identifier',
 	'string2' => '/',
 	'field2' => 'runde_no',

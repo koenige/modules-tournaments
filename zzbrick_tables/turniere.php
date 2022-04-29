@@ -192,7 +192,7 @@ $zz['fields'][27]['title'] = 'Tabellenstände';
 $zz['fields'][27]['hide_in_list'] = true;
 $zz['fields'][27]['field_name'] = 'tabellenstaende';
 $zz['fields'][27]['explanation'] = 'Zusätzliche Tabellenstände als Filter, Eingabe als Liste mit Kommas
- (<a href="/intern/anleitung/#tabellenstaende">Anleitung</a>)';
+ (<a href="/hilfe/anleitung/#tabellenstaende">Anleitung</a>)';
 $zz['fields'][27]['separator'] = true;
 
 $zz['fields'][25]['title'] = 'PGN-Datei';
@@ -201,14 +201,14 @@ $zz['fields'][25]['dont_show_missing'] = true;
 $zz['fields'][25]['type'] = 'upload_image';
 $zz['fields'][25]['path'] = [
 	'root' => $zz_setting['media_folder'].'/pgn/',
-	'webroot' => '/intern/dateien/pgn/',
+	'webroot' => $zz_setting['media_internal_path'].'/pgn/',
 	'field1' => 'event_identifier',
 	'string2' => '/gesamt',
 	'string3' => '.pgn'
 ];
 $zz['fields'][25]['input_filetypes'] = ['pgn'];
 $zz['fields'][25]['link'] = [
-	'string1' => '/intern/dateien/pgn/',
+	'string1' => $zz_setting['media_internal_path'].'/pgn/',
 	'field1' => 'event_identifier',
 	'string2' => '/gesamt',
 	'string3' => '.pgn'
@@ -228,13 +228,13 @@ $zz['fields'][22]['dont_show_missing'] = true;
 $zz['fields'][22]['type'] = 'upload_image';
 $zz['fields'][22]['path'] = [
 	'root' => $zz_setting['media_folder'].'/swt/',
-	'webroot' => '/intern/dateien/swt/',
+	'webroot' => $zz_setting['media_internal_path'].'/swt/',
 	'field1' => 'event_identifier', 
 	'string2' => '.swt'
 ];
 $zz['fields'][22]['input_filetypes'] = ['swt'];
 $zz['fields'][22]['link'] = [
-	'string1' => '/intern/dateien/swt/',
+	'string1' => $zz_setting['media_internal_path'].'/swt/',
 	'field1' => 'event_identifier',
 	'string2' => '.swt'
 ];

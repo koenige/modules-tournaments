@@ -145,7 +145,7 @@
 
 <ul>
 <li><a href="runde/">Termine: Runden und Partien</a></li>
-<li><a href="/intern/dateien/swt/%%% item identifier %%%.swt">Download SWT-Datei</a> falls vorhanden</li>
+<li><a href="%%% setting media_internal_path %%%/swt/%%% item identifier %%%.swt">Download SWT-Datei</a> falls vorhanden</li>
 <li><a href="/medien/%%% item contact_abbr %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
 </ul>
 
