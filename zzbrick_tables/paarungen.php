@@ -120,7 +120,7 @@ $zz['subtitle']['runde_no']['prefix'] = 'Runde ';
 
 $zz['details'][0]['title'] = 'Partien';
 $zz['details'][0]['link'] = [
-	'string1' => '/intern/termine/', 'field1' => 'event_identifier',
+	'string1' => $zz_setting['events_internal_path'].'/', 'field1' => 'event_identifier',
 	'string2' => '/runde/', 'field2' => 'runde_no',
 	'string3' => '/', 'field3' => 'tisch_no',
 	'string4' => '/'

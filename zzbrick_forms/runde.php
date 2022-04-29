@@ -75,11 +75,11 @@ if (brick_access_rights(['Webmaster'])
 		$zz['details'][0]['title'] = 'Paarungen';
 	}
 	$zz['details'][0]['link'] = [
-		'string0' => '/intern/termine/', 'field1' => 'identifier', 'string1' => '/'
+		'string0' => $zz_setting['events_internal_path'].'/', 'field1' => 'identifier', 'string1' => '/'
 	];
 	$zz['details'][1]['title'] = 'Tabellenstand';
 	$zz['details'][1]['link'] = [
-		'string0' => '/intern/termine/', 'field1' => 'main_event_identifier',
+		'string0' => $zz_setting['events_internal_path'].'/', 'field1' => 'main_event_identifier',
 		'string1' => '/tabelle/', 'field2' => 'runde_no', 'string2' => '/'
 	];
 	$zz['access'] = 'all';

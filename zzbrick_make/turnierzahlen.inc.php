@@ -44,14 +44,14 @@ function mod_tournaments_make_turnierzahlen($vars) {
 	$data['testlauf'] = true;
 	if (!empty($_POST['update'])) $data['testlauf'] = false;
 
-	$page['breadcrumbs'][] = '<a href="/intern/termine/">Termine</a>';
+	$page['breadcrumbs'][] = '<a href="'.$zz_setting['events_internal_path'].'/">Termine</a>';
 	$page['breadcrumbs'][] = sprintf(
-		'<a href="/intern/termine/%d/">%d</a>',
-		$event['year'], $event['year']
+		'<a href="%s/%d/">%d</a>',
+		$zz_setting['events_internal_path'], $event['year'], $event['year']
 	);
 	$page['breadcrumbs'][] = sprintf(
-		'<a href="/intern/termine/%s/">%s</a>',
-		$event['identifier'], $event['event']
+		'<a href="%s/%s/">%s</a>',
+		$zz_setting['events_internal_path'],$event['identifier'], $event['event']
 	);
 	$page['breadcrumbs'][] = 'Turnierzahlen';
 	$page['title'] = sprintf('Aktualisierung der Wertungszahlen für %s %s', $event['event'], $event['year']);

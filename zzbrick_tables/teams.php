@@ -55,7 +55,7 @@ $zz['fields'][4]['field_name'] = 'team';
 $zz['fields'][4]['append_next'] = true;
 $zz['fields'][4]['list_append_next'] = true;
 $zz['fields'][4]['link'] = [
-	'string1' => '/intern/termine/',
+	'string1' => $zz_setting['events_internal_path'].'/',
 	'field1' => 'identifier',
 	'string2' => '/'
 ];
