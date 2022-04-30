@@ -322,14 +322,14 @@ $zz['fields'][28]['dont_show_missing'] = true;
 $zz['fields'][28]['type'] = 'upload_image';
 $zz['fields'][28]['path'] = [
 	'root' => $zz_setting['media_folder'].'/meldeboegen/',
-	'webroot' => '/intern/dateien/meldeboegen/',
+	'webroot' => $zz_setting['media_internal_path'].'/meldeboegen/',
 	'field1' => 'identifier',
 	'string1' => '.',
 	'string2' => 'pdf'
 ];
 $zz['fields'][28]['input_filetypes'] = ['pdf'];
 $zz['fields'][28]['link'] = [
-	'string1' => '/intern/dateien/meldeboegen/',
+	'string1' => $zz_setting['media_internal_path'].'/meldeboegen/',
 	'field1' => 'identifier',
 	'string2' => '.',
 	'string3' => 'pdf'

@@ -355,7 +355,7 @@ $zz['fields'][36]['field_name'] = 'urkunde_parameter';
 $zz['fields'][36]['type'] = 'parameter';
 $zz['fields'][36]['rows'] = 3;
 $zz['fields'][36]['hide_in_list'] = true;
-$zz['fields'][36]['explanation'] = 'Eingabe im query string-Format: parameter=wert&amp;parameter2=wert (<a href="/intern/anleitung/#parameter">Anleitung</a>)';
+$zz['fields'][36]['explanation'] = 'Eingabe im query string-Format: parameter=wert&amp;parameter2=wert (<a href="/hilfe/anleitung/#parameter">Anleitung</a>)';
 $zz['fields'][36]['separator'] = true;
 
 $zz['fields'][40]['field_name'] = 'teams';
