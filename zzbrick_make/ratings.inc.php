@@ -10,7 +10,7 @@
  * @author Jacob Roggon
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © ... Jacob Roggon
- * @copyright Copyright © 2013-2014, 2016-2017, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2013-2014, 2016-2017, 2019-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -42,6 +42,7 @@ function mod_tournaments_make_ratings($params) {
 	$wait_seconds = 300;
 	$lock = wrap_lock($lock_realm, 'wait', $wait_seconds);
 	if ($lock) {
+		$page['status'] = 202;
 		$page['text'] = sprintf(wrap_text(
 			'Please wait. Rating sync is only allowed to run once every %s.'
 		), wrap_duration($wait_seconds));
