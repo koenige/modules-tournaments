@@ -24,19 +24,19 @@
 <li>%%% item wrong_pgn %%% Partien aus der PGN-Datei konnten nicht zugeordnet werden</li>
 </ul>
 
-<p><a href="%%% settings events_internal_path %%%/%%% item identifier %%%/">Turnier im Terminkalender</a></p>
+<p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/">Turnier im Terminkalender</a></p>
 
 %%% condition if tisch_no %%%
-<p><a href="%%% settings events_internal_path %%%/%%% item identifier %%%/partien/%%% item runde_no %%%-%%% item tisch_no %%%-%%% item brett_no %%%.pgn">PGN-Datei herunterladen</a></p>
-<p><a href="%%% settings events_internal_path %%%/%%% item identifier %%%/runde/%%% item runde_no %%%/%%% item tisch_no %%%/">PGN-Datei erneut hochladen</a></p>
+<p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/partien/%%% item runde_no %%%-%%% item tisch_no %%%-%%% item brett_no %%%.pgn">PGN-Datei herunterladen</a></p>
+<p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/runde/%%% item runde_no %%%/%%% item tisch_no %%%/">PGN-Datei erneut hochladen</a></p>
 %%% condition elseif brett_no %%%
-<p><a href="%%% settings events_internal_path %%%/%%% item identifier %%%/partien/%%% item runde_no %%%-%%% item brett_no %%%.pgn">PGN-Datei herunterladen</a></p>
-<p><a href="%%% settings events_internal_path %%%/%%% item identifier %%%/runde/%%% item runde_no %%%/">PGN-Datei erneut hochladen</a></p>
+<p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/partien/%%% item runde_no %%%-%%% item brett_no %%%.pgn">PGN-Datei herunterladen</a></p>
+<p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/runde/%%% item runde_no %%%/">PGN-Datei erneut hochladen</a></p>
 %%% condition elseif runde_no %%%
-<p><a href="%%% settings events_internal_path %%%/%%% item identifier %%%/partien/%%% item runde_no %%%.pgn">PGN-Datei herunterladen</a></p>
-<p><a href="%%% settings events_internal_path %%%/%%% item identifier %%%/runde/">PGN-Datei erneut hochladen</a></p>
+<p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/partien/%%% item runde_no %%%.pgn">PGN-Datei herunterladen</a></p>
+<p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/runde/">PGN-Datei erneut hochladen</a></p>
 %%% condition else %%%
-<p><a href="%%% settings events_internal_path %%%/%%% item identifier %%%/partien/gesamt.pgn">PGN-Datei herunterladen</a></p>
-<p><a href="%%% settings events_internal_path %%%/%%% item identifier %%%/partien/gesamt-utf8.pgn">PGN-Datei herunterladen (Unicode UTF-8)</a></p>
-<p><a href="%%% settings events_internal_path %%%/%%% item identifier %%%/turnier/">PGN-Datei erneut hochladen</a></p>
+<p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/partien/gesamt.pgn">PGN-Datei herunterladen</a></p>
+<p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/partien/gesamt-utf8.pgn">PGN-Datei herunterladen (Unicode UTF-8)</a></p>
+<p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/turnier/">PGN-Datei erneut hochladen</a></p>
 %%% condition endif %%%

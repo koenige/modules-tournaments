@@ -24,7 +24,7 @@ Suche nach Teams
 %%% condition if teams %%%
 <ul>
 %%% loop teams %%%
-<li>%%% condition if teilnehmerliste %%%<a href="../../../%%% item team_identifier %%%/">%%% condition endif %%%%%% item team %%%%%% condition if teilnehmerliste %%%</a>%%% condition endif %%% (<a href="%%% condition if intern %%%%%% settings events_internal_path %%%%%% condition endif %%%/%%% item event_identifier %%%/">%%% item event %%%</a>)</li>
+<li>%%% condition if teilnehmerliste %%%<a href="../../../%%% item team_identifier %%%/">%%% condition endif %%%%%% item team %%%%%% condition if teilnehmerliste %%%</a>%%% condition endif %%% (<a href="%%% condition if intern %%%%%% setting events_internal_path %%%%%% condition endif %%%/%%% item event_identifier %%%/">%%% item event %%%</a>)</li>
 %%% loop end %%%
 </ul>
 %%% condition else %%%
@@ -42,7 +42,7 @@ Suche nach Teams
 %%% condition if setzliste_no %%%</a>%%% condition endif %%%
  (%%% condition if team %%%
 <a href="../../../%%% item team_identifier %%%/">%%% item team %%%</a>, 
-%%% condition endif %%%<a href="%%% condition if intern %%%%%% settings events_internal_path %%%%%% condition endif %%%/%%% item event_identifier %%%/">%%% item event %%%</a>)</li>
+%%% condition endif %%%<a href="%%% condition if intern %%%%%% setting events_internal_path %%%%%% condition endif %%%/%%% item event_identifier %%%/">%%% item event %%%</a>)</li>
 %%% loop end %%%
 </ul>
 %%% condition else %%%
