@@ -99,6 +99,7 @@ function mod_tournaments_make_standings_team($event) {
 				$wertungen[$category_id] = [];
 			}
 			foreach (array_keys($standings) as $team_id) {
+				if (!is_array($wertungen[$category_id])) continue; // direct encounter
 				if (!array_key_exists($team_id, $wertungen[$category_id])) {
 					$wertungen[$category_id][$team_id] = 0;
 				} elseif (empty($wertungen[$category_id][$team_id])) {
