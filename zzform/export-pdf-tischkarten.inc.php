@@ -30,11 +30,12 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 
 	// event information
 	$event = $zz_conf['event'];
-	$event_title = sprintf('%s %s %s'
+	$event_title = sprintf("%s \n%s %s"
 		, str_replace('-', '- ', $event['main_series_long'])
 		, $event['turnierort'], $event['year']
 	);
-
+	$event_title = mf_tournaments_event_title_wrap($event_title);
+	
 	// get data for cards
 	$first_field = reset($ops['output']['head']);
 	switch ($first_field['field_name']) {
@@ -140,7 +141,8 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 		$y = $pdf->getY();
 		$pdf->Cell(257, 28, ' '.$line['usergroup'], 0, 2, 'L', 1);
 		$pdf->SetXY($pdf->getX(), $y);
-		$pdf->Cell(257, 28, $line['federation_abbr'].' ', 0, 2, 'R');
+		if (!empty($line['federation_abbr']))
+			$pdf->Cell(257, 28, $line['federation_abbr'].' ', 0, 2, 'R');
 		$k++;
 	}
 
@@ -200,6 +202,7 @@ function mf_tournaments_export_pdf_tischkarten_team($ops) {
 	$teams = mf_tournaments_federations($teams, 'team_id');
 	
 	foreach ($teams as $team_id => $team) {
+		if (empty($team['federation'])) $team['federation'] = '';
 		$teams[$team_id]['name'] = my_verein_saeubern($team['name']);
 		$teams[$team_id]['club'] = $team['federation'] !== $teams[$team_id]['name'] ? $team['federation'] : '';
 		$teams[$team_id]['ratings'] = [];

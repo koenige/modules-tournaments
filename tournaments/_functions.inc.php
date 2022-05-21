@@ -530,21 +530,23 @@ function mf_tournaments_lineup($event) {
 function mf_tournaments_federations($data, $id_field) {
 	$contact_ids = [];
 	foreach ($data as $line) {
+		if (!$line['contact_id']) continue;
 		$contact_ids[$line[$id_field]] = $line['contact_id'];
 	}
-	$sql = 'SELECT vereine.contact_id, country, landesverbaende.contact_abbr
-	    FROM contacts vereine
+	if (!$contact_ids) return $data;
+	$sql = 'SELECT clubs.contact_id, country, federations.contact_abbr
+	    FROM contacts clubs
 		LEFT JOIN contacts_identifiers
-			ON contacts_identifiers.contact_id = vereine.contact_id
+			ON contacts_identifiers.contact_id = clubs.contact_id
 			AND contacts_identifiers.current = "yes"
 		LEFT JOIN contacts_identifiers lv_kennungen
 			ON CONCAT(SUBSTRING(contacts_identifiers.identifier, 1, 1), "00") = lv_kennungen.identifier 
 			AND lv_kennungen.current = "yes"
-		LEFT JOIN contacts landesverbaende
-			ON landesverbaende.contact_id = IFNULL(lv_kennungen.contact_id, vereine.mother_contact_id)
+		LEFT JOIN contacts federations
+			ON federations.contact_id = IFNULL(lv_kennungen.contact_id, clubs.mother_contact_id)
 		LEFT JOIN countries
-			ON landesverbaende.country_id = countries.country_id
-	    WHERE vereine.contact_id IN (%s)';
+			ON federations.country_id = countries.country_id
+	    WHERE clubs.contact_id IN (%s)';
 	$sql = sprintf($sql, implode(',', $contact_ids));
 	$federations = wrap_db_fetch($sql, 'contact_id');
 	foreach ($contact_ids as $id_field => $contact_id) {
