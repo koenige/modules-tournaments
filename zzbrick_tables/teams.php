@@ -313,7 +313,7 @@ $zz['fields'][27]['field_name'] = 'eintrag_datum';
 $zz['fields'][27]['type'] = 'hidden';
 $zz['fields'][27]['type_detail'] = 'datetime';
 $zz['fields'][27]['hide_in_list'] = true;
-$zz['fields'][27]['if']['add']['default'] = date('Y-m-d H:i:s');
+$zz['fields'][27]['if']['insert']['default'] = date('Y-m-d H:i:s');
 $zz['fields'][27]['export'] = false;
 
 $zz['fields'][28]['title'] = 'Meldebogen';
