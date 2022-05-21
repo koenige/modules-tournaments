@@ -80,7 +80,7 @@ function mod_tournaments_tournamentmap($vars) {
 		$event = array_merge($event, $federation);
 	}
 
-	$page['head'] = wrap_template('vereine-map-head');
+	$page['head'] = wrap_template('clubs-map-head');
 
 	$page['title'] = 'Herkunftsorte der Spieler: '.$event['event'].' '.$event['year'];
 	if ($federation) $page['title'] .= ' – '.$federation['contact'];
