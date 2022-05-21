@@ -108,8 +108,10 @@ function mod_tournaments_make_lineup_active($params) {
 	if (!$pairing) return false;
 	$data += $pairing;
 
-	parse_str($data['parameter'], $parameter);
-	$data += $parameter;
+	if ($data['parameter']) {
+		parse_str($data['parameter'], $parameter);
+		$data += $parameter;
+	}
 
 	// 2, 3) change lineup until n minutes before start of round
 	// @todo alternatively check if there are already games played in round
