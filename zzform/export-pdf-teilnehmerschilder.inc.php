@@ -43,6 +43,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	}
 	if (!$data) wrap_quit(404, 'Es gibt keine Teilnehmerschilder für diese Personen.');
 	
+	// read title from FIDE database if person in German database is only passive
+	// @todo read women’s title as well and check which one is higher
 	$sql = 'SELECT participation_id
 			, IF(IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) > 18, 1,
 				IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_begin, 1, NULL)
@@ -50,7 +52,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			, IF(SUBSTRING(date_of_birth, 5, 6) = "-00-00" AND IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) = 18, 1, 
 				IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_end AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) >= events.date_begin, 1, NULL)
 			) AS evtl_volljaehrig
-			, dwz_spieler.FIDE_Titel
+			, IFNULL(dwz_spieler.FIDE_Titel, fide_players.title) AS FIDE_Titel
 		FROM participations
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN persons USING (person_id)
@@ -60,9 +62,16 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			AND contacts_identifiers.identifier_category_id = %d
 		LEFT JOIN dwz_spieler
 			ON contacts_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", dwz_spieler.Mgl_Nr)
+		LEFT JOIN contacts_identifiers fide
+			ON fide.contact_id = persons.contact_id
+			AND fide.current = "yes"
+			AND fide.identifier_category_id = %d
+		LEFT JOIN fide_players
+			ON fide_players.player_id = fide.identifier
 		WHERE participation_id IN (%s)';
 	$sql = sprintf($sql
 		, wrap_category_id('kennungen/zps')
+		, wrap_category_id('kennungen/fide-id')
 		, implode(',', array_keys($data))
 	);
 	$more_data = wrap_db_fetch($sql, 'participation_id');
