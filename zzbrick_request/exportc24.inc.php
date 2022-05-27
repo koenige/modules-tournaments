@@ -131,7 +131,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		ORDER BY team_id, brett_no, rang_no, IF(ISNULL(contacts_identifiers.identifier), 1, NULL), contacts_identifiers.identifier, participation_id';
 	$sql = sprintf($sql
 		, $brett_no ? 'brett_no' : 'rang_no'
-		, wrap_category_id('kennungen/fide-id')
+		, wrap_category_id('identifiers/fide-id')
 		, $event['event_id']
 		, wrap_id('usergroups', 'spieler')
 		, $where

@@ -491,8 +491,8 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 	$sql = sprintf($sql,
 		wrap_id('usergroups', 'spieler'),
 		wrap_id('usergroups', 'spieler'),
-		wrap_category_id('kennungen/fide-id'),
-		wrap_category_id('kennungen/fide-id'),
+		wrap_category_id('identifiers/fide-id'),
+		wrap_category_id('identifiers/fide-id'),
 		$event_id,
 		$where ? ' AND '.implode(' AND ', $where) : ''
 	);

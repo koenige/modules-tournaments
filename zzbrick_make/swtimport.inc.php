@@ -509,20 +509,20 @@ function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $im
 			';
 			$sql = sprintf($sql
 				, !empty($spieler[2034]) ? wrap_db_escape($spieler[2034]) : 0
-				, wrap_category_id('kennungen/pkz')
+				, wrap_category_id('identifiers/pkz')
 				, $spieler[2033] ? $spieler[2033] : 0
-				, wrap_category_id('kennungen/fide-id')
+				, wrap_category_id('identifiers/fide-id')
 
 				, $spieler[2010] ? wrap_db_escape($spieler[2010]) : 0
 				, $spieler[2011] ? wrap_db_escape($spieler[2011]) : 0
-				, wrap_category_id('kennungen/zps')
+				, wrap_category_id('identifiers/zps')
 
 				, $spieler[2010] ? wrap_db_escape($spieler[2010]) : 0
 				, substr($spieler[2011], 0, 1) === '0' ? wrap_db_escape(substr($spieler[2011], 1)) : 0
-				, wrap_category_id('kennungen/zps')
+				, wrap_category_id('identifiers/zps')
 
 				, $spieler[2010] ? wrap_db_escape($spieler[2010]) : 0
-				, wrap_category_id('kennungen/zps')
+				, wrap_category_id('identifiers/zps')
 
 				, wrap_db_escape($spieler[2000])
 				, wrap_db_escape($spieler[2000])

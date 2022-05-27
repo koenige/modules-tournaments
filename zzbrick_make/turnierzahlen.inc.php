@@ -96,7 +96,7 @@ function mod_tournaments_make_turnierzahlen($vars) {
 		AND usergroup_id = %d
 	';
 	$sql = sprintf($sql,
-		wrap_category_id('kennungen/zps'),
+		wrap_category_id('identifiers/zps'),
 		$event['event_id'],
 		wrap_id('usergroups', 'spieler')
 	);

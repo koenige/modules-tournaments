@@ -70,8 +70,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			ON fide_players.player_id = fide.identifier
 		WHERE participation_id IN (%s)';
 	$sql = sprintf($sql
-		, wrap_category_id('kennungen/zps')
-		, wrap_category_id('kennungen/fide-id')
+		, wrap_category_id('identifiers/zps')
+		, wrap_category_id('identifiers/fide-id')
 		, implode(',', array_keys($data))
 	);
 	$more_data = wrap_db_fetch($sql, 'participation_id');
