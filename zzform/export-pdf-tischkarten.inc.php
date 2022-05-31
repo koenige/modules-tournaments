@@ -27,6 +27,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	global $zz_setting;
 	global $zz_conf;
 	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
+	wrap_module_activate('tournaments'); // todo should come from zzbrick
 
 	// event information
 	$event = $zz_conf['event'];
