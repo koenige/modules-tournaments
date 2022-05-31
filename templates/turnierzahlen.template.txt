@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2015-2017, 2020 Gustaf Mossakowski
+# @copyright Copyright © 2015-2017, 2020, 2022 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Aktualisierung der Wertungszahlen
@@ -30,25 +30,45 @@ und dann die Daten direkt aus der DWZ-Datenbank zu bekommen.</p>
 
 %%% condition endif %%%
 
+%%% condition if fehler %%%
+<ul>
 %%% loop fehler %%%
-<p class="error">Keinen Eintrag in DWZ-Datenbank für %%% item person %%%
- (ZPS-No: %%% item zps_code %%%) gefunden.</p>
+<li>%%% condition if exists %%%<strong class="error">Keine Wertungszahl gefunden</strong> für
+%%% condition elseif not_found %%%
+<strong class="error">In keiner Datenbank</strong>:
+%%% condition endif %%%
+%%% item link "<a href='%s'>" %%%%%% item contact %%%%%% item link "</a>" %%%</li>
 %%% loop end %%%
+</ul>
+%%% condition endif %%%
+
+
+%%% condition if changes %%%
+<ul>
+%%% loop changes %%%
+<li><strong>Update</strong> %%% item link "<a href='%s'>" %%%%%% item contact %%%%%% item link "</a>" %%%: %%% item system strtoupper %%% %%% condition if old_rating %%%%%% item old_rating %%% => %%% condition else %%% neu %%% condition endif %%%%%% item new_rating %%%</li>
+%%% loop end %%%
+</ul>
+%%% condition endif %%%
 
 %%% condition if abweichungen %%%
 <ul>
 %%% loop abweichungen %%%
-<li><strong>Hinweis:</strong> Abweichender Name für %%% item person %%%
- (ZPS-No: %%% item zps_code %%%) gefunden: %%% item spielername %%%.</li>
+<li><strong>Hinweis:</strong> Abweichender Name in %%% item federation %%%-Liste für %%% item link "<a href='%s'>" %%%%%% item contact %%%%%% item link "</a>" %%%
+ gefunden: %%% item contact_last_first %%%.</li>
 %%% loop end %%%
 </ul>
 %%% condition endif %%%
 
 %%% condition if testlauf %%%
+%%% condition if changes %%%
 <form method="POST" action="">
 <input type="submit" name="update" value="Turnierzahlen schreiben">
 </form>
 
+%%% condition else %%%
+<p>Keine Aktualisierung nötig.</p>
+%%% condition endif %%%
 %%% condition else %%%
 <p><strong>Aktualisierung der Wertungszahlen erfolgt.</strong></p>
 

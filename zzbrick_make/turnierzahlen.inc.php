@@ -22,6 +22,7 @@
  */
 function mod_tournaments_make_turnierzahlen($vars) {
 	global $zz_conf;
+	global $zz_setting;
 
 	$sql = 'SELECT event_id, tournament_id
 			, IF(NOT ISNULL(events.date_end),
@@ -80,72 +81,88 @@ function mod_tournaments_make_turnierzahlen($vars) {
 		$data['meldezahlen_gespeichert'] = false;
 	}
 	
-	$sql = 'SELECT participation_id, participations.person_id, t_dwz, t_elo
-			, contacts_identifiers.identifier AS zps_code
-			, contact AS person
-			, CONCAT(last_name, ",", first_name) AS dwz_person
+	$sql = 'SELECT participation_id, contacts.contact_id
+			, contact, identifier
+			, CONCAT(last_name, ", ", first_name) AS contact_last_first
+			, t_dwz, t_elo
 			, anmerkung
 		FROM participations
 		LEFT JOIN persons USING (person_id)
 		LEFT JOIN contacts USING (contact_id)
-		LEFT JOIN contacts_identifiers
-			ON contacts.contact_id = contacts_identifiers.contact_id
-			AND contacts_identifiers.current = "yes"
-			AND contacts_identifiers.identifier_category_id = %d
 		WHERE event_id = %d
 		AND usergroup_id = %d
 	';
 	$sql = sprintf($sql,
-		wrap_category_id('identifiers/zps'),
 		$event['event_id'],
 		wrap_id('usergroups', 'spieler')
 	);
 	$participations = wrap_db_fetch($sql, 'participation_id');
-	$zps_codes = [];
-	foreach ($participations as $teilnahme) {
-		$zps_codes[] = $teilnahme['zps_code'];
+
+	$contact_ids = [];
+	foreach ($participations as $participation) {
+		$contact_ids[] = $participation['contact_id'];
 	}
-	
-	$sql = 'SELECT ZPS, Mgl_Nr, DWZ, FIDE_Elo
-			, CONCAT(ZPS, "-", Mgl_Nr) AS zps_code, Spielername
-		FROM dwz_spieler
-		WHERE CONCAT(ZPS, "-", Mgl_Nr) IN ("%s")';
-	$sql = sprintf($sql, implode('","', $zps_codes));
-	$wertungszahlen = wrap_db_fetch($sql, 'zps_code');
-	
+
+	$rating_systems = ['dwz', 'elo'];
+
+	$ratings['DSB'] = mod_tournaments_make_turnierzahlen_dsb($contact_ids);
+	$ratings['FIDE'] = mod_tournaments_make_turnierzahlen_fide($contact_ids);
+
 	require_once $zz_conf['dir'].'/zzform.php';
 	$zz_conf['user'] = 'Turnierzahlen '.implode('/', $vars);
 
 	$updated = false;
-	foreach ($participations as $participation_id => $teilnahme) {
+	foreach ($participations as $participation_id => $participation) {
 		$values = [];
 		$values['POST']['participation_id'] = $participation_id;
 		if (!$data['meldezahlen_gespeichert']) {
 			// Schreiben von m_dwz und m_elo nur, falls Meldezahlen noch nicht
 			// gespeichert wurden. Bei wiederholter Aktualisierung der 
 			// Turnierzahlen werden die Meldezahlen logischerweise nicht nochmal geschrieben
-			$values['POST']['m_dwz'] = $teilnahme['t_dwz'];
-			$values['POST']['m_elo'] = $teilnahme['t_elo'];
+			foreach ($rating_systems as $system)
+				$values['POST']['m_'.$system] = $participation['t_'.$system];
 		}
-		if (!empty($wertungszahlen[$teilnahme['zps_code']])) {
-			$values['POST']['t_dwz'] = $wertungszahlen[$teilnahme['zps_code']]['DWZ'];
-			$values['POST']['t_elo'] = $wertungszahlen[$teilnahme['zps_code']]['FIDE_Elo'];
-			if ($teilnahme['dwz_person'] != $wertungszahlen[$teilnahme['zps_code']]['Spielername']) {
-				$data['abweichungen'][] = [
-					'person' => $teilnahme['person'],
-					'zps_code' => $teilnahme['zps_code'],
-					'spielername' => $wertungszahlen[$teilnahme['zps_code']]['Spielername']
-				];
+		$status = 'not_found';
+		foreach ($ratings as $federation => $ratings_per_sys) {
+			if (!array_key_exists($participation['contact_id'], $ratings_per_sys)) {
+				continue;
 			}
-		} else {
+			$status = 'exists';
+			foreach ($rating_systems as $system) {
+				if (empty($ratings_per_sys[$participation['contact_id']][$system])) continue;
+				$values['POST']['t_'.$system] = $ratings_per_sys[$participation['contact_id']][$system];
+				if ($participation['t_'.$system].'' !== $values['POST']['t_'.$system].'') {
+					$data['changes'][] = [
+						'contact' => $participation['contact'],
+						'system' => $system,
+						'old_rating' => $participation['t_'.$system],
+						'new_rating' => $values['POST']['t_'.$system],
+						'link' => wrap_path('contacts_profile[person]', $participation['identifier'], false) // @todo remove ,false
+					];
+				}
+				$status = 'found';
+			}
+			if (empty($ratings_per_sys[$participation['contact_id']]['contact_last_first'])) continue;
+			if ($ratings_per_sys[$participation['contact_id']]['contact_last_first'] === $participation['contact_last_first']) continue;
+			$data['abweichungen'][] = [
+				'contact' => $participation['contact'],
+				'federation' => $federation,
+				'contact_id' => $participation['contact_id'],
+				'contact_last_first' => $ratings_per_sys[$participation['contact_id']]['contact_last_first'],
+				'link' => wrap_path('contacts_profile[person]', $participation['identifier'], false) // @todo remove ,false
+			];
+		}
+		if ($status !== 'found') {
 			// Nicht verifizierte Wertungen bleiben bestehen,
 			// Update ggf. nur bei Speicherung m_dwz, m_elo
 			$data['fehler'][] = [
-				'person' => $teilnahme['person'],
-				'zps_code' => $teilnahme['zps_code']
+				'contact' => $participation['contact'],
+				'contact_id' => $participation['contact_id'],
+				$status => 1,
+				'link' => wrap_path('contacts_profile[person]', $participation['identifier'], false) // @todo remove ,false
 			];
-			$values['POST']['anmerkung'] = $teilnahme['anmerkung']
-				? $teilnahme['anmerkung']."\n\n"
+			$values['POST']['anmerkung'] = $participation['anmerkung']
+				? $participation['anmerkung']."\n\n"
 				: "";
 			$values['POST']['anmerkung'] .= sprintf('ZPS bei Wertungsupdate am %s nicht gefunden', date('d.m.Y'));
 		}
@@ -168,3 +185,51 @@ function mod_tournaments_make_turnierzahlen($vars) {
 	$page['text'] = wrap_template('turnierzahlen', $data);
 	return $page;
 }
+
+/**
+ * get ratings for German Chess Federation (DSB) 
+ *
+ * @param array $contact_ids
+ * @return array
+ */
+function mod_tournaments_make_turnierzahlen_dsb($contact_ids) {
+	$sql = 'SELECT contact_id
+			, DWZ AS dwz
+			, FIDE_Elo AS elo
+			, REPLACE(Spielername, ",", ", ") AS contact_last_first
+		FROM dwz_spieler
+		LEFT JOIN contacts_identifiers
+			ON contacts_identifiers.identifier = CONCAT(ZPS, "-", Mgl_Nr)
+			AND contacts_identifiers.current = "yes"
+			AND contacts_identifiers.identifier_category_id = %d
+		WHERE contact_id IN (%s)';
+	$sql = sprintf($sql
+		, wrap_category_id('identifiers/zps')
+		, implode(',', $contact_ids)
+	);
+	return wrap_db_fetch($sql, 'contact_id');
+}
+
+/**
+ * get ratings for FIDE
+ *
+ * @param array $contact_ids
+ * @return array
+ */
+function mod_tournaments_make_turnierzahlen_fide($contact_ids) {
+	$sql = 'SELECT contact_id
+			, standard_rating AS elo
+			, player AS contact_last_first
+		FROM fide_players
+		LEFT JOIN contacts_identifiers
+			ON contacts_identifiers.identifier = player_id
+			AND contacts_identifiers.current = "yes"
+			AND contacts_identifiers.identifier_category_id = %d
+		WHERE contact_id IN (%s)';
+	$sql = sprintf($sql
+		, wrap_category_id('identifiers/fide-id')
+		, implode(',', $contact_ids)
+	);
+	return wrap_db_fetch($sql, 'contact_id');
+}
+
