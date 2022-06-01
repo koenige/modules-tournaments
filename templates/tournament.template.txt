@@ -76,7 +76,7 @@
 %%% rights - %%%
 %%% rights "AK Spielbetrieb" Vorstand %%%
 %%% condition unless event_over %%%
-<li><a href="/intern/turnierzahlen/%%% item identifier %%%/">Turnierzahlen direkt zu Turnierbeginn aktualisieren</a></li>
+<li><a href="turnierzahlen/">Turnierzahlen direkt zu Turnierbeginn aktualisieren</a></li>
 <li><a href="swisschess.csv">Export in Swiss-Chess (.lst)</a> | <a href="swisschess.csv?alle">Export auch ungeprüfter Spieler (.lst)</a> (ohne Gewähr …)</li>
 %%% condition endif %%%
 <li><a href="swt-upload/">Übernahme der Turnierdaten aus Swiss-Chess</a></li>
@@ -127,7 +127,7 @@
 <li><a href="meldeboegen.pdf">Alle Meldebögen der Teams als PDF</a></li>
 %%% condition endif %%%
 %%% condition unless event_over %%%
-<li><a href="/intern/turnierzahlen/%%% item identifier %%%/">Turnierzahlen direkt zu Turnierbeginn aktualisieren</a></li>
+<li><a href="turnierzahlen/">Turnierzahlen direkt zu Turnierbeginn aktualisieren</a></li>
 <li><a href="swisschess.csv">Export in Swiss-Chess (.lst)</a> | <a href="swisschess.csv?alle">Export auch ungeprüfter Spieler (.lst)</a></li>
 %%% condition endif %%%
 <li><a href="swt-upload/">Übernahme der Turnierdaten aus Swiss-Chess</a></li>
@@ -167,7 +167,7 @@
 <li><a href="buchungen/">Alle Zimmerbuchungen und Zahlungseingänge</a> der Teams</li>
 <li><a href="fristen/">Termine: Fristen</a></li>
 %%% condition unless event_over %%%
-<li><a href="/intern/turnierzahlen/%%% item identifier %%%/">Turnierzahlen direkt zu Turnierbeginn aktualisieren</a></li>
+<li><a href="turnierzahlen/">Turnierzahlen direkt zu Turnierbeginn aktualisieren</a></li>
 <li><a href="swisschess.csv">Export in Swiss-Chess (.lst)</a> | <a href="swisschess.csv?alle">Export auch ungeprüfter Spieler (.lst)</a></li>
 %%% condition endif %%%
 </ul></li>

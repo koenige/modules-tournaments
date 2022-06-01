@@ -20,23 +20,20 @@
  * @param array $vars
  * @return array $page
  */
-function mod_tournaments_make_turnierzahlen($vars) {
+function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 	global $zz_conf;
 	global $zz_setting;
 
-	$sql = 'SELECT event_id, tournament_id
+	$sql = 'SELECT tournament_id
 			, IF(NOT ISNULL(events.date_end),
 				IF(events.date_end < CURDATE(), 1, NULL),
 				IF(events.date_begin < CURDATE(), 1, NULL)
 			) AS event_over
-			, IFNULL(event_year, YEAR(date_begin)) AS year
-			, event, identifier
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
-		WHERE identifier = "%s"';
-	$sql = sprintf($sql, wrap_db_escape(implode('/', $vars)));
-	$event = wrap_db_fetch($sql);
-	if (!$event) return false;
+		WHERE event_id = %d';
+	$sql = sprintf($sql, $event['event_id']);
+	$event = array_merge($event, wrap_db_fetch($sql));
 
 	$data['abweichungen'] = [];
 	$data['fehler'] = [];
@@ -45,15 +42,6 @@ function mod_tournaments_make_turnierzahlen($vars) {
 	$data['testlauf'] = true;
 	if (!empty($_POST['update'])) $data['testlauf'] = false;
 
-	$page['breadcrumbs'][] = '<a href="'.$zz_setting['events_internal_path'].'/">Termine</a>';
-	$page['breadcrumbs'][] = sprintf(
-		'<a href="%s/%d/">%d</a>',
-		$zz_setting['events_internal_path'], $event['year'], $event['year']
-	);
-	$page['breadcrumbs'][] = sprintf(
-		'<a href="%s/%s/">%s</a>',
-		$zz_setting['events_internal_path'],$event['identifier'], $event['event']
-	);
 	$page['breadcrumbs'][] = 'Turnierzahlen';
 	$page['title'] = sprintf('Aktualisierung der Wertungszahlen für %s %s', $event['event'], $event['year']);
 	$page['dont_show_h1'] = true;
