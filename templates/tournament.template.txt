@@ -88,7 +88,7 @@
 <li><a href="swtimport/">Import Turnierstand aus Swiss-Chess (.swt)</a> (Aufruf normalerweise nicht nötig, nur bei Fehlern!)</li>
 %%% rights - %%%
 %%% rights Webmaster %%%
-<li><a href="/intern/swtwriter/%%% item identifier %%%/?delete">Löschen der Person- und Team-IDs in der SwissChess-Datei</a> (Bei Fehlern der ID-Schreibung in der SWT-Datei)</li>
+<li><a href="swtwriter/?delete">Löschen der Person- und Team-IDs in der SwissChess-Datei</a> (Bei Fehlern der ID-Schreibung in der SWT-Datei)</li>
 <li><a href="swtreader/?view=data">Rohdaten-Ansicht der SwissChess-Datei</a></li>
 %%% rights - %%%
 %%% rights Webmaster "AK Spielbetrieb" %%%

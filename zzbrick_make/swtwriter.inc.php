@@ -22,8 +22,10 @@
  *		int [1]: Turnierkennung
  * @return array $page
  * @todo gemeinsame Elemente mit SWT-Import abstrahieren
+ * @todo Einzel- oder Mannschaftsturnier aus Termine auslesen
+ * @todo Datenherkunft aus Turniere
  */
-function mod_tournaments_make_swtwriter($vars) {
+function mod_tournaments_make_swtwriter($vars, $settings, $event) {
 	global $zz_setting;
 	global $zz_conf;
 
@@ -38,35 +40,6 @@ function mod_tournaments_make_swtwriter($vars) {
 	}
 	$zz_setting['logfile_name'] = $writer['identifier'];
 	
-	// @todo Einzel- oder Mannschaftsturnier aus Termine auslesen
-	// Datenherkunft aus Turniere
-	$sql = 'SELECT event_id, event, events.identifier, IFNULL(event_year, YEAR(date_begin)) AS year
-			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
-		FROM events
-		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN categories turnierformen
-			ON turnierformen.category_id = tournaments.turnierform_category_id
-		WHERE events.identifier = "%s"';
-	$sql = sprintf($sql, wrap_db_escape($writer['identifier']));
-	$event = wrap_db_fetch($sql);
-	if (empty($event['event_id'])) {
-		wrap_log('SWT-Import: Kein Termin für diese Parameter in der Datenbank');
-		return false;
-	}
-	
-	$page['query_strings'] = ['delete'];
-	
-	$page['breadcrumbs'][] = '<a href="'.$zz_setting['events_internal_path'].'/">Termine</a>';
-	$page['breadcrumbs'][] = sprintf(
-		'<a href="%s/%d/">%d</a>',
-		$zz_setting['events_internal_path'], $event['year'], $event['year']
-	);
-	$page['breadcrumbs'][] = sprintf(
-		'<a href="%s/%s/">%s</a>',
-		$zz_setting['events_internal_path'], $event['identifier'], $event['event']
-	);
-	$page['breadcrumbs'][] = 'SWT-Writer';
-
 	// Variante 1: Direkt SWT-Datei auslesen
 	$swt = $event['identifier'].'.swt';
 	$filename = $zz_setting['media_folder'].'/swt/'.$swt;
@@ -151,6 +124,9 @@ function mod_tournaments_make_swtwriter($vars) {
 			$swt, $writer['changes_person_id'], $writer['changes_team_id']
 		));
 	}
+
+	$page['query_strings'] = ['delete'];
+	$page['breadcrumbs'][] = 'SWT-Writer';
 	$page['text'] = wrap_template('swtwriter', $writer);
 	return $page;
 }
