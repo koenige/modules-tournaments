@@ -13,7 +13,12 @@
 <h1>Brett-Nachricht an <a href="../">%%% item contact %%%</a>
 <br><a href="../../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
 
-%%% condition if mail_sent %%%
+%%% condition if news_inactive %%%
+<p>Für dieses Jahr sind die Brettgrüße geschlossen.</p>
+<p>Vielen Dank, auch im Namen aller Teilnehmerinnen und Teilnehmer für die
+vielen unterstützenden Brett-Nachrichten.</p>
+
+%%% condition elseif mail_sent %%%
 <p>Es wurde eine <strong>E-Mail</strong> mit einem Bestätigungslink an <strong>%%% item mail %%%</strong>
 geschickt. Erst nachdem Sie Ihre E-Mail Adresse bestätigt haben, wird Ihre
 Nachricht zugestellt.<br>
@@ -49,6 +54,5 @@ Ihrem Spam-Ordner nach.</p>
 
 <p>Der Brettgru&szlig;-Service ist bis morgen fr&uuml;h (28.05.) aufgrund von Wartungsarbeiten geschlossen.</p>
 <p>Der Brettgru&szlig;-Service f&uuml;r dieses Jahr startet wie gewohnt am Nachmittag des Sonntages, 15. Mai 2016! Die ersten Brettgr&uuml;&szlig;e werden erstmals zur 3. Runde zugestellt.</p>
-<p>F&uuml;r dieses Jahr sind die Brettgr&uuml;&szlig;e geschlossen.</p><p>Vielen Dank, auch im Namen aller Teilnehmer f&uuml;r die vielen unterst&uuml;tzenden Brett-Nachrichten.</p>
 
 %%%

@@ -38,13 +38,23 @@ function mod_tournaments_make_playermessage($vars, $settings) {
 	$data = array_merge($data, wrap_db_fetch($sql));
 	if (!$data['contact']) return false;
 	
-	if (!empty($_GET['hash'])) {
+	$sql = 'SELECT IF(spielernachrichten = "ja", NULL, 1)
+		FROM tournaments
+	    WHERE event_id = %d';
+	$sql = sprintf($sql, $data['event_id']);
+	$data['news_inactive'] = wrap_db_fetch($sql, '', 'single value');
+	if ($data['news_inactive']) {
+		$page['status'] = 404;
+		$data['hide_form'] = true;
+	}
+	
+	if (!empty($_GET['hash']) AND $data['news_active']) {
 		$sql = 'UPDATE spieler_nachrichten SET hidden = 0 WHERE hash like "%s"';
 		$sql = sprintf($sql, wrap_db_escape($_GET['hash']));
 		wrap_db_query($sql);
 		$data['message_activated'] = true;
 		$data['hide_form'] = true;
-	} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' AND $data['news_active']) {
 		$data = mod_tournaments_make_playermessage_send($data);
 	}
 	
@@ -61,6 +71,7 @@ function mod_tournaments_make_playermessage($vars, $settings) {
 	$page['breadcrumbs'][] = '<a href="../../">Startrangliste</a>';
 	$page['breadcrumbs'][] = '<a href="../">'.$data['contact'].'</a>';
 	$page['breadcrumbs'][] = 'Brett-Nachricht';
+	$page['meta'][] = ['name' => 'robots', 'content' => 'noindex'];
 	return $page;
 }
 
