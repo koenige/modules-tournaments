@@ -41,9 +41,10 @@ Ihrem Spam-Ordner nach.</p>
 <label for="sender">Absender:<br><input type="text" name="sender" required id="sender" value="%%% item sender wrap_html_escape %%%"></label>
 <br><br>
 <label for="mail">E-Mail:<br><input type="text" name="mail" required id="mail" value="%%% item mail wrap_html_escape %%%"></label>
+<br><small>(Die E-Mail-Adresse ist erforderlich, da dorthin eine E-Mail geschickt wird, damit der Gruß freigeschaltet werden kann. Sie wird nach dem Turnier gelöscht.) </small>
 <br><br>
 <input type="submit" value="Senden">
-<br><br><sup>Nachrichten die bis 22 Uhr abgesendet werden, werden in der Regel am nächsten Tag zugestellt.</sup>
+<p>Nachrichten die bis 22 Uhr abgesendet werden, werden in der Regel am nächsten Tag zugestellt.</p>
 </form>
 
 %%% condition endif %%%
