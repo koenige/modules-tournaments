@@ -48,13 +48,13 @@ function mod_tournaments_make_playermessage($vars, $settings) {
 		$data['hide_form'] = true;
 	}
 	
-	if (!empty($_GET['hash']) AND $data['news_active']) {
+	if (!empty($_GET['hash']) AND !$data['news_inactive']) {
 		$sql = 'UPDATE spieler_nachrichten SET hidden = 0 WHERE hash like "%s"';
 		$sql = sprintf($sql, wrap_db_escape($_GET['hash']));
 		wrap_db_query($sql);
 		$data['message_activated'] = true;
 		$data['hide_form'] = true;
-	} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' AND $data['news_active']) {
+	} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' AND !$data['news_inactive']) {
 		$data = mod_tournaments_make_playermessage_send($data);
 	}
 	
