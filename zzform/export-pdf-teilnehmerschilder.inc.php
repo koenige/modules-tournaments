@@ -215,9 +215,6 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 
 	// Verein
 	$new['club'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
-	if (function_exists('my_verein_saeubern')) {
-		$new['club'] = my_verein_saeubern($new['club']);
-	}
 
 	// Gruppe
 	$filename = sprintf('%s/gruppen/%s.png', $zz_setting['media_folder'], wrap_filename($line[$nos['usergroup_id']]['text']));
