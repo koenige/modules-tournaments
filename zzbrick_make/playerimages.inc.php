@@ -79,6 +79,7 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 	if (isset($_GET['sent'])) $event['sent_messages'] = intval($_GET['sent']);
 	$page['text'] = wrap_template('playerimages', $event);
 	$page['dont_show_h1'] = true;
+	$page['title'] = 'Brett-Nachrichten wg. fehlender Spielerbilder – '.$event['series_short'].' '.$event['year'];
 	$page['breadcrumbs'][] = 'Fehlende Spielerbilder';
 	return $page;
 }
