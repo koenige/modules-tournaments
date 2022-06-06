@@ -41,7 +41,7 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 		AND spielerphotos = "ja"
 		AND spielernachrichten = "ja"
 		AND teilnahme_status = "Teilnehmer"
-		ORDER BY contact
+		ORDER BY contacts.contact
 	';
 	$sql = sprintf($sql, implode(',', $event_ids), wrap_id('usergroups', 'spieler'));
 	$event['players'] = wrap_db_fetch($sql, 'person_id');

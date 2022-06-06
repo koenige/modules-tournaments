@@ -24,6 +24,7 @@
 <table>
 <thead>
 <tr>
+<th>Nr.</th>
 <th>Name</th>
 <th>Termin</th>
 <th>Verband</th>
@@ -33,6 +34,7 @@
 <tbody>
 %%% loop players %%%
 <tr>
+<td>%%% loopposition counter %%%</td>
 <td>%%% item contact %%%</td>
 <td>%%% item event %%%</td>
 <td>%%% item contact_short %%%</td>
