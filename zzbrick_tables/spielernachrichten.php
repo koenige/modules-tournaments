@@ -47,7 +47,7 @@ $zz['fields'][7]['display_field'] = 'contact';
 
 $zz['fields'][8]['field_name'] = 'eintragszeit';
 $zz['fields'][8]['type'] = 'write_once';
-$zz['fields'][8]['type_detail'] = 'timestamp';
+$zz['fields'][8]['type_detail'] = 'datetime';
 
 $zz['fields'][9]['field_name'] = 'fertig';
 $zz['fields'][9]['title_tab'] = 'F.';

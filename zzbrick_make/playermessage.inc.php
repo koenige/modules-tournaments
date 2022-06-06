@@ -88,8 +88,8 @@ function mod_tournaments_make_playermessage_send($data) {
 	$data['hide_form'] = true;
 
 	$sql = 'INSERT INTO spieler_nachrichten
-		(teilnehmer_id, nachricht, email, absender, ip, hash, verified)
-		VALUES (%d, "%s", "%s", "%s", "%s", "%s", "no")';
+		(teilnehmer_id, nachricht, email, absender, eintragszeit, ip, hash, verified)
+		VALUES (%d, "%s", "%s", "%s", NOW(), "%s", "%s", "no")';
 	$sql = sprintf($sql
 		, $data['participation_id']
 		, wrap_db_escape($data['message'])
