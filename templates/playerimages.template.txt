@@ -10,33 +10,43 @@
 # @copyright Copyright © 2017, 2021-2022 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
+<h1>Brett-Nachricht wg. fehlender Spielerbilder
+<br><a href="../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
+
+%%% condition if sent_messages %%%
+
+<p>Es wurden %%% item sent_messages %%% Nachrichten zum Versand vorbereitet.</p>
+
+<p><a href="./">Übersicht der fehlenden Spielerbilder</a></p>
+
+%%% condition else %%%
 <div class="results">
 <table>
 <thead>
 <tr>
-<th>Person ID</th>
-<th>TN ID</th>
-<th>Vorname</th>
 <th>Name</th>
 <th>Termin</th>
 <th>Verband</th>
+<th>Versendet</th>
 </tr>
 </thead>
 <tbody>
-%%% loop start %%%
+%%% loop players %%%
 <tr>
-<td>%%% item person_id %%%</td>
-<td>%%% item participation_id %%%</td>
-<td>%%% item first_name %%%</td>
-<td>%%% item person %%%</td>
+<td>%%% item contact %%%</td>
 <td>%%% item event %%%</td>
 <td>%%% item contact_short %%%</td>
+<td>%%% condition if message_received %%%ja%%% condition else %%%noch nicht%%% condition endif %%%</td>
 </tr>
 %%% loop end %%%
 </tbody>
 </table>
 </div>
 
+%%% condition if form %%%
 <form method="POST" action="">
 <input name="action" value="Teilnehmernachrichten schreiben" type="submit">
 </form>
+%%% condition endif %%%
+%%% condition endif %%%
+

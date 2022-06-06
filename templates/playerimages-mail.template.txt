@@ -1,0 +1,14 @@
+# tournaments module
+# send message if player images are missing, mail template as default
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Erik Kothe <kontakt@erikkothe.de>
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2017 Erik Kothe
+# @copyright Copyright © 2022 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+Hallo %%% item first_name %%%,
+wir haben von dir leider noch kein Bild für die Teilnehmerseite. Wir würden uns sehr freuen, wenn du nach der Runde direkt bei uns im Büro des Öff.-Teams (Konferenzraum 30 im Keller) vorbeikommst. Dann können wir das Foto von dir machen. Vielen DANK.
