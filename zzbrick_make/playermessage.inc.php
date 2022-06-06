@@ -92,9 +92,9 @@ function mod_tournaments_make_playermessage_send($data) {
 		VALUES (%d, "%s", "%s", "%s", "%s", "%s", 1)';
 	$sql = sprintf($sql
 		, $data['participation_id']
-		, $data['message']
+		, wrap_db_escape($data['message'])
 		, $data['mail']
-		, $data['sender']
+		, wrap_db_escape($data['sender'])
 		, $_SERVER['REMOTE_ADDR']
 		, $data['hash']
 	);
