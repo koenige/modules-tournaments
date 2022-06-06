@@ -49,7 +49,7 @@ function mod_tournaments_make_playermessage($vars, $settings) {
 	}
 	
 	if (!empty($_GET['hash']) AND !$data['news_inactive']) {
-		$sql = 'UPDATE spieler_nachrichten SET hidden = 0 WHERE hash like "%s"';
+		$sql = 'UPDATE spieler_nachrichten SET verified = "yes" WHERE hash like "%s"';
 		$sql = sprintf($sql, wrap_db_escape($_GET['hash']));
 		wrap_db_query($sql);
 		$data['message_activated'] = true;
@@ -88,8 +88,8 @@ function mod_tournaments_make_playermessage_send($data) {
 	$data['hide_form'] = true;
 
 	$sql = 'INSERT INTO spieler_nachrichten
-		(teilnehmer_id, nachricht, email, absender, ip, hash, hidden)
-		VALUES (%d, "%s", "%s", "%s", "%s", "%s", 1)';
+		(teilnehmer_id, nachricht, email, absender, ip, hash, verified)
+		VALUES (%d, "%s", "%s", "%s", "%s", "%s", "no")';
 	$sql = sprintf($sql
 		, $data['participation_id']
 		, wrap_db_escape($data['message'])

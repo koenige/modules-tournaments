@@ -20,10 +20,6 @@ $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'nachricht_id';
 $zz['fields'][1]['type'] = 'id';
 
-$zz['fields'][3]['field_name'] = 'turnier_id';
-$zz['fields'][3]['hide_in_list'] = true;
-$zz['fields'][3]['hide_in_form'] = true;
-
 $zz['fields'][4]['field_name'] = 'nachricht';
 $zz['fields'][4]['type'] = 'memo';
 
@@ -60,8 +56,12 @@ $zz['fields'][10]['field_name'] = 'hash';
 $zz['fields'][10]['type'] = 'write_once';
 $zz['fields'][10]['hide_in_list'] = true;
 
-$zz['fields'][11]['field_name'] = 'hidden';
-$zz['fields'][11]['title_tab'] = 'H.';
+$zz['fields'][11]['title'] = 'Bestätigt';
+$zz['fields'][11]['field_name'] = 'verified';
+$zz['fields'][11]['type'] = 'select';
+$zz['fields'][11]['enum'] = ['yes', 'no'];
+$zz['fields'][11]['default'] = 'no';
+$zz['fields'][11]['title_tab'] = 'OK';
 
 $zz['fields'][12]['title'] = 'Bildnachricht';
 $zz['fields'][12]['field_name'] = 'missing_image';
