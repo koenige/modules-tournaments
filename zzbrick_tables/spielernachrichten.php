@@ -83,3 +83,5 @@ $zz['sql'] = 'SELECT spieler_nachrichten.*
 	LEFT JOIN events USING (event_id)
 ';
 $zz['sqlorder'] = ' ORDER BY eintragszeit DESC';
+
+$zz_conf['export'][] = 'PDF Brettnachrichten';
