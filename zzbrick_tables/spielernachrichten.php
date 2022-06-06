@@ -22,6 +22,7 @@ $zz['fields'][1]['type'] = 'id';
 
 $zz['fields'][3]['field_name'] = 'turnier_id';
 $zz['fields'][3]['hide_in_list'] = true;
+$zz['fields'][3]['hide_in_form'] = true;
 
 $zz['fields'][4]['field_name'] = 'nachricht';
 $zz['fields'][4]['type'] = 'memo';
@@ -50,6 +51,7 @@ $zz['fields'][7]['display_field'] = 'contact';
 
 $zz['fields'][8]['field_name'] = 'eintragszeit';
 $zz['fields'][8]['type'] = 'write_once';
+$zz['fields'][8]['type_detail'] = 'timestamp';
 
 $zz['fields'][9]['field_name'] = 'fertig';
 $zz['fields'][9]['title_tab'] = 'F.';
@@ -64,7 +66,8 @@ $zz['fields'][11]['title_tab'] = 'H.';
 $zz['fields'][12]['field_name'] = 'bildnachricht';
 $zz['fields'][12]['title_tab'] = 'B.';
 
-$zz['fields'][13]['field_name'] = 'verarbeitet';
+$zz['fields'][13]['title'] = 'Verarbeitet';
+$zz['fields'][13]['field_name'] = 'processed';
 $zz['fields'][13]['title_tab'] = 'V.';
 
 
