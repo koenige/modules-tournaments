@@ -77,8 +77,8 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 
 			$msg = wrap_template($event['msg'], $player);
 			$sql = 'INSERT INTO spieler_nachrichten
-				(nachricht, email, absender, teilnehmer_id, eintragszeit, missing_image, ip, fertig, hash, verified)
-				VALUES ("%s", "%s", "%s", %d, NOW(), "yes", "", 0, "", "yes")';
+				(nachricht, email, absender, teilnehmer_id, eintragszeit, missing_image, ip, hash, verified)
+				VALUES ("%s", "%s", "%s", %d, NOW(), "yes", "", "", "yes")';
 			$sql = sprintf($sql
 				, $msg
 				, $event['sender_mail']

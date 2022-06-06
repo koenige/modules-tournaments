@@ -49,9 +49,6 @@ $zz['fields'][8]['field_name'] = 'eintragszeit';
 $zz['fields'][8]['type'] = 'write_once';
 $zz['fields'][8]['type_detail'] = 'datetime';
 
-$zz['fields'][9]['field_name'] = 'fertig';
-$zz['fields'][9]['title_tab'] = 'F.';
-
 $zz['fields'][10]['field_name'] = 'hash';
 $zz['fields'][10]['type'] = 'write_once';
 $zz['fields'][10]['hide_in_list'] = true;
