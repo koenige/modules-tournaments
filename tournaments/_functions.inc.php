@@ -36,6 +36,7 @@ function mf_tournaments_current_round($identifier) {
  * @param int $tisch_no (optional)
  */
 function mf_tournaments_live_round($livebretter, $brett_no, $tisch_no = false) {
+	if (!$livebretter) return false;
 	if ($livebretter === '*') return true;
 	$livebretter = explode(',', $livebretter);
 	foreach ($livebretter as $bretter) {
