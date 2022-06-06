@@ -10,5 +10,5 @@
 # @copyright Copyright © 2022 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
-Hallo %%% item first_name %%%,
+Hallo %%% explain item first_name %%%,
 wir haben von dir leider noch kein Bild für die Teilnehmerseite. Wir würden uns sehr freuen, wenn du nach der Runde direkt bei uns im Büro des Öff.-Teams (Konferenzraum 30 im Keller) vorbeikommst. Dann können wir das Foto von dir machen. Vielen DANK.

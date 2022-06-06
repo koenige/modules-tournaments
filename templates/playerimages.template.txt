@@ -45,6 +45,13 @@
 
 %%% condition if form %%%
 <form method="POST" action="">
+<p><label for="sender">Absender:<br>
+<input type="text" value="%%% item sender %%%" name="sender" id="sender" size="32"></label></p>
+<p><label for="sender_mail">E-Mail Absender:<br>
+<input type="text" value="%%% item sender_mail %%%" name="sender_mail" id="sender_mail" size="32"></label></p>
+<p><label for="msg">Nachricht:<br>
+<textarea name="msg" id="msg" rows="10" cols="60" data-noescape="1">%%% item msg wrap_html_escape %%%</textarea></p>
+
 <input name="action" value="Teilnehmernachrichten schreiben" type="submit">
 </form>
 %%% condition endif %%%

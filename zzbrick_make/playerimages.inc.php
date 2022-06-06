@@ -53,20 +53,36 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 		$event['form'] = true;
 		break;
 	}
+	$event['sender'] = 'Presseteam '.$event['series_short'].' '.$event['year'];
+	$event['sender_mail'] = $zz_setting['own_e_mail'];
+	$event['msg'] = file(wrap_template_file('playerimages-mail'));
+	$unset = true;
+	foreach ($event['msg'] as $index => $line) {
+		if (str_starts_with($line, '#') AND $unset) unset($event['msg'][$index]);
+		elseif (str_starts_with($line, ' ')) $unset = false;
+	}
+	$event['msg'] = implode('', $event['msg']);
 
-	if (!empty($_POST['action'])) {
+	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+		if (!empty($_POST['sender']))
+			$event['sender'] = $_POST['sender'];
+		if (!empty($_POST['sender_mail']) AND wrap_mail_valid($_POST['sender_mail']))
+			$event['sender_mail'] = $_POST['sender_mail'];
+		if (!empty($_POST['msg']))
+			$event['msg'] = $_POST['msg'];
+			
 		$messages = 0;
 		foreach ($event['players'] as $player) {
 			if ($player['message_received']) continue;
 
-			$msg = wrap_template('playerimages-mail', $player);
+			$msg = wrap_template($event['msg'], $player);
 			$sql = 'INSERT INTO spieler_nachrichten
 				(nachricht, email, absender, teilnehmer_id, bildnachricht, ip, fertig, hash, hidden)
 				VALUES ("%s", "%s", "%s", %d, 1, "", 0, "", 0)';
 			$sql = sprintf($sql
 				, $msg
-				, $zz_setting['own_e_mail']
-				, 'Presseteam '.$event['series_short'].' '.$event['year']
+				, $event['sender_mail']
+				, $event['sender']
 				, $player['participation_id']
 			);
 			wrap_db_query($sql);
