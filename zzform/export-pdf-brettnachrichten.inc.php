@@ -27,7 +27,7 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 			, federations.contact_short AS federation
 			, IFNULL(white.runde_no, black.runde_no) AS round_no
 			, IFNULL(white.brett_no, black.brett_no) AS board_no
-			, IF (ISNULL(white.brett_no), "weiß", "schwarz") AS colour
+			, IF (ISNULL(white.brett_no), "schwarz", "weiß") AS colour
 		FROM spieler_nachrichten
 		LEFT JOIN participations
 			ON spieler_nachrichten.teilnehmer_id = participations.participation_id
