@@ -33,6 +33,12 @@ if (!empty($_POST['sent_date'])) {
 	$data['messages_sent'] = $result['rows'];
 }
 
+$sql = 'SELECT DISTINCT processed
+	FROM spieler_nachrichten
+	WHERE NOT ISNULL(processed)
+	ORDER BY processed DESC';
+$data['processed_dates'] = wrap_db_fetch($sql, '_dummy_', 'numeric');
+
 $zz['explanation'] = wrap_template('playermessage-form', $data);
 
 $zz_conf['export'][] = 'PDF Brettnachrichten';

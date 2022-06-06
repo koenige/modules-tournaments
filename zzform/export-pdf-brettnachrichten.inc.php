@@ -44,9 +44,12 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 			ON black.event_id = events.event_id
 			AND black.runde_no = (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id)
 			AND black.schwarz_person_id = participations.person_id
-		WHERE ISNULL(processed)
+		WHERE %s
 		AND verified = "yes"
 		ORDER BY federations.contact_short, series.sequence, IFNULL(white.brett_no, black.brett_no), eintragszeit';
+	$sql = sprintf($sql
+		, !empty($_GET['processed']) ? sprintf('processed = "%s"', wrap_db_escape($_GET['processed'])) : 'ISNULL(processed)'
+	);
 	$data = wrap_db_fetch($sql, 'nachricht_id');
 	
 	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
