@@ -1,0 +1,21 @@
+# tournaments module
+# form: player message
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2022 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+<div>
+%%% condition if messages_sent %%%
+<p class="error">%%% item messages_sent %%% Nachrichten wurden als versendet markiert.</p>
+%%% condition endif %%%
+
+<form method="POST" action="">
+<p><label for="sent_date">Nachrichten vor diesem Datum als »versendet« markieren«:
+<br><input type="text" value="%%% item current_time wrap_date %%% %%% item current_time wrap_time %%%" name="sent_date" id="sent_date"></label></p>
+<input type="submit" value="Nachrichten als »versendet« markieren">
+</form>
+</div>
