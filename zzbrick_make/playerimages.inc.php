@@ -30,7 +30,7 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 			, (SELECT IF(nachricht_id, 1, NULL)
 				FROM spieler_nachrichten
 				WHERE spieler_nachrichten.teilnehmer_id = participations.participation_id
-				AND bildnachricht = 1
+				AND missing_image = "yes"
 			) AS message_received
 		FROM participations
 		LEFT JOIN tournaments USING (event_id)
@@ -77,8 +77,8 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 
 			$msg = wrap_template($event['msg'], $player);
 			$sql = 'INSERT INTO spieler_nachrichten
-				(nachricht, email, absender, teilnehmer_id, bildnachricht, ip, fertig, hash, hidden)
-				VALUES ("%s", "%s", "%s", %d, 1, "", 0, "", 0)';
+				(nachricht, email, absender, teilnehmer_id, missing_image, ip, fertig, hash, hidden)
+				VALUES ("%s", "%s", "%s", %d, "yes", "", 0, "", 0)';
 			$sql = sprintf($sql
 				, $msg
 				, $event['sender_mail']

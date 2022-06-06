@@ -63,8 +63,12 @@ $zz['fields'][10]['hide_in_list'] = true;
 $zz['fields'][11]['field_name'] = 'hidden';
 $zz['fields'][11]['title_tab'] = 'H.';
 
-$zz['fields'][12]['field_name'] = 'bildnachricht';
+$zz['fields'][12]['title'] = 'Bildnachricht';
+$zz['fields'][12]['field_name'] = 'missing_image';
 $zz['fields'][12]['title_tab'] = 'B.';
+$zz['fields'][12]['type'] = 'select';
+$zz['fields'][12]['enum'] = ['yes', 'no'];
+$zz['fields'][12]['default'] = 'no';
 
 $zz['fields'][13]['title'] = 'Verarbeitet';
 $zz['fields'][13]['field_name'] = 'processed';
