@@ -1,0 +1,42 @@
+# tournaments module
+# send message if player images are missing
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Erik Kothe <kontakt@errikkothe.de>
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2017 Erik Kothe
+# @copyright Copyright © 2017, 2021-2022 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+<div class="results">
+<table>
+<thead>
+<tr>
+<th>Person ID</th>
+<th>TN ID</th>
+<th>Vorname</th>
+<th>Name</th>
+<th>Termin</th>
+<th>Verband</th>
+</tr>
+</thead>
+<tbody>
+%%% loop start %%%
+<tr>
+<td>%%% item person_id %%%</td>
+<td>%%% item participation_id %%%</td>
+<td>%%% item first_name %%%</td>
+<td>%%% item person %%%</td>
+<td>%%% item event %%%</td>
+<td>%%% item contact_short %%%</td>
+</tr>
+%%% loop end %%%
+</tbody>
+</table>
+</div>
+
+<form method="POST" action="">
+<input name="action" value="Teilnehmernachrichten schreiben" type="submit">
+</form>
