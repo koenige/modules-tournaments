@@ -63,6 +63,9 @@
 %%% condition endif %%%
 <li><a href="buchungen/">Buchungen</a></li>
 <li><a href="/medien/%%% item contact_abbr %%%/%%% item identifier %%%/">Medien (Dokumente und Bilder)</a></li>
+%%% condition if tournaments & e %%%
+<li><a href="spielerbilder/">Fehlende Spielerbilder</a></li>
+%%% condition endif %%%
 %%% condition if access_codes %%%
 <li><a href="access-codes/">Download-Zugriffscodes</a></li>
 %%% condition endif %%%
@@ -80,11 +83,8 @@
 %%% condition if access_codes %%%
 <li><a href="access-codes/">Download-Zugriffscodes</a></li>
 %%% condition endif %%%
-%%% rights - %%%
-%%% rights Öffentlichkeitsarbeit event:* %%%
+%%% comment rights are not correct (Öffentlichkeitsarbeit event:*) %%%
 <li><a href="zeitplan/">Rahmen-Zeitplan des Gesamtturniers</a></li>
-%%% rights - %%%
-%%% rights Schiedsrichter Technik Organisator Information Turnierleitung Öffentlichkeitsarbeit event:* %%%
 </ul>
 </div>
 
