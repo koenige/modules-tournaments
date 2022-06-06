@@ -45,7 +45,7 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 			AND black.runde_no = (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id)
 			AND black.schwarz_person_id = participations.person_id
 		WHERE ISNULL(processed)
-		AND hidden = 0
+		AND verified = "yes"
 		ORDER BY federations.contact_short, series.sequence, IFNULL(white.brett_no, black.brett_no), eintragszeit';
 	$data = wrap_db_fetch($sql, 'nachricht_id');
 	
