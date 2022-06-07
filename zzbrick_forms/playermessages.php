@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2015, 2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -33,12 +33,16 @@ if (!empty($_POST['sent_date'])) {
 	$data['messages_sent'] = $result['rows'];
 }
 
-$sql = 'SELECT DISTINCT processed
-	FROM spieler_nachrichten
-	WHERE NOT ISNULL(processed)
-	ORDER BY processed DESC';
-$data['processed_dates'] = wrap_db_fetch($sql, '_dummy_', 'numeric');
-
 $zz['explanation'] = wrap_template('playermessage-form', $data);
+
+$zz['filter'][1]['sql'] = 'SELECT DISTINCT(processed), processed
+	FROM /*_PREFIX_*/spieler_nachrichten
+	ORDER BY processed DESC';
+$zz['filter'][1]['title'] = 'Verarbeitet';
+$zz['filter'][1]['identifier'] = 'processed';
+$zz['filter'][1]['type'] = 'list';
+$zz['filter'][1]['field_name'] = 'processed';
+$zz['filter'][1]['where'] = '/*_PREFIX_*/spieler_nachrichten.processed';
+$zz['filter'][1]['default_selection'] = 'NULL';
 
 $zz_conf['export'][] = 'PDF Brettnachrichten';

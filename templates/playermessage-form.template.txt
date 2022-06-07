@@ -14,18 +14,6 @@
 <p class="error">%%% item messages_sent %%% Nachrichten wurden als versendet markiert.</p>
 %%% condition endif %%%
 
-%%% condition if processed_dates %%%
-<p>PDF-Exports:</p>
-
-<ul>
-<li><a href="?export=pdf-brettnachrichten">Export (PDF Brettnachrichten), noch nicht verteilt</a></li>
-%%% loop processed_dates %%%
-<li><a href="?export=pdf-brettnachrichten&processed=%%% item processed %%%">Export (PDF Brettnachrichten), verteilt: %%% item processed wrap_date %%% %%% item processed wrap_time %%%</a></li>
-%%% loop end %%%
-</ul>
-<hr>
-%%% condition endif %%%
-
 <form method="POST" action="">
 <p><label for="sent_date">Nachrichten vor diesem Datum als »verteilt« markieren«:
 <br><input type="text" value="%%% item current_time wrap_date %%% %%% item current_time wrap_time %%%" name="sent_date" id="sent_date"></label></p>

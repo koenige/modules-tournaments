@@ -48,7 +48,9 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 		AND verified = "yes"
 		ORDER BY federations.contact_short, series.sequence, IFNULL(white.brett_no, black.brett_no), eintragszeit';
 	$sql = sprintf($sql
-		, !empty($_GET['processed']) ? sprintf('processed = "%s"', wrap_db_escape($_GET['processed'])) : 'ISNULL(processed)'
+		, !empty($_GET['filter']['processed'])
+			? sprintf('processed = "%s"', wrap_db_escape($_GET['filter']['processed']))
+			: 'ISNULL(processed)'
 	);
 	$data = wrap_db_fetch($sql, 'nachricht_id');
 	
