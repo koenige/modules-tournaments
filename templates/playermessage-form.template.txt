@@ -20,4 +20,8 @@
 <p><input type="submit" value="Nachrichten als »verteilt« markieren"></p>
 </form>
 <hr>
+<p>Durchgestrichene Nachrichten sind noch nicht freigegeben (E-Mail-Bestätigung
+steht noch aus). Sie können – wenn gewünscht – auch manuell freigegeben werden 
+(Bestätigt: »ja«).</p>
+
 </div>
