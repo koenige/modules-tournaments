@@ -45,4 +45,16 @@ $zz['filter'][1]['field_name'] = 'processed';
 $zz['filter'][1]['where'] = '/*_PREFIX_*/spieler_nachrichten.processed';
 $zz['filter'][1]['default_selection'] = 'NULL';
 
+$zz['filter'][2]['sql'] = 'SELECT contact_id, contact_short
+	FROM spieler_nachrichten
+	LEFT JOIN participations
+		ON participations.participation_id = spieler_nachrichten.teilnehmer_id
+	LEFT JOIN contacts
+		ON participations.federation_contact_id = contacts.contact_id
+	ORDER BY contact_short';
+$zz['filter'][2]['title'] = 'Verband';
+$zz['filter'][2]['identifier'] = 'federation';
+$zz['filter'][2]['type'] = 'list';
+$zz['filter'][2]['where'] = 'federations.contact_id';
+
 $zz_conf['export'][] = 'PDF Brettnachrichten';

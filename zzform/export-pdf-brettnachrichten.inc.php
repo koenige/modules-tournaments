@@ -21,6 +21,18 @@
 function mf_tournaments_export_pdf_brettnachrichten($ops) {
 	global $zz_setting;
 
+	foreach ($ops['output']['head'] as $index => $field) {
+		if (empty($field['field_name'])) continue;
+		if ($field['field_name'] !== 'teilnehmer_id') continue;
+		$p_index = $index; 
+	}
+	if (empty($p_index)) return false;
+	
+	$participation_ids = [];
+	foreach ($ops['output']['rows'] as $row) {
+		$participation_ids[] = $row[$p_index]['value'];
+	}
+
 	$sql = 'SELECT nachricht_id, nachricht, email, absender, eintragszeit
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS contact
 			, CONCAT(events.event, " ", IFNULL(events.event_year, YEAR(events.date_begin))) AS event
@@ -44,14 +56,10 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 			ON black.event_id = events.event_id
 			AND black.runde_no = (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id)
 			AND black.schwarz_person_id = participations.person_id
-		WHERE %s
+		WHERE participation_id IN (%s)
 		AND verified = "yes"
 		ORDER BY federations.contact_short, series.sequence, IFNULL(white.brett_no, black.brett_no), eintragszeit';
-	$sql = sprintf($sql
-		, !empty($_GET['filter']['processed'])
-			? sprintf('processed = "%s"', wrap_db_escape($_GET['filter']['processed']))
-			: 'ISNULL(processed)'
-	);
+	$sql = sprintf($sql, implode(',', $participation_ids));
 	$data = wrap_db_fetch($sql, 'nachricht_id');
 	
 	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';

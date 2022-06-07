@@ -80,13 +80,15 @@ $zz['fields'][13]['hide_in_list'] = true;
 $zz['sql'] = 'SELECT spieler_nachrichten.*
 		, CONCAT(events.event, " ", IFNULL(event_year, YEAR(events.date_begin))) AS event
 		, events.identifier AS event_identifier
-		, contact
+		, contacts.contact
 	FROM spieler_nachrichten
 	LEFT JOIN participations
 		ON spieler_nachrichten.teilnehmer_id = participations.participation_id
 	LEFT JOIN persons USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
 	LEFT JOIN events USING (event_id)
+	LEFT JOIN contacts federations
+		ON participations.federation_contact_id = federations.contact_id
 ';
 $zz['sqlorder'] = ' ORDER BY eintragszeit DESC';
 
