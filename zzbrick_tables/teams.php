@@ -149,14 +149,15 @@ $zz['fields'][33]['hide_in_list'] = true;
 $zz['fields'][33]['function'] = 'my_random_hash';
 $zz['fields'][33]['fields'] = ['identifier', 'team_id', 'meldung_hash'];
 
-$zz['fields'][40]['title'] = 'Fremdschlüssel';
-$zz['fields'][40]['title_tab'] = 'FS';
-$zz['fields'][40]['field_name'] = 'fremdschluessel';
-$zz['fields'][40]['explanation'] = 'Z. B. Schlüssel der Turnierauswertung';
-$zz['fields'][40]['hide_in_list_if_empty'] = true;
+if (brick_access_rights(['Webmaster'])) {
+	$zz['fields'][40]['title'] = 'Fremdschlüssel';
+	$zz['fields'][40]['title_tab'] = 'FS';
+	$zz['fields'][40]['field_name'] = 'fremdschluessel';
+	$zz['fields'][40]['explanation'] = 'Z. B. Schlüssel der Turnierauswertung';
+	$zz['fields'][40]['hide_in_list_if_empty'] = true;
+}
 
-$zz['fields'][40]['separator'] = 'text <div>Während des Turniers</div>';
-
+$zz['fields'][17]['separator_before'] = 'text <div>Während des Turniers</div>';
 $zz['fields'][17]['title'] = 'Setzliste Nr.';
 $zz['fields'][17]['field_name'] = 'setzliste_no';
 $zz['fields'][17]['title_tab'] = 'Setz';
