@@ -17,9 +17,8 @@
 
 function mod_tournaments_make_playerimages($params, $settings, $event) {
 	global $zz_setting;
-	require_once $zz_setting['custom_wrap_dir'].'/anmeldung.inc.php';
 
-	$event_ids = my_get_series_events($event['event_id']);
+	$event_ids = mf_tournaments_series_events($event['event_id']);
 	$event_ids[] = $event['event_id'];
 
 	$sql = 'SELECT person_id, participation_id
