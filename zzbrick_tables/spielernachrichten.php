@@ -50,6 +50,7 @@ $zz['fields'][7]['sql'] = 'SELECT participation_id, contact
 	LEFT JOIN contacts USING (contact_id)
 	LEFT JOIN events USING (event_id)';
 $zz['fields'][7]['display_field'] = 'contact';
+$zz['fields'][7]['search'] = 'contacts.contact';
 
 $zz['fields'][10]['field_name'] = 'hash';
 $zz['fields'][10]['type'] = 'write_once';
