@@ -169,31 +169,9 @@ function mod_tournaments_make_filemove() {
 				}
 			}
 		}
-
-		// Upload auf FTP, results.pgn
-		$website_id = $zz_setting['website_id'];
 		if (!empty($parameter['ftp_pgn'])) {
-			foreach ($parameter['ftp_pgn'] as $ftp_pgn) {
-				$params['log_destination'] = false;
-				$success = [];
-				for ($i = 1; $i <= $tournament['current_round']['runde_no']; $i++) {
-					$zz_setting['website_id'] = wrap_id('websites', $tournament['domain']);
-					$source = sprintf('brick games %s %d-live-utf8.pgn'
-						, str_replace('/', ' ', $tournament['identifier']), $i
-					);
-					$round = sprintf('%02d', $i);
-					$dest = sprintf($ftp_pgn, $tournament['path'], $round);
-					$success[$i] = wrap_watchdog($source, $dest, $params, false);
-					if ($success[$i]) {
-						wrap_log(sprintf('filemove watchdog ftp_pgn %s %s => %s'
-							, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
-							, $source, $dest
-						), E_USER_NOTICE, 'cron');
-					}
-				}
-			}
+			mod_tournaments_make_filemove_ftp_pgn($tournament, $parameter['ftp_pgn']);
 		}
-		$zz_setting['website_id'] = $website_id;
 	}
 	$page['text'] = '<p>PGN-Dateien verschoben</p>';
 	return $page;
@@ -255,6 +233,39 @@ function mod_tournaments_make_filemove_scandir($folder) {
 		$pgn_files = array_merge($pgn_files, mod_tournaments_make_filemove_scandir($folder.'/'.$file));
 	}
 	return $pgn_files;
+}
+
+/**
+ * upload PGN files to FTP server
+ *
+ * @param array $tournament
+ * @param array $ftp_paths
+ * @return void
+ */
+function mod_tournaments_make_filemove_ftp_pgn($tournament, $ftp_paths) {
+	global $zz_setting;
+	$website_id = $zz_setting['website_id'];
+	$zz_setting['website_id'] = wrap_id('websites', $tournament['domain']);
+	$params['log_destination'] = false;
+	$params['destination'] = ['timestamp'];
+
+	foreach ($ftp_paths as $ftp_pgn) {
+		for ($i = 1; $i <= $tournament['current_round']['runde_no']; $i++) {
+			$source = sprintf('brick games %s %d-live-utf8.pgn'
+				, str_replace('/', ' ', $tournament['identifier']), $i
+			);
+			$round = sprintf('%02d', $i);
+			$dest = sprintf($ftp_pgn, $tournament['path'], $round);
+			$success = wrap_watchdog($source, $dest, $params, false);
+			if ($success) {
+				wrap_log(sprintf('filemove watchdog ftp_pgn %s %s => %s'
+					, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
+					, $source, $dest
+				), E_USER_NOTICE, 'cron');
+			}
+		}
+	}
+	$zz_setting['website_id'] = $website_id;
 }
 
 /**
