@@ -23,7 +23,7 @@ function mod_tournaments_make_filemove() {
 	// for C24, put JSON files to server 2 DAYs before start
 	$sql = 'SELECT event_id
 			, events.identifier
-			, REPLACE(events.identifier, "/", "-") AS pfad
+			, REPLACE(events.identifier, "/", "-") AS path
 			, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "-", IF(main_series.path != "reihen", SUBSTRING_INDEX(main_series.path, "/", -1), SUBSTRING_INDEX(series.path, "/", -1))) AS main_series
 			, tournaments.urkunde_parameter AS parameter
 			, IFNULL((SELECT setting_value FROM _settings
@@ -82,10 +82,10 @@ function mod_tournaments_make_filemove() {
 	}
 
 	// pgn-live/2016-dvm-u20/games.pgn
-	$pgn_live = $zz_setting['media_folder'].'/pgn-live/%s/games.pgn';
-	$pgn_queue = $zz_setting['media_folder'].'/pgn-queue/%s';
-	$pgn_sys = $zz_setting['media_folder'].'/pgn/%s';
-	$pgn_bulletin = $zz_setting['media_folder'].'/pgn-bulletin/%s';
+	$pgn_live = $zz_setting['media_folder'].wrap_get_setting('pgn_live_folder').'/%s/games.pgn';
+	$pgn_queue = $zz_setting['media_folder'].wrap_get_setting('pgn_queue_folder').'/%s';
+	$pgn_sys = $zz_setting['media_folder'].wrap_get_setting('pgn_folder').'/%s';
+	$pgn_bulletin = $zz_setting['media_folder'].wrap_get_setting('pgn_bulletin_folder').'/%s';
 	$now = time();
 	require_once $zz_setting['core'].'/syndication.inc.php';
 	$zz_setting['syndication_timeout_ms'] = 2500;
@@ -102,7 +102,7 @@ function mod_tournaments_make_filemove() {
 				$success_other = false;
 				$source = trim($ftp_other['source']);
 				if (substr($source, 0, 1) === '/') $source = 'https://'.$tournament['host_name'].$source;
-				$dest = sprintf(trim($ftp_other['dest']), $tournament['pfad'], $tournament['pfad']);
+				$dest = sprintf(trim($ftp_other['dest']), $tournament['path'], $tournament['path']);
 				$success_other = wrap_watchdog($source, $dest, $params, false);
 				if ($success_other) {
 					wrap_log(sprintf('filemove watchdog ftp_other %s %s => %s'
@@ -116,11 +116,11 @@ function mod_tournaments_make_filemove() {
 		if (empty($tournament['current_round'])) continue;
 		
 		// 1. move PGN files into queue
-		$source = sprintf($pgn_live, $tournament['pfad']);
+		$source = sprintf($pgn_live, $tournament['path']);
 		if ($merged_source = mod_tournaments_make_filemove_concat_pgn($source)) {
 			$source = $merged_source;
 		}
-		$dest_dir = sprintf($pgn_queue, $tournament['pfad']);
+		$dest_dir = sprintf($pgn_queue, $tournament['path']);
 		if (!file_exists($dest_dir)) wrap_mkdir($dest_dir);
 		$final_dir = sprintf($pgn_sys, $tournament['identifier']);
 		wrap_mkdir($final_dir);
@@ -197,7 +197,7 @@ function mod_tournaments_make_filemove() {
 						, str_replace('/', ' ', $tournament['identifier']), $i
 					);
 					$round = sprintf('%02d', $i);
-					$dest = sprintf($ftp_pgn, $tournament['pfad'], $round);
+					$dest = sprintf($ftp_pgn, $tournament['path'], $round);
 					$success[$i] = wrap_watchdog($source, $dest, $params, false);
 					if ($success[$i]) {
 						wrap_log(sprintf('filemove watchdog ftp_pgn %s %s => %s'
