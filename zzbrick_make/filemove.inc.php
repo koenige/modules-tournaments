@@ -15,7 +15,6 @@
 
 function mod_tournaments_make_filemove() {
 	global $zz_setting;
-	$pgn_delay = wrap_get_setting('live_pgn_delay_mins') * 60;
 	$zz_setting['log_username'] = $zz_setting['robot_username'];
 	$zz_setting['log_trigger'] = 'cron';
 
@@ -31,6 +30,7 @@ function mod_tournaments_make_filemove() {
 				AND _settings.website_id = websites.website_id
 			), domain) AS host_name
 			, domain
+			, tournaments.livebretter AS live_boards
 		FROM tournaments
 		JOIN events USING (event_id)
 		LEFT JOIN websites USING (website_id)
@@ -40,7 +40,6 @@ function mod_tournaments_make_filemove() {
 			ON series.main_category_id = main_series.category_id
 		WHERE events.date_begin <= DATE_ADD(CURDATE(), INTERVAL 2 DAY)
 		AND events.date_end >= CURDATE()
-		AND NOT ISNULL(tournaments.livebretter)
 		ORDER BY events.identifier';
 	$tournaments = wrap_db_fetch($sql, 'event_id');
 	if (!$tournaments) return false;
@@ -81,11 +80,9 @@ function mod_tournaments_make_filemove() {
 		}
 	}
 
-	// pgn-live/2016-dvm-u20/games.pgn
-	$pgn_live = $zz_setting['media_folder'].wrap_get_setting('pgn_live_folder').'/%s/games.pgn';
 	$pgn_queue = $zz_setting['media_folder'].wrap_get_setting('pgn_queue_folder').'/%s';
 	$pgn_sys = $zz_setting['media_folder'].wrap_get_setting('pgn_folder').'/%s';
-	$now = time();
+
 	require_once $zz_setting['core'].'/syndication.inc.php';
 	$zz_setting['syndication_timeout_ms'] = 2500;
 
@@ -101,47 +98,72 @@ function mod_tournaments_make_filemove() {
 
 		$tournament['final_dir'] = sprintf($pgn_sys, $tournament['identifier']);
 		wrap_mkdir($tournament['final_dir']);
-		
-		// 1. move PGN files into queue
-		$source = sprintf($pgn_live, $tournament['path']);
-		if ($merged_source = mod_tournaments_make_filemove_concat_pgn($source)) {
-			$source = $merged_source;
-		}
-		$dest_dir = sprintf($pgn_queue, $tournament['path']);
-		if (!file_exists($dest_dir)) wrap_mkdir($dest_dir);
-		$params = [];
-		$params['destination'] = ['timestamp'];
-		$success = wrap_watchdog($source, $dest_dir.'/games-%s.pgn', $params, true);
-		if ($success) {
-			wrap_log(sprintf('filemove watchdog queue-in %s %s => %s'
-				, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
-				, $source, $dest_dir
-			), E_USER_NOTICE, 'cron');
-		}
 
-		// 2. move queued files on
-		$files = array_diff(scandir($dest_dir), ['.', '..']);
-		$live_pgn = $tournament['final_dir'].'/'.$tournament['current_round']['runde_no'].'-live.pgn';
-		foreach ($files as $file) {
-			if (substr($file, -4) !== '.pgn') continue;
-			if (substr($file, 0, 6) !== 'games-') continue;
-			$timestamp = substr($file, 6, -4);
-			if ($timestamp + $pgn_delay > $now) continue;
-			rename($dest_dir.'/'.$file, $live_pgn);
-			wrap_log(sprintf('filemove queue-out %s %s => %s'
-				, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
-				, $dest_dir.'/'.$file, $live_pgn
-			), E_USER_NOTICE, 'cron');
-		}
+		if ($tournament['live_boards']) {
+			$tournament['queue_dir'] = sprintf($pgn_queue, $tournament['path']);
+			if (!file_exists($tournament['queue_dir'])) wrap_mkdir($tournament['queue_dir']);
 		
-		mod_tournaments_make_filemove_bulletin_pgn($tournament);
+			mod_tournaments_make_filemove_queue($tournament);
+			mod_tournaments_make_filemove_final_pgn($tournament);
 		}
+		mod_tournaments_make_filemove_bulletin_pgn($tournament);
 		if (!empty($parameter['ftp_pgn'])) {
 			mod_tournaments_make_filemove_ftp_pgn($tournament, $parameter['ftp_pgn']);
 		}
 	}
 	$page['text'] = '<p>PGN-Dateien verschoben</p>';
 	return $page;
+}
+
+/**
+ * move PGN files into queue for later processing
+ *
+ * @param array $tournament
+ * @return void
+ */
+function mod_tournaments_make_filemove_queue($tournament) {
+	global $zz_setting;
+	// pgn-live/2016-dvm-u20/games.pgn
+	$pgn_live = $zz_setting['media_folder'].wrap_get_setting('pgn_live_folder').'/%s/games.pgn';
+
+	$source = sprintf($pgn_live, $tournament['path']);
+	if ($merged_source = mod_tournaments_make_filemove_concat_pgn($source)) {
+		$source = $merged_source;
+	}
+	$params = [];
+	$params['destination'] = ['timestamp'];
+	$success = wrap_watchdog($source, $tournament['queue_dir'].'/games-%s.pgn', $params, true);
+	if ($success) {
+		wrap_log(sprintf('filemove watchdog queue-in %s %s => %s'
+			, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
+			, $source, $tournament['queue_dir']
+		), E_USER_NOTICE, 'cron');
+	}
+}
+
+/**
+ * move PGN files into final folder after a delay
+ *
+ * @param array $tournament
+ * @return void
+ */
+function mod_tournaments_make_filemove_final_pgn($tournament) {
+	$now = time();
+	$live_pgn = $tournament['final_dir'].'/'.$tournament['current_round']['runde_no'].'-live.pgn';
+	$pgn_delay = wrap_get_setting('live_pgn_delay_mins') * 60;
+
+	$files = array_diff(scandir($tournament['queue_dir']), ['.', '..']);
+	foreach ($files as $file) {
+		if (!str_ends_with($file, '.pgn')) continue;
+		if (!str_starts_with($file, 'games-')) continue;
+		$timestamp = substr($file, 6, -4);
+		if ($timestamp + $pgn_delay > $now) continue;
+		rename($tournament['queue_dir'].'/'.$file, $live_pgn);
+		wrap_log(sprintf('filemove queue-out %s %s => %s'
+			, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
+			, $tournament['queue_dir'].'/'.$file, $live_pgn
+		), E_USER_NOTICE, 'cron');
+	}
 }
 
 /**
