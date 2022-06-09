@@ -99,6 +99,9 @@ function mod_tournaments_make_filemove() {
 		}
 
 		if (empty($tournament['current_round'])) continue;
+
+		$tournament['final_dir'] = sprintf($pgn_sys, $tournament['identifier']);
+		wrap_mkdir($tournament['final_dir']);
 		
 		// 1. move PGN files into queue
 		$source = sprintf($pgn_live, $tournament['path']);
@@ -107,8 +110,6 @@ function mod_tournaments_make_filemove() {
 		}
 		$dest_dir = sprintf($pgn_queue, $tournament['path']);
 		if (!file_exists($dest_dir)) wrap_mkdir($dest_dir);
-		$final_dir = sprintf($pgn_sys, $tournament['identifier']);
-		wrap_mkdir($final_dir);
 		$params = [];
 		$params['destination'] = ['timestamp'];
 		$success = wrap_watchdog($source, $dest_dir.'/games-%s.pgn', $params, true);
@@ -121,7 +122,7 @@ function mod_tournaments_make_filemove() {
 
 		// 2. move queued files on
 		$files = array_diff(scandir($dest_dir), ['.', '..']);
-		$live_pgn = $final_dir.'/'.$tournament['current_round']['runde_no'].'-live.pgn';
+		$live_pgn = $tournament['final_dir'].'/'.$tournament['current_round']['runde_no'].'-live.pgn';
 		foreach ($files as $file) {
 			if (substr($file, -4) !== '.pgn') continue;
 			if (substr($file, 0, 6) !== 'games-') continue;
@@ -156,7 +157,7 @@ function mod_tournaments_make_filemove() {
 			if ($s_filename) {
 				for ($i = 1; $i <= $tournament['current_round']['runde_no']; $i++) {
 					$source = sprintf($s_filename, $i);
-					$dest = $final_dir.'/'.$i.'.pgn';
+					$dest = $tournament['final_dir'].'/'.$i.'.pgn';
 					$success = wrap_watchdog($source, $dest, $params, false);
 					if ($success) {
 						wrap_log(sprintf('filemove watchdog bulletin %s %s => %s'
