@@ -85,7 +85,6 @@ function mod_tournaments_make_filemove() {
 	$pgn_live = $zz_setting['media_folder'].wrap_get_setting('pgn_live_folder').'/%s/games.pgn';
 	$pgn_queue = $zz_setting['media_folder'].wrap_get_setting('pgn_queue_folder').'/%s';
 	$pgn_sys = $zz_setting['media_folder'].wrap_get_setting('pgn_folder').'/%s';
-	$pgn_bulletin = $zz_setting['media_folder'].wrap_get_setting('pgn_bulletin_folder').'/%s';
 	$now = time();
 	require_once $zz_setting['core'].'/syndication.inc.php';
 	$zz_setting['syndication_timeout_ms'] = 2500;
@@ -135,40 +134,7 @@ function mod_tournaments_make_filemove() {
 			), E_USER_NOTICE, 'cron');
 		}
 		
-		// DEM: Bulletin
-		$bulletin_dir = sprintf($pgn_bulletin, $tournament['main_series']);
-		$params['log_destination'] = true;
-		if (file_exists($bulletin_dir)) {
-			$tournament_identifier = explode('/', $tournament['identifier']);
-			switch ($tournament_identifier[1]) {
-				case 'dem-u10w': case 'dem-u10':
-					$s_filename = $bulletin_dir.'/runde%d_U10.pgn';
-					break;
-				case 'dem-u12w': case 'dem-u12': 
-				case 'dem-u14w': case 'dem-u14': case 'dem-u16w': case 'dem-u16': 
-				case 'dem-u18w': case 'dem-u18': case 'odjm-a': case 'odjm-b': 
-				case 'odjm-c': 
-					$s_filename = $bulletin_dir.'/runde%d_U25-U12.pgn';
-					break;
-				default:
-					$s_filename = false;
-					break;
-			}
-			if ($s_filename) {
-				for ($i = 1; $i <= $tournament['current_round']['runde_no']; $i++) {
-					$source = sprintf($s_filename, $i);
-					$dest = $tournament['final_dir'].'/'.$i.'.pgn';
-					$success = wrap_watchdog($source, $dest, $params, false);
-					if ($success) {
-						wrap_log(sprintf('filemove watchdog bulletin %s %s => %s'
-							, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
-							, $source, $dest
-						), E_USER_NOTICE, 'cron');
-						$partien_url = sprintf('/_jobs/partien/%s/%s/', $tournament['identifier'], $i);
-						wrap_trigger_protected_url($partien_url);
-					}
-				}
-			}
+		mod_tournaments_make_filemove_bulletin_pgn($tournament);
 		}
 		if (!empty($parameter['ftp_pgn'])) {
 			mod_tournaments_make_filemove_ftp_pgn($tournament, $parameter['ftp_pgn']);
@@ -234,6 +200,53 @@ function mod_tournaments_make_filemove_scandir($folder) {
 		$pgn_files = array_merge($pgn_files, mod_tournaments_make_filemove_scandir($folder.'/'.$file));
 	}
 	return $pgn_files;
+}
+
+/**
+ * move PGN files from bulletin team to folders
+ *
+ * @param array $tournament
+ * @return void
+ */
+function mod_tournaments_make_filemove_bulletin_pgn($tournament) {
+	global $zz_setting;
+
+	$bulletin_dir = $zz_setting['media_folder'].wrap_get_setting('pgn_bulletin_folder').'/'.$tournament['main_series'];
+	if (!file_exists($bulletin_dir)) return;
+
+	$params['log_destination'] = true;
+	$tournament_identifier = explode('/', $tournament['identifier']);
+	switch ($tournament_identifier[1]) {
+		case 'dem-u8':
+			$s_filename = $bulletin_dir.'/runde%d_U8.pgn';
+			break;
+		case 'dem-u10w': case 'dem-u10':
+			$s_filename = $bulletin_dir.'/runde%d_U10.pgn';
+			break;
+		case 'dem-u12w': case 'dem-u12': 
+		case 'dem-u14w': case 'dem-u14': case 'dem-u16w': case 'dem-u16': 
+		case 'dem-u18w': case 'dem-u18': case 'odjm-a': case 'odjm-b': 
+		case 'odjm-c': 
+			$s_filename = $bulletin_dir.'/runde%d_U25-U12.pgn';
+			break;
+		default:
+			$s_filename = false;
+			break;
+	}
+	if (!$s_filename) return;
+	for ($i = 1; $i <= $tournament['current_round']['runde_no']; $i++) {
+		$source = sprintf($s_filename, $i);
+		$dest = $tournament['final_dir'].'/'.$i.'.pgn';
+		$success = wrap_watchdog($source, $dest, $params, false);
+		if ($success) {
+			wrap_log(sprintf('filemove watchdog bulletin %s %s => %s'
+				, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
+				, $source, $dest
+			), E_USER_NOTICE, 'cron');
+			$games_url = sprintf('/_jobs/partien/%s/%s/', $tournament['identifier'], $i);
+			wrap_trigger_protected_url($games_url);
+		}
+	}
 }
 
 /**
