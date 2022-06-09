@@ -93,24 +93,9 @@ function mod_tournaments_make_filemove() {
 	foreach ($tournaments as $tournament) {
 		parse_str($tournament['parameter'], $parameter);
 
-		// Allgemeine Uploads?
-		// ftp_other[0][source]=/2017/dvm-u20/tournament_c24.json
-		// ftp_other[0][dest]=ftp://dsjdvm2017:bla@54.194.223.217/%s/2017-dvm-u20.json
+		// move tournament info to other server already before tournament starts
 		if (!empty($parameter['ftp_other'])) {
-			foreach ($parameter['ftp_other'] as $ftp_other) {
-				$params['log_destination'] = false;
-				$success_other = false;
-				$source = trim($ftp_other['source']);
-				if (substr($source, 0, 1) === '/') $source = 'https://'.$tournament['host_name'].$source;
-				$dest = sprintf(trim($ftp_other['dest']), $tournament['path'], $tournament['path']);
-				$success_other = wrap_watchdog($source, $dest, $params, false);
-				if ($success_other) {
-					wrap_log(sprintf('filemove watchdog ftp_other %s %s => %s'
-						, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
-						, $source, $dest
-					), E_USER_NOTICE, 'cron');
-				}
-			}
+			mod_tournaments_make_filemove_ftp_other($tournament, $parameter['ftp_other']);
 		}
 
 		if (empty($tournament['current_round'])) continue;
@@ -270,4 +255,31 @@ function mod_tournaments_make_filemove_scandir($folder) {
 		$pgn_files = array_merge($pgn_files, mod_tournaments_make_filemove_scandir($folder.'/'.$file));
 	}
 	return $pgn_files;
+}
+
+/**
+ * upload other files to FTP server
+ *
+ * examples:
+ * - ftp_other[0][source]=/2017/dvm-u20/tournament_c24.json
+ * - ftp_other[0][dest]=ftp://dsjdvm2017:bla@54.194.223.217/%s/2017-dvm-u20.json
+ * @param array $tournament
+ * @param array $ftp_other
+ * @return void
+ */
+function mod_tournaments_make_filemove_ftp_other($tournament, $ftp_other) {
+	$params['log_destination'] = false;
+
+	foreach ($ftp_other as $other) {
+		$source = trim($other['source']);
+		if (substr($source, 0, 1) === '/') $source = 'https://'.$tournament['host_name'].$source;
+		$dest = sprintf(trim($other['dest']), $tournament['path'], $tournament['path']);
+		$success = wrap_watchdog($source, $dest, $params, false);
+		if ($success) {
+			wrap_log(sprintf('filemove watchdog ftp_other %s %s => %s'
+				, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
+				, $source, $dest
+			), E_USER_NOTICE, 'cron');
+		}
+	}
 }
