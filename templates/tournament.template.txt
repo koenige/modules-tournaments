@@ -55,7 +55,7 @@
 <li><a href="mails/">Mails an Teilnehmer verschicken</a></li>
 %%% rights - %%%
 %%% condition if turnier %%%
-%%% rights Webmaster Vorstand "AK Spielbetrieb" %%%
+%%% rights Webmaster Vorstand "AK Spielbetrieb" Geschäftsstelle %%%
 <li><a href="turnier/">Turnierdetails</a></li>
 %%% condition unless event_over %%%
 <li><a href="liveergebnisse/">Liveergebniseingabe</a></li>
