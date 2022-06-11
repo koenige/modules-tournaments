@@ -467,6 +467,8 @@ class cms_tabellenstand_einzel {
 		$gegner_punkte = [];
 		foreach ($gegner_punkte_pro_runde as $gegner => $punkte_pro_runde) {
 			if ($korrektur === 'fide-2012') {
+				// Holt die Punkte des Spielers die er vor der Runde mit der kampflosen Partie hatte
+				$punkte_pro_runde = mf_tournaments_make_single_pkt($event_id, count($punkte_pro_runde) - 1);
 				// Falls weniger Runden als aktuelle Runde, pro Runde 0.5 Punkte addieren
 				if (count($punkte_pro_runde) < $this->runde_no) {
 					$punkte_pro_runde[] = ($this->runde_no - count($punkte_pro_runde)) * $this->remis;
