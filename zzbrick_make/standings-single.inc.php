@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * tournaments module
@@ -118,11 +118,11 @@ function cms_tabellenstand_write_einzel($event_id, $runde_no, $tabelle) {
 
 	// Werte für Partien gewonnen, unentschieden, verloren auslesen
 	$sql = 'SELECT person_id
-			, SUM(IF(schwarz_ergebnis = "1.0" AND schwarz_person_id = person_id, 1, 
+			, SUM(IF(schwarz_ergebnis = "1.0" AND schwarz_person_id = person_id, 1,
 				IF(weiss_ergebnis = "1.0" AND weiss_person_id = person_id, 1, 0))) AS spiele_g
-			, SUM(IF(schwarz_ergebnis = "0.5" AND schwarz_person_id = person_id, 1, 
+			, SUM(IF(schwarz_ergebnis = "0.5" AND schwarz_person_id = person_id, 1,
 				IF(weiss_ergebnis = "0.5" AND weiss_person_id = person_id, 1, 0))) AS spiele_u
-			, SUM(IF(schwarz_ergebnis = "0.0" AND schwarz_person_id = person_id, 1, 
+			, SUM(IF(schwarz_ergebnis = "0.0" AND schwarz_person_id = person_id, 1,
 				IF(weiss_ergebnis = "0.0" AND weiss_person_id = person_id, 1, 0))) AS spiele_v
 		FROM participations
 		LEFT JOIN partien
@@ -230,7 +230,7 @@ class cms_tabellenstand_einzel {
 		$spieler = wrap_db_fetch($sql, 'person_id');
 		return $spieler;
 	}
-	
+
 	/**
 	 * Buchholzsumme berechnen
 	 *
@@ -301,7 +301,7 @@ class cms_tabellenstand_einzel {
 		if (count($gegner_punkte) < $this->runde_no) {
 			$sql = 'SELECT runde_no, partiestatus_category_id
 					, (CASE ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE 0 END) AS ergebnis
-				FROM partien_einzelergebnisse 
+				FROM partien_einzelergebnisse
 				WHERE person_id = %d
 				AND runde_no <= %d
 				ORDER BY runde_no';
@@ -349,7 +349,7 @@ class cms_tabellenstand_einzel {
 		if (empty($berechnet)) {
 			$sql = 'SELECT person_id, CONCAT(IFNULL(gegner_id, "freilos"), "-", runde_no) AS _index
 					, gegner_id, runde_no
-				FROM partien_einzelergebnisse 
+				FROM partien_einzelergebnisse
 				WHERE partiestatus_category_id = %d
 				AND ergebnis = "1.0"
 				AND runde_no <= %d';
@@ -406,7 +406,7 @@ class cms_tabellenstand_einzel {
 	 * @param int $person_id
 	 * @param string $korrektur
 	 * @param array $kampflose (optional)
-	 * @return array 
+	 * @return array
 	 */
 	function getBuchholzGegnerPunkte($event_id, $person_id, $korrektur, $kampflose = []) {
 		static $gegnerpunkte;
@@ -453,7 +453,9 @@ class cms_tabellenstand_einzel {
 						// Bei Freilos: Runden vor kampfloser Paarung: 0 Punkte
 						// Partie selbst wird ebenfalls mit 0 Punkten gewertet
 						$punkte = 0;
-					} else {
+					} elseif($runde < $kampflos['runde_no']) {
+						$punkte = mf_tournaments_get_single_result_from_round($event_id, $runde, $person_id);
+					}else{
 						// Gegner existiert, Partie kampflos
 						// Tatsächliche Punkte bis zur Runde mit kampflosem Verlust,
 						continue;
@@ -474,6 +476,7 @@ class cms_tabellenstand_einzel {
 			}
 			$gegner_punkte[$gegner] = array_sum($punkte_pro_runde);
 		}
+
 		return $gegner_punkte;
 	}
 }
@@ -493,6 +496,25 @@ function mf_tournaments_make_single_pkt($event_id, $runde_no) {
 		GROUP BY person_id';
 	$sql = sprintf($sql, $runde_no);
 	return wrap_db_fetch($sql, '_dummy_', 'key/value');
+}
+
+/**
+ * Holt das Ergebnis von einem Spieler zu einer bestimmten Runde
+ *
+ * @param int $event_id
+ * @param int $runde_no
+ * @param int $person_id
+ * @return float single value
+ */
+function mf_tournaments_get_single_result_from_round($event_id, $runde_no, $person_id) {
+	$sql = 'SELECT SUM(ergebnis) AS punkte
+		FROM partien_einzelergebnisse
+		WHERE runde_no = %d
+		AND NOT ISNULL(person_id)
+		AND person_id = %d
+		GROUP BY person_id';
+	$sql = sprintf($sql, $runde_no, $person_id);
+	return wrap_db_fetch($sql, '', 'single value');
 }
 
 /**
@@ -563,7 +585,7 @@ function mf_tournaments_make_single_fort($event_id, $runde_no, $tabelle) {
  * Gegnerschnitt für Einzelturniere berechnen
  * Elo vor DWZ
  *
- * Schnitt nur über Ergebnisse gegen einen Gegner, falls Freilos wird Runde 
+ * Schnitt nur über Ergebnisse gegen einen Gegner, falls Freilos wird Runde
  * nicht gewertet! = NOT ISNULL(partien_einzelergebnisse.gegner_id)
  * @param int $event_id
  * @param int $runde_no
@@ -662,7 +684,7 @@ function mf_tournaments_make_single_buchholz_korrektur($event_id, $runde_no, $ta
 		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
 		$wertungen[$person_id] = $buchholz['Buchholz'];
 	}
-	return $wertungen;	
+	return $wertungen;
 }
 
 /**
@@ -681,7 +703,7 @@ function mf_tournaments_make_single_bhz_1st($event_id, $runde_no, $tabelle, $tab
 		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
 		$wertungen[$person_id] = $buchholz['Buchholz Cut 1'];
 	}
-	return $wertungen;	
+	return $wertungen;
 }
 
 /**
@@ -700,7 +722,7 @@ function mf_tournaments_make_single_bhz_2st($event_id, $runde_no, $tabelle, $tab
 		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
 		$wertungen[$person_id] = $buchholz['Buchholz Cut 2'];
 	}
-	return $wertungen;	
+	return $wertungen;
 }
 
 /**
@@ -719,7 +741,7 @@ function mf_tournaments_make_single_bhz_m($event_id, $runde_no, $tabelle, $tabel
 		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
 		$wertungen[$person_id] = $buchholz['Median Buchholz'];
 	}
-	return $wertungen;	
+	return $wertungen;
 }
 
 /**
@@ -737,7 +759,7 @@ function mf_tournaments_make_single_bhz_ii($event_id, $runde_no, $tabelle, $tabe
 	foreach ($tabelle as $person_id => $stand) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Buchholz');
 	}
-	return $wertungen;	
+	return $wertungen;
 }
 
 /**
@@ -755,7 +777,7 @@ function mf_tournaments_make_single_bhz_ii_1st($event_id, $runde_no, $tabelle, $
 	foreach ($tabelle as $person_id => $stand) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Buchholz Cut 1');
 	}
-	return $wertungen;	
+	return $wertungen;
 }
 
 /**
@@ -773,7 +795,7 @@ function mf_tournaments_make_single_bhz_ii_2st($event_id, $runde_no, $tabelle, $
 	foreach ($tabelle as $person_id => $stand) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Buchholz Cut 2');
 	}
-	return $wertungen;	
+	return $wertungen;
 }
 
 /**
@@ -791,7 +813,7 @@ function mf_tournaments_make_single_bhz_ii_m($event_id, $runde_no, $tabelle, $ta
 	foreach ($tabelle as $person_id => $stand) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Median Buchholz');
 	}
-	return $wertungen;	
+	return $wertungen;
 }
 
 /**
@@ -822,7 +844,7 @@ function my_buchholz_varianten($gegner_punkte) {
 	array_shift($cut2);
 	array_shift($cut2);
 	$buchholz['Median Buchholz 2'] = array_sum($cut2);
-	
+
 	return $buchholz;
 }
 
