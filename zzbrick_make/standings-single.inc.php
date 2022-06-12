@@ -25,7 +25,7 @@
  */
 function cms_tabellenstand_calculate_einzel($event, $runde_no) {
 	// gibt es überhaupt Partien in der Runde, die schon gespielt wurden?
-	$sql = 'SELECT COUNT(partie_id)
+	$sql = 'SELECT COUNT(*)
 		FROM partien
 		WHERE event_id = %d AND runde_no = %d
 		AND NOT ISNULL(weiss_ergebnis)';

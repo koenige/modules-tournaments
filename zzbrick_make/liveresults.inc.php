@@ -79,7 +79,7 @@ function mod_tournament_make_liveresults_tournament($params) {
 	// @todo return false wenn Runde komplett (aber wann ist Runde komplett?)
 	$sql = 'SELECT event_id, event, events.identifier, IFNULL(event_year, YEAR(date_begin)) AS year
 			, (SELECT MAX(runde_no) FROM partien WHERE event_id = events.event_id) AS runde_no
-			, (SELECT COUNT(partie_id) FROM partien WHERE event_id = events.event_id) AS partien
+			, (SELECT COUNT(*) FROM partien WHERE event_id = events.event_id) AS partien
 			, series_category_id
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform_kennung
 			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration

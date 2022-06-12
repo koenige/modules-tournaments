@@ -427,7 +427,7 @@ $zz['sql'] = 'SELECT tournaments.*
 		, events.identifier AS event_identifier
 		, modus.category_short AS modus
 		, turnierformen.category_short AS turnierform
-		, (SELECT COUNT(team_id) FROM teams
+		, (SELECT COUNT(*) FROM teams
 			WHERE teams.event_id = tournaments.event_id
 			AND team_status = "Teilnehmer"
 			AND spielfrei = "nein"

@@ -35,9 +35,9 @@ function mod_tournaments_tournament($vars, $settings) {
 			, IF(offen = "ja", IF(date_begin < CURDATE(), 0, 1), 0) AS offen
 			, IF(LOCATE("meldung=1", series.parameters), 1, NULL) AS online_meldung
 			, IF(ISNULL(teams_max), 1, 
-				IF((SELECT COUNT(team_id) FROM teams WHERE teams.event_id = events.event_id) < tournaments.teams_max, 1, NULL)
+				IF((SELECT COUNT(*) FROM teams WHERE teams.event_id = events.event_id) < tournaments.teams_max, 1, NULL)
 			) AS meldung_moeglich
-			, (SELECT COUNT(form_id) FROM forms WHERE forms.event_id = events.event_id AND forms.form_category_id = %d) AS freiplatz
+			, (SELECT COUNT(*) FROM forms WHERE forms.event_id = events.event_id AND forms.form_category_id = %d) AS freiplatz
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
 			, IFNULL(place, places.contact) AS turnierort
 			, pseudo_dwz, bretter_min
@@ -169,14 +169,14 @@ function mod_tournaments_tournament($vars, $settings) {
 			, TIME_FORMAT(time_begin, "%%H.%%i") AS time_begin
 			, TIME_FORMAT(time_end, "%%H.%%i") AS time_end
 			, event_category_id, date_begin, date_end, events.runde_no
-			, IF((SELECT COUNT(paarung_id) FROM paarungen
+			, IF((SELECT COUNT(*) FROM paarungen
 		   		WHERE event_id = events.main_event_id AND runde_no = events.runde_no), 1, NULL) AS paarungen
-			, IF((SELECT COUNT(partie_id) FROM partien
+			, IF((SELECT COUNT(*) FROM partien
 		   		WHERE event_id = events.main_event_id AND runde_no = events.runde_no), 1, NULL) AS partien
-			, IF((SELECT COUNT(tabellenstand_id) FROM tabellenstaende
+			, IF((SELECT COUNT(*) FROM tabellenstaende
 				WHERE event_id = events.main_event_id AND runde_no = events.runde_no), 1, NULL) AS tabelle
 			, IF(takes_place = "no", 1, NULL) as faellt_aus
-			, (SELECT COUNT(partie_id) FROM partien
+			, (SELECT COUNT(*) FROM partien
 				WHERE event_id = events.main_event_id
 				AND runde_no = events.runde_no
 				AND NOT ISNULL(pgn)) AS pgn

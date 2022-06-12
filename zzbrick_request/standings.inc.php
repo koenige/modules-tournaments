@@ -61,11 +61,11 @@ function mod_tournaments_standings($vars) {
 			, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
-			, (SELECT COUNT(partie_id) FROM partien
+			, (SELECT COUNT(*) FROM partien
 				WHERE partien.event_id = events.event_id
 				AND partien.runde_no = %d
 			) AS partien
-			, @live := (SELECT IF(COUNT(partie_id), 1, NULL) FROM partien
+			, @live := (SELECT IF(COUNT(*), 1, NULL) FROM partien
 				WHERE partien.event_id = events.event_id
 				AND ISNULL(weiss_ergebnis)
 				AND partien.runde_no = %d

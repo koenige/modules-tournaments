@@ -73,7 +73,7 @@ function cms_tabellenstandupdate_uebersicht($vars) {
 	$zz_setting['logfile_name'] = $event['identifier'];
 
 	$sql = 'SELECT events.event_id, events.runde_no
-			, (SELECT COUNT(partie_id) FROM partien
+			, (SELECT COUNT(*) FROM partien
 				WHERE partien.event_id = events.main_event_id
 				AND partien.runde_no = events.runde_no) AS partien
 		FROM events

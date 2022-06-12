@@ -368,7 +368,7 @@ function mf_tournaments_final_standings($event_ids) {
 	}
 	// Wir gehen davon aus, dass bei beendeten Turnieren der Tabellenstand = Endstand ist
 	$sql = 'SELECT event_id, runden, events.identifier
-			, (SELECT COUNT(team_id) FROM teams
+			, (SELECT COUNT(*) FROM teams
 				WHERE spielfrei = "nein"
 				AND team_status = "Teilnehmer"
 				AND teams.event_id = events.event_id) AS teams

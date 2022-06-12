@@ -33,10 +33,10 @@ function mod_tournaments_make_jobtrigger($params) {
 	$sql = 'SELECT category_id, category
 			, SUBSTRING_INDEX(path, "/", -1) AS path
 			, parameters,
-			(SELECT COUNT(laufend.cronjob_id) FROM cronjobs laufend
+			(SELECT COUNT(*) FROM cronjobs laufend
 				WHERE categories.category_id = laufend.cronjob_category_id
 				AND NOT ISNULL(laufend.start) AND ISNULL(laufend.ende)) AS laufend,
-			(SELECT COUNT(todo.cronjob_id) FROM cronjobs todo
+			(SELECT COUNT(*) FROM cronjobs todo
 				WHERE categories.category_id = todo.cronjob_category_id
 				AND ISNULL(todo.start) AND ISNULL(todo.ende)) AS todo
 		FROM categories

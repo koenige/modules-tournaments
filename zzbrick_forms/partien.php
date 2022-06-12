@@ -23,7 +23,7 @@ if (!$runde_no) wrap_quit(404);
 $values = [];
 if (count($brick['vars']) === 4) {
 	$sql = 'SELECT paarung_id, heim_team_id, auswaerts_team_id
-			, (SELECT COUNT(partie_id) FROM partien WHERE partien.paarung_id = paarungen.paarung_id) AS partien
+			, (SELECT COUNT(*) FROM partien WHERE partien.paarung_id = paarungen.paarung_id) AS partien
 		FROM paarungen WHERE event_id = %d
 		AND runde_no = %d AND tisch_no = %d';
 	$sql = sprintf($sql, $brick['data']['event_id'], $brick['vars'][2], $brick['vars'][3]);
@@ -86,7 +86,7 @@ if (count($brick['vars']) === 4) {
 	];
 	$zz_conf['breadcrumbs'][] = ['linktext' => 'Tisch '.$brick['vars'][3]];
 
-	$sql = 'SELECT COUNT(paarung_id) FROM paarungen WHERE event_id = %d AND runde_no = %d';
+	$sql = 'SELECT COUNT(*) FROM paarungen WHERE event_id = %d AND runde_no = %d';
 	$sql = sprintf($sql, $brick['data']['event_id'], $brick['vars'][2]);
 	$tische_max = wrap_db_fetch($sql, '', 'single value');
 

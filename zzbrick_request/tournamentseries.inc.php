@@ -30,7 +30,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 			, SUBSTRING_INDEX(series.path, "/", -1) AS series_path
 			, IFNULL(place, places.contact) AS turnierort
 			, website_org.contact_abbr
-			, (SELECT COUNT(code_id) FROM access_codes WHERE event_id = events.event_id) AS access_codes
+			, (SELECT COUNT(*) FROM access_codes WHERE event_id = events.event_id) AS access_codes
 			, series.parameters
 			, (SELECT COUNT(*) FROM categories WHERE categories.main_category_id = series.category_id) AS sub_series
 		FROM events
@@ -81,11 +81,11 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 			, IFNULL(place, places.contact) AS turnierort
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
-			, (SELECT COUNT(partie_id) FROM partien
+			, (SELECT COUNT(*) FROM partien
 				WHERE NOT ISNULL(pgn) AND partien.event_id = events.event_id) AS partien
-			, (SELECT COUNT(partie_id) FROM partien
+			, (SELECT COUNT(*) FROM partien
 				WHERE partien.event_id = events.event_id) AS turnierstart
-			, (SELECT COUNT(team_id) FROM teams
+			, (SELECT COUNT(*) FROM teams
 				WHERE teams.event_id = events.event_id
 				AND teams.team_status = "Teilnehmer") AS teams
 			, (SELECT COUNT(*) FROM participations
@@ -103,7 +103,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 				AND (ISNULL(team_id) OR teams.meldung = "teiloffen" OR teams.meldung = "komplett")
 				AND (NOT ISNULL(participations.club_contact_id))
 			) AS spieler_mit_verein
-			, (SELECT COUNT(kontingent_id) FROM kontingente WHERE kontingente.event_id = events.event_id) AS kontingente
+			, (SELECT COUNT(*) FROM kontingente WHERE kontingente.event_id = events.event_id) AS kontingente
 			, tournament_id, main_tournament_id
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
@@ -173,7 +173,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 	}
 
 	// Kontingente?
-	$sql = 'SELECT COUNT(regionalgruppe_id) FROM regionalgruppen
+	$sql = 'SELECT COUNT(*) FROM regionalgruppen
 		WHERE series_category_id = %d';
 	$sql = sprintf($sql, $event['series_category_id']);
 	$event['kontingent'] = wrap_db_fetch($sql, '', 'single value');
@@ -187,7 +187,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 
 	// Links?
 	if ($event['tournaments']) {
-		$sql = 'SELECT COUNT(event_link_id) FROM events_links
+		$sql = 'SELECT COUNT(*) FROM events_links
 			WHERE event_id IN (%s)';
 		$sql = sprintf($sql, implode(',', array_keys($event['tournaments'])));
 		$event['event_links'] = wrap_db_fetch($sql, '', 'single value');
