@@ -10,7 +10,7 @@
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
  * @copyright Copyright © 2012-2022 Gustaf Mossakowski
- * @copyright Copyright © 2014 Erik Kothe
+ * @copyright Copyright © 2014, 2022 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -510,7 +510,6 @@ function mf_tournaments_get_single_result_from_round($event_id, $runde_no, $pers
 	$sql = 'SELECT SUM(ergebnis) AS punkte
 		FROM partien_einzelergebnisse
 		WHERE runde_no = %d
-		AND NOT ISNULL(person_id)
 		AND person_id = %d
 		GROUP BY person_id';
 	$sql = sprintf($sql, $runde_no, $person_id);
