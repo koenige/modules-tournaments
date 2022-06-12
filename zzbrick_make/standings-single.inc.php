@@ -228,7 +228,7 @@ class cms_tabellenstand_einzel {
 		return $spieler;
 	}
 	
-	function getRoundResults($person_id) {
+	function getRoundResults($person_id, $round_no = false) {
 		static $round_results;
 		if (empty($round_results)) {
 			$sql = 'SELECT person_id, runde_no, partiestatus_category_id, gegner_id
@@ -240,6 +240,7 @@ class cms_tabellenstand_einzel {
 			$round_results = wrap_db_fetch($sql, ['person_id', 'runde_no']);
 		}
 		if (!array_key_exists($person_id, $round_results)) return [];
+		if ($round_no !== false) return $round_results[$person_id][$round_no];
 		return $round_results[$person_id];
 	}
 
@@ -441,7 +442,8 @@ class cms_tabellenstand_einzel {
 						// Partie selbst wird ebenfalls mit 0 Punkten gewertet
 						$punkte = 0;
 					} elseif($runde < $kampflos['runde_no']) {
-						$punkte = mf_tournaments_get_single_result_from_round($event_id, $runde, $person_id);
+						$round_data = $this->getRoundResults($person_id, $runde);
+						$punkte = $round_data['ergebnis'];
 					}else{
 						// Gegner existiert, Partie kampflos
 						// Tatsächliche Punkte bis zur Runde mit kampflosem Verlust,
@@ -483,24 +485,6 @@ function mf_tournaments_make_single_pkt($event_id, $runde_no) {
 		GROUP BY person_id';
 	$sql = sprintf($sql, $runde_no);
 	return wrap_db_fetch($sql, '_dummy_', 'key/value');
-}
-
-/**
- * Holt das Ergebnis von einem Spieler zu einer bestimmten Runde
- *
- * @param int $event_id
- * @param int $runde_no
- * @param int $person_id
- * @return float single value
- */
-function mf_tournaments_get_single_result_from_round($event_id, $runde_no, $person_id) {
-	$sql = 'SELECT SUM(ergebnis) AS punkte
-		FROM partien_einzelergebnisse
-		WHERE runde_no = %d
-		AND person_id = %d
-		GROUP BY person_id';
-	$sql = sprintf($sql, $runde_no, $person_id);
-	return wrap_db_fetch($sql, '', 'single value');
 }
 
 /**
