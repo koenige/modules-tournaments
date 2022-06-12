@@ -227,6 +227,21 @@ class cms_tabellenstand_einzel {
 		$spieler = wrap_db_fetch($sql, 'person_id');
 		return $spieler;
 	}
+	
+	function getRoundResults($person_id) {
+		static $round_results;
+		if (empty($round_results)) {
+			$sql = 'SELECT person_id, runde_no, partiestatus_category_id, gegner_id
+					, (CASE ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE 0 END) AS ergebnis
+				FROM partien_einzelergebnisse
+				WHERE runde_no <= %d
+				ORDER BY runde_no';
+			$sql = sprintf($sql, $this->sieg, $this->remis, $this->runde_no);
+			$round_results = wrap_db_fetch($sql, ['person_id', 'runde_no']);
+		}
+		if (!array_key_exists($person_id, $round_results)) return [];
+		return $round_results[$person_id];
+	}
 
 	/**
 	 * Buchholzsumme berechnen
@@ -237,23 +252,12 @@ class cms_tabellenstand_einzel {
 	 * @return array
 	 */
 	function getBuchholzsumme($event_id, $person_id, $variante) {
-		static $rundenergebnisse;
-		if (empty($rundenergebnisse)) $rundenergebnisse = [];
 		$buchholzsumme = [];
 
 		// Welche Regelung wird angewendet?
 		$korrektur = mf_tournaments_make_fide_correction($event_id);
 
-		if (empty($rundenergebnisse)) {
-			$sql = 'SELECT person_id, runde_no, partiestatus_category_id, gegner_id
-					, (CASE ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE 0 END) AS ergebnis
-				FROM partien_einzelergebnisse
-				WHERE runde_no <= %d
-				ORDER BY runde_no';
-			$sql = sprintf($sql, $this->sieg, $this->remis, $this->runde_no);
-			$rundenergebnisse = wrap_db_fetch($sql, ['person_id', 'runde_no']);
-		}
-		$runden = $rundenergebnisse[$person_id];
+		$runden = $this->getRoundResults($person_id);
 		foreach ($runden as $runde) {
 			if ($runde['gegner_id'] == NULL) continue;
 			$buchholzsumme[$runde['gegner_id']] = $this->getBuchholz($event_id, $runde['gegner_id'], $korrektur, $variante);
