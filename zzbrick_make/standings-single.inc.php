@@ -106,8 +106,6 @@ function cms_tabellenstand_calculate_einzel($event, $runde_no) {
  * @todo return Anzahl der geänderten Datensätze, ggf.
  */
 function cms_tabellenstand_write_einzel($event_id, $runde_no, $tabelle) {
-	global $zz_setting;
-
 	// Bestehenden Tabellenstand aus Datenbank auslesen
 	$sql = 'SELECT person_id, tabellenstand_id
 		FROM tabellenstaende
@@ -220,8 +218,7 @@ class cms_tabellenstand_einzel {
 	}
 
 	function getSpieler($event_id) {
-		global $zz_setting;
-		$sql = 'SELECT event_id, person_id, t_vorname, t_nachname, setzliste_no
+		$sql = 'SELECT person_id, setzliste_no
 			FROM participations
 			WHERE event_id = %d
 			AND usergroup_id = %d
@@ -573,7 +570,7 @@ function mf_tournaments_make_single_fort($event_id, $runde_no, $tabelle) {
 		GROUP BY person_id';
 	$sql = sprintf($sql, $runde_no, $runde_no);
 	$wertungen = wrap_db_fetch($sql, '_dummy_', 'key/value');
-	foreach ($tabelle as $person_id => $stand) {
+	foreach (array_keys($tabelle) as $person_id) {
 		if (array_key_exists($person_id, $wertungen)) continue;
 		$wertungen[$person_id] = 0;
 	}
@@ -621,7 +618,7 @@ function mf_tournaments_make_single_sw($event_id, $runde_no, $tabelle) {
 		GROUP BY person_id';
 	$sql = sprintf($sql, $runde_no);
 	$wertungen = wrap_db_fetch($sql, '_dummy_', 'key/value');
-	foreach ($tabelle as $person_id => $stand) {
+	foreach (array_keys($tabelle) as $person_id) {
 		if (array_key_exists($person_id, $wertungen)) continue;
 		$wertungen[$person_id] = 0;
 	}
@@ -636,7 +633,6 @@ function mf_tournaments_make_single_sw($event_id, $runde_no, $tabelle) {
  * @return array Liste person_id => value
  */
 function mf_tournaments_make_single_gespielte_partien($event_id, $runde_no) {
-	global $zz_setting;
 	$sql = 'SELECT person_id, COUNT(partie_id) AS partien
 		FROM participations
 		LEFT JOIN partien
@@ -679,7 +675,7 @@ function mf_tournaments_make_single_rg($event_id, $runde_no, $tabelle) {
  */
 function mf_tournaments_make_single_buchholz_korrektur($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
-	foreach ($tabelle as $person_id => $stand) {
+	foreach (array_keys($tabelle) as $person_id) {
 		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
 		$wertungen[$person_id] = $buchholz['Buchholz'];
 	}
@@ -698,7 +694,7 @@ function mf_tournaments_make_single_buchholz_korrektur($event_id, $runde_no, $ta
  */
 function mf_tournaments_make_single_bhz_1st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
-	foreach ($tabelle as $person_id => $stand) {
+	foreach (array_keys($tabelle) as $person_id) {
 		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
 		$wertungen[$person_id] = $buchholz['Buchholz Cut 1'];
 	}
@@ -717,7 +713,7 @@ function mf_tournaments_make_single_bhz_1st($event_id, $runde_no, $tabelle, $tab
  */
 function mf_tournaments_make_single_bhz_2st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
-	foreach ($tabelle as $person_id => $stand) {
+	foreach (array_keys($tabelle) as $person_id) {
 		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
 		$wertungen[$person_id] = $buchholz['Buchholz Cut 2'];
 	}
@@ -736,7 +732,7 @@ function mf_tournaments_make_single_bhz_2st($event_id, $runde_no, $tabelle, $tab
  */
 function mf_tournaments_make_single_bhz_m($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
-	foreach ($tabelle as $person_id => $stand) {
+	foreach (array_keys($tabelle) as $person_id) {
 		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
 		$wertungen[$person_id] = $buchholz['Median Buchholz'];
 	}
@@ -755,7 +751,7 @@ function mf_tournaments_make_single_bhz_m($event_id, $runde_no, $tabelle, $tabel
  */
 function mf_tournaments_make_single_bhz_ii($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
-	foreach ($tabelle as $person_id => $stand) {
+	foreach (array_keys($tabelle) as $person_id) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Buchholz');
 	}
 	return $wertungen;
@@ -773,7 +769,7 @@ function mf_tournaments_make_single_bhz_ii($event_id, $runde_no, $tabelle, $tabe
  */
 function mf_tournaments_make_single_bhz_ii_1st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
-	foreach ($tabelle as $person_id => $stand) {
+	foreach (array_keys($tabelle) as $person_id) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Buchholz Cut 1');
 	}
 	return $wertungen;
@@ -791,7 +787,7 @@ function mf_tournaments_make_single_bhz_ii_1st($event_id, $runde_no, $tabelle, $
  */
 function mf_tournaments_make_single_bhz_ii_2st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
-	foreach ($tabelle as $person_id => $stand) {
+	foreach (array_keys($tabelle) as $person_id) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Buchholz Cut 2');
 	}
 	return $wertungen;
@@ -809,7 +805,7 @@ function mf_tournaments_make_single_bhz_ii_2st($event_id, $runde_no, $tabelle, $
  */
 function mf_tournaments_make_single_bhz_ii_m($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
-	foreach ($tabelle as $person_id => $stand) {
+	foreach (array_keys($tabelle) as $person_id) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Median Buchholz');
 	}
 	return $wertungen;
