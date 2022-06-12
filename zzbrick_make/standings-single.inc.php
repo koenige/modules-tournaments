@@ -300,14 +300,7 @@ class cms_tabellenstand_einzel {
 		$gegner_punkte = $this->getBuchholzGegnerPunkte($event_id, $person_id, $korrektur);
 
 		if (count($gegner_punkte) < $this->runde_no) {
-			$sql = 'SELECT runde_no, partiestatus_category_id
-					, (CASE ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE 0 END) AS ergebnis
-				FROM partien_einzelergebnisse
-				WHERE person_id = %d
-				AND runde_no <= %d
-				ORDER BY runde_no';
-			$sql = sprintf($sql, $this->sieg, $this->remis, $person_id, $this->runde_no);
-			$runden = wrap_db_fetch($sql, 'runde_no');
+			$runden = $this->getRoundResults($person_id);
 			if ($korrektur === 'fide-2012') {
 				$rundenSumme = 0; // Beinhaltet die bis jetzt gespielten Punkte
 				for ($runde = 1; $runde <= $this->runde_no; $runde++) {
@@ -368,14 +361,7 @@ class cms_tabellenstand_einzel {
 
 		/* Testen ob nicht gepaart wurde */
 		if (count($gegner_punkte) < $this->runde_no) {
-			$sql = 'SELECT runde_no
-					, (CASE ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE 0 END) AS ergebnis
-				FROM partien_einzelergebnisse
-				WHERE person_id = %d
-				AND runde_no <= %d
-				ORDER BY runde_no';
-			$sql = sprintf($sql, $this->sieg, $this->remis, $person_id, $this->runde_no);
-			$runden = wrap_db_fetch($sql, 'runde_no');
+			$runden = $this->getRoundResults($person_id);
 			if ($korrektur === 'fide-2012') {
 
 				$rundenSumme = 1; // Beinhaltet die bis jetzt gespielten Punkte
