@@ -255,45 +255,19 @@ class cms_tabellenstand_einzel {
 	function getBuchholzsumme($event_id, $person_id, $variante) {
 		$buchholzsumme = [];
 
-		// Welche Regelung wird angewendet?
-		$korrektur = mf_tournaments_make_fide_correction($event_id);
-
 		$runden = $this->getRoundResults($person_id);
 		foreach ($runden as $runde) {
 			if ($runde['gegner_id'] == NULL) continue;
-			$buchholzsumme[$runde['gegner_id']] = $this->getBuchholz($event_id, $runde['gegner_id'], $korrektur, $variante);
+			$buchholzsumme[$runde['gegner_id']] = $this->getBuchholz($event_id, $runde['gegner_id'], $variante);
 		}
-
-		if (count($buchholzsumme) < $this->runde_no) {
-			if ($korrektur === 'fide-2012') {
-			/* Für den Fall das nicht gepaart wurde */
-				$rundenSumme = 1; // Beinhaltet die bis jetzt gespielten Punkte
-				for ($runde = 1; $runde <= $this->runde_no; $runde++) {
-					if (empty($runden[$runde]) || $runden[$runde]['partiestatus_category_id'].'' === wrap_category_id('partiestatus/kampflos').'') {
-						$buchholzsumme['aktRunde'.$runde] = $rundenSumme + ($this->runde_no - $runde) * 0.5; // $this->remis?
-					}
-					if (!empty($runden[$runde])) {
-						$rundenSumme += $runden[$runde]["ergebnis"];
-					}
-				}
-			} else {
-				// Wichtig für Streichergebnisse!
-				for ($runde = 1; $runde <= $this->runde_no; $runde++) {
-					if (empty($runden[$runde]['gegner_id'])) {
-						$buchholzsumme['runde'.$runde] = 0;
-					}
-				}
-			}
-		}
-
 		$buchholz = mf_tournaments_make_buchholz_variants($buchholzsumme);
 		return $buchholz[$variante];
 	}
 
 	/**
-	 * Buchholz für Buchholzsumme auswerten
+	 * Buchholz auswerten
 	 */
-	function getBuchholz($event_id, $person_id, $korrektur, $variante) {
+	function getBuchholz($event_id, $person_id, $variante) {
 		if (isset($this->buchholzSpielerFein[$event_id][$person_id])) {
 			return $this->buchholzSpielerFein[$event_id][$person_id][$variante];
 		}
@@ -302,19 +276,6 @@ class cms_tabellenstand_einzel {
 		$buchholz = mf_tournaments_make_buchholz_variants($gegner_punkte);
 		$this->buchholzSpielerFein[$event_id][$person_id] = $buchholz;
 		return $buchholz[$variante];
-	}
-
-	/**
-	 * Buchholz auswerten
-	 */
-	function getBuchholzSpieler($event_id, $person_id) {
-		if (isset($this->buchholzSpieler[$event_id][$person_id])) {
-			return $this->buchholzSpieler[$event_id][$person_id];
-		}
-		$gegner_punkte = $this->getBuchholzGegnerPunkte($event_id, $person_id);
-		$buchholz = mf_tournaments_make_buchholz_variants($gegner_punkte);
-		$this->buchholzSpieler[$event_id][$person_id] = $buchholz;
-		return $buchholz;
 	}
 
 	/**
@@ -622,8 +583,7 @@ function mf_tournaments_make_single_rg($event_id, $runde_no, $tabelle) {
 function mf_tournaments_make_single_buchholz_korrektur($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach (array_keys($tabelle) as $person_id) {
-		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
-		$wertungen[$person_id] = $buchholz['Buchholz'];
+		$wertungen[$person_id] = $tabelleeinzeln->getBuchholz($event_id, $person_id, 'Buchholz');
 	}
 	return $wertungen;
 }
@@ -641,8 +601,7 @@ function mf_tournaments_make_single_buchholz_korrektur($event_id, $runde_no, $ta
 function mf_tournaments_make_single_bhz_1st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach (array_keys($tabelle) as $person_id) {
-		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
-		$wertungen[$person_id] = $buchholz['Buchholz Cut 1'];
+		$wertungen[$person_id] = $tabelleeinzeln->getBuchholz($event_id, $person_id, 'Buchholz Cut 1');
 	}
 	return $wertungen;
 }
@@ -660,8 +619,7 @@ function mf_tournaments_make_single_bhz_1st($event_id, $runde_no, $tabelle, $tab
 function mf_tournaments_make_single_bhz_2st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach (array_keys($tabelle) as $person_id) {
-		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
-		$wertungen[$person_id] = $buchholz['Buchholz Cut 2'];
+		$wertungen[$person_id] = $tabelleeinzeln->getBuchholz($event_id, $person_id, 'Buchholz Cut 2');
 	}
 	return $wertungen;
 }
@@ -679,8 +637,7 @@ function mf_tournaments_make_single_bhz_2st($event_id, $runde_no, $tabelle, $tab
 function mf_tournaments_make_single_bhz_m($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach (array_keys($tabelle) as $person_id) {
-		$buchholz = $tabelleeinzeln->getBuchholzSpieler($event_id, $person_id);
-		$wertungen[$person_id] = $buchholz['Median Buchholz'];
+		$wertungen[$person_id] = $tabelleeinzeln->getBuchholz($event_id, $person_id, 'Median Buchholz');
 	}
 	return $wertungen;
 }
