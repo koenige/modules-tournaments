@@ -370,6 +370,8 @@ class cms_tabellenstand_einzel {
 				}
 			}
 		}
+		// person might not have been paired (yet)
+		if (!array_key_exists($this_person_id, $opponent_scores)) return [];
 		return $opponent_scores[$this_person_id];
 	}
 }
