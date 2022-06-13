@@ -299,29 +299,6 @@ class cms_tabellenstand_einzel {
 		}
 
 		$gegner_punkte = $this->getBuchholzGegnerPunkte($event_id, $person_id);
-
-		if (count($gegner_punkte) < $this->runde_no) {
-			$runden = $this->getRoundResults($person_id);
-			if ($korrektur === 'fide-2012') {
-				$rundenSumme = 0; // Beinhaltet die bis jetzt gespielten Punkte
-				for ($runde = 1; $runde <= $this->runde_no; $runde++) {
-					if (empty($runden[$runde]) || $runden[$runde]['partiestatus_category_id'].'' === wrap_category_id('partiestatus/kampflos').'') {
-						$gegner_punkte["runde".$runde] = $rundenSumme + ($this->runde_no-$runde) * $this->remis;
-					}
-					if (!empty($runden[$runde])) {
-						$rundenSumme += $runden[$runde]["ergebnis"];
-					}
-				}
-			} else {
-				// Wichtig für Streichergebnisse!
-				for ($runde = 1; $runde <= $this->runde_no; $runde++) {
-					if (empty($runden[$runde])) {
-						$gegner_punkte['runde'.$runde] = 0;
-					}
-				}
-			}
-		}
-
 		$buchholz = mf_tournaments_make_buchholz_variants($gegner_punkte);
 		$this->buchholzSpielerFein[$event_id][$person_id] = $buchholz;
 		return $buchholz[$variante];
@@ -334,31 +311,7 @@ class cms_tabellenstand_einzel {
 		if (isset($this->buchholzSpieler[$event_id][$person_id])) {
 			return $this->buchholzSpieler[$event_id][$person_id];
 		}
-		// Welche Regelung wird angewendet?
-		$korrektur = mf_tournaments_make_fide_correction($event_id);
-
 		$gegner_punkte = $this->getBuchholzGegnerPunkte($event_id, $person_id);
-
-		/* Testen ob nicht gepaart wurde */
-		if (count($gegner_punkte) < $this->runde_no) {
-			$runden = $this->getRoundResults($person_id);
-			if ($korrektur === 'fide-2012') {
-
-				$rundenSumme = 1; // Beinhaltet die bis jetzt gespielten Punkte
-				for ($runde = 1; $runde <= $this->runde_no; $runde++) {
-					if (empty($runden[$runde])) {
-						$gegner_punkte["aktRunde".$runde] = $rundenSumme + ($this->runde_no-$runde) * $this->remis;
-					} else {
-						$rundenSumme += $runden[$runde]["ergebnis"];
-					}
-				}
-			} else {
-				for ($runde = 1; $runde <= $this->runde_no; $runde++) {
-					$gegner_punkte['runde'.$runde] = 0;
-				}
-			}
-		}
-
 		$buchholz = mf_tournaments_make_buchholz_variants($gegner_punkte);
 		$this->buchholzSpieler[$event_id][$person_id] = $buchholz;
 		return $buchholz;
@@ -404,17 +357,23 @@ class cms_tabellenstand_einzel {
 			if ($correction === 'fide-2012') {
 				$sql = 'SELECT person_id
 						, CONCAT(IFNULL(gegner_id, "freilos"), "-", runde_no) AS _index
-						, gegner_id, runde_no
+						, gegner_id, runde_no, ergebnis
 					FROM partien_einzelergebnisse
 					WHERE partiestatus_category_id = %d
-					AND ergebnis = "1.0"
-					AND runde_no <= %d';
+					AND runde_no <= %d
+					AND NOT ISNULL(person_id)';
 				$sql = sprintf($sql, wrap_category_id('partiestatus/kampflos'), $this->runde_no);
 				$tournament_byes = wrap_db_fetch($sql, ['person_id', '_index']);
 			
 				// Kampflose Siege?
 				foreach ($tournament_byes as $person_id => $byes) {
 					foreach ($byes as $opponent => $bye) {
+						if ($bye['ergebnis'] === '0.0') {
+							// pairing allocated bye will still be calculated as
+							// playing against a virtual opponent
+							unset($opponent_scores[$person_id][$opponent]);
+							continue;
+						}
 						for ($round = 1; $round <= $this->runde_no; $round++) {
 							if ($round > $bye['runde_no']) {
 								// Runden nach kampfloser Paarung: 0.5 Punkte
@@ -450,6 +409,32 @@ class cms_tabellenstand_einzel {
 			foreach ($opponent_scores as $person_id => $opponents) {
 				foreach ($opponents as $opponent => $scores) {
 					$opponent_scores[$person_id][$opponent] = array_sum($scores);
+				}
+				// Testen ob nicht gepaart wurde
+				if (count($opponent_scores[$person_id]).'' === $this->runde_no.'') continue;
+				$existing_rounds = [];
+				foreach (array_keys($opponent_scores[$person_id]) as $opponent) {
+					$existing_round = explode('-', $opponent);
+					$existing_rounds[] = $existing_round[1];
+				}
+				for ($round = 1; $round <= $this->runde_no; $round++) {
+					if (in_array($round, $existing_rounds)) continue;
+					if ($correction === 'fide-2012') {
+						// SPR + (1 – SfPR) + 0.5 * (n – R)
+						$round_data = $this->getRoundResults($person_id);
+						$spr = 0;
+						for ($round_played = 1; $round_played < $this->runde_no; $round_played++) {
+							if (!array_key_exists($round_played, $round_data)) continue;
+							$spr += $round_data[$round_played]['ergebnis'];
+						}
+						$sfpr = array_key_exists($round, $round_data)
+							? $round_data[$round]['ergebnis'] : 0;
+						$opponent_scores[$person_id]['bye-'.$round]
+							= $spr + 1 - $sfpr + $this->remis * ($this->runde_no - $round);
+					} else {
+						// Wichtig für Streichergebnisse!
+						$opponent_scores[$person_id]['bye-'.$round] = 0;
+					}
 				}
 			}
 		}
