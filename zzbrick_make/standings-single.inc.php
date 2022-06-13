@@ -286,7 +286,7 @@ class cms_tabellenstand_einzel {
 			}
 		}
 
-		$buchholz = my_buchholz_varianten($buchholzsumme);
+		$buchholz = mf_tournaments_make_buchholz_variants($buchholzsumme);
 		return $buchholz[$variante];
 	}
 
@@ -322,7 +322,7 @@ class cms_tabellenstand_einzel {
 			}
 		}
 
-		$buchholz = my_buchholz_varianten($gegner_punkte);
+		$buchholz = mf_tournaments_make_buchholz_variants($gegner_punkte);
 		$this->buchholzSpielerFein[$event_id][$person_id] = $buchholz;
 		return $buchholz[$variante];
 	}
@@ -380,7 +380,7 @@ class cms_tabellenstand_einzel {
 			}
 		}
 
-		$buchholz = my_buchholz_varianten($gegner_punkte);
+		$buchholz = mf_tournaments_make_buchholz_variants($gegner_punkte);
 		$this->buchholzSpieler[$event_id][$person_id] = $buchholz;
 		return $buchholz;
 	}
@@ -441,7 +441,7 @@ class cms_tabellenstand_einzel {
 						// Bei Freilos: Runden vor kampfloser Paarung: 0 Punkte
 						// Partie selbst wird ebenfalls mit 0 Punkten gewertet
 						$punkte = 0;
-					} elseif($runde < $kampflos['runde_no']) {
+					} elseif ($runde < $kampflos['runde_no']) {
 						$round_data = $this->getRoundResults($person_id, $runde);
 						$punkte = $round_data['ergebnis'];
 					}else{
@@ -791,7 +791,7 @@ function mf_tournaments_make_single_bhz_ii_m($event_id, $runde_no, $tabelle, $ta
  * @param array $gegner_punkte Liste der Punkte der Gegner bzw. Buchholz
  * @return array
  */
-function my_buchholz_varianten($gegner_punkte) {
+function mf_tournaments_make_buchholz_variants($gegner_punkte) {
 	// Reine Buchholz
 	$buchholz['Buchholz'] = array_sum($gegner_punkte);
 
