@@ -255,10 +255,14 @@ class cms_tabellenstand_einzel {
 	function getBuchholzsumme($event_id, $person_id, $variante) {
 		$buchholzsumme = [];
 
-		$runden = $this->getRoundResults($person_id);
-		foreach ($runden as $runde) {
-			if ($runde['gegner_id'] == NULL) continue;
-			$buchholzsumme[$runde['gegner_id']] = $this->getBuchholz($event_id, $runde['gegner_id'], $variante);
+		$results = $this->getRoundResults($person_id);
+		for ($round = 1; $round <= $this->runde_no; $round++) {
+			if (!array_key_exists($round, $results))
+				$buchholzsumme[$round] = 0; // for Buchholz cut
+			elseif ($results[$round]['gegner_id'] === NULL)
+				$buchholzsumme[$round] = 0; // for Buchholz cut
+			else
+				$buchholzsumme[$round] = $this->getBuchholz($event_id, $results[$round]['gegner_id'], $variante);
 		}
 		$buchholz = mf_tournaments_make_buchholz_variants($buchholzsumme);
 		return $buchholz[$variante];
@@ -318,6 +322,7 @@ class cms_tabellenstand_einzel {
 			, wrap_category_id('partiestatus/kampflos')
 			, $count_bye_as_draw, $this->remis
 			, $this->sieg, $this->remis, $this->runde_no, $this->runde_no
+			// FIDE 2012: exclude all byes, calculate individually
 			, $correction === 'fide-2012' ? wrap_category_id('partiestatus/kampflos') : 0
 		);
 		$opponent_scores = wrap_db_fetch($sql, ['person_id', '_index', 'runde_gegner', 'buchholz'], 'key/value');
