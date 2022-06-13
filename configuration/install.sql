@@ -292,15 +292,6 @@ CREATE OR REPLACE VIEW `partien_einzelergebnisse` AS
 	WHERE `event_id` = `event_id`();
 
 
-CREATE OR REPLACE VIEW `buchholz_einzel_mit_kampflosen_view` AS
-	SELECT `ergebnisse_gegner`.`partiestatus_category_id`, `ergebnisse`.`runde_no`, `ergebnisse`.`event_id`, `ergebnisse`.`person_id`, `ergebnisse`.`gegner_id`, `ergebnisse_gegner`.`ergebnis` AS `punkte`, `ergebnisse_gegner`.`runde_no` AS `runde_gegner`
-	FROM `partien_einzelergebnisse` `ergebnisse`
-	JOIN `partien_einzelergebnisse` `ergebnisse_gegner`
-		ON `ergebnisse`.`event_id` = `ergebnisse_gegner`.`event_id`
-		AND `ergebnisse`.`gegner_id` = `ergebnisse_gegner`.`person_id`
-	ORDER BY `ergebnisse`.`person_id`, `ergebnisse`.`gegner_id`;
-
-
 CREATE OR REPLACE VIEW `partien_ergebnisse_view` AS
 	SELECT `partien`.`event_id`, `paarungen`.`heim_team_id` AS `team_id`, `paarungen`.`auswaerts_team_id` AS `gegner_team_id`, `partien`.`runde_no`, `partien`.`brett_no`, `partien`.`partie_id`, `partien`.`heim_wertung` AS `ergebnis`, `partien`.`auswaerts_wertung` AS `ergebnis_gegner`
 	FROM `paarungen`

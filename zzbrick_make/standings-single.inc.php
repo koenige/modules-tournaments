@@ -303,21 +303,21 @@ class cms_tabellenstand_einzel {
 		// fide-2009, fide-2012: kampflose Partien werden mit 0.5 gewertet
 		$count_bye_as_draw = in_array($correction, ['fide-2009', 'fide-2012']) ? 1 : 0;
 
-		$sql = 'SELECT ergebnisse.person_id
-				, CONCAT(ergebnisse.gegner_id, "-", ergebnisse.runde_no) AS _index
-				, IF(ergebnisse_gegner.partiestatus_category_id = %d AND %d = 1, %s,
-					CASE ergebnisse_gegner.ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE 0 END
+		$sql = 'SELECT own_scores.person_id
+				, CONCAT(own_scores.gegner_id, "-", own_scores.runde_no) AS _index
+				, IF(opponents_scores.partiestatus_category_id = %d AND %d = 1, %s,
+					CASE opponents_scores.ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE 0 END
 				) AS buchholz
-				, ergebnisse_gegner.runde_no AS runde_gegner
-			FROM partien_einzelergebnisse ergebnisse
-			JOIN partien_einzelergebnisse ergebnisse_gegner
-				ON ergebnisse.event_id = ergebnisse_gegner.event_id
-				AND ergebnisse.gegner_id = ergebnisse_gegner.person_id
-			WHERE ergebnisse.runde_no <= %d
-			AND ergebnisse_gegner.runde_no <= %d
-			AND NOT ISNULL(ergebnisse.person_id)
-			AND ergebnisse.partiestatus_category_id != %d
-			ORDER BY ergebnisse.runde_no, ergebnisse.gegner_id, ergebnisse_gegner.runde_no';
+				, opponents_scores.runde_no AS runde_gegner
+			FROM partien_einzelergebnisse own_scores
+			JOIN partien_einzelergebnisse opponents_scores
+				ON own_scores.event_id = opponents_scores.event_id
+				AND own_scores.gegner_id = opponents_scores.person_id
+			WHERE own_scores.runde_no <= %d
+			AND opponents_scores.runde_no <= %d
+			AND NOT ISNULL(own_scores.person_id)
+			AND own_scores.partiestatus_category_id != %d
+			ORDER BY own_scores.runde_no, own_scores.gegner_id, opponents_scores.runde_no';
 		$sql = sprintf($sql
 			, wrap_category_id('partiestatus/kampflos')
 			, $count_bye_as_draw, $this->remis
@@ -402,16 +402,17 @@ function mf_tournaments_make_single_pkt($event_id, $runde_no) {
  * @return array Liste person_id => value
  */
 function mf_tournaments_make_single_sobo($event_id, $runde_no) {
-	$sql = 'SELECT pe.person_id, SUM(punkte * ergebnis) AS sb
-		FROM partien_einzelergebnisse pe
-		LEFT JOIN buchholz_einzel_mit_kampflosen_view bhe
-			ON pe.person_id = bhe.person_id
-			AND pe.gegner_id = bhe.gegner_id
-		WHERE runde_gegner <= %d
-		AND pe.runde_no <= %d
-		GROUP BY pe.person_id
-		ORDER BY sb DESC
-	';
+	$sql = 'SELECT own_scores.person_id
+			, SUM(opponents_scores.ergebnis * own_scores.ergebnis) AS sb
+		FROM partien_einzelergebnisse own_scores
+		JOIN partien_einzelergebnisse opponents_scores
+			ON own_scores.event_id = opponents_scores.event_id
+			AND own_scores.gegner_id = opponents_scores.person_id
+		WHERE opponents_scores.runde_no <= %d
+		AND own_scores.runde_no <= %d
+		AND NOT ISNULL(own_scores.person_id)
+		GROUP BY own_scores.person_id
+		ORDER BY sb DESC, person_id';
 	$sql = sprintf($sql, $runde_no, $runde_no);
 	$wertungen = wrap_db_fetch($sql, ['person_id', 'sb'], 'key/value');
 	return $wertungen;
@@ -468,7 +469,8 @@ function mf_tournaments_make_single_fort($event_id, $runde_no, $tabelle) {
  * @return array Liste person_id => value
  */
 function mf_tournaments_make_single_performance($event_id, $runde_no) {
-	$sql = 'SELECT partien_einzelergebnisse.person_id, ROUND(SUM(IFNULL(IFNULL(t_elo, t_dwz), 0))/COUNT(partie_id)) AS wertung
+	$sql = 'SELECT partien_einzelergebnisse.person_id
+			, ROUND(SUM(IFNULL(IFNULL(t_elo, t_dwz), 0))/COUNT(partie_id)) AS wertung
 		FROM partien_einzelergebnisse
 		LEFT JOIN participations
 			ON partien_einzelergebnisse.event_id = participations.event_id

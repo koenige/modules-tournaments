@@ -23,3 +23,4 @@
 /* 2022-04-19-1 */	UPDATE _relations SET `master_table` = 'participations' WHERE `master_table` = 'teilnahmen';
 /* 2022-04-21-1 */	ALTER TABLE `teams` CHANGE `kennung` `identifier` varchar(63) COLLATE 'latin1_general_ci' NOT NULL AFTER `team_no`;
 /* 2022-04-21-2 */	ALTER TABLE `teams` ADD UNIQUE `identifier` (`identifier`), DROP INDEX `kennung`;
+/* 2022-06-13-1 */	DROP VIEW `buchholz_einzel_mit_kampflosen_view`;
