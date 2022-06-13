@@ -284,80 +284,45 @@ class cms_tabellenstand_einzel {
 	 * Runden ohne Paarung werden ebenfalls mit 0.5 gewertet
 	 *
 	 * @param int $event_id
-	 * @param int $person_id
+	 * @param int $this_person_id
 	 * @return array
 	 */
-	function getBuchholzGegnerPunkte($event_id, $person_id) {
+	function getBuchholzGegnerPunkte($event_id, $this_person_id) {
 		static $opponent_scores;
 		// Punkte pro Runde auslesen
 		// Liste, bspw. [2005-1] => [1 => 0.5, 2 => 0.0 ...], [2909-2] => ()
 		$correction = mf_tournaments_make_fide_correction($event_id);
 
-		if (!empty($opponent_scores[$person_id]))
-			return $opponent_scores[$person_id];
+		if (!empty($opponent_scores[$this_person_id]))
+			return $opponent_scores[$this_person_id];
 		
 		// fide-2009, fide-2012: kampflose Partien werden mit 0.5 gewertet
 		$count_bye_as_draw = in_array($correction, ['fide-2009', 'fide-2012']) ? 1 : 0;
 
-		$sql = 'SELECT person_id
-				, CONCAT(gegner_id, "-", runde_no) AS _index
-				, IF(partiestatus_category_id = %d AND %d = 1, %s,
-					CASE punkte WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE 0 END
+		$sql = 'SELECT ergebnisse.person_id
+				, CONCAT(ergebnisse.gegner_id, "-", ergebnisse.runde_no) AS _index
+				, IF(ergebnisse_gegner.partiestatus_category_id = %d AND %d = 1, %s,
+					CASE ergebnisse_gegner.ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE 0 END
 				) AS buchholz
-				, runde_gegner
-			FROM buchholz_einzel_mit_kampflosen_view
-			WHERE runde_no <= %d
-			AND runde_gegner <= %d
-			AND NOT ISNULL(person_id)
-			ORDER BY runde_no, gegner_id, runde_gegner';
+				, ergebnisse_gegner.runde_no AS runde_gegner
+			FROM partien_einzelergebnisse ergebnisse
+			JOIN partien_einzelergebnisse ergebnisse_gegner
+				ON ergebnisse.event_id = ergebnisse_gegner.event_id
+				AND ergebnisse.gegner_id = ergebnisse_gegner.person_id
+			WHERE ergebnisse.runde_no <= %d
+			AND ergebnisse_gegner.runde_no <= %d
+			AND NOT ISNULL(ergebnisse.person_id)
+			AND ergebnisse.partiestatus_category_id != %d
+			ORDER BY ergebnisse.runde_no, ergebnisse.gegner_id, ergebnisse_gegner.runde_no';
 		$sql = sprintf($sql
 			, wrap_category_id('partiestatus/kampflos')
-			, $count_bye_as_draw,
-			$this->remis, $this->sieg, $this->remis, $this->runde_no, $this->runde_no
+			, $count_bye_as_draw, $this->remis
+			, $this->sieg, $this->remis, $this->runde_no, $this->runde_no
+			, $correction === 'fide-2012' ? wrap_category_id('partiestatus/kampflos') : 0
 		);
 		$opponent_scores = wrap_db_fetch($sql, ['person_id', '_index', 'runde_gegner', 'buchholz'], 'key/value');
 
 		if ($correction === 'fide-2012') {
-			$sql = 'SELECT person_id
-					, CONCAT(IFNULL(gegner_id, "freilos"), "-", runde_no) AS _index
-					, gegner_id, runde_no, ergebnis
-				FROM partien_einzelergebnisse
-				WHERE partiestatus_category_id = %d
-				AND runde_no <= %d
-				AND NOT ISNULL(person_id)';
-			$sql = sprintf($sql, wrap_category_id('partiestatus/kampflos'), $this->runde_no);
-			$tournament_byes = wrap_db_fetch($sql, ['person_id', '_index']);
-		
-			// Kampflose Siege?
-			foreach ($tournament_byes as $person_id => $byes) {
-				foreach ($byes as $opponent => $bye) {
-					if ($bye['ergebnis'] === '0.0') {
-						// pairing allocated bye will still be calculated as
-						// playing against a virtual opponent
-						unset($opponent_scores[$person_id][$opponent]);
-						continue;
-					}
-					for ($round = 1; $round <= $this->runde_no; $round++) {
-						if ($round > $bye['runde_no']) {
-							// Runden nach kampfloser Paarung: 0.5 Punkte
-							$score = $this->remis;
-						} elseif (empty($bye['gegner_id']) OR $round == $bye['runde_no']) {
-							// Bei Freilos: Runden vor kampfloser Paarung: 0 Punkte
-							// Partie selbst wird ebenfalls mit 0 Punkten gewertet
-							$score = 0;
-						} elseif ($round < $bye['runde_no']) {
-							$round_data = $this->getRoundResults($person_id, $round);
-							$score = $round_data['ergebnis'];
-						} else {
-							// Gegner existiert, Partie kampflos
-							// Tatsächliche Punkte bis zur Runde mit kampflosem Verlust,
-							continue;
-						}
-						$opponent_scores[$person_id][$opponent][$round] = $score;
-					}
-				}
-			}
-			
 			// Falls weniger Runden als aktuelle Runde, pro Runde 0.5 Punkte addieren
 			foreach ($opponent_scores as $person_id => $scores) {
 				foreach (array_keys($scores) as $opponent) {
@@ -386,7 +351,7 @@ class cms_tabellenstand_einzel {
 					// SPR + (1 – SfPR) + 0.5 * (n – R)
 					$round_data = $this->getRoundResults($person_id);
 					$spr = 0;
-					for ($round_played = 1; $round_played < $this->runde_no; $round_played++) {
+					for ($round_played = 1; $round_played < $round; $round_played++) {
 						if (!array_key_exists($round_played, $round_data)) continue;
 						$spr += $round_data[$round_played]['ergebnis'];
 					}
@@ -400,7 +365,7 @@ class cms_tabellenstand_einzel {
 				}
 			}
 		}
-		return $opponent_scores[$person_id];
+		return $opponent_scores[$this_person_id];
 	}
 }
 
