@@ -199,6 +199,10 @@ function mod_tournaments_livegames_bretter($turnier) {
 	);
 	$turnier['livepaarungen'] = wrap_db_fetch($sql, 'partie_id');
 	foreach ($turnier['livepaarungen'] as $partie_id => $partie) {
+		if ($partie['last_update'] > $turnier['last_update']) {
+			$turnier['last_update'] = $partie['last_update'];
+		}
+		if (!$partie['pgn']) continue;
 		$pgn = preg_replace('/{\[\%clk \d+:\d+:\d+\]} /', '', $partie['pgn']);
 		$pgn = preg_replace('/{\[\%emt \d+:\d+:\d+\]} /', '', $pgn);
 		$pgn = explode(' ', $pgn);
@@ -208,9 +212,6 @@ function mod_tournaments_livegames_bretter($turnier) {
 		}
 		$turnier['livepaarungen'][$partie_id]['aktuelle_zuege'] 
 			= implode(' ', $aktuelle_zuege);
-		if ($partie['last_update'] > $turnier['last_update']) {
-			$turnier['last_update'] = $partie['last_update'];
-		}
 	}
 	return $turnier;
 }
