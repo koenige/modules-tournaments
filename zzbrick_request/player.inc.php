@@ -43,6 +43,7 @@ function mod_tournaments_player($vars) {
 			, IF(spielerphotos = "ja", 1, NULL) AS spielerphotos
 			, IF(spielernachrichten = "ja", 1, NULL) AS spielernachrichten
 			, events.identifier AS event_identifier
+			, (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id) AS max_round_no
 		FROM participations
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN tournaments USING (event_id)
@@ -116,22 +117,38 @@ function mod_tournaments_player($vars) {
 	$sql = mf_tournaments_games_sql($data, 
 		sprintf('(weiss_person_id = %d OR schwarz_person_id = %d)', $data['person_id'], $data['person_id'])
 	);
-	$data['partien'] = wrap_db_fetch($sql, 'partie_id');
+	$data['games'] = wrap_db_fetch($sql, 'partie_id');
+	$data['games'] = array_values($data['games']);
 	$data['punkte'] = false;
 	$data['hat_punkte'] = false;
-	foreach ($data['partien'] as $partie_id => $partie) {
+	$round_no = 1;
+	$index = 0;
+	foreach ($data['games'] as $index => $partie) {
 		if (mf_tournaments_live_round($data['livebretter'], $partie['brett_no'])) {
-			$data['partien'][$partie_id]['live'] = true;
+			$data['games'][$index]['live'] = true;
 		}
 		if ($partie['schwarz_person_id'] === $data['person_id']) {
-			$data['partien'][$partie_id]['spielt_schwarz'] = true;
+			$data['games'][$index]['spielt_schwarz'] = true;
 			$data['punkte'] += $partie['auswaerts_ergebnis_numerisch'];
 			if (isset($partie['auswaerts_ergebnis_numerisch'])) $data['hat_punkte'] = true;
 		} else {
-			$data['partien'][$partie_id]['spielt_weiss'] = true;
+			$data['games'][$index]['spielt_weiss'] = true;
 			$data['punkte'] += $partie['heim_ergebnis_numerisch'];
 			if (isset($partie['heim_ergebnis_numerisch'])) $data['hat_punkte'] = true;
 		}
+		while ($round_no.'' !== $partie['runde_no'].'') {
+			array_splice($data['games'], $index, 0, [
+				['runde_no' => $round_no, 'no_pairing' => 1]
+			]);
+			$index++;
+			$round_no++;
+		}
+		$index++;
+		$round_no++;
+	}
+	while ($round_no <= $data['max_round_no']) {
+		$data['games'][] = ['runde_no' => $round_no, 'no_pairing' => 1];
+		$round_no++;
 	}
 	
 	$sql = 'SELECT participation_id, setzliste_no

@@ -59,7 +59,7 @@ keine
 </table>
 </div>
 
-%%% condition if partien %%%
+%%% condition if games %%%
 <div class="results">
 <table class="spieler">
 <thead>
@@ -74,9 +74,12 @@ keine
 	<th class="th"><abbr title="Eröffnungscode der Enzyklopädie der Schacheröffnungen">ECO</abbr></th>
 </tr>
 </thead>
-%%% loop partien %%%
+%%% loop games %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
 	<td class="tz"><a href="../../runde/%%% item runde_no %%%/">%%% item runde_no %%%.</a></td>
+%%% condition if no_pairing %%%
+	<td class="tm" colspan="7">Keine Paarung</th> 
+%%% condition else %%%
 	<td class="tz">%%% item brett_no %%%</td>
 	<td class="longer">%%% condition if spielt_schwarz %%%%%% item heim_dwz %%%%%% condition endif %%%</td>
 	<td class="th">%%% item weiss_gewinnt "<strong>" %%%
@@ -100,6 +103,7 @@ keine
 	%%% condition if spielt_weiss %%% <span class="shorter">%%% item auswaerts_dwz "(%s)" %%%</span>%%% condition endif %%%</td>
 	<td class="longer">%%% condition if spielt_weiss %%%%%% item auswaerts_dwz %%%%%% condition endif %%%</td>
 	<td>%%% item eco %%%</td>
+%%% condition endif %%%
 </tr>
 %%% loop end %%%
 </table>
