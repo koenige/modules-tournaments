@@ -17,8 +17,6 @@
  */
 function mod_tournaments_player($vars) {
 	global $zz_setting;
-	$zz_setting['active_module'] = 'tournaments';
-	global $zz_conf;
 	if (count($vars) !== 3) return false;
 
 	$sql = 'SELECT persons.person_id, participation_id
@@ -89,34 +87,30 @@ function mod_tournaments_player($vars) {
 	if (!$data) return false;
 	$data['fidetitel_lang'] = mf_tournaments_fide_title($data['t_fidetitel']);
 
-	require_once $zz_setting['custom_wrap_dir'].'/normalize.inc.php';
-	require_once $zz_conf['dir'].'/functions.inc.php';
-
-	$data['filename'] = str_replace(" ", "", $data['t_vorname']).'-'
-		.($data['t_namenszusatz'] ? str_replace(" ", "", $data['t_namenszusatz']).'-' : '')
-		.str_replace(" ", "", $data['t_nachname']);
-	$data['filename'] = nfd_normalize($data['filename']);
-	$data['filename'] = wrap_filename($data['filename']).'.jpg';
-
-	$data['filename_underscore'] = str_replace(" ", "_", $data['t_vorname']).'_'.str_replace(" ", "_", $data['t_nachname']);
-	$data['filename_underscore'] = nfd_normalize($data['filename_underscore']);
-	$data['filename_underscore'] = wrap_filename($data['filename_underscore'], '_', ['_' => '_']).'.jpg';
-
-	$data['ak'] = substr($vars[1], strrpos($vars[1], '-') + 1);
-	if (in_array($data['year'], ['2011', '2012', '2013']) AND $data['ak'] === 'u25a') {
-		$data['ak'] = 'u25';
-	} elseif (in_array($data['year'], ['2011', '2012', '2013']) AND $data['ak'] === 'ika') {
-		$data['ak'] = 'ukika';
-	}
-
 	if ($data['year'] >= wrap_get_setting('dem_spielerphotos_aus_mediendb') AND $data['spielerphotos']) {
 		$data['bilder'] = mf_mediadblink_media(
 			$data['year'].'/'.$data['main_series_path'], 'Website/Spieler', 'person', $data['person_id']
 		);
 		$data['spielerphotos'] = NULL;
+	} else {
+		// @deprecated
+		$data['filename'] = str_replace(" ", "", $data['t_vorname']).'-'
+			.($data['t_namenszusatz'] ? str_replace(" ", "", $data['t_namenszusatz']).'-' : '')
+			.str_replace(" ", "", $data['t_nachname']);
+		$data['filename'] = wrap_filename($data['filename']).'.jpg';
+
+		$data['filename_underscore'] = str_replace(" ", "_", $data['t_vorname']).'_'.str_replace(" ", "_", $data['t_nachname']);
+		$data['filename_underscore'] = wrap_filename($data['filename_underscore'], '_', ['_' => '_']).'.jpg';
+
+		$data['ak'] = substr($vars[1], strrpos($vars[1], '-') + 1);
+		if (in_array($data['year'], ['2011', '2012', '2013']) AND $data['ak'] === 'u25a') {
+			$data['ak'] = 'u25';
+		} elseif (in_array($data['year'], ['2011', '2012', '2013']) AND $data['ak'] === 'kika') {
+			$data['ak'] = 'ukika';
+		}
+		$data['alter_bildpfad'] = true;
+		if (in_array($data['year'], [2010, 2011])) $data['bildpfad_underscore'] = true;
 	}
-	if ($data['year'] < 2014) $data['alter_bildpfad'] = true;
-	if (in_array($data['year'], [2010, 2011])) $data['bildpfad_underscore'] = true;
 	
 	// Partien
 	$sql = mf_tournaments_games_sql($data, 
