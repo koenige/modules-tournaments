@@ -604,7 +604,7 @@ function mf_tournaments_team_players($team_ids, $event) {
 		// Spieler- und Teamdaten ergänzen
 		foreach ($team_spieler as $person_id => $spieler) {
 			if ($spieler['t_fidetitel']) {
-				$team_spieler[$person_id]['fidetitel_lang'] = my_fidetitel($spieler['t_fidetitel']);
+				$team_spieler[$person_id]['fidetitel_lang'] = mf_tournaments_fide_title($spieler['t_fidetitel']);
 			}
 			if ($brett_no AND !$spieler['brett_no']) {
 				// Es gibt Spieler mit Brettnummern, also blenden wir die ohne aus,

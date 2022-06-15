@@ -590,3 +590,23 @@ function mf_tournaments_series_events($event_id) {
 	$event_ids = wrap_db_fetch($sql, '_dummy_', 'single value');
 	return $event_ids;
 }
+
+/**
+ * get FIDE title in full
+ * FIDE-Titel auslesen in Langform
+ *
+ * @param string $title
+ * @return string
+ */
+function mf_tournaments_fide_title($title) {
+	static $titles;
+	if (!$titles) {
+		$sql = 'SELECT category, category_short, description
+			FROM categories
+			WHERE main_category_id = %d';
+		$sql = sprintf($sql, wrap_category_id('fide-title'));
+		$titles = wrap_db_fetch($sql, 'category_short');
+	}
+	if (array_key_exists($title, $titles)) return $titles[$title]['category'];
+	return '';
+}

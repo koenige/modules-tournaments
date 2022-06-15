@@ -151,7 +151,7 @@ function mod_tournaments_startranking_single($event) {
 		if ($spieler['t_elo']) $event['zeige_elo'] = true;
 		if ($spieler['t_dwz']) $event['zeige_dwz'] = true;
 		if (!$spieler['t_fidetitel']) continue;
-		$event['spieler'][$person_id]['fidetitel_lang'] = my_fidetitel($spieler['t_fidetitel']);
+		$event['spieler'][$person_id]['fidetitel_lang'] = mf_tournaments_fide_title($spieler['t_fidetitel']);
 	}
 	foreach ($event['spieler'] as $person_id => $spieler) {
 		if ($event['zeige_dwz']) $event['spieler'][$person_id]['zeige_dwz'] = true;
