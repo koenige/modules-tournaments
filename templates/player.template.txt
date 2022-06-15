@@ -78,7 +78,7 @@ keine
 <tr class='%%% loopposition uneven "un" %%%even'>
 	<td class="tz"><a href="../../runde/%%% item runde_no %%%/">%%% item runde_no %%%.</a></td>
 %%% condition if no_pairing %%%
-	<td class="tm" colspan="7">Keine Paarung</th> 
+	<td class="no_pairing" colspan="7">Keine Paarung</th> 
 %%% condition else %%%
 	<td class="tz">%%% item brett_no %%%</td>
 	<td class="longer">%%% condition if spielt_schwarz %%%%%% item heim_dwz %%%%%% condition endif %%%</td>

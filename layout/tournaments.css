@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016-2018, 2020-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2016-2018, 2020-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -184,6 +184,8 @@ table.anmeldung, table.bewerbungen
 @media screen and (max-width: 640px) {
 	.results		{ font-size: 90%; padding: 0 .75em; }
 }
+.results .no_pairing
+				{ text-align: center; font-style: italic; }
 
 /* standings Einzelturnier */
 
