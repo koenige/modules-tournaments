@@ -233,7 +233,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 
 	if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text']) AND $new['club']) {
 		$new['usergroup'] = $line[$nos['rolle']]['text'];
-	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Betreuer', 'Mitreisende'])) {
+	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Betreuer', 'Mitreisende', 'Teilnehmer', 'Referent'])) {
 		if (empty($new['club']) AND !empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
 			$new['club'] = $line[$nos['rolle']]['text'];
 		}
