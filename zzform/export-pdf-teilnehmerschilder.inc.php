@@ -25,9 +25,68 @@
  */
 function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	global $zz_setting;
-	global $zz_conf;
-	$event = $zz_conf['event'];
+
+	$ids = [];
+	foreach ($ops['output']['rows'] as $line) {
+		$ids[] = $line['id_value'];
+	}
+	$sql = 'SELECT participation_id, event_id
+		FROM participations
+		LEFT JOIN usergroups USING (usergroup_id)
+		WHERE participation_id IN (%s)';
+	$sql = sprintf($sql, implode(',', $ids));
+	$data = wrap_db_fetch($sql, 'participation_id');
+
+	// get event
+	$line = reset($data);
+	$event = my_event($line['event_id']);
+	if ($event['series_parameter']) {
+		parse_str($event['series_parameter'], $event['series_parameter']);
+		$event += $event['series_parameter'];
+	}
+	if (empty($event['name_tag_size'])) $event['name_tag_size'] = '10.5x7';
 	
+	// extra form fields?
+	$sql = 'SELECT formfield_id, formfield, parameters, formfield_category_id
+			, IFNULL(registrationvarchar, registrationtext) AS text
+			, participation_id
+		FROM formfields
+	    LEFT JOIN forms USING (form_id)
+	    LEFT JOIN registrationvarchars USING (formfield_id)
+	    LEFT JOIN registrationtexts USING (formfield_id)
+	    LEFT JOIN anmeldungen
+	    	ON IFNULL(registrationvarchars.anmeldung_id, registrationtexts.anmeldung_id) = anmeldungen.anmeldung_id
+	    WHERE forms.event_id = %d
+	    AND parameters LIKE "%%&name_tag=%%"
+	';
+	$sql = sprintf($sql, $event['event_id']);
+	$formfields = wrap_db_fetch($sql, ['participation_id', 'formfield_id']);
+
+	switch ($event['name_tag_size']) {
+	case '9x5.5':
+		$name_tag['width'] = 255.12;
+		$name_tag['height'] = 155.9;
+		$name_tag['rows'] = 5;
+		$name_tag['margin'] = 12;
+		$name_tag['image_size'] = 54;
+		$name_tag['logo_height'] = 32;
+		$name_tag['bar_height'] = 22;
+		$name_tag['bar_font_size'] = 14;
+		break;
+	default:
+	case '10.5x7':
+		$name_tag['width'] = 297.5;
+		$name_tag['height'] = 198.5;
+		$name_tag['rows'] = 4;
+		$name_tag['margin'] = 20;
+		$name_tag['image_size'] = 68;
+		$name_tag['logo_height'] = 40;
+		$name_tag['bar_height'] = 28;
+		$name_tag['bar_font_size'] = 18;
+		break;
+	}
+
+	// @deprecated	
 	// Feld-IDs raussuchen
 	$nos = mf_tournaments_export_pdf_teilnehmerschilder_nos($ops['output']['head']);
 	// get data
@@ -38,7 +97,18 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			['Landesverband: Organisator', 'Verein: Organisator', 'Bewerber'])
 		) continue;
 		// Daten anpassen
-		$new = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos);
+		$new = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name_tag);
+		if (array_key_exists($line['id_value'], $formfields)) {
+			foreach ($formfields[$line['id_value']] as $formfield) {
+				if (!$formfield['text']) continue;
+				parse_str($formfield['parameters'], $formfield['parameters']);
+				if (empty($new[$formfield['parameters']['name_tag']]))
+					$new[$formfield['parameters']['name_tag']] = '';
+				else
+					$new[$formfield['parameters']['name_tag']] .= "\n";
+				$new[$formfield['parameters']['name_tag']] .= $formfield['formfield'].': '.str_replace("\n", ", ", $formfield['text']);
+			}
+		}
 		$data[$line['id_value']] = $new;
 	}
 	if (!$data) wrap_quit(404, 'Es gibt keine Teilnehmerschilder für diese Personen.');
@@ -88,42 +158,63 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	// Fira Sans!
 	$pdf->AddFont('FiraSans-Regular', '', 'FiraSans-Regular.ttf', true);
 	$pdf->AddFont('FiraSans-SemiBold', '', 'FiraSans-SemiBold.ttf', true);
+	$pdf->SetLineWidth(0.25);
+	
+	$logo['filename'] = $zz_setting['media_folder'].'/urkunden-grafiken/DSJ-Logo.jpg';
+	$logo['filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
+	$logo['size'] = getimagesize($logo['filename']);
+	$logo['width'] = round($logo['size'][0] / $logo['size'][1] * $name_tag['logo_height']);
+	
+	require_once $zz_setting['modules_dir'].'/tournaments/tournaments/functions.inc.php';
+	$event['main_series_long'] = mf_tournaments_event_title_wrap($event['main_series_long']);
+	
+	$cell_width = $name_tag['width'] - 2 * $name_tag['margin'];
 
 	$i = 0;
 	foreach ($data as $line) {
 		// PDF setzen
-		$row = $i % 4;
-		if (!$row) $pdf->addPage();
-		$top = 198.5 * $row;
+		$row = $i % $name_tag['rows'];
+		if (!$row) {
+			$pdf->addPage();
+			$pos_x = $name_tag['width'];
+			while($pos_x < 595) {
+				$pdf->Line($pos_x, 0, $pos_x, 842);
+				$pos_x += $name_tag['width'];
+			}
+		}
+		$top = $name_tag['height'] * $row;
+		$pdf->Line(0, $top + $name_tag['height'], 595, $top + $name_tag['height']);
 		for ($j = 0; $j < 2; $j++) {
 			// DSJ-Logo
-			$left = 297.5 * $j;
+			$left = $name_tag['width'] * $j;
 			if ($j & 1) {
 				$image = mf_tournaments_p_qrcode($line['participation_id']);
-				$width = 48;
+				$width = $name_tag['logo_height'] * 1.2;
+				$height = $name_tag['logo_height'] * 1.2;
 			} else {
-				$image = $zz_setting['media_folder'].'/urkunden-grafiken/DSJ-Logo.jpg';
-				$width = 58;
+				$image = $logo['filename'];
+				$width = $logo['width'];
+				$height = $name_tag['logo_height'];
 			}
-			$pdf->image($image, 297.5*($j+1) - 20 - $width, 20 + $top, $width, 48);
+			$pdf->image($image, $name_tag['width']*($j+1) - $name_tag['margin'] - $width, $name_tag['margin'] + $top, $width, $height);
 			$pdf->setFont('FiraSans-Regular', '', 11);
 			$pdf->SetTextColor(0, 0, 0);
-			$pdf->SetXY(20 + $left, 20 + $top);
-			$pdf->Cell(257, 14, $event['main_series_long'], 0, 2, 'L');
-			$pdf->Cell(257, 14, $event['turnierort'].' '.$event['year'], 0, 2, 'L');
-			$pdf->SetXY(20 + $left, $pdf->GetY() + 40);
-			if (strlen($line['name']) > 26) {
-				$pdf->setFont('FiraSans-SemiBold', '', 17);
+			$pdf->SetXY($name_tag['margin'] + $left, $name_tag['margin'] + $top);
+			$pdf->MultiCell(125, 14, $event['main_series_long']."\n".$event['turnierort'].' '.$event['year'], 0, 'L');
+			$pdf->SetXY($name_tag['margin'] + $left, $pdf->GetY() + $name_tag['margin'] * 1.2);
+			if (strlen($line['name']) > 23) {
+				$pdf->setFont('FiraSans-SemiBold', '', 16);
 			} else {
-				$pdf->setFont('FiraSans-SemiBold', '', 18);
+				$pdf->setFont('FiraSans-SemiBold', '', 20);
 			}
-			$pdf->Cell(257, 24, $line['name'], 0, 2, 'L');
+			$pdf->Cell($cell_width, 24, $line['name'], 0, 2, 'L');
 			$pdf->setFont('FiraSans-Regular', '', 12);
-			$pdf->MultiCell(257, 16, $line['club'], 0, 'L');
+			$pdf->MultiCell($cell_width, 16, $line['club'], 0, 'L');
 
-			$pdf->SetXY(20 + $left, $top + 136);
-			$pdf->setFont('FiraSans-SemiBold', '', 18);
-			$pdf->Cell(257, 24, $line['federation_abbr'], 0, 2, 'R');
+			// bar
+			$pdf->SetXY($name_tag['margin'] + $left, $top + $name_tag['height'] - $name_tag['margin'] - 20 - $name_tag['bar_height']);
+			$pdf->setFont('FiraSans-SemiBold', '', $name_tag['bar_font_size']);
+			$pdf->Cell($cell_width, 24, $line['federation_abbr'], 0, 2, 'R');
 			$pdf->SetTextColor(255, 255, 255);
 			$pdf->SetFillColor($line['colors']['red'], $line['colors']['green'], $line['colors']['blue']);
 			if ($line['colors']['red'] + $line['colors']['green'] + $line['colors']['blue'] > 458) {
@@ -131,25 +222,25 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			}
 			$y = $pdf->getY();
 			if (!empty($line['filename'])) {
-				$line['usergroup'] .= '  ';
+				$line['usergroup'] .= '  '; // move to left
 			}
-			$pdf->Cell(257, 28, $line['usergroup'], 0, 2, 'C', 1);
+			$pdf->Cell($cell_width, $name_tag['bar_height'], $line['usergroup'], 0, 2, 'C', 1);
 			if (!empty($line['zusaetzliche_ak'])) {
 				$pdf->SetXY($pdf->getX(), $y);
-				$pdf->Cell(257, 28, 'U'.$line['zusaetzliche_ak'], 0, 2, 'R'); // 41
+				$pdf->Cell($cell_width, $name_tag['bar_height'], 'U'.$line['zusaetzliche_ak'], 0, 2, 'R'); // 41
 			}
 			if ($line['volljaehrig']) {
 				$pdf->SetXY($pdf->getX() + 5, $y);
 				$pdf->SetFillColor(255, 255, 255);
-				$pdf->Cell(5, 28, ' ', 0, 2, 'R', 1);
+				$pdf->Cell(5, $name_tag['bar_height'], ' ', 0, 2, 'R', 1);
 			} elseif ($line['evtl_volljaehrig']) {
 				$pdf->SetXY($pdf->getX() + 5, $y + 14);
 				$pdf->SetFillColor(255, 255, 255);
-				$pdf->Cell(5, 14, ' ', 0, 2, 'R', 1);
+				$pdf->Cell(5, $name_tag['bar_height'] / 2, ' ', 0, 2, 'R', 1);
 			}
 
 			if (!empty($line['filename'])) {
-				$pdf->image($line['filename'], 297.5*($j+1) - $line['width'] - 24, 110 + $top, $line['width'], $line['height']);
+				$pdf->image($line['filename'], $name_tag['width']*($j+1) - $line['width'] - $name_tag['margin'], $top + $name_tag['height'] - $name_tag['margin'] - $name_tag['image_size'], $line['width'], $line['height']);
 			}
 		}
 		$i++;
@@ -195,9 +286,10 @@ function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
  *
  * @param array $line
  * @param array $nos
+ * @param array $name_tag
  * @return array $line
  */
-function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
+function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name_tag) {
 	global $zz_setting;
 	$filename = false;
 	if (!empty($line[$nos['parameters']]['text'])) {
@@ -286,8 +378,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 	if ($filename AND file_exists($filename)) {
 		$new['filename'] = $filename;
 		$size = getimagesize($new['filename']);
-		$new['width'] = floor($size[0]/$size[1]*72);
-		$new['height'] = 72;
+		$new['width'] = floor($size[0] / $size[1] * $name_tag['image_size']);
+		$new['height'] = $name_tag['image_size'];
 	}
 	return $new;
 }
