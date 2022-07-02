@@ -55,10 +55,15 @@ function mod_tournaments_make_playermessage($vars, $settings) {
 		$data['message_activated'] = true;
 		$data['hide_form'] = true;
 	} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' AND !$data['news_inactive']) {
-		$data = mod_tournaments_make_playermessage_send($data);
+		mod_tournaments_make_playermessage_send($data);
+	}
+	if (array_key_exists('sent', $_GET)) {
+		$data['mail_sent'] = true;
+		$data['hide_form'] = true;
 	}
 	
 	$page['query_strings'][] = 'hash';
+	$page['query_strings'][] = 'sent';
 	$page['text'] = wrap_template('playermessage', $data);
 	$page['title'] = sprintf('Brett-Nachricht an %s – %s %d', $data['contact'], $data['event'], $data['year']);
 	$page['dont_show_h1'] = true;
@@ -85,7 +90,6 @@ function mod_tournaments_make_playermessage_send($data) {
 		return $data;
 	}
 	$data['hash'] = wrap_random_hash(20);
-	$data['hide_form'] = true;
 
 	$sql = 'INSERT INTO spieler_nachrichten
 		(teilnehmer_id, nachricht, email, absender, eintragszeit, ip, hash, verified)
@@ -103,6 +107,5 @@ function mod_tournaments_make_playermessage_send($data) {
 	$mail['to'] = $data['mail'];
 	$mail['message'] = wrap_template('playermessage-mail', $data);
 	wrap_mail($mail);
-	$data['mail_sent'] = true;
-	return $data;
+	return wrap_redirect_change('?sent');
 }
