@@ -1,9 +1,16 @@
 <?php 
 
-// Zugzwang Project
-// deutsche-schachjugend.de
-// Copyright (c) 2012-2017, 2019-2022 Gustaf Mossakowski <gustaf@koenige.org>
-// Daten zu einzelnen Spielern
+/**
+ * tournaments module
+ * player card
+ *
+ * Part of »Zugzwang Project«
+ * https://www.zugzwang.org/modules/tournaments
+ *
+ * @author Gustaf Mossakowski <gustaf@koenige.org>
+ * @copyright Copyright © 2012-2017, 2019-2022 Gustaf Mossakowski
+ * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+ */
 
 
 /**
@@ -177,7 +184,7 @@ function mod_tournaments_player($vars) {
 	$page['breadcrumbs'][] = '<a href="../">Startrangliste</a>';
 	$page['breadcrumbs'][] = $data['name'];
 	$page['extra']['realm'] = 'sports';
-	$page['head'] = wrap_template('magnific-popup-head');
-	$page['text'] .= wrap_template('magnific-popup');
+	if (in_array('magnificpopup', $zz_setting['modules']))
+		$page['extra']['magnific_popup'] = true;
 	return $page;
 }
