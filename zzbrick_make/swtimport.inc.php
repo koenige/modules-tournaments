@@ -25,7 +25,6 @@
  */
 function mod_tournaments_make_swtimport($vars, $settings, $event) {
 	global $zz_setting;
-	global $zz_conf;
 	$zz_setting['cache'] = false;
 	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 
@@ -81,7 +80,7 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
 	// SWT-Parser einbinden
 	require_once $zz_setting['lib'].'/swtparser/swtparser.php';
 	// @todo unterstütze Parameter für UTF-8-Codierung
-	$tournament = swtparser($zz_setting['media_folder'].'/swt/'.$swt, $zz_conf['character_set']);
+	$tournament = swtparser($zz_setting['media_folder'].'/swt/'.$swt, $zz_setting['character_set']);
 	$field_names = swtparser_get_field_names('de');
 
 	if ($tournament['out'][35] === 1) {

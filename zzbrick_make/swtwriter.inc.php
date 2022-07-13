@@ -27,7 +27,6 @@
  */
 function mod_tournaments_make_swtwriter($vars, $settings, $event) {
 	global $zz_setting;
-	global $zz_conf;
 
 	ignore_user_abort(1);
 	ini_set('max_execution_time', 120);
@@ -74,7 +73,7 @@ function mod_tournaments_make_swtwriter($vars, $settings, $event) {
 	// SWT-Parser einbinden
 	require_once $zz_setting['lib'].'/swtparser/swtparser.php';
 	// @todo unterstütze Parameter für UTF-8-Codierung
-	$tournament = swtparser($filename, $zz_conf['character_set']);
+	$tournament = swtparser($filename, $zz_setting['character_set']);
 	$field_names = swtparser_get_field_names('de');
 
 	if (isset($_GET['delete'])) {
