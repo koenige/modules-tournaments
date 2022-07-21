@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2017, 2019-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -52,7 +52,11 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	$pdf->AddFont('FiraSans-Regular', '', 'FiraSans-Regular.ttf', true);
 	$pdf->AddFont('FiraSans-SemiBold', '', 'FiraSans-SemiBold.ttf', true);
 
-	$hoehe_flagge = 34;
+	$card['width'] = 297.5;
+	$card['height'] = 198.5;
+	$card['margin'] = 20;
+	$card['logo_height'] = 34;
+
 	$k = 0;
 	foreach ($data as $id => $line) {
 		if (!is_numeric($id)) continue;
@@ -61,7 +65,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 		// PDF setzen
 		$row = $i % 4;
 		if (!$row AND !$col) $pdf->addPage();
-		$top = 198.5 * $row;
+		$top = $card['height'] * $row;
 
 		if (!empty($line['federation_abbr'])) {
 			$line['flagge'] = sprintf('%s/flaggen/%s.png', $zz_setting['media_folder'], wrap_filename($line['federation_abbr']));
@@ -69,41 +73,45 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 				$line['flagge'] = false;
 			} else {
 				$size = getimagesize($line['flagge']);
-				$line['flagge_width'] = $size[0] / $size[1] * $hoehe_flagge;
+				$line['flagge_width'] = $size[0] / $size[1] * $card['logo_height'];
 			}
 		}
 
 		// logo and tournament
-		$left = 297.5 * $col;
+		$left = $card['width'] * $col;
 		if (!empty($line['flagge'])) {
-			$imageleft = 20 + $left + 297.5/2 - 10 - $line['flagge_width'] - 25;
+			$imageleft = $card['margin'] + $left + $card['width']/2 - 10 - $line['flagge_width'] - 25;
 			$pdf->SetXY($imageleft, 15 + $top);
-			$pdf->Cell($line['flagge_width'], $hoehe_flagge, '', 1);
-			$pdf->image($line['flagge'], $imageleft, 15 + $top, $line['flagge_width'], $hoehe_flagge);
+			$pdf->Cell($line['flagge_width'], $card['logo_height'], '', 1);
+			$pdf->image($line['flagge'], $imageleft, 15 + $top, $line['flagge_width'], $card['logo_height']);
 		} else {
-			$pdf->image($zz_setting['media_folder'].'/urkunden-grafiken/DSJ-Logo.jpg', 20 + $left + 297.5/2 - 10 - 58 - 25, 15 + $top, 41, $hoehe_flagge);
+			$logo['filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
+			$logo['size'] = getimagesize($logo['filename']);
+			$logo['width'] = round($logo['size'][0] / $logo['size'][1] * $card['logo_height']);
+			$logo['left'] = $card['margin'] + $left + ($card['width']/2 - ($card['margin'] + 10)/2 - $logo['width'])/2;
+			$pdf->image($logo['filename'], $logo['left'] , 15 + $top, $logo['width'], $card['logo_height']);
 		}
 		$pdf->setFont('FiraSans-Regular', '', 10);
 		$pdf->SetTextColor(0, 0, 0);
-		$pdf->SetXY(20 + $left + 297.5/2 - 25, 15 + $top);
+		$pdf->SetXY($card['margin'] + $left + $card['width']/2 - 25, 15 + $top);
 		$pdf->MultiCell(118.5, 12, $event_title, 0, 'L');
 		
 		// name + club
 		$pdf->setFont('FiraSans-SemiBold', '', 25);
-		$pdf->SetXY(20 + $left, $pdf->GetY() + 10);
+		$pdf->SetXY($card['margin'] + $left, $pdf->GetY() + 10);
 		if ($pdf->GetStringWidth($line['name']) < 252) {
 			// 257 geht nicht, passt nicht immer
-			$pdf->SetXY(20 + $left, $pdf->GetY() + 12.5);
+			$pdf->SetXY($card['margin'] + $left, $pdf->GetY() + 12.5);
 		} else {
 			// @todo this can be done way better
 			if (!strstr($line['name'], ' '))
 				$line['name'] = str_replace('-', '- ', $line['name']);
 		}
 		if (empty($data['has_club_line'])) {
-			$pdf->SetXY(20 + $left, $pdf->GetY() + 12.5);
+			$pdf->SetXY($card['margin'] + $left, $pdf->GetY() + 12.5);
 		}
 		$pdf->MultiCell(257, 25, $line['name'], 0, 'C');
-		$pdf->SetXY(20 + $left, ($pdf->GetY() + 2));
+		$pdf->SetXY($card['margin'] + $left, ($pdf->GetY() + 2));
 		$pdf->setFont('FiraSans-Regular', '', 12);
 		$pdf->MultiCell(257, 14, $line['club'], 0, 'C');
 
@@ -122,7 +130,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 			$pdf->setFont('FiraSans-SemiBold', '', 18);
 			$width += $pdf->GetStringWidth($value);
 		}
-		$startpos = 297.5 * $col + 148.75 - $width/2;
+		$startpos = $card['width'] * $col + 148.75 - $width/2;
 		$pdf->SetXY($startpos, $top + 130);
 		foreach ($line['ratings'] as $key => $value) {
 			$pdf->setFont('FiraSans-Regular', '', 12);
@@ -132,7 +140,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 		}
 
 		// Balken
-		$pdf->SetXY(20 + $left, $top + 155);
+		$pdf->SetXY($card['margin'] + $left, $top + 155);
 		$pdf->setFont('FiraSans-SemiBold', '', 18);
 		$pdf->SetTextColor(255, 255, 255);
 		$pdf->SetFillColor($line['colors']['red'], $line['colors']['green'], $line['colors']['blue']);
