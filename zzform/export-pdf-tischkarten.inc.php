@@ -167,12 +167,14 @@ function mf_tournaments_export_pdf_tischkarten_single($ops) {
 	
 	// Feld-IDs raussuchen
 	$nos = mf_tournaments_export_pdf_teilnehmerschilder_nos($ops['output']['head']);
+	
+	$name_tag['image_size'] = 68;
 
 	$data = [];
 	foreach ($ops['output']['rows'] as $index => $line) {
 		// ignoriere Orga vorab
 		if (!in_array($line[$nos['usergroup_id']]['text'], ['Spieler'])) continue;
-		$data[$index] = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos);
+		$data[$index] = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name_tag);
 
 		// Daten anpassen
 		$data[$index]['ratings'] = [];
