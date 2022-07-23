@@ -9,7 +9,7 @@
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
- * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022 Gustaf Mossakowski
  * @copyright Copyright © 2014 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
@@ -57,11 +57,13 @@ function mod_tournaments_make_standings_team($event) {
 		case wrap_category_id('turnierwertungen/bp'):
 			$wertungen[$category_id] = mf_tournaments_make_team_bp($event['runde_no']); break;
 		case wrap_category_id('turnierwertungen/bhz'):
-			$wertungen[$category_id] = mf_tournaments_make_team_buchholz($event['runde_no']); break;
-		case wrap_category_id('turnierwertungen/bhz.2'):
 			$erste_wertung = reset($turnierwertungen);
 			if ($erste_wertung['category_id'] === wrap_category_id('turnierwertungen/bp')) {
-				$wertungen[$category_id] = mf_tournaments_make_team_buchholz_bp($event['runde_no']);
+				if (mf_tournaments_make_fide_correction($event_id) === 'fide-2012') {
+					$wertungen[$category_id] = mf_tournaments_make_team_buchholz_bp($event['runde_no']);
+				} else {
+					$wertungen[$category_id] = mf_tournaments_make_team_buchholz($event['runde_no']);
+				}
 			} else {
 				$wertungen[$category_id] = mf_tournaments_make_team_buchholz_mp($event['runde_no']);
 			}
