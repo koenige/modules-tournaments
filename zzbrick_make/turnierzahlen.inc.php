@@ -96,7 +96,6 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 	$ratings['DSB'] = mod_tournaments_make_turnierzahlen_dsb($contact_ids);
 	$ratings['FIDE'] = mod_tournaments_make_turnierzahlen_fide($contact_ids);
 
-	require_once $zz_conf['dir'].'/zzform.php';
 	$zz_conf['user'] = 'Turnierzahlen '.implode('/', $vars);
 
 	$updated = false;

@@ -155,8 +155,6 @@ function mod_tournaments_make_lineup_active($params) {
  * @return array
  */
 function mod_tournaments_make_lineup_boards($data) {
-	global $zz_conf;
-
 	$data['set_board_order'] = true;
 
 	if ($_SERVER['REQUEST_METHOD'] !== 'POST') return $data;
@@ -193,7 +191,6 @@ function mod_tournaments_make_lineup_boards($data) {
 		AND $data['board_count'] < $data['player_count']) {
 		$data['not_enough_players'] = true;
 	} else {
-		require_once $zz_conf['dir'].'/zzform.php';
 		$values = [];
 		$values['action'] = 'update';
 		$values['ids'] = ['participation_id'];
@@ -214,8 +211,6 @@ function mod_tournaments_make_lineup_boards($data) {
 }
 
 function mod_tournaments_make_lineup_round($data) {
-	global $zz_conf;
-
 	// remove players without board_no
 	foreach ($data['players'] as $participation_id => $player) {
 		if (empty($player['board_no'])) unset($data['players'][$participation_id]);
@@ -280,7 +275,6 @@ function mod_tournaments_make_lineup_round($data) {
 	}
 	if (empty($data['reselect_not_enough_players'])
 		AND empty($data['reselect_too_many_players'])) {
-		require_once $zz_conf['dir'].'/zzform.php';
 		$board_no = 0;
 
 		$sql = 'SELECT partie_id, brett_no

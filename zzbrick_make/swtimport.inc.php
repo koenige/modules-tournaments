@@ -114,7 +114,6 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
  */
 function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
 	global $zz_conf;
-	require_once $zz_conf['dir'].'/zzform.php';
 	$zz_conf['user'] = sprintf('SWT-Import: %s', $event['identifier']);
 
 	$old_error_handling = $zz_conf['error_handling'];

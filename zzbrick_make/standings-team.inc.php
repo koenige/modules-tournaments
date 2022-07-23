@@ -9,7 +9,7 @@
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
- * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022 Gustaf Mossakowski
  * @copyright Copyright © 2014 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
@@ -47,7 +47,7 @@ function mod_tournaments_make_standings_team($event) {
 	$standings = wrap_db_fetch($sql, 'team_id');
 	if (!$standings) return false;
 
-	$turnierwertungen = cms_tabellenstandupdate_wertungen($event['event_id']);
+	$turnierwertungen = mod_tournaments_make_standings_get_scoring($event['event_id']);
 
 	// Wertungen aus Datenbank auslesen
 	foreach ($turnierwertungen as $category_id => $turnierwertung) {
@@ -57,11 +57,13 @@ function mod_tournaments_make_standings_team($event) {
 		case wrap_category_id('turnierwertungen/bp'):
 			$wertungen[$category_id] = mf_tournaments_make_team_bp($event['runde_no']); break;
 		case wrap_category_id('turnierwertungen/bhz'):
-			$wertungen[$category_id] = mf_tournaments_make_team_buchholz($event['runde_no']); break;
-		case wrap_category_id('turnierwertungen/bhz.2'):
 			$erste_wertung = reset($turnierwertungen);
 			if ($erste_wertung['category_id'] === wrap_category_id('turnierwertungen/bp')) {
-				$wertungen[$category_id] = mf_tournaments_make_team_buchholz_bp($event['runde_no']);
+				if (mf_tournaments_make_fide_correction($event_id) === 'fide-2012') {
+					$wertungen[$category_id] = mf_tournaments_make_team_buchholz_bp($event['runde_no']);
+				} else {
+					$wertungen[$category_id] = mf_tournaments_make_team_buchholz($event['runde_no']);
+				}
 			} else {
 				$wertungen[$category_id] = mf_tournaments_make_team_buchholz_mp($event['runde_no']);
 			}
@@ -109,7 +111,7 @@ function mod_tournaments_make_standings_team($event) {
 		}
 	}
 
-	$standings = cms_tabellenstand_wertungen($event, $standings, $wertungen, $turnierwertungen);
+	$standings = mod_tournaments_make_standings_prepare($event, $standings, $wertungen, $turnierwertungen);
 
 	$sql = 'SELECT team_id, tabellenstand_id
 		FROM tabellenstaende
@@ -478,6 +480,7 @@ function mf_tournaments_make_team_sw($round_no) {
 		LEFT JOIN teams USING (team_id)
 		WHERE runde_no = %d
 		AND team_status = "Teilnehmer"
+		AND spielfrei = "nein"
 		ORDER BY gewonnen DESC, team_id';
 	$sql = sprintf($sql, $round_no);
 	return wrap_db_fetch($sql, 'team_id', 'key/value');
