@@ -23,7 +23,7 @@
  * @return void
  * @todo return Anzahl der geänderten Datensätze, ggf.
  */
-function cms_tabellenstand_calculate_einzel($event, $runde_no) {
+function mod_tournaments_make_standings_calculate_single($event, $runde_no) {
 	// gibt es überhaupt Partien in der Runde, die schon gespielt wurden?
 	$sql = 'SELECT COUNT(*)
 		FROM partien
@@ -39,12 +39,12 @@ function cms_tabellenstand_calculate_einzel($event, $runde_no) {
 	wrap_db_query($sql);
 
 	// Spieler auslesen
-	$tabelleeinzeln = new cms_tabellenstand_einzel();
+	$tabelleeinzeln = new mod_tournaments_make_standings_single();
 	$tabelleeinzeln->setAktRunde($runde_no);
 	$tabelle = $tabelleeinzeln->getSpieler($event['event_id']);
 
 	// Turnierwertungen
-	$turnierwertungen = cms_tabellenstandupdate_wertungen($event['event_id']);
+	$turnierwertungen = mod_tournaments_make_standings_get_scoring($event['event_id']);
 	if (in_array(wrap_category_id('turnierwertungen/3p'), array_keys($turnierwertungen))) {
 		$tabelleeinzeln->setSieg(3);
 		$tabelleeinzeln->setRemis(1);
@@ -92,7 +92,7 @@ function cms_tabellenstand_calculate_einzel($event, $runde_no) {
 		}
 	}
 
-	$tabelle = cms_tabellenstand_wertungen($event, $tabelle, $wertungen, $turnierwertungen);
+	$tabelle = mod_tournaments_make_standings_prepare($event, $tabelle, $wertungen, $turnierwertungen);
 	return $tabelle;
 }
 
@@ -101,11 +101,11 @@ function cms_tabellenstand_calculate_einzel($event, $runde_no) {
  *
  * @param int $event_id
  * @param int $runde_no
- * @param array $tabelle Daten, berechnet aus cms_tabellenstand_calculate_einzel()
+ * @param array $tabelle Daten, berechnet aus mod_tournaments_make_standings_calculate_single()
  * @return void
  * @todo return Anzahl der geänderten Datensätze, ggf.
  */
-function cms_tabellenstand_write_einzel($event_id, $runde_no, $tabelle) {
+function mod_tournaments_make_standings_write_single($event_id, $runde_no, $tabelle) {
 	// Bestehenden Tabellenstand aus Datenbank auslesen
 	$sql = 'SELECT person_id, tabellenstand_id
 		FROM tabellenstaende
@@ -198,7 +198,7 @@ function cms_tabellenstand_write_einzel($event_id, $runde_no, $tabelle) {
  * @author Erik Kothe
  * @author Gustaf Mossakowski
  */
-class cms_tabellenstand_einzel {
+class mod_tournaments_make_standings_single {
 	var $buchholz = [];
 	var $buchholzSpieler = [];
 	var $runde_no = 0;

@@ -9,7 +9,7 @@
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
- * @copyright Copyright © 2012-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022 Gustaf Mossakowski
  * @copyright Copyright © 2014 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
@@ -38,13 +38,13 @@ function mod_tournaments_make_standings($vars) {
 		$first = reset($vars);
 		if ($first === 'uebersicht') {
 			array_shift($vars);
-			return cms_tabellenstandupdate_uebersicht($vars);
+			return mod_tournaments_make_standings_overview($vars);
 		} else {
-			return cms_tabellenstandupdate_runde($vars);
+			return mod_tournaments_make_standings_round($vars);
 		}
 	} elseif (count($vars) === 2) {
 		$vars[] = 1; // 1. Runde
-		return cms_tabellenstandupdate_runde($vars);
+		return mod_tournaments_make_standings_round($vars);
 	}
 	return false;
 }
@@ -58,7 +58,7 @@ function mod_tournaments_make_standings($vars) {
  *		[1]: event identifier
  * @return array $page
  */
-function cms_tabellenstandupdate_uebersicht($vars) {
+function mod_tournaments_make_standings_overview($vars) {
 	global $zz_setting;
 	if (count($vars) !== 2) return false;
 
@@ -109,7 +109,7 @@ function cms_tabellenstandupdate_uebersicht($vars) {
  * @param array $vars
  * @return bool
  */
-function cms_tabellenstandupdate_runde($vars) {
+function mod_tournaments_make_standings_round($vars) {
 	global $zz_conf;
 	$time = microtime(true);
 	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
@@ -166,15 +166,15 @@ function cms_tabellenstandupdate_runde($vars) {
 	$zz_conf['user'] = 'Tabellenstand '.$type;
 	if ($event['turnierform'] === 'e') {
 		require_once __DIR__.'/standings-single.inc.php';
-		$tabelle = cms_tabellenstand_calculate_einzel($event, $runde);
+		$tabelle = mod_tournaments_make_standings_calculate_single($event, $runde);
 		if (!$tabelle) {
 			mf_tournaments_job_finish('tabelle', 0, $event['event_id'], $runde);
-			return cms_tabellenstandupdate_return(false, $time, $type);
+			return mod_tournaments_make_standings_return(false, $time, $type);
 		}
-		$success = cms_tabellenstand_write_einzel($event['event_id'], $runde, $tabelle);
+		$success = mod_tournaments_make_standings_write_single($event['event_id'], $runde, $tabelle);
 		if (!$success) {
 			mf_tournaments_job_finish('tabelle', 0, $event['event_id'], $runde);
-			return cms_tabellenstandupdate_return(false, $time, $type);
+			return mod_tournaments_make_standings_return(false, $time, $type);
 		}
 	} else {
 		$event['runde_no'] = $runde;
@@ -198,10 +198,10 @@ function cms_tabellenstandupdate_runde($vars) {
 	$values['POST']['tabellenstand_runde_no'] = $max_runde_no;
 	$ops = zzform_multi('turniere', $values);
 
-	return cms_tabellenstandupdate_return(true, $time, $type);
+	return mod_tournaments_make_standings_return(true, $time, $type);
 }
 
-function cms_tabellenstandupdate_return($bool, $time, $type) {
+function mod_tournaments_make_standings_return($bool, $time, $type) {
 	$time = microtime(true) - $time;
 	if ($time < 1) return $bool; // do not log if it's fast enough
 	wrap_log(sprintf('Tabellenstand %s in %s sec erstellt.', $type, $time));
@@ -214,7 +214,7 @@ function cms_tabellenstandupdate_return($bool, $time, $type) {
  * @param int $event_id
  * @return array
  */
-function cms_tabellenstandupdate_wertungen($event_id) {
+function mod_tournaments_make_standings_get_scoring($event_id) {
 	$sql = 'SELECT category_id, category, category_short
 			, SUBSTRING_INDEX(REPLACE(path, "-", "_"), "/", -1) AS path, anzeigen
 		FROM turniere_wertungen
@@ -224,8 +224,7 @@ function cms_tabellenstandupdate_wertungen($event_id) {
 		WHERE event_id = %d
 		ORDER BY turniere_wertungen.reihenfolge, categories.sequence';
 	$sql = sprintf($sql, $event_id);
-	$turnierwertungen = wrap_db_fetch($sql, 'category_id');
-	return $turnierwertungen;
+	return wrap_db_fetch($sql, 'category_id');
 }
 
 /**
@@ -237,7 +236,7 @@ function cms_tabellenstandupdate_wertungen($event_id) {
  * @param array $turnierwertungen
  * @return array $tabelle
  */
-function cms_tabellenstand_wertungen($event, $tabelle, $wertungen, $turnierwertungen) {
+function mod_tournaments_make_standings_prepare($event, $tabelle, $wertungen, $turnierwertungen) {
 	$tsw = [];
 	foreach (array_keys($turnierwertungen) as $category_id) {
 		if (empty($wertungen[$category_id])) continue;
@@ -300,23 +299,23 @@ function cms_tabellenstand_wertungen($event, $tabelle, $wertungen, $turnierwertu
 			$vorige_wertung[$stand] = $wertung;
 		}
 	}
-	$tabelle = cms_tabellenstand_sortieren($tabelle);
+	$tabelle = mod_tournaments_make_standings_sort($tabelle);
 	return $tabelle;
 }
 
 /**
  * Teams nach ihrem aktuellen Tabellenstand sortieren
  *
- * @param array $tabelle
- * @return array $tabelle (sortiert nach platz_no)
+ * @param array $standings
+ * @return array (sortiert nach platz_no)
  */
-function cms_tabellenstand_sortieren($tabelle) {
-	foreach ($tabelle as $tn_id => $values) {
-		if (!is_numeric($tn_id)) continue;
-		$plaetze[$tn_id] = $values['platz_no'];
+function mod_tournaments_make_standings_sort($standings) {
+	foreach ($standings as $participant_id => $values) {
+		if (!is_numeric($participant_id)) continue;
+		$places[$participant_id] = $values['platz_no'];
 	}
-	array_multisort($plaetze, SORT_ASC, $tabelle);
-	return $tabelle;
+	array_multisort($places, SORT_ASC, $standings);
+	return $standings;
 }
 
 /**

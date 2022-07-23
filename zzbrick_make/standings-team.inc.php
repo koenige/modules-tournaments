@@ -47,7 +47,7 @@ function mod_tournaments_make_standings_team($event) {
 	$standings = wrap_db_fetch($sql, 'team_id');
 	if (!$standings) return false;
 
-	$turnierwertungen = cms_tabellenstandupdate_wertungen($event['event_id']);
+	$turnierwertungen = mod_tournaments_make_standings_get_scoring($event['event_id']);
 
 	// Wertungen aus Datenbank auslesen
 	foreach ($turnierwertungen as $category_id => $turnierwertung) {
@@ -111,7 +111,7 @@ function mod_tournaments_make_standings_team($event) {
 		}
 	}
 
-	$standings = cms_tabellenstand_wertungen($event, $standings, $wertungen, $turnierwertungen);
+	$standings = mod_tournaments_make_standings_prepare($event, $standings, $wertungen, $turnierwertungen);
 
 	$sql = 'SELECT team_id, tabellenstand_id
 		FROM tabellenstaende
