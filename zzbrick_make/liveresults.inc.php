@@ -71,9 +71,6 @@ function mod_tournaments_make_liveresults($params) {
  * @return array $page
  */
 function mod_tournament_make_liveresults_tournament($params) {
-	global $zz_conf;
-	require_once $zz_conf['dir'].'/zzform.php';
-	
 	if (count($params) !== 2) return false;
 	
 	// @todo return false wenn Runde komplett (aber wann ist Runde komplett?)

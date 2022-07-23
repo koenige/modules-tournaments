@@ -161,7 +161,6 @@ function mod_tournaments_make_standings_round($vars) {
 		wrap_quit(404);
 	}
 
-	require_once $zz_conf['dir'].'/zzform.php';
 	$type = implode('/', $vars);
 	$zz_conf['user'] = 'Tabellenstand '.$type;
 	if ($event['turnierform'] === 'e') {

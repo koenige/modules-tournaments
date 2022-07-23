@@ -208,7 +208,6 @@ function mod_tournaments_make_games($vars) {
 		}
 	}
 
-	require_once $zz_conf['dir'].'/zzform.php';
 	require_once $zz_conf['dir'].'/functions.inc.php';
 
 	$old_error_handling = $zz_conf['error_handling'];

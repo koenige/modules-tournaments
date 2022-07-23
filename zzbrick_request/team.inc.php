@@ -405,7 +405,6 @@ function mod_tournaments_team_public($page, $data) {
  */
 function mod_tournaments_team_intern($page, $data) {
 	global $zz_setting;
-	global $zz_conf;
 
 	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
 	if (!my_team_access($data['team_id'])) {
@@ -431,8 +430,6 @@ function mod_tournaments_team_intern($page, $data) {
 	// a round is paired, round has not started, timeframe for line-up is open
 	$lineup = brick_format('%%% make lineup_active '.implode(' ', explode('/', $data['team_identifier'])).' %%%');
 	if ($lineup['text']) $data['lineup'] = true;
-
-	require_once $zz_conf['dir'].'/zzform.php';
 
 	if (!empty($_POST) AND array_key_exists('komplett', $_POST)) {
 		// Meldung komplett
@@ -483,8 +480,6 @@ function mod_tournaments_team_intern($page, $data) {
  * @return void
  */
 function mod_tournaments_team_intern_berechtigung($data) {
-	global $zz_conf;
-	require_once $zz_conf['dir'].'/zzform.php';
 	$values = [];
 
 	switch ($_POST['berechtigung']) {
