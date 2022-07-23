@@ -318,3 +318,29 @@ function cms_tabellenstand_sortieren($tabelle) {
 	array_multisort($plaetze, SORT_ASC, $tabelle);
 	return $tabelle;
 }
+
+/**
+ * Setze FIDE-Regelung für nicht gespielte Partien nach Datum des Beginns
+ * eines Turniers
+ *
+ * @param int $event_id
+ * @return string
+ *		NULL => Punkte werden als Punkte gewertet
+ *		'fide-2009' => FIDE Tournament Rules Annex 3: Tie-Break Regulations 2/F/a
+ *			für Turnier nach FIDE-Kongreß (?) = 2009-10-18
+ *		'fide-2012' => FIDE Tournament Rules Annex 3: Tie-Break Regulations 2/F/b
+ *			für Turniere nach 2012-07-01
+ */
+function mf_tournaments_make_fide_correction($event_id) {
+	static $correction;
+	if (empty($correction)) $correction = [];
+	if (array_key_exists($event_id, $correction)) return $correction[$event_id];
+	$sql = 'SELECT
+			IF(date_begin >= "2012-07-01", "fide-2012",
+				IF(date_begin >= "2009-10-18", "fide-2009", NULL))
+		FROM events
+		WHERE event_id = %d';
+	$sql = sprintf($sql, $event_id);
+	$correction[$event_id] = wrap_db_fetch($sql, '', 'single value');
+	return $correction[$event_id];
+}
