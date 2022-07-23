@@ -480,6 +480,7 @@ function mf_tournaments_make_team_sw($round_no) {
 		LEFT JOIN teams USING (team_id)
 		WHERE runde_no = %d
 		AND team_status = "Teilnehmer"
+		AND spielfrei = "nein"
 		ORDER BY gewonnen DESC, team_id';
 	$sql = sprintf($sql, $round_no);
 	return wrap_db_fetch($sql, 'team_id', 'key/value');
