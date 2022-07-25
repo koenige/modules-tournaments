@@ -158,17 +158,6 @@ $zz['fields'][23]['type'] = 'text';
 $zz['fields'][23]['explanation'] = 'Bretter mit Liveübertragung, bspw. 1-6, 9, 11 oder 1.1-1.6 (Tisch.Brett)';
 $zz['fields'][23]['hide_in_list'] = true;
 
-$zz['fields'][42] = zzform_include_table('turniere-partien');
-$zz['fields'][42]['title'] = 'Livepartien';
-$zz['fields'][42]['type'] = 'subtable';
-$zz['fields'][42]['form_display'] = 'lines';
-$zz['fields'][42]['hide_in_list'] = true;
-$zz['fields'][42]['fields'][2]['type'] = 'foreign_key';
-$zz['fields'][42]['sql'] .= $zz['fields'][42]['sqlorder'];
-$zz['fields'][42]['explanation_top'] = $zz['fields'][42]['fields'][3]['explanation'];
-unset($zz['fields'][42]['fields'][3]['explanation']);
-$zz['fields'][42]['if']['add']['hide_in_form'] = true;
-
 $zz['fields'][26]['field_name'] = 'turnierkennung';
 $zz['fields'][26]['explanation'] = 'Eigene Turnierkennung, wird z. B. für SWT-Dateiexport genutzt';
 $zz['fields'][26]['hide_in_list'] = true;

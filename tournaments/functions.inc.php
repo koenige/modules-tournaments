@@ -35,3 +35,37 @@ function mf_tournaments_event_title_wrap($title) {
 	$title = implode(' ', $title);
 	return $title;
 }
+
+/**
+ * read chess PGN file from URL
+ *
+ * @param int $tournament_id
+ * @return string
+ * @global array $zz_conf
+ */
+function mf_tournaments_pgn_file_from_tournament($tournament_id) {
+	global $zz_conf;
+
+	$sql = 'SELECT urkunde_parameter
+		FROM tournaments
+		WHERE tournament_id = %d';
+	$sql = sprintf($sql, $tournament_id);
+	$parameters = wrap_db_fetch($sql, '_dummy_', 'single value');
+	if (!$parameters) return '';
+
+	parse_str($parameters, $parameters);
+	if (!$parameters['tournaments_pgn_paths']) return '';
+
+	$pgn = '';
+	foreach ($parameters['tournaments_pgn_paths'] as $path) {
+		if (in_array(substr($path, 0, 1), ['/', '.'])) {
+			// local path
+			$path = $zz_conf['root'].$path;
+			if (!file_exists($path)) continue;
+		}
+		if ($content = file_get_contents($path)) {
+			$pgn .= $content;
+		}
+	}
+	return $pgn;
+}

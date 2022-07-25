@@ -298,8 +298,7 @@ function mod_tournaments_games_file($event, $request, $typ = false, $qs = []) {
 		}
 		if (empty($file)) {
 			// maybe there's some path on the server / on an external server?
-			// read turniere_partien
-			$page['text'] = mf_chess_pgn_file_from_tournament($event['tournament_id']);
+			$page['text'] = mf_tournaments_pgn_file_from_tournament($event['tournament_id']);
 			if (!$page['text']) return false;
 			$page['headers']['filename'] =  ' (Live)';
 		} else {

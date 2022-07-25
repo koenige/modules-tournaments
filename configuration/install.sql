@@ -246,15 +246,6 @@ CREATE TABLE `turniere_kennungen` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
-CREATE TABLE `turniere_partien` (
-  `tp_id` int unsigned NOT NULL AUTO_INCREMENT,
-  `tournament_id` int unsigned NOT NULL,
-  `partien_pfad` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`tp_id`),
-  KEY `turnier_id` (`tournament_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
 CREATE TABLE `turniere_status` (
   `turnier_status_id` int unsigned NOT NULL AUTO_INCREMENT,
   `tournament_id` int unsigned NOT NULL,

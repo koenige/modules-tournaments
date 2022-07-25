@@ -141,7 +141,7 @@ function mod_tournaments_make_games($vars) {
 	} elseif ($live) {
 		// Gibt es Live-Links in Tabelle?
 		require_once $zz_setting['modules_dir'].'/chess/chess/pgn.inc.php';
-		$pgn = explode("\n", mf_chess_pgn_file_from_tournament($event['tournament_id']));
+		$pgn = explode("\n", mf_tournaments_pgn_file_from_tournament($event['tournament_id']));
 	} else {
 		$pgn = false;
 	}
