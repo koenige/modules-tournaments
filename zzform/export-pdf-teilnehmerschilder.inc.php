@@ -72,6 +72,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		$name_tag['logo_height'] = 32;
 		$name_tag['bar_height'] = 22;
 		$name_tag['bar_font_size'] = 14;
+		$name_tag['event_font_size'] = 10;
+		$name_tag['club_font_size'] = 10;
 		break;
 	default:
 	case '10.5x7':
@@ -83,6 +85,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		$name_tag['logo_height'] = 40;
 		$name_tag['bar_height'] = 28;
 		$name_tag['bar_font_size'] = 18;
+		$name_tag['event_font_size'] = 11;
+		$name_tag['club_font_size'] = 12;
 		break;
 	}
 
@@ -185,7 +189,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		$top = $name_tag['height'] * $row;
 		$pdf->Line(0, $top + $name_tag['height'], 595, $top + $name_tag['height']);
 		for ($j = 0; $j < 2; $j++) {
-			// DSJ-Logo
+			// logo or QR code
 			$left = $name_tag['width'] * $j;
 			if ($j & 1) {
 				$image = mf_tournaments_p_qrcode($line['participation_id']);
@@ -197,10 +201,14 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				$height = $name_tag['logo_height'];
 			}
 			$pdf->image($image, $name_tag['width']*($j+1) - $name_tag['margin'] - $width, $name_tag['margin'] + $top, $width, $height);
-			$pdf->setFont('FiraSans-Regular', '', 11);
+
+			// event
+			$pdf->setFont('FiraSans-Regular', '', $name_tag['event_font_size']);
 			$pdf->SetTextColor(0, 0, 0);
 			$pdf->SetXY($name_tag['margin'] + $left, $name_tag['margin'] + $top);
-			$pdf->MultiCell(125, 14, $event['main_series_long']."\n".$event['turnierort'].' '.$event['year'], 0, 'L');
+			$pdf->MultiCell(125, round($name_tag['event_font_size'] * 1.2), $event['main_series_long']."\n".$event['turnierort'].' '.$event['year'], 0, 'L');
+			
+			// name
 			$pdf->SetXY($name_tag['margin'] + $left, $pdf->GetY() + $name_tag['margin'] * 1.2);
 			if (strlen($line['name']) > 23) {
 				$pdf->setFont('FiraSans-SemiBold', '', 16);
@@ -208,8 +216,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				$pdf->setFont('FiraSans-SemiBold', '', 20);
 			}
 			$pdf->Cell($cell_width, 24, $line['name'], 0, 2, 'L');
-			$pdf->setFont('FiraSans-Regular', '', 12);
-			$pdf->MultiCell($cell_width, 16, $line['club'], 0, 'L');
+			$pdf->setFont('FiraSans-Regular', '', $name_tag['club_font_size']);
+			$pdf->MultiCell($cell_width, round($name_tag['club_font_size'] * 1.33), $line['club'], 0, 'L');
 
 			// bar
 			$pdf->SetXY($name_tag['margin'] + $left, $top + $name_tag['height'] - $name_tag['margin'] - 20 - $name_tag['bar_height']);

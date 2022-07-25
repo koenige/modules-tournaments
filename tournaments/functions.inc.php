@@ -21,10 +21,16 @@
  */
 function mf_tournaments_event_title_wrap($title) {
 	$title = explode(' ', $title);
-	foreach ($title as $pos => $word) {
-		if (strlen($word) < 16) continue;
-		if (strstr($word, 'meisterschaft'))
-			$title[$pos] = str_replace('meisterschaft', '- meisterschaft', $word);
+	foreach ($title as $pos => &$word) {
+		if (strlen($word) < 21) continue;
+		if (strstr($word, '-')) {
+			$word = str_replace('-', "- ", $word);
+			continue;
+		}
+		if (strstr($word, 'meisterschaft')) {
+			$word = str_replace('meisterschaft', '- meisterschaft', $word);
+			continue;
+		}
 	}
 	$title = implode(' ', $title);
 	return $title;
