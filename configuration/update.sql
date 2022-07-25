@@ -25,3 +25,4 @@
 /* 2022-04-21-2 */	ALTER TABLE `teams` ADD UNIQUE `identifier` (`identifier`), DROP INDEX `kennung`;
 /* 2022-06-13-1 */	DROP VIEW `buchholz_einzel_mit_kampflosen_view`;
 /* 2022-07-25-1 */	DROP TABLE `turniere_partien`;
+/* 2022-07-25-2 */	DELETE FROM `_relations` WHERE `detail_table` = 'turniere_partien';
