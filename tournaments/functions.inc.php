@@ -50,11 +50,11 @@ function mf_tournaments_pgn_file_from_tournament($tournament_id) {
 		FROM tournaments
 		WHERE tournament_id = %d';
 	$sql = sprintf($sql, $tournament_id);
-	$parameters = wrap_db_fetch($sql, '_dummy_', 'single value');
+	$parameters = wrap_db_fetch($sql, '', 'single value');
 	if (!$parameters) return '';
 
 	parse_str($parameters, $parameters);
-	if (!$parameters['tournaments_pgn_paths']) return '';
+	if (empty($parameters['tournaments_pgn_paths'])) return '';
 
 	$pgn = '';
 	foreach ($parameters['tournaments_pgn_paths'] as $path) {
