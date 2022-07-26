@@ -69,3 +69,33 @@ function mf_tournaments_pgn_file_from_tournament($tournament_id) {
 	}
 	return $pgn;
 }
+
+/**
+ * read identifiers of persons per federation
+ * Kennungen einzelner Verbände auslesen
+ *
+ * @param array $players indexed by person_id
+ * @param array $categories
+ * @return array
+ */
+function mf_tournaments_person_identifiers($players, $categories) {
+	if (!$players) return $players;
+	$sql = 'SELECT person_id
+			, contacts_identifiers.identifier
+			, SUBSTRING_INDEX(categories.path, "/", -1) AS category
+		FROM contacts_identifiers
+		LEFT JOIN persons USING (contact_id)
+		LEFT JOIN categories
+			ON contacts_identifiers.identifier_category_id = categories.category_id
+		WHERE person_id IN (%s) AND current = "yes"';
+	$sql = sprintf($sql, implode(',', array_keys($players)));
+	$identifiers = wrap_db_fetch($sql, ['person_id', 'category', 'identifier'], 'key/value');
+	foreach ($identifiers as $person_id => $pk) {
+		foreach ($categories as $category) {
+			$key = str_replace('-', '_', $category);
+			if (!array_key_exists($category, $pk)) continue;
+			$players[$person_id][$key] = $pk[$category];
+		}
+	}
+	return $players;
+}

@@ -141,7 +141,7 @@ function mod_tournaments_startranking_single($event) {
 		, ($event['date_end'] >= date('Y-m-d')) ? '"angemeldet", ' : ''
 	);
 	$event['spieler'] = wrap_db_fetch($sql, 'person_id');
-	$event['spieler'] = my_get_persons_kennungen($event['spieler'], ['fide-id', 'zps']);
+	$event['spieler'] = mf_tournaments_person_identifiers($event['spieler'], ['fide-id', 'zps']);
 	$event['zeige_dwz'] = false;
 	$event['zeige_elo'] = false;
 	$event['zeige_titel'] = false;

@@ -190,7 +190,6 @@ function mod_tournaments_team($vars, $settings) {
 	}
 
 	// Spieler
-	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
 	$data = array_merge($data, mf_tournaments_team_players($data['team_id'], $data));
 
 	// Paarungen
@@ -404,7 +403,7 @@ function mf_tournaments_team_players($team_ids, $event) {
 	$alle_spieler = wrap_db_fetch($sql, ['team_id', 'person_id']);
 	if (!$alle_spieler) return [];
 	foreach ($alle_spieler as $id => $team_spieler) {
-		$team_spieler = my_get_persons_kennungen($team_spieler, ['fide-id', 'zps']);
+		$team_spieler = mf_tournaments_person_identifiers($team_spieler, ['fide-id', 'zps']);
 
 		$teams[$id]['spielberechtigt'] = true;
 		$teams[$id]['dwz_schnitt'] = 0;
@@ -433,7 +432,7 @@ function mf_tournaments_team_players($team_ids, $event) {
 		$teams[$id]['spieler'] = $team_spieler;
 		// DWZ-Schnitt
 		if (!$brett_no) {
-			$team_spieler = my_team_sort_rating($team_spieler);
+			$team_spieler = mf_tournaments_team_sort_rating($team_spieler);
 		}
 		foreach ($team_spieler as $person_id => $spieler) {
 			if ($bretter_min > 0) {
@@ -454,4 +453,19 @@ function mf_tournaments_team_players($team_ids, $event) {
 	}
 	if (is_array($team_ids)) return $teams;
 	else return $teams[$team_ids];
+}
+
+/**
+ * Sortierung von Spielern nach DWZ und Elo, falls keine Brett-No. gesetzt
+ *
+ * @param array $spieler
+ * @return array
+ */
+function mf_tournaments_team_sort_rating($spieler) {
+	foreach ($spieler as $key => $person) {
+		$t_dwz[$key] = $person['t_dwz'];
+		$t_elo[$key] = $person['t_elo'];
+	}
+	array_multisort($t_dwz, SORT_DESC, $t_elo, SORT_DESC, $spieler);
+	return $spieler;
 }
