@@ -1,0 +1,418 @@
+<?php
+
+/**
+ * tournaments module
+ * registration of the line-up of a team
+ *
+ * Part of »Zugzwang Project«
+ * https://www.zugzwang.org/modules/tournaments
+ *
+ * @author Gustaf Mossakowski <gustaf@koenige.org>
+ * @copyright Copyright © 2016-2017, 2019-2022 Gustaf Mossakowski
+ * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+ */
+
+
+/**
+ * Bearbeiten der Mannschaftsaufstellung
+ *
+ * @param array $vars
+ * 		[0]: Jahr
+ * 		[1]: event identifier
+ * 		[2]: Teamkennung
+ * @return array $page
+ */
+function mod_tournaments_teamaufstellung($vars) {
+	global $zz_conf;
+	global $zz_setting;
+	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
+	require_once $zz_conf['dir_inc'].'/validate.inc.php';
+
+	$sql = 'SELECT team_id, team, team_no, meldung
+			, organisationen.contact_id, organisationen.contact_id, v_ok.identifier AS zps_code
+			, event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year
+			, IFNULL(place, places.contact) AS turnierort
+			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
+			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
+			, main_series.category_short AS main_series
+			, geschlecht, alter_min, alter_max, bretter_min, bretter_max
+			, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
+			, hinweis_aufstellung
+			, turnierformen.parameters AS turnierform_parameter
+		FROM teams
+		LEFT JOIN contacts organisationen
+			ON teams.club_contact_id = organisationen.contact_id
+		LEFT JOIN contacts_identifiers v_ok
+			ON v_ok.contact_id = organisationen.contact_id AND v_ok.current = "yes"
+		LEFT JOIN events USING (event_id)
+		LEFT JOIN contacts places
+			ON places.contact_id = events.place_contact_id
+		LEFT JOIN addresses
+			ON places.contact_id = addresses.contact_id
+		LEFT JOIN tournaments USING (event_id)
+		LEFT JOIN categories turnierformen
+			ON tournaments.turnierform_category_id = turnierformen.category_id
+		LEFT JOIN categories series
+			ON events.series_category_id = series.category_id
+		LEFT JOIN categories main_series
+			ON series.main_category_id = main_series.category_id
+		WHERE teams.identifier = "%d/%s/%s"';
+	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]), wrap_db_escape($vars[2]));
+	$data = wrap_db_fetch($sql);
+	if (!$data) return false;
+	if (!my_team_access($data['team_id'], ['Teilnehmer'])) wrap_quit(403);
+	if ($data['meldung'] !== 'offen') wrap_quit(403);
+	parse_str($data['turnierform_parameter'], $data['turnierform_parameter']);
+
+	$data['geschlecht'] = explode(',', strtoupper($data['geschlecht']));
+
+	// Team + Vereinsbetreuer auslesen
+	$data = array_merge($data, my_team_teilnehmer([$data['team_id'] => $data['contact_id']], $data));
+
+	// Aktuelle Mitglieder auslesen
+	// besser als nichts, eigentlich werden vergangene Mitglieder gesucht
+	$sql = 'SELECT ZPS, Mgl_Nr, Spielername, Geschlecht, Geburtsjahr
+			, DWZ, FIDE_Elo, contacts.contact_id, contact
+		FROM dwz_spieler
+		LEFT JOIN contacts_identifiers ok
+			ON dwz_spieler.ZPS = ok.identifier 
+		LEFT JOIN contacts USING (contact_id)
+		WHERE ZPS = "%s"
+		AND (ISNULL(Status) OR Status != "P")
+		AND Geschlecht IN("%s")
+		AND Geburtsjahr <= %d AND Geburtsjahr >= %d
+		AND ok.current = "yes"
+		ORDER BY Spielername';
+	$sql = sprintf($sql, $data['zps_code'], implode('","', $data['geschlecht'])
+		, date('Y') - $data['alter_min'], date('Y') - $data['alter_max']);
+	$data['vereinsspieler'] = wrap_db_fetch($sql, 'Mgl_Nr');
+	foreach ($data['vereinsspieler'] as $id => $spieler) {
+		if ($spieler['Mgl_Nr'])
+			$data['zps_codes'][] = $spieler['ZPS'].'-'.$spieler['Mgl_Nr'];
+		foreach ($data['spieler'] AS $gemeldete_spieler) {
+			if (empty($gemeldete_spieler['zps_code'])) continue;
+			if ($gemeldete_spieler['zps_code'] !== $spieler['ZPS'].'-'.$spieler['Mgl_Nr']) continue;
+			unset($data['vereinsspieler'][$id]);
+			continue 2;
+		}
+		$spielername = explode(',', $spieler['Spielername']);
+		$data['vereinsspieler'][$id]['last_name'] = $spielername[0];
+		$data['vereinsspieler'][$id]['first_name'] = $spielername[1];
+		if ($data['gastspieler_status']) {
+			$data['vereinsspieler'][$id]['gastspieler_status'] = 1;
+		}
+	}
+	
+	$data['add'] = true;
+	if (!empty($data['spielerzahl']) AND $data['bretter_max'] <= $data['spielerzahl']) {
+		$data['add'] = false;
+	}
+	if (!$data['add']) unset($data['vereinsspieler']);
+	
+	$data['redirect'] = true;
+	$changed = false; // es kann sein, dass zuviele Spieler angegeben werden
+	if (!empty($_POST)) {
+		$postdata = $_POST; // wird von zzform ggf. überschrieben
+		require_once $zz_conf['dir'].'/zzform.php';
+		foreach ($postdata['rang'] as $code => $rangliste_no) {
+			// Nur Integer werden akzeptiert (warum auch immer da Leute was anderes eingeben)
+			if ($rangliste_no) {
+				$rangliste_no = trim($rangliste_no);
+				if (substr($rangliste_no, -1) === '.') {
+					$rangliste_no = substr($rangliste_no, 0, -1);
+				}
+				if (!wrap_is_int($rangliste_no)) {
+					$data['error_msg'] = 'Es können als Brettnummern nur Zahlen (1–…) eingegeben werden.';
+					continue;
+				}
+				if ($rangliste_no < 0) {
+					$data['error_msg'] = 'Es können als Brettnummern nur Zahlen größer Null eingegben werden.';
+					continue;				
+				}
+			}
+			// Gastspieler prüfen
+			if (!empty($postdata['gastspieler'][$code]) AND $postdata['gastspieler'][$code] !== 'off') {
+				$gastspieler = true;
+			} else {
+				$gastspieler = false;
+			}
+			if ($code === 'neu' AND $data['add']) {
+				if ($rangliste_no) $data['post_rang'] = $rangliste_no;
+				if (isset($postdata['gastspieler'][$code]))
+					$data['post_gastspieler'] = $postdata['gastspieler'][$code] !== 'off' ? 1 : 0;
+				// Neuer Spieler nicht aus Vereinsliste wird ergänzt
+				if (!empty($postdata['auswahl']) AND $rangliste_no) {
+					$zps = explode('-', $postdata['auswahl']);
+					$spieler = my_dwz_spielerdaten($zps[0], $zps[1]);
+					if ($spieler) {
+						$spieler['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
+						$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler);
+						if ($ops) $changed = true;
+					}
+					continue;
+				} elseif (!empty($postdata['auswahl'])) {
+					$zps = explode('-', $postdata['auswahl']);
+					$spieler = my_dwz_spielerdaten($zps[0], $zps[1]);
+					$data['neu_treffer_ohne_rang'] = true;
+					$data['neu_ZPS'] = $spieler['ZPS'];
+					$data['neu_Mgl_Nr'] = $spieler['Mgl_Nr'];
+					$data['neu_vorname'] = $spieler['first_name'];
+					$data['neu_nachname'] = $spieler['last_name'];
+					$data['neu_Geschlecht'] = $spieler['Geschlecht'];
+					$data['neu_Geburtsjahr'] = $spieler['Geburtsjahr'];
+					$data['neu_DWZ'] = $spieler['DWZ'];
+					$data['redirect'] = false;
+					continue;
+				}
+				if (empty($postdata['first_name']) AND empty($postdata['last_name'])) {
+					// Fehler: mindestens ein Namensteil muß angegeben werden
+				} elseif (!empty($postdata['ergaenzen'])) {
+					// Spieler ohne DSB-Mitgliedschaft wird ergänzt
+					$spieler = [];
+					$spieler['first_name'] = $postdata['first_name'];
+					$spieler['last_name'] = $postdata['last_name'];
+					$spieler['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
+					$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler);
+					if ($ops) $changed = true;
+					// Spieler in eigener Personentabelle suchen
+					// Falls nicht vorhanden, ergänzen
+					// Teilnahme ergänzen
+				} elseif (empty($postdata['abbruch'])) {
+					// Suche in dwz_spieler
+					// first_name, last_name, sex, date_of_birth
+					$data['neu_treffer'] = cms_team_spielersuche($data, $postdata);
+					$data['redirect'] = false;
+					$data['post_date_of_birth'] = $postdata['date_of_birth'];
+					if (!count($data['neu_treffer'])) {
+						$data['post_vorname'] = $postdata['first_name'];
+						$data['post_nachname'] = $postdata['last_name'];
+						if ($postdata['geschlecht'] === 'm')
+							$data['post_geschlecht_m'] = true;
+						elseif ($postdata['geschlecht'] === 'w')
+							$data['post_geschlecht_w'] = true;
+						// Keinen Spieler gefunden
+						if (!empty($data['turnierform_parameter']['mitglied'])) {
+							// DSB-Mitgliedschaft erforderlich
+							$data['neu_spieler_nicht_gefunden'] = true;
+						} elseif (!empty($postdata['date_of_birth']) AND !zz_check_date($postdata['date_of_birth'])) {
+							$data['date_of_birth_falsch'] = true;
+						} else {
+							// Turniere ohne erforderliche DSB-Mitgliedschaft:
+							// Option, Spieler hinzuzufügen
+							$data['neu_spieler_hinzufuegen'] = true;
+						}
+					}
+				}
+			} elseif (substr($code, 0, 4) === 'zps_' AND $rangliste_no) {
+				$id = substr($code, 4);
+				if (empty($data['vereinsspieler'][$id])) continue;
+				$spieler = my_dwz_spielerdaten(
+					$data['vereinsspieler'][$id]['ZPS'],
+					$data['vereinsspieler'][$id]['Mgl_Nr']
+				);
+				if ($spieler) {
+					$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler);
+					if ($ops) $changed = true;
+				}
+			} elseif (substr($code, 0, 4) === 'tln_') {
+				$id = substr($code, 4); 
+				if ($rangliste_no) {
+					// Rangliste geändert
+					$ops = cms_team_spieler_update($id, $rangliste_no, $gastspieler, $data);
+					if ($ops) $changed = true;
+				} else {
+					// Aus Rangliste gelöscht
+					$ops = cms_team_spieler_delete($id);
+					if ($ops) $changed = true;
+				}
+			}
+		}
+	}
+	if ($changed AND $data['redirect']) {
+		global $zz_page;
+		wrap_redirect(wrap_glue_url($zz_page['url']['full']));
+	}
+	// Daten m/w? Nur ein Geschlecht, dann keine Auswahl nötig
+	if (count($data['geschlecht']) === 1) {
+		if ($data['geschlecht'][0] === 'W') {
+			$data['geschlecht_nur_w'] = true;
+		} else {
+			$data['geschlecht_nur_m'] = true;
+		}
+	}
+
+	$page['title'] = $data['event'].' '.$data['year'].': '.$data['team'].' '.$data['team_no'];
+	$page['breadcrumbs'][] = '<a href="../../../">'.$data['year'].'</a>';
+	if ($data['main_series']) {
+		$page['breadcrumbs'][] = '<a href="../../../'.$data['main_series_path'].'/">'.$data['main_series'].'</a>';
+	}
+	$page['breadcrumbs'][] = '<a href="../../">'.$data['event'].'</a>';
+	$page['breadcrumbs'][] = '<a href="../">'.$data['team'].' '.$data['team_no'].'</a>';
+	$page['breadcrumbs'][] = 'Aufstellung';
+	$page['dont_show_h1'] = true;
+	$page['extra']['realm'] = 'sports';
+
+	$page['title'] .= ' – Aufstellung';
+	$page['text'] = wrap_template('team-aufstellung', $data);
+	return $page;
+}
+
+/**
+ * Fügt Spieler als Meldung zu Teilnahmen hinzu
+ *
+ * @param array $spieler
+ * @param array $data
+ * @param int $data
+ * @param bool $rangliste_no
+ * @return bool
+ */
+function cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler) {
+	global $zz_conf;
+	require_once $zz_conf['dir_custom'].'/editing.inc.php';
+	
+	// Test, ob Spieler noch hinzugefügt werden darf
+	if ($data['bretter_max']) {
+		$sql = 'SELECT COUNT(*) FROM participations
+			WHERE usergroup_id = %d AND team_id = %d';
+		$sql = sprintf($sql
+			, wrap_id('usergroups', 'spieler')
+			, $data['team_id']
+		);
+		$gemeldet = wrap_db_fetch($sql, '', 'single value');
+		if ($gemeldet AND $gemeldet >= $data['bretter_max']) {
+			return false; // nicht mehr als bretter_max melden!
+		}
+	}
+
+	// Speicherung in Personen
+	// 1. Abgleich: gibt es schon Paßnr.? Alles andere zu unsicher
+	$person_id = my_person_speichern($spieler);
+
+	// direkte Speicherung in participations
+	$values = [];
+	$values['action'] = 'insert';
+	$values['ids'] = ['usergroup_id', 'event_id', 'team_id', 'person_id', 'club_contact_id'];
+	$values['POST']['usergroup_id'] = wrap_id('usergroups', 'spieler');
+	$values['POST']['event_id'] = $data['event_id'];
+	$values['POST']['team_id'] = $data['team_id'];
+	$values['POST']['person_id'] = $person_id;
+	$values['POST']['rang_no'] = $rangliste_no;
+	$values['POST']['t_vorname'] = $spieler['first_name'];
+	$values['POST']['t_nachname'] = $spieler['last_name'];
+	// bei Nicht-DSB-Mitgliedern nicht vorhandene Daten
+	$values['POST']['club_contact_id'] = isset($spieler['contact_id']) ? $spieler['contact_id'] : '';
+	$values['POST']['t_verein'] = isset($spieler['contact']) ? $spieler['contact'] : '';
+	$values['POST']['t_dwz'] = isset($spieler['DWZ']) ? $spieler['DWZ'] : '';
+	$values['POST']['t_elo'] = isset($spieler['FIDE_Elo']) ? $spieler['FIDE_Elo'] : '';
+	$values['POST']['t_fidetitel'] = isset($spieler['FIDE_Titel']) ? $spieler['FIDE_Titel'] : '';
+
+	if ($data['gastspieler_status']) {
+		if ($gastspieler) $values['POST']['gastspieler'] = 'ja';
+		else $values['POST']['gastspieler'] = 'nein';
+	}
+	$ops = zzform_multi('teilnahmen', $values);
+	if (!$ops['id']) {
+		wrap_error(sprintf('Teilnahme für Person mit ID %d konnte nicht hinzugefügt werden',
+			$person_id), E_USER_ERROR);
+	}
+	return true;
+}
+
+/**
+ * Teilnehmerdaten aktualisieren
+ *
+ * @param int $id
+ * @param int $rangliste_no
+ * @param bool $gastspieler
+ * @param array $data
+ * @return array $ops
+ */
+function cms_team_spieler_update($id, $rangliste_no, $gastspieler, $data) {
+	$values = [];
+	$values['action'] = 'update';
+	$values['POST']['participation_id'] = $id;
+	$values['POST']['rang_no'] = $rangliste_no;
+	if ($data['gastspieler_status']) {
+		if ($gastspieler) {
+			$values['POST']['gastspieler'] = 'ja';
+		} else {
+			$values['POST']['gastspieler'] = 'nein';
+		}
+	}
+	$ops = zzform_multi('teilnahmen', $values);
+	if (!$ops['id']) {
+		wrap_error(sprintf('Teilnahme für Person mit ID %d konnte nicht aktualisiert werden', $id), E_USER_ERROR);
+	}
+	return $ops;
+}
+
+/**
+ * Teilnehmerdaten löschen
+ *
+ * @param int $id
+ * @return array $ops
+ */
+function cms_team_spieler_delete($id) {
+	$values = [];
+	$values['action'] = 'delete';
+	$values['POST']['participation_id'] = $id;
+	$ops = zzform_multi('teilnahmen', $values);
+	if (!$ops['id']) {
+		wrap_error(sprintf('Teilnahme für Person mit ID %d konnte nicht gelöscht werden', $id), E_USER_ERROR);
+	}
+	return $ops;
+}
+
+/**
+ * Sucht Spieler/in nach Benutzereingaben in DWZ-Datenbank
+ *
+ * @param array $data
+ * @param array $postdata (via POST übergebene Daten)
+ *		sex, date_of_birth, last_name, first_name
+ * @return array
+ */
+function cms_team_spielersuche($data, $postdata) {
+	// Suchparameter zusammenbauen
+	$where = '';
+	if ($postdata['geschlecht'])
+		$where .= sprintf(' AND Geschlecht = "%s"', wrap_db_escape(strtoupper($postdata['geschlecht'])));
+	if ($postdata['date_of_birth'] AND $date = zz_check_date($postdata['date_of_birth']))
+		$where .= sprintf(' AND Geburtsjahr = %d', substr($date, 0, 4));
+	else
+		$where .= sprintf(' AND Geburtsjahr <= %d AND Geburtsjahr >= %d', 
+			date('Y') - $data['alter_min'], date('Y') - $data['alter_max']
+		);
+	$spielername = $postdata['last_name'] ? $postdata['last_name'].'%,' : '%,';
+	$spielername .= $postdata['first_name'] ? $postdata['first_name'].'%' : '%';
+	// Für die Doofies auch falsch herum:
+	$spielername_r = $postdata['first_name'] ? $postdata['first_name'].'%,' : '%,';
+	$spielername_r .= $postdata['last_name'] ? $postdata['last_name'].'%' : '%';
+	
+	//	Suche starten
+	$sql = 'SELECT CONCAT(ZPS, "-", Mgl_Nr) AS unique_id
+			, ZPS, Mgl_Nr, Spielername, Geschlecht, Geburtsjahr, DWZ, FIDE_Elo
+			, contact
+		FROM dwz_spieler
+		LEFT JOIN contacts_identifiers ok
+			ON dwz_spieler.ZPS = ok.identifier 
+		LEFT JOIN contacts USING (contact_id)
+		WHERE (ISNULL(Status) OR Status != "P")
+		AND (Spielername LIKE "%s" OR Spielername LIKE "%s")
+		AND CONCAT(ZPS, "-", Mgl_Nr) NOT IN ("%s")
+		AND ok.current = "yes"
+		%s
+		ORDER BY Spielername';
+	$sql = sprintf($sql
+		, wrap_db_escape($spielername)
+		, wrap_db_escape($spielername_r)
+		, !empty($data['zps_codes']) ? implode('","', $data['zps_codes']) : ''
+		, $where
+	);
+	$treffer = wrap_db_fetch($sql, 'unique_id');
+	foreach (array_keys($treffer) as $id) {
+		$name = explode(',', $treffer[$id]['Spielername']);
+		$treffer[$id]['first_name'] = $name[1];
+		$treffer[$id]['last_name'] = $name[0];
+	}
+	return $treffer;
+}

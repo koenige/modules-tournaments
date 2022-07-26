@@ -1,0 +1,27 @@
+# tournaments module
+# HTML output: Contact data of a team
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2012, 2014, 2016, 2020 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+%%% condition if head %%%
+<h1>Kontakt: <a href="../">%%% item team %%% %%% item team_no %%%</a>
+<br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> <em>in %%% item turnierort %%%</em></h1>
+
+<p>Von den Betreuern vor Ort und die Verantwortlichen zuhause brauchen wir ein 
+paar Daten, um mit ihnen Kontakt aufzunehmen. Bitte geben Sie möglichst Handynummer
+und E-Mail-Adresse an. Von den Betreuern brauchen wir auch das Geburtsjahr.
+Falls eine Betreuerin oder ein Betreuer nicht in der
+DWZ-Datenbank des Deutschen Schachbundes steht (Eltern z.&nbsp;B.), wenden Sie 
+sich bitte an uns unter 
+<a href="mailto:%%% setting tournaments_coordinator_mail_to %%%">%%% setting tournaments_coordinator_mail_to %%%</a>,
+wir fügen die Person dann gerne für Sie hinzu.</p>
+
+%%% condition else %%%
+<p class="fuss"><strong><a href="../">Zurück zur Team-Übersicht</a>%%% condition unless virtual %%%
+ | <a href="../reisedaten/">Weiter zum Schritt 3: Reisedaten</a>%%% condition endif %%%</strong></p>
+%%% condition endif %%%
