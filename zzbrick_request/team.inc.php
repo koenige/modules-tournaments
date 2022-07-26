@@ -19,8 +19,6 @@ function mod_tournaments_team($vars, $settings) {
 	$sql_condition = ' AND NOT ISNULL(events_websites.website_id) ';
 	
 	$sql = 'SELECT teams.team_id, team, team_no
-			, datum_anreise, TIME_FORMAT(uhrzeit_anreise, "%%H:%%i") AS uhrzeit_anreise
-			, datum_abreise, TIME_FORMAT(uhrzeit_abreise, "%%H:%%i") AS uhrzeit_abreise
 			, setzliste_no
 			, platz_no
 			, v_ok.identifier AS zps_code, contacts.contact_id, contacts.contact_id
