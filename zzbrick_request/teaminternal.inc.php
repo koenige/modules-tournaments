@@ -16,9 +16,6 @@
 function mod_tournaments_teaminternal($vars, $settings) {
 	global $zz_setting;
 
-	$intern = true;
-	$sql_condition = '';
-	
 	$sql = 'SELECT teams.team_id, team, team_no
 			, datum_anreise, TIME_FORMAT(uhrzeit_anreise, "%%H:%%i") AS uhrzeit_anreise
 			, datum_abreise, TIME_FORMAT(uhrzeit_abreise, "%%H:%%i") AS uhrzeit_abreise
@@ -72,7 +69,6 @@ function mod_tournaments_teaminternal($vars, $settings) {
 				OR tabellenstaende.runde_no = tournaments.tabellenstand_runde_no)
 		WHERE teams.identifier = "%s"
 		AND spielfrei = "nein"
-		%s
 	';
 	$sql = sprintf($sql
 		, $zz_setting['contact_ids']['dsb']
@@ -80,7 +76,6 @@ function mod_tournaments_teaminternal($vars, $settings) {
 		, $zz_setting['contact_ids']['dsb']
 		, $zz_setting['website_id']
 		, wrap_db_escape(implode('/', $vars))
-		, $sql_condition
 	);
 	$team = wrap_db_fetch($sql);
 	if (!$team) return false;
