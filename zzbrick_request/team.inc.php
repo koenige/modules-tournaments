@@ -16,13 +16,7 @@
 function mod_tournaments_team($vars, $settings) {
 	global $zz_setting;
 
-	if (!empty($settings['intern'])) {
-		$intern = true;
-		$sql_condition = '';
-	} else {
-		$intern = false;
-		$sql_condition = ' AND NOT ISNULL(events_websites.website_id) ';
-	}
+	$sql_condition = ' AND NOT ISNULL(events_websites.website_id) ';
 	
 	$sql = 'SELECT teams.team_id, team, team_no
 			, datum_anreise, TIME_FORMAT(uhrzeit_anreise, "%%H:%%i") AS uhrzeit_anreise
@@ -137,7 +131,7 @@ function mod_tournaments_team($vars, $settings) {
 	$page['dont_show_h1'] = true;
 	$page['extra']['realm'] = 'sports';
 	$data = array_merge($team, $event);
-	if ($data['team_status'] !== 'Teilnehmer' AND !$intern) {
+	if ($data['team_status'] !== 'Teilnehmer') {
 		switch ($data['team_status']) {
 			case 'Löschung':
 				$data['team_withdrawn'] = true;
@@ -148,20 +142,6 @@ function mod_tournaments_team($vars, $settings) {
 				return false;
 		}
 	}
-
-	if ($intern) return mod_tournaments_team_intern($page, $data);
-	return mod_tournaments_team_public($page, $data);
-}
-
-/**
- * Ausgabe Team-Ansicht extern
- *
- * @param array $page
- * @param array $data
- * @return array $page
- */
-function mod_tournaments_team_public($page, $data) {
-	global $zz_setting;
 
 	if (!$data['teilnehmerliste']) {
 		// Umleitung zur Terminübersicht
@@ -394,164 +374,6 @@ function mod_tournaments_team_public($page, $data) {
 
 	$page['text'] = wrap_template('team', $data);
 	return $page;
-}
-
-/**
- * Ausgabe Team-Ansicht mit Meldung intern
- *
- * @param array $page
- * @param array $data
- * @return array $page
- */
-function mod_tournaments_team_intern($page, $data) {
-	global $zz_setting;
-
-	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
-	if (!my_team_access($data['team_id'])) {
-		$page = brick_format('%%% redirect /'.$data['team_identifier'].'/ %%%');
-		return $page;
-	}
-	if ($data['team_status'] === 'Teilnahmeberechtigt') {
-		$data['abfrage_teilnahme'] = true;
-		if (!empty($_POST['berechtigung'])) {
-			return mod_tournaments_team_intern_berechtigung($data);
-		}
-		if (array_key_exists('spaeter', $_GET)) {
-			$data['abfrage_spaeter'] = true;
-		}
-	}
-
-	if ($data['datum_anreise'] AND $data['uhrzeit_anreise']
-		AND $data['datum_abreise'] AND $data['uhrzeit_abreise']) {
-		$data['reisedaten_komplett'] = true;	
-	}
-
-	// line-up?
-	// a round is paired, round has not started, timeframe for line-up is open
-	$lineup = brick_format('%%% make lineup_active '.implode(' ', explode('/', $data['team_identifier'])).' %%%');
-	if ($lineup['text']) $data['lineup'] = true;
-
-	if (!empty($_POST) AND array_key_exists('komplett', $_POST)) {
-		// Meldung komplett
-		$values = [];
-		$values['action'] = 'update';
-		$values['POST']['team_id'] = $data['team_id'];
-		$values['POST']['meldung'] = 'komplett';
-		$values['POST']['meldung_datum'] = date('Y-m-d H:i:s');
-		$values['ids'] = ['team_id'];
-		$ops = zzform_multi('teams', $values);
-		if (!$ops['id']) {
-			wrap_error(sprintf('Komplettstatus für Team-ID %d konnte nicht hinzugefügt werden',
-				$data['team_id']), E_USER_ERROR);
-		}
-		return wrap_redirect_change();
-	}
-	$sql = 'SELECT meldung 
-		FROM teams
-		WHERE team_id = %d';
-	$sql = sprintf($sql, $data['team_id']);
-	$bearbeiten = wrap_db_fetch($sql, '', 'single value');
-	if ($bearbeiten === 'offen') {
-		$data['bearbeiten_aufstellung'] = true;
-		$data['bearbeiten_sonstige'] = true;
-	} elseif ($bearbeiten === 'teiloffen') {
-		$data['bearbeiten_sonstige'] = true;
-	}
-
-	// Buchungen
-	$data = array_merge($data, my_team_buchungen($data['team_id'], $data));
-
-	// Team + Vereinsbetreuer auslesen
-	$data = array_merge($data, my_team_teilnehmer([$data['team_id'] => $data['contact_id']], $data));
-
-	$data['komplett'] = my_team_meldung_komplett($data);
-	if ($data['meldung'] === 'komplett') $data['pdfupload'] = true;
-
-	$page['query_strings'][] = 'spaeter';
-	$page['breadcrumbs'][] = $data['team'].' '.$data['team_no'];
-	$page['text'] = wrap_template('team-intern', $data);
-	return $page;
-}
-
-/**
- * Speichere Zu- oder Absage für Teilnahme am Turnier
- *
- * @param array $data
- * @return void
- */
-function mod_tournaments_team_intern_berechtigung($data) {
-	$values = [];
-
-	switch ($_POST['berechtigung']) {
-	case 'absage':
-/*
-Bei Absage wird ebenfalls der angekreuzte Text geloggt, der Status
-aber auf gelöscht gestellt. Eine Meldung oder Statusänderung ist dann
-nicht mehr möglich.
-*/
-		$values['POST']['anmerkung'] = $data['berechtigung_absage'].
-			(!empty($_POST['bemerkungen']) ? ' – '.$_POST['bemerkungen'] : '');
-		$values['POST']['team_id'] = $data['team_id'];
-		$values['POST']['anmerkung_status'] = 'offen';
-		$values['POST']['benachrichtigung'] = 'ja';
-		$values['POST']['sichtbarkeit'] = ['Team', 'Organisator'];
-		$values['action'] = 'insert';
-		$ops = zzform_multi('anmerkungen', $values);
-
-		$values = [];
-		$values['POST']['team_id'] = $data['team_id'];
-		$values['POST']['team_status'] = 'Löschung';
-		$values['action'] = 'update';
-		$ops = zzform_multi('teams', $values);
-		/*
-Mir würde das reichen, wenn die Meldungen der Form "Hat abgesagt am
-xx.xx.xxxx durch yy" als unerledigte Anmerkung zur Mannschaft hinterlegt
-werden.
-		*/
-		$url = substr($_SERVER['REQUEST_URI'], 0, -1);
-		$url = substr($url, 0, strrpos($url, '/') + 1);
-		return wrap_redirect_change($url.'?absage');
-	case 'zusage':
-		/*
-Bei Zusage wird der Teilnahmestatus auf Teilnehmer gesetzt und man
-kann ganz normal melden. Dazu wird im Hintergrund die Zusage mit
-Termin, Team, Zusagetext und Timestamp in einer Logtabelle
-gespeichert.
-		*/
-		$values['POST']['anmerkung'] = $data['berechtigung_zusage'].
-			(!empty($_POST['bemerkungen']) ? ' – '.$_POST['bemerkungen'] : '');
-		$values['POST']['team_id'] = $data['team_id'];
-		$values['POST']['anmerkung_status'] = !empty($_POST['bemerkungen']) ? 'offen' : 'erledigt';
-		$values['POST']['benachrichtigung'] = !empty($_POST['bemerkungen']) ? 'ja' : 'nein';
-		$values['POST']['sichtbarkeit'] = ['Team', 'Organisator'];
-		$values['action'] = 'insert';
-		$ops = zzform_multi('anmerkungen', $values);
-
-		$values = [];
-		$values['POST']['team_id'] = $data['team_id'];
-		$values['POST']['team_status'] = 'Teilnehmer';
-		$values['action'] = 'update';
-		$ops = zzform_multi('teams', $values);
-		return wrap_redirect_change();
-	case 'spaeter':
-/*
-Bei späterer Meldung wird der Teilnahmestatus nicht geändert. Es wird
-lediglich ein Logeintrag geschrieben, und zwar mit der Begründung aus
-dem Freitextfeld. Dadurch kann zu einem späteren Zeitpunkt zu- oder
-abgesagt werden oder auch zwischendurch eine Nachricht geschrieben
-werden.
-*/
-		$values['POST']['anmerkung'] = $data['berechtigung_spaeter']
-			.(!empty($_POST['bemerkungen']) ? ' – '.$_POST['bemerkungen'] : '');
-		$values['POST']['team_id'] = $data['team_id'];
-		$values['POST']['anmerkung_status'] = 'offen';
-		$values['POST']['benachrichtigung'] = 'ja';
-		$values['POST']['sichtbarkeit'] = ['Team', 'Organisator'];
-		$values['action'] = 'insert';
-		$ops = zzform_multi('anmerkungen', $values);
-		return wrap_redirect_change('?spaeter');
-	}
-	return false;
 }
 
 /**
