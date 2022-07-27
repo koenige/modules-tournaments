@@ -8,24 +8,23 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014, 2016-2020 Gustaf Mossakowski
+ * @copyright Copyright © 2014, 2016-2020, 2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
-$data = my_team_form($brick['vars']);
-if (!$data['zimmerbuchung']) wrap_quit(404, 'Zimmerbuchungen erfolgen direkt über Ausrichter!');
+if (empty($brick['data'])) wrap_quit(404);
+$brick['page']['title'] .= 'Buchungen';
+$brick['page']['breadcrumbs'][] = 'Buchungen';
 
-require $zz_conf['form_scripts'].'/buchungen.php';
-$zz = $zz_sub;
-unset($zz_sub);
+if (!$brick['data']['zimmerbuchung']) wrap_quit(404, 'Zimmerbuchungen erfolgen direkt über Ausrichter!');
+
+$zz = zzform_include_table('buchungen');
 
 $zz_conf['footer_text'] = wrap_template('team-buchung');
-$data['head'] = true;
-$zz['explanation'] = wrap_template('team-buchung', $data);
-$zz['page'] = my_team_form_page($data, 'Buchungen');
-$zz['where']['team_id'] = $data['team_id'];
+$brick['data']['head'] = true;
+$zz['explanation'] = wrap_template('team-buchung', $brick['data']);
+$zz['where']['team_id'] = $brick['data']['team_id'];
 $zz['title'] = '';
 
 $zz_conf['delete'] = true;
@@ -33,8 +32,8 @@ $zz_conf['add'] = true; // nur eine Kategorie hinzufügbar
 
 $zz['fields'][2]['class'] = 'hidden';
 unset($zz['fields'][2]['link']);
-$zz['fields'][3]['sql'] .= sprintf(' AND event_id = %d', $data['event_id']);
-$zz['fields'][5]['default'] = $data['dauer_tage'];
+$zz['fields'][3]['sql'] .= sprintf(' AND event_id = %d', $brick['data']['event_id']);
+$zz['fields'][5]['default'] = $brick['data']['dauer_tage'];
 $zz['fields'][6]['required'] = true;
 $zz['fields'][7]['required'] = true;
 // Bankkonto
@@ -71,8 +70,8 @@ $zz['hooks']['before_upload'] = 'my_buchung';
 
 $zz['if'][2]['access'] = 'none';
 
-if (!brick_access_rights('Organisator', $data['event_rights'])
-	AND !brick_access_rights('Veranstalter', $data['event_rights'])) {
+if (!brick_access_rights('Organisator', $brick['data']['event_rights'])
+	AND !brick_access_rights('Veranstalter', $brick['data']['event_rights'])) {
 	$zz_conf['if'][5]['delete'] = false;
 	$zz_conf['if'][5]['edit'] = false;
 	$zz_conf['if'][2]['delete'] = false;

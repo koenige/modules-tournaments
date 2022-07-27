@@ -13,12 +13,16 @@
  */
 
 
-require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
-$data = my_team_form($brick['vars']);
+if (empty($brick['data'])) wrap_quit(404);
+$data = $brick['data'];
 // Team + Vereinsbetreuer auslesen
 $data = array_merge($data, my_team_teilnehmer([$data['team_id'] => $data['contact_id']], $data, false));
 
-require_once __DIR__.'/persons.php';
+$brick['page']['title'] .= 'Details';
+$brick['page']['breadcrumbs'][] = '<a href="../kontakt/">Kontaktdaten</a>';
+$brick['page']['breadcrumbs'][] = 'Details';
+
+require_once $zz_setting['custom'].'/zzbrick_forms/persons.php';
 
 // Person-ID notwendig
 if (empty($_GET['where']['contact_id'])) wrap_quit(403);
@@ -38,7 +42,6 @@ if (!$id_found) wrap_quit(403);
 $zz_conf['footer_text'] = wrap_template('team-kontaktdetails');
 $data['head'] = true;
 $zz['explanation'] = wrap_template('team-kontaktdetails', $data);
-$zz['page'] = my_team_form_page($data, 'Details');
 
 // contact
 $zz['fields'][2]['title'] = 'Name';

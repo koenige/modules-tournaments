@@ -8,25 +8,25 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2018-2019, 2021 Gustaf Mossakowski
+ * @copyright Copyright © 2018-2019, 2021-2022 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
-$data = my_team_form($brick['vars'], ['komplett']);
+if (empty($brick['data'])) wrap_quit(404);
+$brick['page']['title'] .= 'PDF Upload';
+$brick['page']['breadcrumbs'][] = 'PDF Upload';
 
 $zz = zzform_include_table('teams');
 
 $zz_conf['footer_text'] = wrap_template('team-pdfupload');
-$data['head'] = true;
-$zz['explanation'] = wrap_template('team-pdfupload', $data);
-$zz['page'] = my_team_form_page($data, 'PDF Upload');
+$brick['data']['head'] = true;
+$zz['explanation'] = wrap_template('team-pdfupload', $brick['data']);
 $zz['title'] = '';
-$zz['where']['team_id'] = $data['team_id'];
+$zz['where']['team_id'] = $brick['data']['team_id'];
 
 $fields = [1, 28, 29, 20];
-if ($data['gastspieler']) $fields[] = 30;
+if ($brick['data']['gastspieler']) $fields[] = 30;
 foreach (array_keys($zz['fields']) as $no) {
 	if (!in_array($no, $fields)) unset($zz['fields'][$no]);
 }

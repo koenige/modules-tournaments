@@ -14,17 +14,17 @@
  */
 
 
-require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
-$data = my_team_form($brick['vars']);
-
+if (empty($brick['data'])) wrap_quit(404);
 $zz = zzform_include_table('teilnahmen');
 
-$zz_conf['footer_text'] = wrap_template('team-kontakt', $data);
-$data['head'] = true;
-$zz['explanation'] = wrap_template('team-kontakt', $data);
-$zz['page'] = my_team_form_page($data, 'Kontaktdaten');
+$brick['page']['title'] .= 'Kontaktdaten';
+$brick['page']['breadcrumbs'][] = 'Kontaktdaten';
 
-if ($data['turnierform'] === 'm-v') {
+$zz_conf['footer_text'] = wrap_template('team-kontakt', $brick['data']);
+$brick['data']['head'] = true;
+$zz['explanation'] = wrap_template('team-kontakt', $brick['data']);
+
+if ($brick['data']['turnierform'] === 'm-v') {
 	$gruppen_ids = wrap_id('usergroups', 'team-organisator').','.
 		wrap_id('usergroups', 'verein-jugend').','.
 		wrap_id('usergroups', 'betreuer').','.
@@ -35,17 +35,17 @@ if ($data['turnierform'] === 'm-v') {
 		wrap_id('usergroups', 'betreuer');
 }
 $zz['sql'] .= sprintf(' WHERE usergroup_id IN (%s)
-	AND ((ISNULL(team_id) AND ISNULL(participations.event_id)) OR team_id = %d)', $gruppen_ids, $data['team_id']);
-if ($data['turnierform'] === 'm-v') {
+	AND ((ISNULL(team_id) AND ISNULL(participations.event_id)) OR team_id = %d)', $gruppen_ids, $brick['data']['team_id']);
+if ($brick['data']['turnierform'] === 'm-v') {
 	$zz['sql'] .= sprintf(' AND (ISNULL(participations.club_contact_id) OR (participations.club_contact_id = %d))',
-		$data['contact_id']);
+		$brick['data']['contact_id']);
 }
 
 $zz['fields'][6]['hide_in_form'] = true;
 $zz['fields'][6]['hide_in_list'] = true;
 $zz['fields'][6]['unless'][21] = false;
-if ($data['turnierform'] === 'm-v') {
-	$zz['fields'][6]['value'] = $data['contact_id'];
+if ($brick['data']['turnierform'] === 'm-v') {
+	$zz['fields'][6]['value'] = $brick['data']['contact_id'];
 }
 
 unset($zz['fields'][2]['add_details']);
@@ -72,13 +72,13 @@ if (brick_access_rights('Webmaster')) {
 }
 
 $zz['fields'][4]['type'] = 'hidden';
-$zz['fields'][4]['value'] = $data['event_id'];
+$zz['fields'][4]['value'] = $brick['data']['event_id'];
 $zz['fields'][4]['hide_in_list'] = true;
 
 $zz['fields'][5]['type'] = 'hidden';
 $zz['fields'][5]['hide_in_list'] = true;
 $zz['fields'][5]['type_detail'] = 'select';
-$zz['fields'][5]['value'] = $data['team_id'];
+$zz['fields'][5]['value'] = $brick['data']['team_id'];
 $zz['fields'][5]['if'][21]['value'] = false;
 
 $zz['fields'][34]['hide_in_form'] = true;
@@ -99,7 +99,7 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 		LEFT JOIN categories
 			ON contacts.contact_category_id = categories.category_id
 		WHERE contact_id = %d';
-	$sql = sprintf($sql, $data['contact_id']);
+	$sql = sprintf($sql, $brick['data']['contact_id']);
 	$org = wrap_db_fetch($sql);
 	if (!brick_access_rights('Webmaster') AND $org['path'] === 'verein') {
 		// Vereine haben Mitglieder, beschränke auf diese Mitglieder
@@ -125,8 +125,8 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 			wrap_category_id('identifiers/zps'),
 			wrap_category_id('identifiers/zps'),
 			!empty($_GET['add']['usergroup_id']) ? $_GET['add']['usergroup_id'] : 0,
-			$data['event_id'],
-			$data['contact_id']
+			$brick['data']['event_id'],
+			$brick['data']['contact_id']
 		);
 		$zz['fields'][2]['key_field_name'] = 'persons.person_id';
 	} else {

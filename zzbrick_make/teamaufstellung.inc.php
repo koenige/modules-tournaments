@@ -22,7 +22,7 @@
  * 		[2]: Teamkennung
  * @return array $page
  */
-function mod_tournaments_teamaufstellung($vars) {
+function mod_tournaments_make_teamaufstellung($vars) {
 	global $zz_conf;
 	global $zz_setting;
 	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
@@ -242,17 +242,9 @@ function mod_tournaments_teamaufstellung($vars) {
 	}
 
 	$page['title'] = $data['event'].' '.$data['year'].': '.$data['team'].' '.$data['team_no'];
-	$page['breadcrumbs'][] = '<a href="../../../">'.$data['year'].'</a>';
-	if ($data['main_series']) {
-		$page['breadcrumbs'][] = '<a href="../../../'.$data['main_series_path'].'/">'.$data['main_series'].'</a>';
-	}
-	$page['breadcrumbs'][] = '<a href="../../">'.$data['event'].'</a>';
-	$page['breadcrumbs'][] = '<a href="../">'.$data['team'].' '.$data['team_no'].'</a>';
-	$page['breadcrumbs'][] = 'Aufstellung';
-	$page['dont_show_h1'] = true;
-	$page['extra']['realm'] = 'sports';
-
 	$page['title'] .= ' – Aufstellung';
+	$page['breadcrumbs'][] = 'Aufstellung';
+
 	$page['text'] = wrap_template('team-aufstellung', $data);
 	return $page;
 }
