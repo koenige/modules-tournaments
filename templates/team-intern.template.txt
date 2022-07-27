@@ -247,10 +247,10 @@ laden Sie das gescannte PDF hier wieder hoch. (Der Link erscheint erst bei kompl
 %%% condition endif %%%
 </p>
 
-%%% condition unless virtual %%%
+%%% condition if setting tournaments_request_address_data %%%
 <h3>6. Adressen zur Corona-Nachverfolgung</h3>
 
-<p><a href="adressen/">Adressen der Spielerinnen und Betreuer bearbeiten.</a> Bereits bei anderen Turnieren erfasste Adressen sind vorgegeben und können korrigiert werden.</p>
+<p><a href="adressdaten/">Adressen der Spielerinnen und Betreuer bearbeiten.</a> Bereits bei anderen Turnieren erfasste Adressen sind vorgegeben und können korrigiert werden.</p>
 %%% condition endif %%%
 
 </div>

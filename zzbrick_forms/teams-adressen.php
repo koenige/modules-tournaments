@@ -6,6 +6,8 @@
 // Skript: Kontaktdaten einer Person eines Teams eines Turniers
 
 
+if (empty(wrap_get_setting('tournaments_request_address_data'))) wrap_quit(404);
+
 $contact_id = $brick['data']['contact_id'];
 $organisation = $brick['data']['contact'];
 if ($brick['data']['turnierform'] === 'm-v') {
