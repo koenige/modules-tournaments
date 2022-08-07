@@ -22,6 +22,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.12\n"
 
+#: zzbrick_make/turnierzahlen.inc.php
+msgid "No ratings found when updating on %s."
+msgstr ""
+
 #: zzbrick_request/livegames.inc.php
 msgid "The tournament is over. All live games are integrated into the <a href="../">tournament pages</a>."
 msgstr ""

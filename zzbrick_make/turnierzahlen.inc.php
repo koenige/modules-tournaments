@@ -114,7 +114,7 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 			if (!array_key_exists($participation['contact_id'], $ratings_per_sys)) {
 				continue;
 			}
-			$status = 'exists';
+			if ($status === 'not_found') $status = 'exists';
 			foreach ($rating_systems as $system) {
 				if (empty($ratings_per_sys[$participation['contact_id']][$system])) continue;
 				$values['POST']['t_'.$system] = $ratings_per_sys[$participation['contact_id']][$system];
@@ -151,7 +151,7 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 			$values['POST']['anmerkung'] = $participation['anmerkung']
 				? $participation['anmerkung']."\n\n"
 				: "";
-			$values['POST']['anmerkung'] .= sprintf('ZPS bei Wertungsupdate am %s nicht gefunden', date('d.m.Y'));
+			$values['POST']['anmerkung'] .= sprintf(wrap_text('No ratings found when updating on %s.'), wrap_date(date('Y-m-d')));
 		}
 		$values['action'] = 'update';
 		if (!$data['testlauf']) {
