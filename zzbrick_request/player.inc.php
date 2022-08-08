@@ -37,8 +37,6 @@ function mod_tournaments_player($vars) {
 			, IFNULL(place, places.contact) AS turnierort
 			, YEAR(date_of_birth) AS geburtsjahr
 			, platz_no
-			, country
-			, landesverbaende.identifier AS lv_kennung
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, main_series.category_short AS main_series
 			, contacts.identifier AS personen_kennung
@@ -51,6 +49,7 @@ function mod_tournaments_player($vars) {
 			, IF(spielernachrichten = "ja", 1, NULL) AS spielernachrichten
 			, events.identifier AS event_identifier
 			, (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id) AS max_round_no
+			, participations.club_contact_id
 		FROM participations
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN tournaments USING (event_id)
@@ -66,17 +65,6 @@ function mod_tournaments_player($vars) {
 			AND tabellenstaende.runde_no = tournaments.tabellenstand_runde_no 
 		LEFT JOIN contacts organisationen
 			ON participations.club_contact_id = organisationen.contact_id
-		LEFT JOIN contacts_identifiers v_ok
-			ON v_ok.contact_id = organisationen.contact_id
-			AND v_ok.current = "yes"
-		LEFT JOIN contacts_identifiers lv_ok
-			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
-		LEFT JOIN contacts landesverbaende
-			ON lv_ok.contact_id = landesverbaende.contact_id
-			AND lv_ok.current = "yes"
-			AND landesverbaende.mother_contact_id = %d
-		LEFT JOIN countries
-			ON landesverbaende.country_id = countries.country_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
 		LEFT JOIN categories main_series
@@ -88,11 +76,11 @@ function mod_tournaments_player($vars) {
 	$sql = sprintf($sql
 		, wrap_category_id('identifiers/zps')
 		, wrap_category_id('identifiers/fide-id')
-		, $zz_setting['contact_ids']['dsb']
 		, $vars[2], $vars[0], wrap_db_escape($vars[1])
 	);
 	$data = wrap_db_fetch($sql);
 	if (!$data) return false;
+	$data = mf_tournaments_clubs_to_federations($data);
 	$data['fidetitel_lang'] = mf_tournaments_fide_title($data['t_fidetitel']);
 
 	if ($data['year'] >= wrap_get_setting('dem_spielerphotos_aus_mediendb') AND $data['spielerphotos']) {

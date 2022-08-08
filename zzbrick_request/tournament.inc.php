@@ -273,11 +273,9 @@ function mod_tournaments_tournament($vars, $settings) {
 	if ($event['turnierform'] === 'e') {
 		$sql = 'SELECT participation_id, platz_no
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
-				, countries.country
-				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
-				, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
 				, setzliste_no
 				, tabellenstaende_wertungen.wertung
+				, participations.club_contact_id
 			FROM participations
 			LEFT JOIN tabellenstaende
 				ON participations.person_id = tabellenstaende.person_id
@@ -286,22 +284,6 @@ function mod_tournaments_tournament($vars, $settings) {
 			LEFT JOIN tabellenstaende_wertungen
 				ON tabellenstaende_wertungen.tabellenstand_id = tabellenstaende.tabellenstand_id
 				AND tabellenstaende_wertungen.wertung_category_id = %d
-			LEFT JOIN contacts organisationen
-				ON participations.club_contact_id = organisationen.contact_id
-			LEFT JOIN contacts_identifiers v_ok
-				ON v_ok.contact_id = organisationen.contact_id AND v_ok.current = "yes"
-			LEFT JOIN contacts_identifiers lv_ok
-				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
-			LEFT JOIN contacts landesverbaende
-				ON lv_ok.contact_id = landesverbaende.contact_id
-				AND landesverbaende.mother_contact_id = %d
-			LEFT JOIN countries
-				ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
-					= countries.country_id
-			LEFT JOIN contacts landesverbaende_rueckwaerts
-				ON countries.country_id = landesverbaende_rueckwaerts.country_id
-				AND landesverbaende_rueckwaerts.contact_category_id = %d
-				AND landesverbaende_rueckwaerts.mother_contact_id = %d
 			WHERE participations.event_id = %d
 			AND usergroup_id = %d
 			AND teilnahme_status = "Teilnehmer"
@@ -310,13 +292,12 @@ function mod_tournaments_tournament($vars, $settings) {
 		$sql = sprintf($sql
 			, $runde
 			, $event['haupt_wertung_category_id']
-			, $zz_setting['contact_ids']['dsb']
-			, wrap_category_id('contact/federation')
-			, $zz_setting['contact_ids']['dsb']
 			, $event['event_id']
 			, wrap_id('usergroups', 'spieler')
 		);
 		$event['spieler'] = wrap_db_fetch($sql, 'participation_id');
+		if ($event['spieler'])
+			$event['spieler'] = mf_tournaments_clubs_to_federations($event['spieler']);
 		if (count($event['spieler']) > 25) {
 			$event['mehr_spieler'] = count($event['spieler']) - 20;
 			$event['spieler'] = array_slice($event['spieler'], 0, 20);
@@ -324,29 +305,13 @@ function mod_tournaments_tournament($vars, $settings) {
 	} else {
 		$sql = 'SELECT teams.team_id
 				, team, team_no, teams.identifier AS team_identifier, team_status
-				, countries.country
 				, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
-				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
-				, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
 				, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 				, platz_no, tabellenstand_id
+				, teams.club_contact_id
 			FROM teams
 			LEFT JOIN contacts organisationen
 				ON teams.club_contact_id = organisationen.contact_id
-			LEFT JOIN contacts_identifiers v_ok
-				ON v_ok.contact_id = organisationen.contact_id AND v_ok.current = "yes"
-			LEFT JOIN contacts_identifiers lv_ok
-				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
-			LEFT JOIN contacts landesverbaende
-				ON lv_ok.contact_id = landesverbaende.contact_id
-				AND landesverbaende.mother_contact_id = %d
-			LEFT JOIN countries
-				ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
-					= countries.country_id
-			LEFT JOIN contacts landesverbaende_rueckwaerts
-				ON countries.country_id = landesverbaende_rueckwaerts.country_id
-				AND landesverbaende_rueckwaerts.contact_category_id = %d
-				AND landesverbaende_rueckwaerts.mother_contact_id = %d
 			LEFT JOIN contacts_contacts
 				ON contacts_contacts.contact_id = organisationen.contact_id
 				AND contacts_contacts.published = "yes"
@@ -368,15 +333,14 @@ function mod_tournaments_tournament($vars, $settings) {
 			ORDER BY platz_no, setzliste_no, place, team, team_no
 		';
 		$sql = sprintf($sql
-			, $zz_setting['contact_ids']['dsb']
-			, wrap_category_id('contact/federation')
-			, $zz_setting['contact_ids']['dsb']
 			, $runde
 			, $event['event_id']
 		);
 		// @todo Klären, was passiert wenn mehr als 1 Ort zu Verein in Datenbank! 
 		// (Reihenfolge-Feld einführen)
 		$event['teams'] = wrap_db_fetch($sql, 'team_id');
+		if ($event['teams'])
+			$event['teams'] = mf_tournaments_clubs_to_federations($event['teams']);
 		if ($runde AND $event['teams']) {
 			foreach ($event['teams'] as $team) {
 				if (empty($team['tabellenstand_id'])) continue;

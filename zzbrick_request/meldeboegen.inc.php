@@ -58,39 +58,24 @@ function mod_tournaments_meldeboegen($vars) {
 	$sql = 'SELECT team_id, team, team_no, club_contact_id
 			, teams.identifier AS team_identifier
 			, meldung_datum
-			, regionalgruppe, countries.country
 			, datum_anreise, TIME_FORMAT(uhrzeit_anreise, "%%H:%%i") AS uhrzeit_anreise
 			, datum_abreise, TIME_FORMAT(uhrzeit_abreise, "%%H:%%i") AS uhrzeit_abreise
 			, IF(datum_anreise AND uhrzeit_anreise AND datum_abreise AND uhrzeit_abreise, 1, NULL) AS reisedaten_komplett
 			, meldung
 		FROM teams
-		LEFT JOIN contacts
-			ON teams.club_contact_id = contacts.contact_id
-		LEFT JOIN contacts_identifiers v_ok
-			ON v_ok.contact_id = contacts.contact_id
-			AND v_ok.current = "yes"
-		LEFT JOIN contacts_identifiers lv_ok
-			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
-		LEFT JOIN contacts landesverbaende
-			ON lv_ok.contact_id = landesverbaende.contact_id
-			AND landesverbaende.mother_contact_id = %d
-		LEFT JOIN countries
-			ON landesverbaende.country_id = countries.country_id
-		LEFT JOIN regionalgruppen
-			ON regionalgruppen.federation_contact_id = landesverbaende.contact_id 
 		WHERE event_id = %d
 		AND spielfrei = "nein"
 		AND team_status = "Teilnehmer"
 		ORDER BY teams.identifier
 	';
 	$sql = sprintf($sql
-		, $zz_setting['contact_ids']['dsb']
 		, $event['event_id']
 	);
 	if ($team) {
 		$sql .= sprintf(' AND teams.identifier = "%s"', wrap_db_escape($team)); 
 	}
 	$event['teams'] = wrap_db_fetch($sql, 'team_id');
+	$event['teams'] = mf_tournaments_clubs_to_federations($event['teams']);
 
 	$team_verein = [];
 	foreach ($event['teams'] as $id => $team) {
@@ -205,39 +190,24 @@ function mod_tournaments_meldeboegen_anreise($vars) {
 	$sql = 'SELECT team_id, team, team_no, club_contact_id
 			, teams.identifier AS team_identifier
 			, meldung_datum
-			, regionalgruppe, countries.country
 			, datum_anreise, TIME_FORMAT(uhrzeit_anreise, "%%H:%%i") AS uhrzeit_anreise
 			, datum_abreise, TIME_FORMAT(uhrzeit_abreise, "%%H:%%i") AS uhrzeit_abreise
 			, IF(datum_anreise AND uhrzeit_anreise AND datum_abreise AND uhrzeit_abreise, 1, NULL) AS reisedaten_komplett
 			, meldung
 		FROM teams
-		LEFT JOIN contacts
-			ON teams.club_contact_id = contacts.contact_id
-		LEFT JOIN contacts_identifiers v_ok
-			ON v_ok.contact_id = contacts.contact_id
-			AND v_ok.current = "yes"
-		LEFT JOIN contacts_identifiers lv_ok
-			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
-		LEFT JOIN contacts landesverbaende
-			ON lv_ok.contact_id = landesverbaende.contact_id
-			AND landesverbaende.mother_contact_id = %d
-		LEFT JOIN countries
-			ON landesverbaende.country_id = countries.country_id
-		LEFT JOIN regionalgruppen
-			ON regionalgruppen.federation_contact_id = landesverbaende.contact_id 
 		WHERE event_id = %d
 		AND spielfrei = "nein"
 		AND team_status = "Teilnehmer"
 		ORDER BY teams.identifier
 	';
 	$sql = sprintf($sql
-		, $zz_setting['contact_ids']['dsb']
 		, $event['event_id']
 	);
 	if ($team) {
 		$sql .= sprintf(' AND teams.identifier = "%s"', wrap_db_escape($team)); 
 	}
 	$event['teams'] = wrap_db_fetch($sql, 'team_id');
+	$event['teams'] = mf_tournaments_clubs_to_federations($event['teams']);
 
 	$team_verein = [];
 	foreach ($event['teams'] as $id => $team) {

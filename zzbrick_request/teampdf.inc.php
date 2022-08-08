@@ -55,39 +55,20 @@ function mod_tournaments_teampdf($vars) {
 			, datum_abreise, TIME_FORMAT(uhrzeit_abreise, "%%H:%%i") AS uhrzeit_abreise
 			, contacts.contact_id
 			, teams.identifier AS team_identifier
-			, meldung_datum, regionalgruppe
+			, meldung_datum
 			, meldung
-			, country
 		FROM teams
 		LEFT JOIN contacts
 			ON teams.club_contact_id = contacts.contact_id
-		LEFT JOIN contacts_identifiers v_ok
-			ON v_ok.contact_id = contacts.contact_id AND v_ok.current = "yes"
-		LEFT JOIN contacts_identifiers lv_ok
-			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
-		LEFT JOIN contacts landesverbaende
-			ON lv_ok.contact_id = landesverbaende.contact_id
-			AND landesverbaende.mother_contact_id = %d
-		LEFT JOIN countries
-			ON IFNULL(landesverbaende.country_id, contacts.country_id) 
-				= countries.country_id
-		LEFT JOIN regionalgruppen
-			ON regionalgruppen.federation_contact_id = landesverbaende.contact_id
-		LEFT JOIN contacts landesverbaende_rueckwaerts
-			ON countries.country_id = landesverbaende_rueckwaerts.country_id
-			AND landesverbaende_rueckwaerts.contact_category_id = %d
-			AND landesverbaende_rueckwaerts.mother_contact_id = %d
 		WHERE teams.identifier = "%s"
 		AND spielfrei = "nein"
 	';
 	$sql = sprintf($sql
-		, $zz_setting['contact_ids']['dsb']
-		, wrap_category_id('contact/federation')
-		, $zz_setting['contact_ids']['dsb']
 		, wrap_db_escape($team_vars)
 	);
 	$event['teams'][0] = wrap_db_fetch($sql);
 	if (!$event['teams'][0]) return false;
+	$event['teams'][0] = mf_tournaments_clubs_to_federations($event['teams'][0], 'contact_id');
 
 	if (!my_team_access($event['teams'][0]['team_id'], ['Teilnehmer'])) wrap_quit(403);
 
