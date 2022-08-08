@@ -109,6 +109,11 @@ function mf_tournaments_person_identifiers($players, $categories) {
  */
 function mf_tournaments_clubs_to_federations($data, $field_name) {
 	global $zz_setting;
+	
+	if (!is_numeric(key($data))) {
+		$single_record = true;
+		$data = [$data];
+	}
 
 	$clubs = [];
 	foreach ($data as $id => $line) {
@@ -119,6 +124,8 @@ function mf_tournaments_clubs_to_federations($data, $field_name) {
 			, countries.country
 			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
 			, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
+			, v_ok.identifier AS zps_code
+			, regionalgruppe
 		FROM contacts organisationen
 		LEFT JOIN contacts_identifiers v_ok
 			ON v_ok.contact_id = organisationen.contact_id
@@ -136,6 +143,8 @@ function mf_tournaments_clubs_to_federations($data, $field_name) {
 			ON countries.country_id = landesverbaende_rueckwaerts.country_id
 			AND landesverbaende_rueckwaerts.contact_category_id = %d
 			AND landesverbaende_rueckwaerts.mother_contact_id = %d
+		LEFT JOIN regionalgruppen
+			ON regionalgruppen.federation_contact_id = landesverbaende.contact_id
 		WHERE organisationen.contact_id IN (%s)
 	', $zz_setting['contact_ids']['dsb']
 		, wrap_category_id('contact/federation')
@@ -146,6 +155,9 @@ function mf_tournaments_clubs_to_federations($data, $field_name) {
 	foreach ($clubs as $id => $contact_id) {
 		unset($clubdata[$contact_id]['contact_id']);
 		$data[$id] += $clubdata[$contact_id];
-	}		
+	}
+	if (!empty($single_record))
+		$data = reset($data);
+	
 	return $data;
 }
