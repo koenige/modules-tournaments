@@ -104,10 +104,10 @@ function mf_tournaments_person_identifiers($players, $categories) {
  * get federation per club
  *
  * @param array $data
- * @param string $field_name
+ * @param string $field_name (optional)
  * @return array
  */
-function mf_tournaments_clubs_to_federations($data, $field_name) {
+function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_id') {
 	global $zz_setting;
 	
 	if (!is_numeric(key($data))) {
@@ -118,7 +118,6 @@ function mf_tournaments_clubs_to_federations($data, $field_name) {
 	$clubs = [];
 	foreach ($data as $id => $line) {
 		$clubs[$id] = $line[$field_name];
-		unset($data[$id][$field_name]);
 	}
 	$sql = sprintf('SELECT organisationen.contact_id
 			, countries.country
