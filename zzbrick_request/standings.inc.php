@@ -105,51 +105,26 @@ function mod_tournaments_standings($vars) {
 				, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
 				, teams.identifier AS team_identifier, team_id
 				, SUBSTRING_INDEX(teams.identifier, "/", -1) AS team_identifier_short
-				, countries.country
-				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
-				, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
 				, team_status AS status
+				, teams.club_contact_id
 			FROM tabellenstaende
 			JOIN teams USING (team_id)
-			LEFT JOIN contacts
-				ON teams.club_contact_id = contacts.contact_id
-			LEFT JOIN contacts_identifiers v_ok
-				ON v_ok.contact_id = contacts.contact_id
-				AND v_ok.current = "yes"
-			LEFT JOIN contacts_identifiers lv_ok
-				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
-				AND lv_ok.current = "yes"
-			LEFT JOIN contacts landesverbaende
-				ON lv_ok.contact_id = landesverbaende.contact_id
-				AND landesverbaende.mother_contact_id = %d
-			LEFT JOIN countries
-				ON IFNULL(landesverbaende.country_id, contacts.country_id) 
-					= countries.country_id
-			LEFT JOIN contacts landesverbaende_rueckwaerts
-				ON countries.country_id = landesverbaende_rueckwaerts.country_id
-				AND landesverbaende_rueckwaerts.contact_category_id = %d
-				AND landesverbaende_rueckwaerts.mother_contact_id = %d
 			WHERE teams.event_id = %d
 			AND tabellenstaende.runde_no = %d
 			AND spielfrei = "nein"
 			ORDER BY platz_no, team, team_no
 		';
 		$sql = sprintf($sql
-			, $zz_setting['contact_ids']['dsb']
-			, wrap_category_id('contact/federation')
-			, $zz_setting['contact_ids']['dsb']
 			, $event['event_id'], $runde
 		);
 	} else {
 		$sql = 'SELECT tabellenstand_id, tabellenstaende.platz_no
 				, spiele_g, spiele_u, spiele_v
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
-				, countries.country
-				, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
-				, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
 				, participations.setzliste_no
 				, t_verein, tabellenstaende.person_id
 				, teilnahme_status AS status
+				, participations.club_contact_id
 			FROM tabellenstaende
 			JOIN tournaments USING (event_id)
 			JOIN events USING (event_id)
@@ -159,24 +134,6 @@ function mod_tournaments_standings($vars) {
 				AND participations.usergroup_id = %d
 			LEFT JOIN persons
 				ON tabellenstaende.person_id = persons.person_id
-			LEFT JOIN contacts organisationen
-				ON participations.club_contact_id = organisationen.contact_id
-			LEFT JOIN contacts_identifiers v_ok
-				ON v_ok.contact_id = organisationen.contact_id
-				AND v_ok.current = "yes"
-			LEFT JOIN contacts_identifiers lv_ok
-				ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
-				AND lv_ok.current = "yes"
-			LEFT JOIN contacts landesverbaende
-				ON lv_ok.contact_id = landesverbaende.contact_id
-				AND landesverbaende.mother_contact_id = %d
-			LEFT JOIN countries
-				ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
-					= countries.country_id
-			LEFT JOIN contacts landesverbaende_rueckwaerts
-				ON countries.country_id = landesverbaende_rueckwaerts.country_id
-				AND landesverbaende_rueckwaerts.contact_category_id = %d
-				AND landesverbaende_rueckwaerts.mother_contact_id = %d
 			WHERE tabellenstaende.event_id = %d
 			AND tabellenstaende.runde_no = %d
 			%s
@@ -184,9 +141,6 @@ function mod_tournaments_standings($vars) {
 		';
 		$sql = sprintf($sql
 			, wrap_id('usergroups', 'spieler')
-			, $zz_setting['contact_ids']['dsb']
-			, wrap_category_id('contact/federation')
-			, $zz_setting['contact_ids']['dsb']
 			, $event['event_id'], $runde
 			, $filter['where'] ? ' AND '.implode(' AND ', $filter['where']) : ''
 		);
@@ -194,6 +148,7 @@ function mod_tournaments_standings($vars) {
 	$id = $event['turnierform'] !== 'e' ? 'team_id' : 'person_id';
 	$tabelle = wrap_db_fetch($sql, 'tabellenstand_id');
 	if (!$tabelle) return false;
+	$tabelle = mf_tournaments_clubs_to_federations($tabelle, 'club_contact_id');
 
 	if ($event['live'] AND $event['turnierform'] !== 'e') {
 		$sql = 'SELECT paarung_id, heim_team_id, auswaerts_team_id
@@ -435,4 +390,47 @@ function mod_tournaments_standings($vars) {
 		$page['text'] = wrap_template('standings-single', $tabelle);
 	}
 	return $page;
+}
+
+function mf_tournaments_clubs_to_federations($standings, $field_name) {
+	global $zz_setting;
+
+	$clubs = [];
+	foreach ($standings as $standing_id => $standing) {
+		$clubs[$standing_id] = $standing[$field_name];
+		unset($standings[$standing_id][$field_name]);
+	}
+	$sql = sprintf('SELECT organisationen.contact_id
+			, countries.country
+			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
+			, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
+		FROM contacts organisationen
+		LEFT JOIN contacts_identifiers v_ok
+			ON v_ok.contact_id = organisationen.contact_id
+			AND v_ok.current = "yes"
+		LEFT JOIN contacts_identifiers lv_ok
+			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
+			AND lv_ok.current = "yes"
+		LEFT JOIN contacts landesverbaende
+			ON lv_ok.contact_id = landesverbaende.contact_id
+			AND landesverbaende.mother_contact_id = %d
+		LEFT JOIN countries
+			ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
+				= countries.country_id
+		LEFT JOIN contacts landesverbaende_rueckwaerts
+			ON countries.country_id = landesverbaende_rueckwaerts.country_id
+			AND landesverbaende_rueckwaerts.contact_category_id = %d
+			AND landesverbaende_rueckwaerts.mother_contact_id = %d
+		WHERE organisationen.contact_id IN (%s)
+	', $zz_setting['contact_ids']['dsb']
+		, wrap_category_id('contact/federation')
+		, $zz_setting['contact_ids']['dsb']
+		, implode(', ', $clubs)
+	);
+	$clubdata = wrap_db_fetch($sql, 'contact_id');
+	foreach ($clubs as $standing_id => $contact_id) {
+		unset($clubdata[$contact_id]['contact_id']);
+		$standings[$standing_id] += $clubdata[$contact_id];
+	}		
+	return $standings;
 }
