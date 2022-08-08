@@ -110,14 +110,22 @@ function mf_tournaments_person_identifiers($players, $categories) {
 function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_id') {
 	global $zz_setting;
 	
+	$mode = 'list';
 	if (!is_numeric(key($data))) {
-		$single_record = true;
+		$mode = 'single';
 		$data = [$data];
 	}
 
 	$clubs = [];
 	foreach ($data as $id => $line) {
-		$clubs[$id] = $line[$field_name];
+		if (is_numeric(key($line))) {
+			$mode = 'multi';
+			foreach ($line as $sub_id => $sub_line) {
+				$clubs[$id.'-'.$sub_id] = $sub_line[$field_name];
+			}
+		} else {
+			$clubs[$id] = $line[$field_name];
+		}
 	}
 	$sql = sprintf('SELECT organisationen.contact_id
 			, countries.country
@@ -153,9 +161,14 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 	$clubdata = wrap_db_fetch($sql, 'contact_id');
 	foreach ($clubs as $id => $contact_id) {
 		unset($clubdata[$contact_id]['contact_id']);
-		$data[$id] += $clubdata[$contact_id];
+		if ($mode === 'multi') {
+			$id = explode('-', $id);
+			$data[$id[0]][$id[1]] += $clubdata[$contact_id];
+		} else {
+			$data[$id] += $clubdata[$contact_id];
+		}
 	}
-	if (!empty($single_record))
+	if ($mode === 'single')
 		$data = reset($data);
 	
 	return $data;
