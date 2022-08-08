@@ -101,8 +101,10 @@ function mod_tournaments_get_swisschess($vars) {
 
 	$sql = 'SELECT CONCAT(event, " ", YEAR(date_begin)) AS event
 		FROM events
-		WHERE identifier = "%s"';
-	$sql = sprintf($sql, implode('/', $vars));
+		WHERE identifier = "%d/%s"';
+	$sql = sprintf($sql
+		, $vars[0], wrap_db_escape($vars[1])
+	);
 	$data['_filename'] = wrap_db_fetch($sql, '', 'single value');
 	$data['_extension'] = 'lst';
 	$data['_query_strings'] = ['alle'];
