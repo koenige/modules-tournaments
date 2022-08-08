@@ -87,10 +87,7 @@ function mod_tournaments_startranking_single($event) {
 			, t_verein
 			, t_dwz, t_elo, t_fidetitel
 			, setzliste_no
-			, country
 			, places.contact AS veranstaltungsort, place, latitude, longitude
-			, landesverbaende.identifier AS lv_kennung
-			, landesverbaende.contact_abbr AS lv_kurz
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, teilnahme_status
 			, DATE_FORMAT(eintrag_datum, "%%d.%%m %%H:%%i") AS eintrag_datum
@@ -101,21 +98,11 @@ function mod_tournaments_startranking_single($event) {
 			, YEAR(qualification.date_begin) AS qualification_year
 			, qualification.identifier AS qualification_event_identifier
 			, qualification
+			, participations.club_contact_id
 		FROM participations
 		JOIN persons USING (person_id)
 		LEFT JOIN contacts organisationen
 			ON participations.club_contact_id = organisationen.contact_id
-		LEFT JOIN contacts_identifiers v_ok
-			ON v_ok.contact_id = organisationen.contact_id
-			AND v_ok.current = "yes"
-		LEFT JOIN contacts_identifiers lv_ok
-			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
-		LEFT JOIN contacts landesverbaende
-			ON lv_ok.contact_id = landesverbaende.contact_id
-			AND lv_ok.current = "yes"
-			AND landesverbaende.mother_contact_id = %d
-		LEFT JOIN countries
-			ON landesverbaende.country_id = countries.country_id
 		LEFT JOIN contacts_contacts
 			ON contacts_contacts.main_contact_id = organisationen.contact_id
 			AND contacts_contacts.published = "yes"
@@ -135,12 +122,12 @@ function mod_tournaments_startranking_single($event) {
 		AND teilnahme_status IN (%s"Teilnehmer", "disqualifiziert", "geblockt")
 		ORDER BY setzliste_no, IFNULL(t_dwz, t_elo) DESC, t_elo DESC, t_nachname, t_vorname';
 	$sql = sprintf($sql
-		, $zz_setting['contact_ids']['dsb']
 		, $event['event_id']
 		, wrap_id('usergroups', 'spieler')
 		, ($event['date_end'] >= date('Y-m-d')) ? '"angemeldet", ' : ''
 	);
 	$event['spieler'] = wrap_db_fetch($sql, 'person_id');
+	$event['spieler'] = mf_tournaments_clubs_to_federations($event['spieler'], 'club_contact_id');
 	$event['spieler'] = mf_tournaments_person_identifiers($event['spieler'], ['fide-id', 'zps']);
 	$event['zeige_dwz'] = false;
 	$event['zeige_elo'] = false;
