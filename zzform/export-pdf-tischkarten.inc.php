@@ -210,11 +210,11 @@ function mf_tournaments_export_pdf_tischkarten_team($ops) {
 	    WHERE team_id IN (%s)';
 	$sql = sprintf($sql, implode(',', $team_ids));
 	$teams = wrap_db_fetch($sql, 'team_id');
-	$teams = mf_tournaments_federations($teams, 'team_id');
+	$teams = mf_tournaments_clubs_to_federations($teams, 'contact_id');
 	
 	foreach ($teams as $team_id => $team) {
-		if (empty($team['federation'])) $team['federation'] = '';
-		$teams[$team_id]['club'] = $team['federation'] !== $teams[$team_id]['name'] ? $team['federation'] : '';
+		if (empty($team['country'])) $team['country'] = '';
+		$teams[$team_id]['club'] = $team['country'] !== $teams[$team_id]['name'] ? $team['country'] : '';
 		$teams[$team_id]['ratings'] = [];
 		parse_str($team['parameters'], $team['parameters']);
 		if (empty($team['parameters']['color'])) $team['parameters']['color'] = '#CC0000';

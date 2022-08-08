@@ -522,42 +522,6 @@ function mf_tournaments_lineup($event) {
 }
 
 /**
- * get federation for a list of clubs (long name, abbreviation)
- *
- * @param array $data
- * @param string $id_field
- * @return array
- */
-function mf_tournaments_federations($data, $id_field) {
-	$contact_ids = [];
-	foreach ($data as $line) {
-		if (!$line['contact_id']) continue;
-		$contact_ids[$line[$id_field]] = $line['contact_id'];
-	}
-	if (!$contact_ids) return $data;
-	$sql = 'SELECT clubs.contact_id, country, federations.contact_abbr
-	    FROM contacts clubs
-		LEFT JOIN contacts_identifiers
-			ON contacts_identifiers.contact_id = clubs.contact_id
-			AND contacts_identifiers.current = "yes"
-		LEFT JOIN contacts_identifiers federation_identifiers
-			ON CONCAT(SUBSTRING(contacts_identifiers.identifier, 1, 1), "00") = federation_identifiers.identifier 
-			AND federation_identifiers.current = "yes"
-		LEFT JOIN contacts federations
-			ON federations.contact_id = IFNULL(federation_identifiers.contact_id, clubs.mother_contact_id)
-		LEFT JOIN countries
-			ON federations.country_id = countries.country_id
-	    WHERE clubs.contact_id IN (%s)';
-	$sql = sprintf($sql, implode(',', $contact_ids));
-	$federations = wrap_db_fetch($sql, 'contact_id');
-	foreach ($contact_ids as $id_field => $contact_id) {
-		$data[$id_field]['federation'] = $federations[$contact_id]['country'];	
-		$data[$id_field]['federation_abbr'] = $federations[$contact_id]['contact_abbr'];	
-	}
-	return $data;
-}
-
-/**
  * convert hexadecimal colors to decimal
  * for use in PDF, #CC0000 to red = 204, green = 0, blue = 0
  *
