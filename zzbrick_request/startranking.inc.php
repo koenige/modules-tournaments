@@ -154,30 +154,15 @@ function mod_tournaments_startranking_team($event) {
 
 	$sql = 'SELECT team_id
 			, team, team_no
-			, IF(NOT ISNULL(teams.setzliste_no), teams.identifier, "") AS team_identifier, team_status, country
+			, IF(NOT ISNULL(teams.setzliste_no), teams.identifier, "") AS team_identifier, team_status
 			, SUBSTRING_INDEX(teams.identifier, "/", -1) AS team_identifier_short
 			, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
-			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
-			, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, eintrag_datum
+			, teams.club_contact_id
 		FROM teams
 		LEFT JOIN contacts organisationen
 			ON teams.club_contact_id = organisationen.contact_id
-		LEFT JOIN contacts_identifiers v_ok
-			ON v_ok.contact_id = organisationen.contact_id AND v_ok.current = "yes"
-		LEFT JOIN contacts_identifiers lv_ok
-			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
-		LEFT JOIN contacts landesverbaende
-			ON lv_ok.contact_id = landesverbaende.contact_id
-			AND landesverbaende.mother_contact_id = %d
-		LEFT JOIN countries
-			ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
-				= countries.country_id
-		LEFT JOIN contacts landesverbaende_rueckwaerts
-			ON countries.country_id = landesverbaende_rueckwaerts.country_id
-			AND landesverbaende_rueckwaerts.contact_category_id = %d
-			AND landesverbaende_rueckwaerts.mother_contact_id = %d
 		LEFT JOIN contacts_contacts
 			ON contacts_contacts.main_contact_id = organisationen.contact_id
 			AND contacts_contacts.published = "yes"
@@ -195,14 +180,12 @@ function mod_tournaments_startranking_team($event) {
 		AND spielfrei = "nein"
 		ORDER BY setzliste_no, place, team';
 	$sql = sprintf($sql
-		, $zz_setting['contact_ids']['dsb']
-		, wrap_category_id('contact/federation')
-		, $zz_setting['contact_ids']['dsb']
 		, $event['event_id']
 	);
 	// @todo Klären, was passiert wenn mehr als 1 Ort zu Verein in Datenbank! (Reihenfolge-Feld einführen)
 	$event['teams'] = wrap_db_fetch($sql, 'team_id');
 	if (!$event['teams']) wrap_quit(404); // es liegt noch keine Rangliste vor.
+	$event['teams'] = mf_tournaments_clubs_to_federations($event['teams'], 'club_contact_id');
 	$event['meldeliste'] = false;
 	foreach (array_keys($event['teams']) AS $team_id) {
 		// Meldelistestatus nur bei Terminen, die noch nicht zuende sind
