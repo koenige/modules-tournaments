@@ -129,8 +129,8 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 	}
 	$sql = sprintf('SELECT organisationen.contact_id
 			, countries.country
-			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
-			, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS lv_kurz
+			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS federation_identifier
+			, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS federation_abbr
 			, v_ok.identifier AS zps_code
 			, regionalgruppe
 		FROM contacts organisationen

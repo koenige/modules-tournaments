@@ -341,11 +341,11 @@ Plätze frei sind oder eine Warteliste existiert.
 <td class="number">%%% item dwz_schnitt %%%</td>
 %%% condition endif %%%
 %%% condition if m-v | m-s %%%
-<td>%%% condition if main_series_path & lv_kennung %%%
-<a href="../%%% item main_series_path %%%/lv/%%% item lv_kennung %%%/">
+<td>%%% condition if main_series_path & federation_identifier %%%
+<a href="../%%% item main_series_path %%%/lv/%%% item federation_identifier %%%/">
 %%% condition endif %%%
-<abbr title="%%% item country %%%">%%% item lv_kurz %%%</abbr>
-%%% condition if main_series_path & lv_kennung %%%
+<abbr title="%%% item country %%%">%%% item federation_abbr %%%</abbr>
+%%% condition if main_series_path & federation_identifier %%%
 </a>
 %%% condition endif %%%</td>
 %%% condition endif %%%
@@ -400,11 +400,11 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% condition endif %%%
 %%% item spieler %%%
 %%% item setzliste_no </a> %%%</td>
-<td>%%% condition if main_series_path & lv_kennung %%%
-<a href="../%%% item main_series_path %%%/lv/%%% item lv_kennung %%%/">
+<td>%%% condition if main_series_path & federation_identifier %%%
+<a href="../%%% item main_series_path %%%/lv/%%% item federation_identifier %%%/">
 %%% condition endif %%%
-<abbr title="%%% item country %%%">%%% item lv_kurz %%%</abbr>
-%%% condition if main_series_path & lv_kennung %%%
+<abbr title="%%% item country %%%">%%% item federation_abbr %%%</abbr>
+%%% condition if main_series_path & federation_identifier %%%
 </a>
 %%% condition endif %%%</td>
 <td class="number">%%% item wertung result_format %%%</td>

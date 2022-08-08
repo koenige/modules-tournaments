@@ -46,12 +46,12 @@
 %%% condition endif %%%
 %%% condition if m-v | m-s %%%
 %%% condition if country %%%
-<td>%%% condition if main_series_path & lv_kennung %%%
-<a href="../../%%% item pfad %%%%%% item main_series_path %%%/lv/%%% item lv_kennung %%%/">
+<td>%%% condition if main_series_path & federation_identifier %%%
+<a href="../../%%% item pfad %%%%%% item main_series_path %%%/lv/%%% item federation_identifier %%%/">
 %%% condition endif %%%
-<span class="short"><abbr title="%%% item country %%%">%%% item lv_kurz %%%</abbr></span>
+<span class="short"><abbr title="%%% item country %%%">%%% item federation_abbr %%%</abbr></span>
 <span class="long">%%% item country %%%</span>
-%%% condition if main_series_path & lv_kennung %%%
+%%% condition if main_series_path & federation_identifier %%%
 </a>
 %%% condition endif %%%</td>
 %%% condition endif %%%

@@ -34,11 +34,11 @@
 %%% condition endif %%%
 <table>
 <tr><th>Verein:</th><td>%%% condition if verein_kennung %%%<a href="%%% condition if setting localhost %%%https://schach.in.local%%% condition else %%%https://schach.in%%%condition endif %%%/%%% item verein_kennung %%%/">%%% condition endif %%%%%% item t_verein %%%%%% item verein_kennung </a> %%%</td></tr>
-<tr><th>Land:</th><td>%%% condition if main_series_path & lv_kennung %%%
-<a href="../../../%%% item main_series_path %%%/lv/%%% item lv_kennung %%%/">
+<tr><th>Land:</th><td>%%% condition if main_series_path & federation_identifier %%%
+<a href="../../../%%% item main_series_path %%%/lv/%%% item federation_identifier %%%/">
 %%% condition endif %%%
 %%% item country %%%
-%%% condition if main_series_path & lv_kennung %%%</a>%%% condition endif %%%
+%%% condition if main_series_path & federation_identifier %%%</a>%%% condition endif %%%
 </td></tr>
 <tr><th>Wertung:</th><td>
 %%% condition if t_dwz | t_elo %%%

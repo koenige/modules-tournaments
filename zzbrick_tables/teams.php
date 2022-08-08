@@ -382,11 +382,11 @@ $zz['sql'] = 'SELECT teams.*
 	LEFT JOIN contacts_identifiers
 		ON contacts_identifiers.contact_id = vereine.contact_id
 		AND contacts_identifiers.current = "yes"
-	LEFT JOIN contacts_identifiers lv_kennungen
-		ON CONCAT(SUBSTRING(contacts_identifiers.identifier, 1, 1), "00") = lv_kennungen.identifier 
-		AND lv_kennungen.current = "yes"
+	LEFT JOIN contacts_identifiers federation_identifiers
+		ON CONCAT(SUBSTRING(contacts_identifiers.identifier, 1, 1), "00") = federation_identifiers.identifier 
+		AND federation_identifiers.current = "yes"
 	LEFT JOIN contacts landesverbaende
-		ON landesverbaende.contact_id = lv_kennungen.contact_id
+		ON landesverbaende.contact_id = federation_identifiers.contact_id
 	LEFT JOIN regionalgruppen 
 		ON landesverbaende.contact_id = regionalgruppen.federation_contact_id
 	LEFT JOIN countries

@@ -12,7 +12,7 @@
 # team_id, team, team_no, datum_anreise, uhrzeit_anreise, datum_abreise,
 # uhrzeit_abreise, setzliste_no, platz_no, zps_code, contact_id, team_identifier,
 # team_identifier_short, meldung_datum, regionalgruppe, meldung, url
-# contact, lv_kennung, turnierform, country,
+# contact, federation_identifier, turnierform, country,
 # endstand, zwischenstand, mannschaft_(verein), event_id, event,
 # bretter_min, bretter_max, alter_max, alter_min, geschlecht,
 # gastspieler_status, duration, dauer_tage,

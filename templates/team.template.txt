@@ -12,7 +12,7 @@
 # team_id, team, team_no, setzliste_no, platz_no, zps_code, contact_id, team_identifier,
 # team_identifier_short, meldung_datum, regionalgruppe, meldung, url,
 # contact, latitude, longitude, veranstaltungsort, place,
-# address, postcode, lv_kennung, main_series_path, event_identifier,
+# address, postcode, federation_identifier, main_series_path, event_identifier,
 # turnierform, country, endstand, zwischenstand,
 # mannschaft_(verein), event_id, event, bretter_min, bretter_max,
 # alter_max, alter_min, geschlecht, gastspieler_status, duration, dauer_tage,
@@ -167,11 +167,11 @@ nicht abschließend geprüft.)</em></p>
 %%% condition endif %%%
 
 <p>
-%%% condition if main_series_path & lv_kennung %%%
-<a href="../../%%% item main_series_path %%%/lv/%%% item lv_kennung %%%/">
+%%% condition if main_series_path & federation_identifier %%%
+<a href="../../%%% item main_series_path %%%/lv/%%% item federation_identifier %%%/">
 %%% condition endif %%%
 %%% item country %%%
-%%% condition if main_series_path & lv_kennung %%%
+%%% condition if main_series_path & federation_identifier %%%
 </a>
 %%% condition endif %%%
  %%% item regionalgruppe "(Regionalgruppe %s)" %%%</p>

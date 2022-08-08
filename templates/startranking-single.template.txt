@@ -57,12 +57,12 @@
 %%% condition if setzliste_no %%%</a>%%% condition endif %%% %%% item t_extra "(%s)" %%%</td>
 <td class="verein">%%% item t_verein %%%</td>
 <td>
-%%% condition if main_series_path & lv_kennung %%%
-<a href="../../%%% item main_series_path %%%/lv/%%% item lv_kennung %%%/">
+%%% condition if main_series_path & federation_identifier %%%
+<a href="../../%%% item main_series_path %%%/lv/%%% item federation_identifier %%%/">
 %%% condition endif %%%
-<span class="short"><abbr title="%%% item country %%%">%%% item lv_kurz %%%</abbr></span>
+<span class="short"><abbr title="%%% item country %%%">%%% item federation_abbr %%%</abbr></span>
 <span class="long">%%% item country %%%</span>
-%%% condition if main_series_path & lv_kennung %%%
+%%% condition if main_series_path & federation_identifier %%%
 </a>
 %%% condition endif %%%
 </td>
