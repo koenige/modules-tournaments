@@ -21,41 +21,24 @@ function mod_tournaments_team($vars, $settings) {
 	$sql = 'SELECT teams.team_id, team, team_no
 			, setzliste_no
 			, platz_no
-			, v_ok.identifier AS zps_code, contacts.contact_id, contacts.contact_id
+			, contacts.contact_id, contacts.contact_id
 			, teams.identifier AS team_identifier
 			, SUBSTRING_INDEX(teams.identifier, "/", -1) AS team_identifier_short
-			, meldung_datum, regionalgruppe
+			, meldung_datum
 			, meldung
 			, contacts.contact
 			, contacts.identifier AS organisation_kennung
-			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS lv_kennung
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
-			, country
 			, @laufende_partien:= (SELECT IF(COUNT(partie_id) = 0, NULL, 1) FROM partien
 				WHERE partien.event_id = events.event_id AND ISNULL(weiss_ergebnis)
 			) AS zwischenstand
 			, IF(ISNULL(@laufende_partien)
 				AND tournaments.tabellenstand_runde_no = tournaments.runden, 1, NULL) AS endstand 
 			, teams.team_status
+			, teams.club_contact_id
 		FROM teams
 		LEFT JOIN contacts
 			ON teams.club_contact_id = contacts.contact_id
-		LEFT JOIN contacts_identifiers v_ok
-			ON v_ok.contact_id = contacts.contact_id AND v_ok.current = "yes"
-		LEFT JOIN contacts_identifiers lv_ok
-			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier AND lv_ok.current = "yes"
-		LEFT JOIN contacts landesverbaende
-			ON lv_ok.contact_id = landesverbaende.contact_id
-			AND landesverbaende.mother_contact_id = %d
-		LEFT JOIN countries
-			ON IFNULL(landesverbaende.country_id, contacts.country_id) 
-				= countries.country_id
-		LEFT JOIN regionalgruppen
-			ON regionalgruppen.federation_contact_id = landesverbaende.contact_id
-		LEFT JOIN contacts landesverbaende_rueckwaerts
-			ON countries.country_id = landesverbaende_rueckwaerts.country_id
-			AND landesverbaende_rueckwaerts.contact_category_id = %d
-			AND landesverbaende_rueckwaerts.mother_contact_id = %d
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN events_websites
@@ -72,15 +55,13 @@ function mod_tournaments_team($vars, $settings) {
 		%s
 	';
 	$sql = sprintf($sql
-		, $zz_setting['contact_ids']['dsb']
-		, wrap_category_id('contact/federation')
-		, $zz_setting['contact_ids']['dsb']
 		, $zz_setting['website_id']
 		, wrap_db_escape(implode('/', $vars))
 		, $sql_condition
 	);
 	$team = wrap_db_fetch($sql);
 	if (!$team) return false;
+	$team = mf_tournaments_clubs_to_federations($team, 'club_contact_id');
 	$team[str_replace('-', '_', $team['turnierform'])] = true;
 	$team += mf_contacts_contactdetails($team['contact_id']);
 
