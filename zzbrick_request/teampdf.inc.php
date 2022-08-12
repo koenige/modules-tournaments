@@ -33,7 +33,6 @@ function mod_tournaments_teampdf($vars) {
 
 	$event = mf_tournaments_pdf_event($vars);
 	if (!$event) return false;
-	$event = array_merge($event, my_event_accounts($event['event_id']));
 	
 	$sql = 'SELECT teams.team_id, team, team_no
 			, datum_anreise, TIME_FORMAT(uhrzeit_anreise, "%%H:%%i") AS uhrzeit_anreise

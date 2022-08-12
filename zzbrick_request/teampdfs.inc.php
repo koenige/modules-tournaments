@@ -35,9 +35,6 @@ function mod_tournaments_teampdfs($vars) {
 	$event = mf_tournaments_pdf_event($vars);
 	if (!$event) return false;
 
-	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
-	$event = array_merge($event, my_event_accounts($event['event_id']));
-
 	// teams
 	$sql = 'SELECT team_id, team, team_no, club_contact_id
 			, teams.identifier AS team_identifier

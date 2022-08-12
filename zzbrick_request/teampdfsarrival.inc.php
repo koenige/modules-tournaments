@@ -30,11 +30,7 @@ function mod_tournaments_teampdfsarrival($vars) {
 	) {
 		wrap_quit(403);
 	}
-
-	if ($vars[count($vars)-1] === 'meldeboegen.pdf') {
-		// brauchen wir nicht
-		array_pop($vars);
-	}
+	
 	if (count($vars) === 3) {
 		$team = implode('/', $vars);
 		array_pop($vars);
@@ -48,7 +44,6 @@ function mod_tournaments_teampdfsarrival($vars) {
 	if (!$event) return false;
 
 	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
-	$event = array_merge($event, my_event_accounts($event['event_id']));
 
 	// teams
 	$sql = 'SELECT team_id, team, team_no, club_contact_id

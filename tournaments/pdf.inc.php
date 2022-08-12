@@ -44,5 +44,35 @@ function mf_tournaments_pdf_event($event_params) {
 		WHERE events.identifier = "%d/%s"';
 	$sql = sprintf($sql, $event_params[0], wrap_db_escape($event_params[1]));
 	$event = wrap_db_fetch($sql);
+	if (!$event) return false;
+
+	$event = array_merge($event, mf_tournaments_pdf_event_accounts($event['event_id']));
+	return $event;
+}
+
+/**
+ * Liest Konten zu Termin aus
+ *
+ * @param int $event_id
+ * @return array
+ *		array 'konten_veranstalter',
+ *		array 'konten_ausrichter'
+ * @todo in Termin-Funktionsskript verschieben
+ */
+function mf_tournaments_pdf_event_accounts($event_id) {
+	$sql = 'SELECT account_id, kontotyp
+			, IFNULL(inhaber, contact) AS inhaber, iban, bic, institut
+		FROM events_accounts
+		LEFT JOIN accounts USING (account_id)
+		LEFT JOIN contacts
+			ON contacts.contact_id = accounts.owner_contact_id
+		WHERE event_id = %d';
+	$sql = sprintf($sql, $event_id);
+	$konten = wrap_db_fetch($sql, 'account_id');
+	$event = [];
+	if (!$konten) return $event;
+	foreach ($konten as $id => $konto) {
+		$event['konten_'.strtolower($konto['kontotyp'])][$id] = $konto;
+	}
 	return $event;
 }
