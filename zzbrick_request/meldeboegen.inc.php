@@ -82,8 +82,8 @@ function mod_tournaments_meldeboegen($vars) {
 		$team_verein[$id] = $team['club_contact_id'];
 	}
 
-	$teilnehmer = my_team_teilnehmer($team_verein, $event);
-	$kosten = my_team_buchungen(array_keys($event['teams']), $event);
+	$teilnehmer = mf_tournaments_team_participants($team_verein, $event);
+	$kosten = mf_tournaments_team_bookings(array_keys($event['teams']), $event);
 
 	$pdf_uploads = false;
 	foreach (array_keys($event['teams']) as $id) {
@@ -97,7 +97,7 @@ function mod_tournaments_meldeboegen($vars) {
 		} else {
 			$event['teams'][$id]['kosten'] = [];
 		}
-		$event['teams'][$id]['komplett'] = my_team_meldung_komplett($event['teams'][$id]);
+		$event['teams'][$id]['komplett'] = mf_tournaments_team_application_complete($event['teams'][$id]);
 		$filename = sprintf('%s/meldeboegen/%s%%s.pdf', $zz_setting['media_folder'], $event['teams'][$id]['team_identifier']);
 		$filenames = [
 			sprintf($filename, ''),
@@ -214,7 +214,7 @@ function mod_tournaments_meldeboegen_anreise($vars) {
 		$team_verein[$id] = $team['club_contact_id'];
 	}
 
-	$teilnehmer = my_team_teilnehmer($team_verein, $event, true, 't_dwz DESC, last_name, first_name');
+	$teilnehmer = mf_tournaments_team_participants($team_verein, $event, true, 't_dwz DESC, last_name, first_name');
 
 	foreach (array_keys($event['teams']) as $id) {
 		if (!empty($teilnehmer[$id])) {

@@ -180,3 +180,299 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 	
 	return $data;
 }
+
+
+/*
+ * -------------------------
+ * Teams
+ * -------------------------
+ */
+
+/**
+ * Prüfe Zugriffsrechte auf Team, nur eigenes Team erlaubt
+ *
+ * @param int $team_id
+ * @return bool
+ */
+function mf_tournaments_team_access($team_id, $status = ['Teilnehmer', 'Teilnahmeberechtigt']) {
+	global $zz_setting;
+	if (brick_access_rights('Webmaster')) return true;
+	if (brick_access_rights('AK Spielbetrieb')) return true;
+	if (brick_access_rights('Geschäftsstelle')) return true;
+	$sql = 'SELECT CONCAT("event_id:", events.event_id) AS event_rights
+		FROM events
+		LEFT JOIN teams USING (event_id)
+		WHERE team_id = %d';
+	$sql = sprintf($sql, $team_id);
+	$event_rights = wrap_db_fetch($sql, '', 'single value');
+	if (brick_access_rights(['Organisator', 'Technik'], $event_rights)) return true;
+
+	require_once $zz_setting['modules_dir'].'/tournaments/zzbrick_request/tournament.inc.php';
+	$eigene_teams = mod_tournaments_tournament_own_teams($status);
+	if (!in_array($team_id, $eigene_teams)) return false;
+	return true;
+}
+
+/**
+ * Buchungen zu einem Team / mehreren Teams
+ *
+ * @param mixed $team_ids (int = eine Team-ID, array = mehrere Team-IDs)
+ * @param array $event
+ *		int dauer_tage, int bretter_min
+ * @return array $daten
+ */
+function mf_tournaments_team_bookings($team_ids, $event) {
+	$sql = 'SELECT team_id, buchung_id
+			, gruppe, anzahl_tage, anzahl_maennlich, anzahl_weiblich
+			, IFNULL(kosten, buchung) AS kosten
+			, kosten_betrag, kosten_waehrung
+			, betrag, betrag_waehrung
+			, anmerkungen
+			, (CASE WHEN kosten_status = "offen" THEN "vielleicht"
+				WHEN kosten_status = "gelöscht" THEN "nein"
+				WHEN kosten_status = "befreit" THEN "befreit"
+				WHEN kosten_status = "bestätigt" THEN "ja"
+				END) AS kosten_status
+			, categories.path AS buchungskategorie
+		FROM buchungen
+		LEFT JOIN costs USING (cost_id)
+		LEFT JOIN categories
+			ON categories.category_id = buchungen.buchung_category_id
+		WHERE team_id IN (%s)
+		ORDER BY categories.sequence, category, gruppe';
+	$sql = sprintf($sql, is_array($team_ids) ? implode(',', $team_ids) : $team_ids);
+	$alle_kosten = wrap_db_fetch($sql, ['team_id', 'buchung_id']);
+	if (!$alle_kosten) return [];
+	$teams = [];
+	foreach ($alle_kosten as $id => $team_kosten) {
+		$teams[$id]['betrag'] = 0;
+		$teams[$id]['tage_teilnehmer'] = 0;
+		$teams[$id]['tage_betreuer'] = 0;
+		$teams[$id]['kosten'] = $team_kosten;
+		foreach ($team_kosten as $k_id => $kosten) {
+			// Bedingung für komplett:
+			// min. min_spieler * dauer_tage für Teilnehmer
+			// min. dauer_tage für Betreuer
+			if ($kosten['kosten_status'] === 'nein' OR $kosten['kosten_status'] === 'befreit') {
+				$teams[$id]['kosten'][$k_id]['betrag'] = 0;
+				$teams[$id]['kosten'][$k_id]['gelöscht'] = true;
+				continue;
+			}
+			$tage = $kosten['anzahl_tage'] * ($kosten['anzahl_maennlich'] + $kosten['anzahl_weiblich']);
+			if ($kosten['gruppe'] === 'Teilnehmer') {
+				$teams[$id]['tage_teilnehmer'] += $tage;
+			} elseif ($kosten['gruppe'] === 'Betreuer') {
+				$teams[$id]['tage_betreuer'] += $tage;
+			}
+			$teams[$id]['betrag'] += $kosten['betrag'];
+			$teams[$id]['betrag_waehrung'] = $kosten['betrag_waehrung'];
+		}
+		if ($teams[$id]['tage_betreuer'] >= $event['dauer_tage']
+			AND $teams[$id]['tage_teilnehmer'] >= ($event['dauer_tage'] * $event['bretter_min'])) {
+			$teams[$id]['buchung_komplett'] = true;	
+		}
+	}
+	if (is_array($team_ids)) return $teams;
+	else return $teams[$team_ids];
+}
+
+
+/**
+ * Vereinsbetreuer zu einem Team 
+ *
+ * @param array $team_ids
+ *		array team_id => contact_id
+ * @param array $event
+ * @param bool $check true (default): check Anzahl, Berechtigungen etc.
+ * @return array
+ */
+function mf_tournaments_team_participants($team_ids, $event, $check = true, $order_by = 'ISNULL(brett_no), brett_no, rang_no, last_name, first_name') {
+	global $zz_setting;
+
+	// Nur Teams, die Organisationen zugeordnet sind
+	// (bspw. bei Schulschach nicht zwingend nötig)
+	$contact_ids = $team_ids;
+	foreach ($contact_ids as $team_id => $contact_id) {
+		if (!$contact_id) unset($contact_ids[$team_id]);
+	}
+	if ($contact_ids) {
+		$sql = 'SELECT club_contact_id, participation_id, person_id, contacts.contact_id
+				, usergroups.usergroup
+				, usergroups.identifier AS group_identifier
+				, contact AS person
+				, YEAR(date_of_birth) AS geburtsjahr
+				, (SELECT identification FROM contactdetails
+					WHERE contactdetails.contact_id = contacts.contact_id
+					AND provider_category_id = %d
+					LIMIT 1
+				) AS e_mail
+				, GROUP_CONCAT(category_short, ": ", identification SEPARATOR "<br>") AS telefon
+			FROM participations
+			LEFT JOIN persons USING (person_id)
+			LEFT JOIN contacts USING (contact_id)
+			LEFT JOIN contactdetails USING (contact_id)
+			LEFT JOIN usergroups USING (usergroup_id)
+			LEFT JOIN categories
+				ON categories.category_id = contactdetails.provider_category_id
+			WHERE club_contact_id IN (%s)
+			AND usergroup_id IN (%d, %d)
+			AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&type=phone%%")
+			GROUP BY participation_id';
+		$sql = sprintf($sql
+			, wrap_category_id('provider/e-mail')
+			, implode(',', $contact_ids)
+			, wrap_id('usergroups', 'verein-jugend')
+			, wrap_id('usergroups', 'verein-vorsitz')
+		);
+		$vereinsbetreuer = wrap_db_fetch($sql, ['club_contact_id', 'group_identifier', 'participation_id']);
+	}
+
+	$sql = 'SELECT team_id, participation_id, participations.person_id, contacts.contact_id
+			, usergroups.usergroup
+			, usergroups.identifier AS group_identifier
+			, contact AS person
+			, (CASE WHEN sex = "female" THEN "W"
+				WHEN sex = "male" THEN "M"
+				WHEN sex = "diverse" THEN "D"
+				ELSE NULL END
+			) AS geschlecht
+			, YEAR(date_of_birth) AS geburtsjahr
+			, t_dwz, t_elo, t_fidetitel, rang_no, brett_no
+			, IF(gastspieler = "ja", 1, NULL) AS gastspieler
+			, (SELECT identification FROM contactdetails
+				WHERE contactdetails.contact_id = contacts.contact_id
+				AND provider_category_id = %d
+				LIMIT 1
+			) AS e_mail
+			, GROUP_CONCAT(category_short, ": ", identification SEPARATOR "<br>") AS telefon
+			, (CASE WHEN spielberechtigt = "vorläufig nein" THEN "vielleicht"
+				WHEN spielberechtigt = "nein" THEN "nein"
+				WHEN spielberechtigt = "ja" THEN "ja"
+				ELSE NULL
+				END) AS status, spielberechtigt
+			, contacts_identifiers.identifier AS zps_code
+		FROM participations
+		LEFT JOIN persons USING (person_id)
+		LEFT JOIN contacts USING (contact_id)
+		LEFT JOIN contactdetails USING (contact_id)
+		LEFT JOIN usergroups USING (usergroup_id)
+		LEFT JOIN categories
+			ON categories.category_id = contactdetails.provider_category_id
+			AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&type=phone%%")
+		LEFT JOIN contacts_identifiers
+			ON contacts_identifiers.contact_id = persons.contact_id
+			AND contacts_identifiers.current = "yes"
+			AND contacts_identifiers.identifier_category_id = %d
+		WHERE team_id IN (%s)
+		GROUP BY participation_id, contact_identifier_id
+		ORDER BY %s';
+	$sql = sprintf($sql
+		, wrap_category_id('provider/e-mail')
+		, wrap_category_id('identifiers/zps')
+		, implode(',', array_keys($team_ids))
+		, $order_by
+	);
+	$participations = wrap_db_fetch($sql, ['team_id', 'group_identifier', 'participation_id']);
+
+	foreach ($team_ids as $team_id => $club_contact_id) {
+		if (!empty($vereinsbetreuer[$club_contact_id])) {
+			$participations[$team_id] = array_merge($participations[$team_id], $vereinsbetreuer[$club_contact_id]);
+		}
+	}
+	if (!$check) {
+		if (count($team_ids) === 1) {
+			$participations = reset($participations);
+			if (!$participations) $participations = [];
+		}
+		return $participations;
+	}
+
+	foreach (array_keys($participations) as $id) {
+		if (!isset($participations[$id]['spieler'])) $participations[$id]['spieler'] = [];
+		$participations[$id]['spielerzahl'] = count($participations[$id]['spieler']);
+		if ($participations[$id]['spielerzahl'] >= $event['bretter_min'])
+			$participations[$id]['aufstellung_komplett'] = true;
+		while (count($participations[$id]['spieler']) < $event['bretter_max']) {
+			$participations[$id]['spieler'][] = [
+				'person' => '--',
+				'add' => 1,
+			];
+		}
+		$i = 0;
+		$participations[$id]['zps_codes'] = [];
+		$aeltester_spieler = 0;
+		foreach (array_keys($participations[$id]['spieler']) as $spieler_id) {
+			$i++;
+			$participations[$id]['spieler'][$spieler_id]['pflicht'] = ($i <= $event['bretter_min']) ? true : false;
+			$participations[$id]['spieler'][$spieler_id]['position'] = $i;
+			if ($event['gastspieler_status'])
+				$participations[$id]['spieler'][$spieler_id]['gastspieler_status'] = 1;
+			if (!empty($participations[$id]['spieler'][$spieler_id]['zps_code']))
+				$participations[$id]['zps_codes'][] = $participations[$id]['spieler'][$spieler_id]['zps_code'];
+			if (empty($participations[$id]['spieler'][$spieler_id]['geburtsjahr'])) continue;
+			if ($participations[$id]['spieler'][$spieler_id]['geburtsjahr'] > $aeltester_spieler) {
+				$aeltester_spieler = $participations[$id]['spieler'][$spieler_id]['geburtsjahr'];
+			}
+		}
+		if ($contact_ids) {
+			if (!isset($participations[$id]['verein-vorsitz'])) {
+				$participations[$id]['verein-vorsitz'][] = [
+					'person' => '--',
+					'add' => 1
+				];
+			}
+		}
+		if (!isset($participations[$id]['betreuer'])) {
+			$participations[$id]['betreuer'][] = [
+				'person' => '--',
+				'add' => 1
+			];
+		} else {
+			$participations[$id]['betreuer_komplett'] = true;
+			$aeltester_betreuer = 3000; // im Jahr 3000 müssen wir hier neu ran!
+			foreach ($participations[$id]['betreuer'] as $betreuer) {
+				if ($betreuer['geburtsjahr'] AND $betreuer['geburtsjahr'] < $aeltester_betreuer) {
+					$aeltester_betreuer = $betreuer['geburtsjahr'];
+				}
+			}
+			if ($aeltester_betreuer > date('Y') - 18) {
+				// muss volljährig sein
+				$participations[$id]['betreuer_komplett'] = false;
+				$participations[$id]['betreuer_nicht_18'] = true;
+			}
+			if ($aeltester_betreuer > $aeltester_spieler - 3) {
+				// muss drei Jahre älter als ältester Spieler sein
+				$participations[$id]['betreuer_komplett'] = false;
+				$participations[$id]['betreuer_nicht_plus_3_jahre'] = true;
+			}
+		}
+	}
+	if (count($team_ids) === 1) {
+		$participations = reset($participations);
+		if (!$participations) $participations = [];
+	}
+	return $participations;
+}
+
+/**
+ * Team-Meldung komplett?
+ *
+ * @param array $data
+ * @return bool
+ */
+function mf_tournaments_team_application_complete($data) {
+	if ((!empty($data['betreuer_komplett']) OR !empty($data['virtual']))
+		AND (!empty($data['reisedaten_komplett']) OR !empty($data['virtual']))
+		AND !empty($data['aufstellung_komplett'])
+		AND (empty($data['zimmerbuchung']) OR !empty($data['buchung_komplett']))
+	) {
+		return true;
+	} elseif ($data['meldung'] === 'komplett') {
+		// Falls Voraussetzungen nicht erfüllt werden (z. B. Teilnehmer
+		// in der U20 gleichzeitig Betreuer) kann Veranstalter noch
+		// auf komplett umstellen und man kriegt trotzdem ein PDF ohne
+		// Vorschau-Hintergrund raus.
+		return true;
+	}
+	return false;
+}

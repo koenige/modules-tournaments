@@ -135,6 +135,5 @@ $zz['filter'][2]['sql'] = sprintf('SELECT team_status, CONCAT(team_status, " (",
 	GROUP BY team_status
 	ORDER BY team_status', $brick['data']['event_id']);
 
-require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
 $zz['conditions'][2]['scope'] = 'access';
-$zz['conditions'][2]['function'] = 'my_team_access';
+$zz['conditions'][2]['function'] = 'mf_tournaments_team_access';

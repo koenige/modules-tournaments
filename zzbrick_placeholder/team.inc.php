@@ -60,8 +60,7 @@ function mod_tournaments_placeholder_team($brick) {
 	$status = !empty($brick['local_settings']['status']) ? $brick['local_settings']['status'] : ['offen', 'teiloffen'];
 	if (!in_array($team['meldung'], $status)) wrap_quit(403);
 
-	require_once $zz_setting['inc'].'/custom/zzwrap/team.inc.php';
-	if (!my_team_access($team['team_id'], ['Teilnehmer'])) wrap_quit(403);
+	if (!mf_tournaments_team_access($team['team_id'], ['Teilnehmer'])) wrap_quit(403);
 
 	if ($team['parameters']) {
 		parse_str($team['parameters'], $parameters);

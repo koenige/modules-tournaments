@@ -24,8 +24,6 @@
  */
 function mod_tournaments_make_teamaufstellung($vars) {
 	global $zz_conf;
-	global $zz_setting;
-	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
 	require_once $zz_conf['dir_inc'].'/validate.inc.php';
 
 	$sql = 'SELECT team_id, team, team_no, meldung
@@ -60,14 +58,14 @@ function mod_tournaments_make_teamaufstellung($vars) {
 	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]), wrap_db_escape($vars[2]));
 	$data = wrap_db_fetch($sql);
 	if (!$data) return false;
-	if (!my_team_access($data['team_id'], ['Teilnehmer'])) wrap_quit(403);
+	if (!mf_tournaments_team_access($data['team_id'], ['Teilnehmer'])) wrap_quit(403);
 	if ($data['meldung'] !== 'offen') wrap_quit(403);
 	parse_str($data['turnierform_parameter'], $data['turnierform_parameter']);
 
 	$data['geschlecht'] = explode(',', strtoupper($data['geschlecht']));
 
 	// Team + Vereinsbetreuer auslesen
-	$data = array_merge($data, my_team_teilnehmer([$data['team_id'] => $data['contact_id']], $data));
+	$data = array_merge($data, mf_tournaments_team_participants([$data['team_id'] => $data['contact_id']], $data));
 
 	// Aktuelle Mitglieder auslesen
 	// besser als nichts, eigentlich werden vergangene Mitglieder gesucht

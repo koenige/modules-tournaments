@@ -70,7 +70,7 @@ function mod_tournaments_teampdf($vars) {
 	if (!$event['teams'][0]) return false;
 	$event['teams'][0] = mf_tournaments_clubs_to_federations($event['teams'][0], 'contact_id');
 
-	if (!my_team_access($event['teams'][0]['team_id'], ['Teilnehmer'])) wrap_quit(403);
+	if (!mf_tournaments_team_access($event['teams'][0]['team_id'], ['Teilnehmer'])) wrap_quit(403);
 
 	if ($event['teams'][0]['datum_anreise'] AND $event['teams'][0]['uhrzeit_anreise']
 		AND $event['teams'][0]['datum_abreise'] AND $event['teams'][0]['uhrzeit_abreise']) {
@@ -79,14 +79,14 @@ function mod_tournaments_teampdf($vars) {
 
 	// Buchungen
 	$event['teams'][0] = array_merge(
-		$event['teams'][0], my_team_buchungen($event['teams'][0]['team_id'], $event)
+		$event['teams'][0], mf_tournaments_team_bookings($event['teams'][0]['team_id'], $event)
 	);
 	
 	// Team + Vereinsbetreuer auslesen
 	$event['teams'][0] = array_merge(
-		$event['teams'][0], my_team_teilnehmer([$event['teams'][0]['team_id'] => $event['teams'][0]['contact_id']], $event)
+		$event['teams'][0], mf_tournaments_team_participants([$event['teams'][0]['team_id'] => $event['teams'][0]['contact_id']], $event)
 	);
 
-	$event['teams'][0]['komplett'] = my_team_meldung_komplett($event['teams'][0]);
+	$event['teams'][0]['komplett'] = mf_tournaments_team_application_complete($event['teams'][0]);
 	return my_team_pdf($event);	
 }

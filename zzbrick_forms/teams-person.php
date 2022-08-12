@@ -16,7 +16,7 @@
 if (empty($brick['data'])) wrap_quit(404);
 $data = $brick['data'];
 // Team + Vereinsbetreuer auslesen
-$data = array_merge($data, my_team_teilnehmer([$data['team_id'] => $data['contact_id']], $data, false));
+$data = array_merge($data, mf_tournaments_team_participants([$data['team_id'] => $data['contact_id']], $data, false));
 
 $brick['page']['title'] .= 'Details';
 $brick['page']['breadcrumbs'][] = '<a href="../kontakt/">Kontaktdaten</a>';

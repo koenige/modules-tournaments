@@ -108,8 +108,7 @@ function mod_tournaments_teaminternal($vars, $settings) {
 	$page['extra']['realm'] = 'sports';
 	$data = array_merge($team, $event);
 
-	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
-	if (!my_team_access($data['team_id'])) {
+	if (!mf_tournaments_team_access($data['team_id'])) {
 		$page = brick_format('%%% redirect /'.$data['team_identifier'].'/ %%%');
 		return $page;
 	}
@@ -161,12 +160,12 @@ function mod_tournaments_teaminternal($vars, $settings) {
 	}
 
 	// Buchungen
-	$data = array_merge($data, my_team_buchungen($data['team_id'], $data));
+	$data = array_merge($data, mf_tournaments_team_bookings($data['team_id'], $data));
 
 	// Team + Vereinsbetreuer auslesen
-	$data = array_merge($data, my_team_teilnehmer([$data['team_id'] => $data['contact_id']], $data));
+	$data = array_merge($data, mf_tournaments_team_participants([$data['team_id'] => $data['contact_id']], $data));
 
-	$data['komplett'] = my_team_meldung_komplett($data);
+	$data['komplett'] = mf_tournaments_team_application_complete($data);
 	if ($data['meldung'] === 'komplett') $data['pdfupload'] = true;
 
 	$page['query_strings'][] = 'spaeter';
