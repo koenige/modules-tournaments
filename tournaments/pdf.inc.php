@@ -80,19 +80,18 @@ function mf_tournaments_pdf_event_accounts($event_id) {
 /**
  * read teams per event for PDF
  *
+ * @param array $event
  * @param array $params
  *		int event_id
  * 		string team_identifier
  * @return array
  */
-function mf_tournaments_pdf_teams($params) {
-	// check parameters, team_identifier is more specific
+function mf_tournaments_pdf_teams($event, $params) {
+	// team_identifier is more specific
 	if (!empty($params['team_identifier']))
 		$where = sprintf('teams.identifier = "%s"', wrap_db_escape($params['team_identifier']));
-	elseif (!empty($params['event_id']))
-		$where = sprintf('event_id = %d', $params['event_id']);
 	else
-		return [];
+		$where = sprintf('event_id = %d', $event['event_id']);
 
 	$sql = 'SELECT team_id, team, team_no, club_contact_id
 			, teams.identifier AS team_identifier

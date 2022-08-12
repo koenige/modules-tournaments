@@ -36,10 +36,9 @@ function mod_tournaments_teampdfs($vars) {
 	if (!$event) return false;
 
 	$params = [
-		'event_id' => $event['event_id'],
 		'team_identifier' => $team_identifier
 	];
-	$event['teams'] = mf_tournaments_pdf_teams($params);
+	$event['teams'] = mf_tournaments_pdf_teams($event, $params);
 
 	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
 
