@@ -17,12 +17,6 @@ function mod_tournaments_teampdfs($vars) {
 	global $zz_setting;
 	require_once __DIR__.'/../tournaments/pdf.inc.php';
 	
-	$event_rights = 'event:'.$vars[0].'/'.$vars[1];
-	if (!brick_access_rights(['Webmaster', 'Vorstand', 'AK Spielbetrieb', 'Geschäftsstelle'])
-		AND !brick_access_rights(['Schiedsrichter', 'Organisator', 'Turnierleitung'], $event_rights)
-	) {
-		wrap_quit(403);
-	}
 	if (count($vars) === 3) {
 		$team_identifier = implode('/', $vars);
 		array_pop($vars);

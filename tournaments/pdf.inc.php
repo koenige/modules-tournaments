@@ -88,10 +88,17 @@ function mf_tournaments_pdf_event_accounts($event_id) {
  */
 function mf_tournaments_pdf_teams($event, $params) {
 	// team_identifier is more specific
-	if (!empty($params['team_identifier']))
+	if (!empty($params['team_identifier'])) {
 		$where = sprintf('teams.identifier = "%s"', wrap_db_escape($params['team_identifier']));
-	else
+	} else {
+		$event_rights = 'event_id:'.$event['event_id'];
+		if (!brick_access_rights(['Webmaster', 'Vorstand', 'AK Spielbetrieb', 'Geschäftsstelle'])
+			AND !brick_access_rights(['Schiedsrichter', 'Organisator', 'Turnierleitung'], $event_rights)
+		) {
+			wrap_quit(403);
+		}
 		$where = sprintf('event_id = %d', $event['event_id']);
+	}
 
 	$sql = 'SELECT team_id, team, team_no, club_contact_id
 			, teams.identifier AS team_identifier
