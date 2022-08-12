@@ -85,11 +85,11 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 			$pdf->Cell($line['flagge_width'], $card['logo_height'], '', 1);
 			$pdf->image($line['flagge'], $imageleft, 15 + $top, $line['flagge_width'], $card['logo_height']);
 		} else {
-			$logo['filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
-			$logo['size'] = getimagesize($logo['filename']);
-			$logo['width'] = round($logo['size'][0] / $logo['size'][1] * $card['logo_height']);
-			$logo['left'] = $card['margin'] + $left + ($card['width']/2 - ($card['margin'] + 10)/2 - $logo['width'])/2;
-			$pdf->image($logo['filename'], $logo['left'] , 15 + $top, $logo['width'], $card['logo_height']);
+			$settings['logo_filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
+			$logo['size'] = getimagesize($settings['logo_filename']);
+			$settings['logo_width'] = round($logo['size'][0] / $logo['size'][1] * $card['logo_height']);
+			$logo['left'] = $card['margin'] + $left + ($card['width']/2 - ($card['margin'] + 10)/2 - $settings['logo_width'])/2;
+			$pdf->image($settings['logo_filename'], $logo['left'] , 15 + $top, $settings['logo_width'], $card['logo_height']);
 		}
 		$pdf->setFont('FiraSans-Regular', '', 10);
 		$pdf->SetTextColor(0, 0, 0);

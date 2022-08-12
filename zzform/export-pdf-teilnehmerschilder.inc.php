@@ -164,10 +164,10 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	$pdf->AddFont('FiraSans-SemiBold', '', 'FiraSans-SemiBold.ttf', true);
 	$pdf->SetLineWidth(0.25);
 	
-	$logo['filename'] = $zz_setting['media_folder'].'/urkunden-grafiken/DSJ-Logo.jpg';
-	$logo['filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
-	$logo['size'] = getimagesize($logo['filename']);
-	$logo['width'] = round($logo['size'][0] / $logo['size'][1] * $name_tag['logo_height']);
+	$settings['logo_filename'] = $zz_setting['media_folder'].'/urkunden-grafiken/DSJ-Logo.jpg';
+	$settings['logo_filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
+	$logo['size'] = getimagesize($settings['logo_filename']);
+	$settings['logo_width'] = round($logo['size'][0] / $logo['size'][1] * $name_tag['logo_height']);
 	
 	require_once $zz_setting['modules_dir'].'/tournaments/tournaments/functions.inc.php';
 	$event['main_series_long'] = mf_tournaments_event_title_wrap($event['main_series_long']);
@@ -196,8 +196,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				$width = $name_tag['logo_height'] * 1.2;
 				$height = $name_tag['logo_height'] * 1.2;
 			} else {
-				$image = $logo['filename'];
-				$width = $logo['width'];
+				$image = $settings['logo_filename'];
+				$width = $settings['logo_width'];
 				$height = $name_tag['logo_height'];
 			}
 			$pdf->image($image, $name_tag['width']*($j+1) - $name_tag['margin'] - $width, $name_tag['margin'] + $top, $width, $height);
