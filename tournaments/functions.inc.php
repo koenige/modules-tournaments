@@ -121,9 +121,10 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 		if (is_numeric(key($line))) {
 			$mode = 'multi';
 			foreach ($line as $sub_id => $sub_line) {
+				if (!$sub_line[$field_name]) continue;
 				$clubs[$id.'-'.$sub_id] = $sub_line[$field_name];
 			}
-		} else {
+		} elseif ($line[$field_name]) {
 			$clubs[$id] = $line[$field_name];
 		}
 	}
