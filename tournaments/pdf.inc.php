@@ -121,12 +121,26 @@ function mf_tournaments_pdf_teams($event, $params) {
 		$participants = mf_tournaments_team_participants($team_contact_ids, $event);
 	if (!is_numeric(key($participants))) $participants = [$team_id => $participants];
 
+	// get bookings
+	if (!empty($params['bookings']))
+		$bookings = mf_tournaments_team_bookings(array_keys($teams), $event);
+	else
+		$bookings = [];
+
+	// move separate data to teams array
 	foreach (array_keys($teams) as $team_id) {
 		if (!empty($participants[$team_id])) {
 			$teams[$team_id] = array_merge($teams[$team_id], $participants[$team_id]);
 		} else {
 			$teams[$team_id]['spieler'] = [];
 		}
+		if (!empty($bookings[$team_id])) {
+			$teams[$team_id] = array_merge($teams[$team_id], $bookings[$team_id]);
+		} else {
+			$teams[$team_id]['kosten'] = [];
+		}
+		if (!empty($params['check_completion']))
+			$teams[$team_id]['komplett'] = mf_tournaments_team_application_complete($teams[$team_id]);
 	}
 
 	return $teams;

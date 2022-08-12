@@ -36,22 +36,16 @@ function mod_tournaments_teampdfs($vars) {
 	if (!$event) return false;
 
 	$params = [
-		'team_identifier' => $team_identifier
+		'team_identifier' => $team_identifier,
+		'bookings' => true,
+		'check_completion' => true
 	];
 	$event['teams'] = mf_tournaments_pdf_teams($event, $params);
 
 	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
 
-	$kosten = mf_tournaments_team_bookings(array_keys($event['teams']), $event);
-
 	$pdf_uploads = false;
 	foreach (array_keys($event['teams']) as $id) {
-		if (!empty($kosten[$id])) {
-			$event['teams'][$id] = array_merge($event['teams'][$id], $kosten[$id]);
-		} else {
-			$event['teams'][$id]['kosten'] = [];
-		}
-		$event['teams'][$id]['komplett'] = mf_tournaments_team_application_complete($event['teams'][$id]);
 		$filename = sprintf('%s/meldeboegen/%s%%s.pdf', $zz_setting['media_folder'], $event['teams'][$id]['team_identifier']);
 		$filenames = [
 			sprintf($filename, ''),

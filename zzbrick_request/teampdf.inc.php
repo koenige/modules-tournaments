@@ -35,17 +35,13 @@ function mod_tournaments_teampdf($vars) {
 	if (!$event) return false;
 	
 	$params = [
-		'team_identifier' => $team_identifier
+		'team_identifier' => $team_identifier,
+		'bookings' => true,
+		'check_completion' => true
 	];
 	$event['teams'] = mf_tournaments_pdf_teams($event, $params);
 	$event['teams'] = array_values($event['teams']);
 	if (!mf_tournaments_team_access($event['teams'][0]['team_id'], ['Teilnehmer'])) wrap_quit(403);
 
-	// Buchungen
-	$event['teams'][0] = array_merge(
-		$event['teams'][0], mf_tournaments_team_bookings($event['teams'][0]['team_id'], $event)
-	);
-	
-	$event['teams'][0]['komplett'] = mf_tournaments_team_application_complete($event['teams'][0]);
 	return my_team_pdf($event);	
 }
