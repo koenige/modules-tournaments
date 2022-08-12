@@ -13,7 +13,7 @@
  */
 
 
-function mod_tournaments_teampdfs($vars) {
+function mod_tournaments_teampdfs($vars, $settings) {
 	global $zz_setting;
 	require_once __DIR__.'/../tournaments/pdf.inc.php';
 	
@@ -32,29 +32,15 @@ function mod_tournaments_teampdfs($vars) {
 	$params = [
 		'team_identifier' => $team_identifier,
 		'bookings' => true,
-		'check_completion' => true
+		'check_completion' => true,
+		'check_uploads' => !empty($settings['no_uploads']) ? false : true
 	];
 	$event['teams'] = mf_tournaments_pdf_teams($event, $params);
 
 	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
+	if (empty($event['teams']['pdf_uploads'])) return my_team_pdf($event);
 
-	$pdf_uploads = false;
-	foreach (array_keys($event['teams']) as $id) {
-		$filename = sprintf('%s/meldeboegen/%s%%s.pdf', $zz_setting['media_folder'], $event['teams'][$id]['team_identifier']);
-		$filenames = [
-			sprintf($filename, ''),
-			sprintf($filename, '-ehrenkodex'),
-			sprintf($filename, '-gast')
-		];
-		foreach ($filenames as $filename) {
-			if (file_exists($filename)) {
-				$event['teams'][$id]['pdf'][] = $filename;
-				$pdf_uploads = true;
-			}
-		}
-	}
-
-	if (!$pdf_uploads) return my_team_pdf($event);
+	unset($event['teams']['pdf_uploads']);
 	$pdfs = [];
 	foreach ($event['teams'] as $id => $team) {
 		if (!empty($team['pdf'])) {

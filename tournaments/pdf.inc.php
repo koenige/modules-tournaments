@@ -87,6 +87,8 @@ function mf_tournaments_pdf_event_accounts($event_id) {
  * @return array
  */
 function mf_tournaments_pdf_teams($event, $params) {
+	global $zz_setting;
+
 	// team_identifier is more specific
 	if (!empty($params['team_identifier'])) {
 		$where = sprintf('teams.identifier = "%s"', wrap_db_escape($params['team_identifier']));
@@ -141,6 +143,7 @@ function mf_tournaments_pdf_teams($event, $params) {
 		$bookings = [];
 
 	// move separate data to teams array
+	$pdf_uploads = false;
 	foreach (array_keys($teams) as $team_id) {
 		if (!empty($participants[$team_id])) {
 			$teams[$team_id] = array_merge($teams[$team_id], $participants[$team_id]);
@@ -154,7 +157,21 @@ function mf_tournaments_pdf_teams($event, $params) {
 		}
 		if (!empty($params['check_completion']))
 			$teams[$team_id]['komplett'] = mf_tournaments_team_application_complete($teams[$team_id]);
+		if (!empty($params['check_uploads'])) {
+			$filename = sprintf('%s/meldeboegen/%s%%s.pdf', $zz_setting['media_folder'], $teams[$team_id]['team_identifier']);
+			$filenames = [
+				sprintf($filename, ''),
+				sprintf($filename, '-ehrenkodex'),
+				sprintf($filename, '-gast')
+			];
+			foreach ($filenames as $filename) {
+				if (!file_exists($filename)) continue;
+				$teams[$team_id]['pdf'][] = $filename;
+				$pdf_uploads = true;
+			}
+		}
 	}
+	if ($pdf_uploads) $teams['pdf_uploads'] = true;
 
 	return $teams;
 }
