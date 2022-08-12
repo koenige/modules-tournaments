@@ -42,8 +42,7 @@ function mod_tournaments_teampdfsarrival($vars) {
 	];
 	$event['teams'] = mf_tournaments_pdf_teams($event, $params);
 
-	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
-	return my_team_pdf_meldung($event);
+	return mod_tournaments_teampdfsarrival_pdf($event);
 }
 
 /**
@@ -64,7 +63,7 @@ function mod_tournaments_teampdfsarrival($vars) {
  * @param string $return 'send' => send PDF to browser, 'filename' => return filename
  * @return void
  */
-function my_team_pdf_meldung($event, $return = 'send') {
+function mod_tournaments_teampdfsarrival_pdf($event, $return = 'send') {
 	global $zz_setting;
 
 	switch ($event['turnierform']) {
@@ -184,7 +183,7 @@ durch die Turnierleitung bekanntgegeben.\n"
 			$pdf->setX($x_pos_name + 105);
 			$pdf->Cell(35, 14, $line['geschlecht'], 'T', 0, 'R');
 			$pdf->Cell(35, 14, $line['t_dwz'], 'T', 0, 'R', 1);
-			my_team_pdf_add_bg_color($pdf, $y_bottom, 35, 14);
+			mf_tournaments_pdf_add_bg_color($pdf, $y_bottom, 35, 14);
 			$pdf->Cell(35, 14, $line['geburtsjahr'], 'T', 0, 'R');
 			$pdf->Ln();
 			$pdf->setY($y_bottom);
@@ -236,11 +235,11 @@ durch die Turnierleitung bekanntgegeben.\n"
 	if (count($event['teams']) === 1) {
 		$turnier_folder = dirname($folder.'/'.$team['team_identifier']);
 		$file['name'] = $folder.'/'.$team['team_identifier'].'-meldebogen.pdf';
-		$file['send_as'] = 'Meldebogen '.$event['event'].' '.$team['team'].'.pdf';
+		$file['send_as'] = 'Meldebogen Anreise '.$event['event'].' '.$team['team'].'.pdf';
 	} else {
 		$turnier_folder = dirname($folder.'/'.$event['event_identifier']);
 		$file['name'] = $folder.'/'.$event['dateiname'].'-meldebogen.pdf';
-		$file['send_as'] = 'Meldebögen '.$event['event'].'.pdf';
+		$file['send_as'] = 'Meldebögen Anreise '.$event['event'].'.pdf';
 	}
 	wrap_mkdir($turnier_folder);
 	

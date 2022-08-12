@@ -175,3 +175,21 @@ function mf_tournaments_pdf_teams($event, $params) {
 
 	return $teams;
 }
+
+/**
+ * fügt Hintergrundfarbe unter einzeilige Zellen, wenn nebenan eine
+ * mehrzeilige Zelle vorhanden ist
+ * 
+ * @param object $pdf
+ * @param int $y_bottom
+ * @param int $width
+ * @return void
+ */
+function mf_tournaments_pdf_add_bg_color(&$pdf, $y_bottom, $width, $height) {
+	if ($pdf->GetY() >= $y_bottom) return;
+	$current_x = $pdf->GetX();
+	$current_y = $pdf->GetY();
+	$pdf->SetXY($current_x - $width, $current_y + $height);
+	$pdf->Cell($width, $y_bottom - $pdf->GetY(), '', '', 0, 'R', 1);
+	$pdf->SetXY($current_x, $current_y);
+}
