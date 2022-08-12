@@ -233,7 +233,7 @@ function mod_tournaments_standings($vars) {
 			}
 		}
 		// Zeige Bundesland in Überschrift abhängig von Werten in Spalte an
-		if ($tabellenstand['country']) $event['country'] = true;
+		if (!empty($tabellenstand['country'])) $event['country'] = true;
 	}
 	$tabellen_keys = array_keys($tabelle);
 	$decrease = 0;
