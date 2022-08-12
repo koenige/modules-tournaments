@@ -283,11 +283,32 @@ function my_team_pdf_meldung($event, $return = 'send') {
 	
 	$pdf->SetLineWidth(0.15);
 	$pdf->SetFillColor(230, 230, 230);
+
+	$doc['boxes'] = ['Erfasst', '200 DWZ geprüft', 'DWZ-Schnitt'];
+	$doc['boxes_width'] = 80;
+	$doc['info'] =  "• Jedem anwesenden Jugendlichen ist eine Nummer zuzuweisen, "
+			. "die seiner Position in der Mannschaft entspricht. "
+			. "Für nicht anwesende Jugendliche ist das Feld „Nr.“ freizulassen.\n"
+			. "• Es dürfen nur Jugendliche gemeldet werden, die persönlich "
+			. "vor Ort sind – Zuwiderhandlungen können mit Turnierausschluss bestraft "
+			. "werden. Der Turnierverantwortliche kann Ausnahmen zulassen. Diese genehmigten Ausnahmen werden in der ersten Betreuersitzung
+durch die Turnierleitung bekanntgegeben.\n"
+			. "• Kein Jugendlicher darf in zwei Mannschaften gemeldet werden.\n"
+			. "• Ein/e Ersatzspieler/in ist zulässig.\n"
+			. "• Es darf kein Jugendlicher vor einem anderen aufgestellt werden, "
+			. "der eine um mehr als 200 Punkte bessere DWZ besitzt, außer beide "
+			. "Jugendliche haben unter 1000 DWZ. Über Ausnahmen entscheidet der "
+			. "Turnierverantwortliche. Es gilt die angegebene DWZ vom %s. "
+			. "Die Pseudo-DWZ für Jugendliche ohne DWZ beträgt %d.";
 	
 	foreach ($event['teams'] AS $team) {
 		$pdf->AddPage();
 
-		$pdf->Image($zz_setting['media_folder'].'/dsj-logo.png', 446, $margin_top_bottom, 108, 96, 'PNG');
+		$logo['filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
+		$logo['width'] = 146;
+		$logo['height'] = 50;
+
+		$pdf->Image($logo['filename'], 595 - $margin_top_bottom - $logo['width'], $margin_top_bottom, $logo['width'], $logo['height'], 'PNG');
 		$pdf->setFont('DejaVu', '', 14);
 		$pdf->write(19, 'Meldebogen zur Anreise');
 		$pdf->Ln();
@@ -355,23 +376,11 @@ function my_team_pdf_meldung($event, $return = 'send') {
 		$pdf->setY($y_pos);
 		$pdf->setX($x_pos+265);
 		$pdf->setFont('DejaVu', '', 9);
-		$pdf->MultiCell(0, 14, sprintf(
-			  "• Jedem anwesenden Jugendlichen ist eine Nummer zuzuweisen, "
-			. "die seiner Position in der Mannschaft entspricht. "
-			. "Für nicht anwesende Jugendliche ist das Feld „Nr.“ freizulassen.\n"
-			. "• Es dürfen nur Jugendliche gemeldet werden, die persönlich "
-			. "vor Ort sind – Zuwiderhandlungen können mit Turnierausschluss bestraft "
-			. "werden. Der Turnierverantwortliche kann Ausnahmen zulassen.\n"
-			. "• Kein Jugendlicher darf in zwei Mannschaften gemeldet werden.\n"
-			. "• Ein/e Ersatzspieler/in ist zulässig.\n"
-			. "• Es darf kein Jugendlicher vor einem anderen aufgestellt werden, "
-			. "der eine um mehr als 200 Punkte bessere DWZ besitzt, außer beide "
-			. "Jugendliche haben unter 1000 DWZ. Über Ausnahmen entscheidet der "
-			. "Turnierverantwortliche. Es gilt die angegebene DWZ vom %s. "
-			. "Die Pseudo-DWZ für Jugendliche ohne DWZ beträgt %d.",
+		$pdf->MultiCell(0, 14, sprintf($doc['info'],
 			wrap_date($event['ratings_updated']),
 			$event['pseudo_dwz']
 		));
+		if ($pdf->getY() > $bottom_y) $bottom_y = $pdf->getY();
 
 		$pdf->setY($bottom_y);
 
@@ -393,15 +402,15 @@ function my_team_pdf_meldung($event, $return = 'send') {
 		$pdf->setY(740);
 		$pdf->write(18, 'Prüfung durch die Turnierleitung – ' . $team['team'].' '.$team['team_no']);
 		$pdf->Ln();
+	
 		$pos_x = $pdf->getX();
 		$pos_y = $pdf->getY();
-		$width = 80;
-		$pdf->Rect($pos_x+0, $pos_y, $width, 50, 'DF');
-		$pdf->Rect($pos_x+$width, $pos_y, $width, 50, 'DF');
-		$pdf->Multicell($width, 12, 'Erfasst', 0, 'C');
-		$pdf->setY($pos_y);
-		$pdf->setX($pos_x+$width);
-		$pdf->Multicell($width, 12, '200 DWZ geprüft', 0, 'C');
+		foreach ($doc['boxes'] as $index => $box) {
+			$pdf->Rect($pos_x + $index * $doc['boxes_width'], $pos_y, $doc['boxes_width'], 50, 'DF');
+			$pdf->setY($pos_y);
+			$pdf->setX($pos_x + $index * $doc['boxes_width']);
+			$pdf->Multicell($doc['boxes_width'], 12, $box, 0, 'C');
+		}
 	}
 
 	$folder = $zz_setting['tmp_dir'].'/team-meldungen';
@@ -421,6 +430,4 @@ function my_team_pdf_meldung($event, $return = 'send') {
 	$pdf->output('F', $file['name'], true);
 	if ($return === 'filename') return $file['name'];
 	wrap_file_send($file);
-	
-	exit;
 }
