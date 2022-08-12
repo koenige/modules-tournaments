@@ -28,38 +28,15 @@ function mod_tournaments_teampdf($vars) {
 	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
 	
 	if (count($vars) !== 3) return false;
-	$team_vars = implode('/', $vars);
+	$team_identifier = implode('/', $vars);
 	array_pop($vars);
 
 	$event = mf_tournaments_pdf_event($vars);
 	if (!$event) return false;
 	
-	$sql = 'SELECT teams.team_id, team, team_no
-			, datum_anreise, TIME_FORMAT(uhrzeit_anreise, "%%H:%%i") AS uhrzeit_anreise
-			, datum_abreise, TIME_FORMAT(uhrzeit_abreise, "%%H:%%i") AS uhrzeit_abreise
-			, contacts.contact_id
-			, teams.identifier AS team_identifier
-			, meldung_datum
-			, meldung
-		FROM teams
-		LEFT JOIN contacts
-			ON teams.club_contact_id = contacts.contact_id
-		WHERE teams.identifier = "%s"
-		AND spielfrei = "nein"
-	';
-	$sql = sprintf($sql
-		, wrap_db_escape($team_vars)
-	);
-	$event['teams'][0] = wrap_db_fetch($sql);
-	if (!$event['teams'][0]) return false;
-	$event['teams'][0] = mf_tournaments_clubs_to_federations($event['teams'][0], 'contact_id');
-
+	$event['teams'] = mf_tournaments_pdf_teams('', $team_identifier); // or $team_identifier
+	$event['teams'] = array_values($event['teams']);
 	if (!mf_tournaments_team_access($event['teams'][0]['team_id'], ['Teilnehmer'])) wrap_quit(403);
-
-	if ($event['teams'][0]['datum_anreise'] AND $event['teams'][0]['uhrzeit_anreise']
-		AND $event['teams'][0]['datum_abreise'] AND $event['teams'][0]['uhrzeit_abreise']) {
-		$event['teams'][0]['reisedaten_komplett'] = true;	
-	}
 
 	// Buchungen
 	$event['teams'][0] = array_merge(
@@ -68,7 +45,7 @@ function mod_tournaments_teampdf($vars) {
 	
 	// Team + Vereinsbetreuer auslesen
 	$event['teams'][0] = array_merge(
-		$event['teams'][0], mf_tournaments_team_participants([$event['teams'][0]['team_id'] => $event['teams'][0]['contact_id']], $event)
+		$event['teams'][0], mf_tournaments_team_participants([$event['teams'][0]['team_id'] => $event['teams'][0]['club_contact_id']], $event)
 	);
 
 	$event['teams'][0]['komplett'] = mf_tournaments_team_application_complete($event['teams'][0]);

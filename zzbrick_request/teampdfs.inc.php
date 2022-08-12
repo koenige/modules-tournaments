@@ -24,10 +24,10 @@ function mod_tournaments_teampdfs($vars) {
 		wrap_quit(403);
 	}
 	if (count($vars) === 3) {
-		$team = implode('/', $vars);
+		$team_identifier = implode('/', $vars);
 		array_pop($vars);
 	} elseif (count($vars) === 2) {
-		$team = false;
+		$team_identifier = false;
 	} else {
 		return false;
 	}
@@ -35,27 +35,9 @@ function mod_tournaments_teampdfs($vars) {
 	$event = mf_tournaments_pdf_event($vars);
 	if (!$event) return false;
 
-	// teams
-	$sql = 'SELECT team_id, team, team_no, club_contact_id
-			, teams.identifier AS team_identifier
-			, meldung_datum
-			, datum_anreise, TIME_FORMAT(uhrzeit_anreise, "%%H:%%i") AS uhrzeit_anreise
-			, datum_abreise, TIME_FORMAT(uhrzeit_abreise, "%%H:%%i") AS uhrzeit_abreise
-			, IF(datum_anreise AND uhrzeit_anreise AND datum_abreise AND uhrzeit_abreise, 1, NULL) AS reisedaten_komplett
-			, meldung
-		FROM teams
-		WHERE event_id = %d
-		AND spielfrei = "nein"
-		AND team_status = "Teilnehmer"
-		%s
-		ORDER BY teams.identifier
-	';
-	$sql = sprintf($sql
-		, $event['event_id']
-		, $team ? sprintf(' AND teams.identifier = "%s"', wrap_db_escape($team)) : ''
-	);
-	$event['teams'] = wrap_db_fetch($sql, 'team_id');
-	$event['teams'] = mf_tournaments_clubs_to_federations($event['teams']);
+	$event['teams'] = mf_tournaments_pdf_teams($event['event_id']); // or $team_identifier
+
+	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
 
 	$team_verein = [];
 	foreach ($event['teams'] as $id => $team) {

@@ -76,3 +76,37 @@ function mf_tournaments_pdf_event_accounts($event_id) {
 	}
 	return $event;
 }
+
+/**
+ * read teams per event for PDF
+ *
+ * @param int $event_id (optional)
+ * @param string $team_identifier (optional)
+ * @return array
+ */
+function mf_tournaments_pdf_teams($event_id = false, $team_identifier = false) {
+	if (!$event_id AND !$team_identifier) return [];
+
+	if ($event_id)
+		$where = sprintf('event_id = %d', $event_id);
+	else
+		$where = sprintf('teams.identifier = "%s"', wrap_db_escape($team_identifier));
+
+	$sql = 'SELECT team_id, team, team_no, club_contact_id
+			, teams.identifier AS team_identifier
+			, meldung_datum
+			, datum_anreise, TIME_FORMAT(uhrzeit_anreise, "%%H:%%i") AS uhrzeit_anreise
+			, datum_abreise, TIME_FORMAT(uhrzeit_abreise, "%%H:%%i") AS uhrzeit_abreise
+			, IF(datum_anreise AND uhrzeit_anreise AND datum_abreise AND uhrzeit_abreise, 1, NULL) AS reisedaten_komplett
+			, meldung
+		FROM teams
+		WHERE %s
+		AND spielfrei = "nein"
+		AND team_status = "Teilnehmer"
+		ORDER BY teams.identifier
+	';
+	$sql = sprintf($sql, $where);
+	$teams = wrap_db_fetch($sql, 'team_id');
+	$teams = mf_tournaments_clubs_to_federations($teams);
+	return $teams;
+}
