@@ -66,14 +66,13 @@ function mod_tournaments_meldeboegen($vars) {
 		WHERE event_id = %d
 		AND spielfrei = "nein"
 		AND team_status = "Teilnehmer"
+		%s
 		ORDER BY teams.identifier
 	';
 	$sql = sprintf($sql
 		, $event['event_id']
+		, $team ? sprintf(' AND teams.identifier = "%s"', wrap_db_escape($team)) : ''
 	);
-	if ($team) {
-		$sql .= sprintf(' AND teams.identifier = "%s"', wrap_db_escape($team)); 
-	}
 	$event['teams'] = wrap_db_fetch($sql, 'team_id');
 	$event['teams'] = mf_tournaments_clubs_to_federations($event['teams']);
 
