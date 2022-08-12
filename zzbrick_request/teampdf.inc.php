@@ -34,7 +34,10 @@ function mod_tournaments_teampdf($vars) {
 	$event = mf_tournaments_pdf_event($vars);
 	if (!$event) return false;
 	
-	$event['teams'] = mf_tournaments_pdf_teams('', $team_identifier); // or $team_identifier
+	$params = [
+		'team_identifier' => $team_identifier
+	];
+	$event['teams'] = mf_tournaments_pdf_teams($params);
 	$event['teams'] = array_values($event['teams']);
 	if (!mf_tournaments_team_access($event['teams'][0]['team_id'], ['Teilnehmer'])) wrap_quit(403);
 
