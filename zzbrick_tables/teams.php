@@ -61,7 +61,7 @@ $zz['fields'][4]['link'] = [
 ];
 $zz['fields'][4]['unless']['export_mode']['list_prefix'] = '<strong>';
 $zz['fields'][4]['if'][1]['link'] = false;
-$zz['fields'][4]['function'] = 'my_teamname';
+$zz['fields'][4]['function'] = 'mf_tournaments_team_name';
 $zz['fields'][4]['explanation'] = 'Falls leer, wird hier Name der Organisation genommen.';
 $zz['fields'][4]['fields'] = ['team', 'club_contact_id', 'team_no'];
 $zz['fields'][4]['required'] = false;
