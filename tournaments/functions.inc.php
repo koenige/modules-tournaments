@@ -207,10 +207,37 @@ function mf_tournaments_team_access($team_id, $status = ['Teilnehmer', 'Teilnahm
 	$event_rights = wrap_db_fetch($sql, '', 'single value');
 	if (brick_access_rights(['Organisator', 'Technik'], $event_rights)) return true;
 
-	require_once $zz_setting['modules_dir'].'/tournaments/zzbrick_request/tournament.inc.php';
-	$eigene_teams = mod_tournaments_tournament_own_teams($status);
+	$eigene_teams = mf_tournaments_team_own($status);
 	if (!in_array($team_id, $eigene_teams)) return false;
 	return true;
+}
+
+/**
+ * read a list of teams that are user’s own teams
+ *
+ * @param array $status
+ * @return array
+ */
+function mf_tournaments_team_own($status = ['Teilnehmer', 'Teilnahmeberechtigt']) {
+	global $zz_setting;
+	if (empty($_SESSION['usergroup'][wrap_id('usergroups', 'team-organisator')])) {
+		return [];
+	}
+
+	$sql = 'SELECT team_id
+		FROM participations
+		LEFT JOIN teams USING (team_id)
+		WHERE usergroup_id = %d
+		AND person_id = %d
+		AND team_status IN ("%s")
+	';
+	$sql = sprintf($sql
+		, wrap_id('usergroups', 'team-organisator')
+		, $_SESSION['person_id']
+		, implode('","', $status)
+	);
+	$teams = wrap_db_fetch($sql, 'team_id', 'single value');
+	return $teams;
 }
 
 /**

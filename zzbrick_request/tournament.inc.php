@@ -440,7 +440,7 @@ function mod_tournaments_tournament($vars, $settings) {
 
 	// eigener Verein
 	if ($event['turnierform'] !== 'e') {
-		$eigene_teams = mod_tournaments_tournament_own_teams();
+		$eigene_teams = mf_tournaments_team_own();
 		foreach ($event['teams'] as $id => $team) {
 			if ($event['teilnehmerliste'] AND $team['team_status'] === 'Teilnehmer') $event['teams'][$id]['aktiv'] = 1;
 			elseif (in_array($id, $eigene_teams) AND $intern) $event['teams'][$id]['aktiv'] = 1;
@@ -495,26 +495,4 @@ function mod_tournaments_tournament($vars, $settings) {
 	$page['text'] = wrap_template('tournament', $event);
 	$page['extra']['realm'] = 'sports';
 	return $page;
-}
-
-function mod_tournaments_tournament_own_teams($status = ['Teilnehmer', 'Teilnahmeberechtigt']) {
-	global $zz_setting;
-	if (empty($_SESSION['usergroup'][wrap_id('usergroups', 'team-organisator')])) {
-		return [];
-	}
-
-	$sql = 'SELECT team_id
-		FROM participations
-		LEFT JOIN teams USING (team_id)
-		WHERE usergroup_id = %d
-		AND person_id = %d
-		AND team_status IN ("%s")
-	';
-	$sql = sprintf($sql
-		, wrap_id('usergroups', 'team-organisator')
-		, $_SESSION['person_id']
-		, implode('","', $status)
-	);
-	$eigene_teams = wrap_db_fetch($sql, 'team_id', 'single value');
-	return $eigene_teams;
 }
