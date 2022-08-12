@@ -128,6 +128,12 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 			$clubs[$id] = $line[$field_name];
 		}
 	}
+	if (!$clubs) {
+		if ($mode === 'single')
+			$data = reset($data);
+		return $data;
+	}
+
 	$sql = sprintf('SELECT organisationen.contact_id
 			, countries.country
 			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS federation_identifier
