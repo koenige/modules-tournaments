@@ -68,6 +68,7 @@
 <li><a href="buchungen/">Alle Zimmerbuchungen und Zahlungseingänge</a> der Teams</li>
 <li><a href="spieler/">Alle Aufstellungen</a> der Teams</li>
 <li><a href="meldeboegen.pdf">Alle Meldebögen der Teams als PDF</a></li>
+<li><a href="meldeboegen-anreise.pdf">Alle Meldebögen zum Anreisetag der Teams als PDF</a></li>
 %%% condition elseif mannschaft %%%
 <li><a href="teams/">Alle Teams</a> mit An- und Abreise, Kontaktdaten und Anmerkungen</li>
 %%% condition else %%%
@@ -125,6 +126,7 @@
 <li><a href="buchungen/">Alle Zimmerbuchungen und Zahlungseingänge</a> der Teams</li>
 <li><a href="spieler/">Alle Aufstellungen</a> der Teams</li>
 <li><a href="meldeboegen.pdf">Alle Meldebögen der Teams als PDF</a></li>
+<li><a href="meldeboegen-anreise.pdf">Alle Meldebögen zum Anreisetag der Teams als PDF</a></li>
 %%% condition endif %%%
 %%% condition unless event_over %%%
 <li><a href="turnierzahlen/">Turnierzahlen direkt zu Turnierbeginn aktualisieren</a></li>
