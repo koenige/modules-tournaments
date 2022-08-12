@@ -15,6 +15,7 @@
 
 function mod_tournaments_teampdfs($vars) {
 	global $zz_setting;
+	require_once __DIR__.'/../tournaments/pdf.inc.php';
 	
 	$event_rights = 'event:'.$vars[0].'/'.$vars[1];
 	if (!brick_access_rights(['Webmaster', 'Vorstand', 'AK Spielbetrieb', 'Geschäftsstelle'])
@@ -22,40 +23,16 @@ function mod_tournaments_teampdfs($vars) {
 	) {
 		wrap_quit(403);
 	}
-
-	if ($vars[count($vars)-1] === 'meldeboegen.pdf') {
-		// brauchen wir nicht
-		array_pop($vars);
-	}
 	if (count($vars) === 3) {
 		$team = implode('/', $vars);
 		array_pop($vars);
-		$event = implode('/', $vars);
 	} elseif (count($vars) === 2) {
 		$team = false;
-		$event = implode('/', $vars);
 	} else {
 		return false;
 	}
 
-	$sql = 'SELECT event_id, event
-			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
-			, hinweis_meldebogen
-			, events.identifier AS event_identifier
-			, SUBSTRING_INDEX(events.identifier, "/", -1) AS dateiname
-			, DATEDIFF(date_end, date_begin) AS dauer_tage
-			, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
-			, bretter_min, bretter_max
-			, pseudo_dwz
-			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
-			, IF(tournaments.zimmerbuchung = "ja", 1, NULL) AS zimmerbuchung
-		FROM events
-		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN categories turnierformen
-			ON tournaments.turnierform_category_id = turnierformen.category_id
-		WHERE events.identifier = "%s"';
-	$sql = sprintf($sql, wrap_db_escape($event));
-	$event = wrap_db_fetch($sql);
+	$event = mf_tournaments_pdf_event($vars);
 	if (!$event) return false;
 
 	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';

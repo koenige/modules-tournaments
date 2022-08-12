@@ -24,29 +24,14 @@
  */
 function mod_tournaments_teampdf($vars) {
 	global $zz_setting;
+	require_once __DIR__.'/../tournaments/pdf.inc.php';
 	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
 	
 	if (count($vars) !== 3) return false;
 	$team_vars = implode('/', $vars);
 	array_pop($vars);
-	$event_vars = implode('/', $vars);
 
-	$sql = 'SELECT event_id, event
-			, bretter_min, bretter_max
-			, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
-			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
-			, DATEDIFF(date_end, date_begin) AS dauer_tage
-			, hinweis_meldebogen
-			, events.identifier AS event_identifier
-			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
-			, IF(tournaments.zimmerbuchung = "ja", 1, NULL) AS zimmerbuchung
-		FROM events
-		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN categories turnierformen
-			ON tournaments.turnierform_category_id = turnierformen.category_id
-		WHERE events.identifier = "%s"';
-	$sql = sprintf($sql, wrap_db_escape($event_vars));
-	$event = wrap_db_fetch($sql);
+	$event = mf_tournaments_pdf_event($vars);
 	if (!$event) return false;
 	$event = array_merge($event, my_event_accounts($event['event_id']));
 	
