@@ -195,7 +195,6 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
  * @return bool
  */
 function mf_tournaments_team_access($team_id, $status = ['Teilnehmer', 'Teilnahmeberechtigt']) {
-	global $zz_setting;
 	if (brick_access_rights('Webmaster')) return true;
 	if (brick_access_rights('AK Spielbetrieb')) return true;
 	if (brick_access_rights('Geschäftsstelle')) return true;
@@ -219,7 +218,6 @@ function mf_tournaments_team_access($team_id, $status = ['Teilnehmer', 'Teilnahm
  * @return array
  */
 function mf_tournaments_team_own($status = ['Teilnehmer', 'Teilnahmeberechtigt']) {
-	global $zz_setting;
 	if (empty($_SESSION['usergroup'][wrap_id('usergroups', 'team-organisator')])) {
 		return [];
 	}
@@ -314,8 +312,6 @@ function mf_tournaments_team_bookings($team_ids, $event) {
  * @return array
  */
 function mf_tournaments_team_participants($team_ids, $event, $check = true, $order_by = 'ISNULL(brett_no), brett_no, rang_no, last_name, first_name') {
-	global $zz_setting;
-
 	// Nur Teams, die Organisationen zugeordnet sind
 	// (bspw. bei Schulschach nicht zwingend nötig)
 	$contact_ids = $team_ids;
