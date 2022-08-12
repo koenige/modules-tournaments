@@ -40,8 +40,6 @@ function mod_tournaments_teampdf($vars) {
 		'check_completion' => true
 	];
 	$event['teams'] = mf_tournaments_pdf_teams($event, $params);
-	$event['teams'] = array_values($event['teams']);
-	if (!mf_tournaments_team_access($event['teams'][0]['team_id'], ['Teilnehmer'])) wrap_quit(403);
 
 	return my_team_pdf($event);	
 }
