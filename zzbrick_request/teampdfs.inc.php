@@ -82,57 +82,17 @@ function mod_tournaments_teampdfs($vars, $settings) {
  * @return void
  */
 function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
-	global $zz_setting;
+	list($pdf, $settings) = mf_tournaments_pdf_prepare($event);
 
-	switch ($event['turnierform']) {
-	case 'm-a':
-		$vorsitz = 'Vorsitzende/r Verband';
-		$in_org = 'im Verband';
-		$zeige_verband = false;
-		break;
-	case 'm-v':
-		$vorsitz = 'Vereinsvorsitzende/r';
-		$in_org = 'im Verein';
-		$zeige_verband = true;
-		break;
-	case 'm-s':
-		$vorsitz = 'Rektor/in der Schule';
-		$in_org = 'in der Schule';
-		$zeige_verband = true;
-		break;
-	}
-	
 	$margin_top_bottom = 45;
-	$page_height = 842;
 	
-	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
-
-	$pdf = new TFPDF('P', 'pt', 'A4');
-
-	//$pdf->setCompression(true);           // Activate compression.
-
 	$pdf->setMargins(45, $margin_top_bottom);
-
-	$pdf->AddFont('DejaVu', '', 'DejaVuSansCondensed.ttf', true);
-	$pdf->AddFont('DejaVu', 'B', 'DejaVuSansCondensed-Bold.ttf', true);
-	$pdf->AddFont('DejaVu', 'I', 'DejaVuSansCondensed-Oblique.ttf', true);
-	
-	$pdf->SetLineWidth(0.15);
-	$pdf->SetFillColor(230, 230, 230);
 	
 	foreach ($event['teams'] AS $team) {
 		$pdf->AddPage();
 		mod_tournaments_teampdfs_draft($pdf, $team);
 
-		$logo['filename'] = $zz_setting['media_folder'].'/dsj-logo.png';
-		$logo['width'] = 108;
-		$logo['height'] = 96;
-		
-		$logo['filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
-		$logo['width'] = 146;
-		$logo['height'] = 50;
-
-		$pdf->Image($logo['filename'], 595 - $margin_top_bottom - $logo['width'], $margin_top_bottom, $logo['width'], $logo['height'], 'PNG');
+		$pdf->Image($settings['logo_filename'], 595 - $margin_top_bottom - $settings['logo_width'], $margin_top_bottom, $settings['logo_width'], $settings['logo_height'], 'PNG');
 		$pdf->setFont('DejaVu', '', 14);
 		$pdf->write(19, 'Meldebogen');
 		$pdf->Ln();
@@ -145,7 +105,7 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->Ln();
 		$pdf->write(19, $team['team'].' '.$team['team_no']);
 		$pdf->setFont('DejaVu', '', 10);
-		if ($zeige_verband) {
+		if ($settings['show_federation']) {
 			$pdf->write(19, ' ('
 				.$team['country']
 				.($team['regionalgruppe'] ? ', Regionalgruppe '.$team['regionalgruppe'] : '').')');
@@ -279,7 +239,7 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 					$line['anmerkungen'] = str_replace("\n", " ", $line['anmerkungen']);
 					$rows = ceil($pdf->GetStringWidth($line['anmerkungen']) / 201);
 					$y_pos = $pdf->GetY();
-					if ($y_pos + (12 * $rows) >= $page_height - $margin_top_bottom) {
+					if ($y_pos + (12 * $rows) >= $settings['page_height'] - $margin_top_bottom) {
 						$pdf->AddPage();
 					} 			
 				}
@@ -343,10 +303,10 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->Ln();
 		$y_pos = $pdf->GetY();
 		$x_pos = $pdf->GetX();
-		$pdf->MultiCell(240, 10, sprintf("Datum, Unterschrift\n%s", $vorsitz), 'T', 'L');
+		$pdf->MultiCell(240, 10, sprintf("Datum, Unterschrift\n%s", $settings['text_chair']), 'T', 'L');
 		$pdf->SetY($y_pos);
 		$pdf->SetX($x_pos+265);
-		$pdf->MultiCell(240, 10, sprintf("Datum, Unterschrift\nVerantwortliche/r für das Turnier %s", $in_org), 'T', 'L');
+		$pdf->MultiCell(240, 10, sprintf("Datum, Unterschrift\nVerantwortliche/r für das Turnier %s", $settings['text_in_org']), 'T', 'L');
 
 		if ($event['hinweis_meldebogen']) {
 			$pdf->Ln();
@@ -359,23 +319,10 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		}
 	}
 
-	$folder = $zz_setting['tmp_dir'].'/team-meldungen';
-	if (count($event['teams']) === 1) {
-		$turnier_folder = dirname($folder.'/'.$team['team_identifier']);
-		$file['name'] = $folder.'/'.$team['team_identifier'].'-meldebogen.pdf';
-		$file['send_as'] = 'Meldebogen '.$event['event'].' '.$team['team'].'.pdf';
-	} else {
-		$turnier_folder = dirname($folder.'/'.$event['event_identifier']);
-		$file['name'] = $folder.'/'.$event['dateiname'].'-meldebogen.pdf';
-		$file['send_as'] = 'Meldebögen '.$event['event'].'.pdf';
-	}
-	wrap_mkdir($turnier_folder);
-	
-	$file['caching'] = false;
-	$file['etag_generate_md5'] = true;
-	$pdf->output('F', $file['name'], true);
-	if ($return === 'filename') return $file['name'];
-	wrap_file_send($file);
+	$event['filename_suffix'] = 'meldebogen';
+	$event['send_as_singular'] = 'Meldebogen';
+	$event['send_as_plural'] = 'Meldebögen';
+	return mf_tournaments_pdf_send($pdf, $event);
 }
 
 /**

@@ -21,7 +21,6 @@
  * @return void
  */
 function mod_tournaments_teampdfsarrival($vars) {
-	global $zz_setting;
 	require_once __DIR__.'/../tournaments/pdf.inc.php';
 
 	if (count($vars) === 3) {
@@ -60,47 +59,14 @@ function mod_tournaments_teampdfsarrival($vars) {
  * # dateiname, konten_veranstalter {inhaber, iban, bic, institut},
  * # konten_ausrichter {inhaber, iban, bic, institut}, bretter_min,
  * # gastspieler_status, dauer_tage
- * @param string $return 'send' => send PDF to browser, 'filename' => return filename
  * @return void
  */
-function mod_tournaments_teampdfsarrival_pdf($event, $return = 'send') {
-	global $zz_setting;
+function mod_tournaments_teampdfsarrival_pdf($event) {
+	list($pdf, $settings) = mf_tournaments_pdf_prepare($event);
 
-	switch ($event['turnierform']) {
-	case 'm-a':
-		$vorsitz = 'Vorsitzende/r Verband';
-		$in_org = 'im Verband';
-		$zeige_verband = false;
-		break;
-	case 'm-v':
-		$vorsitz = 'Vereinsvorsitzende/r';
-		$in_org = 'im Verein';
-		$zeige_verband = true;
-		break;
-	case 'm-s':
-		$vorsitz = 'Rektor/in der Schule';
-		$in_org = 'in der Schule';
-		$zeige_verband = true;
-		break;
-	}
-	
 	$margin_top_bottom = 45;
-	$page_height = 842;
-	
-	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
-
-	$pdf = new TFPDF('P', 'pt', 'A4');
-
-	//$pdf->setCompression(true);           // Activate compression.
 
 	$pdf->setMargins(45, $margin_top_bottom);
-
-	$pdf->AddFont('DejaVu', '', 'DejaVuSansCondensed.ttf', true);
-	$pdf->AddFont('DejaVu', 'B', 'DejaVuSansCondensed-Bold.ttf', true);
-	$pdf->AddFont('DejaVu', 'I', 'DejaVuSansCondensed-Oblique.ttf', true);
-	
-	$pdf->SetLineWidth(0.15);
-	$pdf->SetFillColor(230, 230, 230);
 
 	$doc['boxes'] = ['Erfasst', '200 DWZ geprüft', 'DWZ-Schnitt'];
 	$doc['boxes_width'] = 80;
@@ -122,11 +88,7 @@ durch die Turnierleitung bekanntgegeben.\n"
 	foreach ($event['teams'] AS $team) {
 		$pdf->AddPage();
 
-		$logo['filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
-		$logo['width'] = 146;
-		$logo['height'] = 50;
-
-		$pdf->Image($logo['filename'], 595 - $margin_top_bottom - $logo['width'], $margin_top_bottom, $logo['width'], $logo['height'], 'PNG');
+		$pdf->Image($settings['logo_filename'], 595 - $margin_top_bottom - $settings['logo_width'], $margin_top_bottom, $settings['logo_width'], $settings['logo_height'], 'PNG');
 		$pdf->setFont('DejaVu', '', 14);
 		$pdf->write(19, 'Meldebogen zur Anreise');
 		$pdf->Ln();
@@ -139,7 +101,7 @@ durch die Turnierleitung bekanntgegeben.\n"
 		$pdf->Ln();
 		$pdf->write(19, $team['team'].' '.$team['team_no']);
 		$pdf->setFont('DejaVu', '', 10);
-		if ($zeige_verband) {
+		if ($settings['show_federation']) {
 			$pdf->write(19, ' ('
 				.$team['country']
 				.($team['regionalgruppe'] ? ', Regionalgruppe '.$team['regionalgruppe'] : '').')');
@@ -230,22 +192,9 @@ durch die Turnierleitung bekanntgegeben.\n"
 			$pdf->Multicell($doc['boxes_width'], 12, $box, 0, 'C');
 		}
 	}
-
-	$folder = $zz_setting['tmp_dir'].'/team-meldungen';
-	if (count($event['teams']) === 1) {
-		$turnier_folder = dirname($folder.'/'.$team['team_identifier']);
-		$file['name'] = $folder.'/'.$team['team_identifier'].'-meldebogen.pdf';
-		$file['send_as'] = 'Meldebogen Anreise '.$event['event'].' '.$team['team'].'.pdf';
-	} else {
-		$turnier_folder = dirname($folder.'/'.$event['event_identifier']);
-		$file['name'] = $folder.'/'.$event['dateiname'].'-meldebogen.pdf';
-		$file['send_as'] = 'Meldebögen Anreise '.$event['event'].'.pdf';
-	}
-	wrap_mkdir($turnier_folder);
 	
-	$file['caching'] = false;
-	$file['etag_generate_md5'] = true;
-	$pdf->output('F', $file['name'], true);
-	if ($return === 'filename') return $file['name'];
-	wrap_file_send($file);
+	$event['filename_suffix'] = 'meldebogen-anreise';
+	$event['send_as_singular'] = 'Meldebogen Anreise';
+	$event['send_as_plural'] = 'Meldebögen Anreise';
+	return mf_tournaments_pdf_send($pdf, $event);
 }

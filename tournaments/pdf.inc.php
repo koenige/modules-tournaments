@@ -177,6 +177,84 @@ function mf_tournaments_pdf_teams($event, $params) {
 }
 
 /**
+ * prepare PDF and some settings
+ *
+ * @param object $pdf
+ * @param array $event
+ * @return void
+ */
+function mf_tournaments_pdf_prepare($event) {
+	global $zz_setting;
+	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
+
+	$settings = [];
+	switch ($event['turnierform']) {
+	case 'm-a':
+		$settings['text_chair'] = 'Vorsitzende/r Verband';
+		$settings['text_in_org'] = 'im Verband';
+		$settings['show_federation'] = false;
+		break;
+	case 'm-v':
+		$settings['text_chair'] = 'Vereinsvorsitzende/r';
+		$settings['text_in_org'] = 'im Verein';
+		$settings['show_federation'] = true;
+		break;
+	case 'm-s':
+		$settings['text_chair'] = 'Rektor/in der Schule';
+		$settings['text_in_org'] = 'in der Schule';
+		$settings['show_federation'] = true;
+		break;
+	}
+
+	$settings['logo_filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
+	$settings['logo_width'] = 146;
+	$settings['logo_height'] = 50;
+
+	$pdf = new TFPDF('P', 'pt', 'A4');
+	//$pdf->setCompression(true);           // Activate compression.
+
+	$pdf->AddFont('DejaVu', '', 'DejaVuSansCondensed.ttf', true);
+	$pdf->AddFont('DejaVu', 'B', 'DejaVuSansCondensed-Bold.ttf', true);
+	$pdf->AddFont('DejaVu', 'I', 'DejaVuSansCondensed-Oblique.ttf', true);
+	
+	$pdf->SetLineWidth(0.15);
+	$pdf->SetFillColor(230, 230, 230);
+
+	$settings['page_height'] = $pdf->GetPageHeight();
+
+	return [$pdf, $settings];
+}
+
+/**
+ * write PDF to filesystem and send it to user
+ *
+ * @param object $pdf
+ * @param array $event
+ * @return void
+ */
+function mf_tournaments_pdf_send($pdf, $event) {
+	global $zz_setting;
+
+	$folder = $zz_setting['tmp_dir'].'/team-meldungen';
+	if (count($event['teams']) === 1) {
+		$team = reset($event['teams']);
+		$tournament_folder = dirname($folder.'/'.$team['team_identifier']);
+		$file['name'] = $folder.'/'.$team['team_identifier'].'-'.$event['filename_suffix'].'.pdf';
+		$file['send_as'] = $event['send_as_singular'].' '.$event['event'].' '.$team['team'].'.pdf';
+	} else {
+		$tournament_folder = dirname($folder.'/'.$event['event_identifier']);
+		$file['name'] = $tournament_folder.'/'.$event['dateiname'].'/'.$event['filename_suffix'].'.pdf';
+		$file['send_as'] = $event['send_as_plural'].' '.$event['event'].'.pdf';
+	}
+	wrap_mkdir($tournament_folder);
+	
+	$file['caching'] = false;
+	$file['etag_generate_md5'] = true;
+	$pdf->output('F', $file['name'], true);
+	wrap_file_send($file);
+}
+
+/**
  * fügt Hintergrundfarbe unter einzeilige Zellen, wenn nebenan eine
  * mehrzeilige Zelle vorhanden ist
  * 
