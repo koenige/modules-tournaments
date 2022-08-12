@@ -109,5 +109,25 @@ function mf_tournaments_pdf_teams($event, $params) {
 	$sql = sprintf($sql, $where);
 	$teams = wrap_db_fetch($sql, 'team_id');
 	$teams = mf_tournaments_clubs_to_federations($teams);
+
+	// get participants
+	$team_contact_ids = [];
+	foreach ($teams as $team_id => $team) {
+		$team_contact_ids[$team_id] = $team['club_contact_id'];
+	}
+	if (!empty($params['participants_order_by']))
+		$participants = mf_tournaments_team_participants($team_contact_ids, $event, true, $params['participants_order_by']);
+	else
+		$participants = mf_tournaments_team_participants($team_contact_ids, $event);
+	if (!is_numeric(key($participants))) $participants = [$team_id => $participants];
+
+	foreach (array_keys($teams) as $team_id) {
+		if (!empty($participants[$team_id])) {
+			$teams[$team_id] = array_merge($teams[$team_id], $participants[$team_id]);
+		} else {
+			$teams[$team_id]['spieler'] = [];
+		}
+	}
+
 	return $teams;
 }

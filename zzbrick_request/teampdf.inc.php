@@ -46,11 +46,6 @@ function mod_tournaments_teampdf($vars) {
 		$event['teams'][0], mf_tournaments_team_bookings($event['teams'][0]['team_id'], $event)
 	);
 	
-	// Team + Vereinsbetreuer auslesen
-	$event['teams'][0] = array_merge(
-		$event['teams'][0], mf_tournaments_team_participants([$event['teams'][0]['team_id'] => $event['teams'][0]['club_contact_id']], $event)
-	);
-
 	$event['teams'][0]['komplett'] = mf_tournaments_team_application_complete($event['teams'][0]);
 	return my_team_pdf($event);	
 }

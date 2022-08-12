@@ -44,27 +44,12 @@ function mod_tournaments_teampdfsarrival($vars) {
 	if (!$event) return false;
 	
 	$params = [
-		'team_identifier' => $team_identifier
+		'team_identifier' => $team_identifier,
+		'participants_order_by' => 't_dwz DESC, last_name, first_name'
 	];
 	$event['teams'] = mf_tournaments_pdf_teams($event, $params);
 
 	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
-
-	$team_verein = [];
-	foreach ($event['teams'] as $id => $team) {
-		$team_verein[$id] = $team['club_contact_id'];
-	}
-
-	$teilnehmer = mf_tournaments_team_participants($team_verein, $event, true, 't_dwz DESC, last_name, first_name');
-
-	foreach (array_keys($event['teams']) as $id) {
-		if (!empty($teilnehmer[$id])) {
-			$event['teams'][$id] = array_merge($event['teams'][$id], $teilnehmer[$id]);
-		} else {
-			$event['teams'][$id]['spieler'] = [];
-		}
-	}
-
 	return my_team_pdf_meldung($event);
 }
 

@@ -42,21 +42,10 @@ function mod_tournaments_teampdfs($vars) {
 
 	require_once $zz_setting['custom_wrap_dir'].'/team.inc.php';
 
-	$team_verein = [];
-	foreach ($event['teams'] as $id => $team) {
-		$team_verein[$id] = $team['club_contact_id'];
-	}
-
-	$teilnehmer = mf_tournaments_team_participants($team_verein, $event);
 	$kosten = mf_tournaments_team_bookings(array_keys($event['teams']), $event);
 
 	$pdf_uploads = false;
 	foreach (array_keys($event['teams']) as $id) {
-		if (!empty($teilnehmer[$id])) {
-			$event['teams'][$id] = array_merge($event['teams'][$id], $teilnehmer[$id]);
-		} else {
-			$event['teams'][$id]['spieler'] = [];
-		}
 		if (!empty($kosten[$id])) {
 			$event['teams'][$id] = array_merge($event['teams'][$id], $kosten[$id]);
 		} else {
