@@ -226,6 +226,7 @@
 %%% condition elseif intern %%%
 %%% condition if paarungen | partien %%%
  · <a href="partien/%%% item runde_no %%%.pgn">Leere PGN</a>
+ · <a href="partien/%%% item runde_no %%%-utf8.pgn">Leere PGN, UTF-8</a>
 %%% condition endif %%%
 %%% condition endif %%%
 
