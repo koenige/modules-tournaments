@@ -29,7 +29,7 @@ function mf_tournaments_team_access($team_id, $status = ['Teilnehmer', 'Teilnahm
 		WHERE team_id = %d';
 	$sql = sprintf($sql, $team_id);
 	$event_rights = wrap_db_fetch($sql, '', 'single value');
-	if (brick_access_rights(['Organisator', 'Technik'], $event_rights)) return true;
+	if (brick_access_rights(['Organisator', 'Technik', 'Turnierleitung'], $event_rights)) return true;
 
 	$teams = mf_tournaments_team_own($status);
 	if (!in_array($team_id, $teams)) return false;
