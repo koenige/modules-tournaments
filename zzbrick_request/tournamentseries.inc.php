@@ -16,7 +16,7 @@
 function mod_tournaments_tournamentseries($vars, $settings) {
 	global $zz_setting;
 
-	$intern = !empty($settings['intern']) ? true : false;
+	$internal = !empty($settings['intern']) ? true : false;
 	if (count($vars) !== 2) return false;
 
 	// @todo access_codes müssen mindestens einmal erstellt worden sein, sonst wird URL nicht verlinkt
@@ -33,10 +33,11 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 			, (SELECT COUNT(*) FROM access_codes WHERE event_id = events.event_id) AS access_codes
 			, series.parameters
 			, (SELECT COUNT(*) FROM categories WHERE categories.main_category_id = series.category_id) AS sub_series
+			, events_websites.website_id
 		FROM events
 		LEFT JOIN websites USING (website_id)
 		LEFT JOIN contacts website_org USING (contact_id)
-		JOIN events_websites
+		LEFT JOIN events_websites
 			ON events.event_id = events_websites.event_id
 			AND events_websites.website_id = %d
 		LEFT JOIN contacts places
@@ -54,6 +55,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 		, wrap_db_escape($vars[1])
 	);
 	$event = wrap_db_fetch($sql);
+	if ($event AND !$internal and !$event['website_id']) return false;
 	if ($event AND !$event['sub_series']) $event = [];
 	$series = [];
 	if (!$event) {
@@ -72,7 +74,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 		];
 	}
 
-	if ($intern) $event['intern'] = true;
+	if ($internal) $event['intern'] = true;
 
 	// Turniere auslesen
 	$sql = 'SELECT events.event_id, events.identifier, event
@@ -107,7 +109,7 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 			, tournament_id, main_tournament_id
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
-		JOIN events_websites
+		LEFT JOIN events_websites
 			ON events.event_id = events_websites.event_id
 			AND events_websites.website_id = %d
 		LEFT JOIN categories turnierformen
