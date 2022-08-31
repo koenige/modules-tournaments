@@ -246,7 +246,7 @@ function mf_tournaments_pdf_send($pdf, $event) {
 		$file['name'] = $tournament_folder.'/'.$event['dateiname'].'/'.$event['filename_suffix'].'.pdf';
 		$file['send_as'] = $event['send_as_plural'].' '.$event['event'].'.pdf';
 	}
-	wrap_mkdir($tournament_folder);
+	wrap_mkdir(dirname($file['name']));
 	
 	$file['caching'] = false;
 	$file['etag_generate_md5'] = true;
