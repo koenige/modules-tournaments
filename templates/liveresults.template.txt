@@ -5,16 +5,10 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012, 2014, 2016-2017, 2021 Gustaf Mossakowski
+# @copyright Copyright © 2012, 2014, 2016-2017, 2022 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
-<style type="text/css">
-	tr.grau td {color: #666;}
-	td.zahl {text-align: right;}
-	tr.odd td {background-color: #DDD;}
-	td, th {padding-right: 1em; text-align: left;}
-
-</style>
+<div class="liveresults">
 <h1>Liveergebnisse
 <br><a href="../">%%% item event %%% %%% item duration wrap_date %%%</a>%%% condition if runde_no %%%, %%% item runde_no %%%. Runde%%% condition endif %%%</h1>
 <p>Ergebniseintragung des Ergebnisses von Weiß: <code>0</code> = verloren, 
@@ -37,7 +31,7 @@
 %%% condition endif %%%
 %%% loop partien %%%
 <tr class='%%% loopposition uneven "un" %%%even%%% item gespeichert " grau"%%%'>
-<td class="zahl">%%% item brett_no %%%</td>
+<td class="number">%%% item brett_no %%%</td>
 <td>
 %%% condition if weiss %%%
 %%% item weiss %%% 
@@ -78,4 +72,4 @@ spielfrei
 Nach Beginn ist es möglich, hier die Ergebnisse live einzutragen.</p>
 
 %%% condition endif %%%
-
+</div>

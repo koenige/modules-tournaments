@@ -399,6 +399,9 @@ table.spieler td.show-more {
 
 /* liveresults.template.txt */
 .teamname td	{ font-weight: bold; border-bottom: 1px solid black; }
+.liveresults tr.grau td {color: #666;}
+.liveresults tr.odd td {background-color: #DDD;}
+.liveresults td, .liveresults th {padding-right: 1em; text-align: left;}
 
 
 /* standings-update.template.txt */
