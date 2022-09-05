@@ -119,7 +119,7 @@ table.anmeldung, table.bewerbungen
 
 
 /* game colours */
-
+/* game.template.txt */
 .weiss, .schwarz
 				{ width: .6em; height: .6em; border: 1px solid black;
 				display: inline-block; vertical-align: middle; margin: 0 .25em 0 0; }
@@ -128,7 +128,7 @@ table.anmeldung, table.bewerbungen
 
 
 /* chessgames */
-
+/* game.template.txt */
 .brett			{ padding: 1em 1em 1em 0; width: 340px; float: left;
 				text-align: center; }
 .brett table	{ margin: auto; }
@@ -143,7 +143,6 @@ table.anmeldung, table.bewerbungen
 @media screen and (max-width: 640px) {
 	.PgnMoveText	{ padding: 0 .75em; }
 }
-
 .brett-nav		{ font-size: 90%; border-collapse: collapse; }
 .brett-nav input	{ padding: 0 .2em; }
 
@@ -385,3 +384,78 @@ table.spieler td.show-more {
 /* tournament series */
 
 .tournaments ul	{ margin-bottom: 1em; }
+
+/* list of short links floating */
+/* livegames-series.template.txt */
+.quicklinks		{ list-style: none; margin: .5em 0 1.5em 0; padding: 0;
+				overflow: hidden; }
+.quicklinks li	{ float: left; padding: 0 .5em; border-left: 1px solid #CCC; }
+.quicklinks li:first-child
+				{ padding-left: 0; border-left: none; }
+@media screen and (max-width: 640px) {
+	.quicklinks		{ padding: 0 .75em; }
+}
+
+
+/* liveresults.template.txt */
+.teamname td	{ font-weight: bold; border-bottom: 1px solid black; }
+
+
+/* standings-update.template.txt */
+.buttonliste	{ list-style: none; margin: 1em 0; padding: 0; }
+.buttonliste li	{ margin: .25em 0; padding: 0; }
+
+
+/* team-internal.template.txt */
+.berechtigung ul
+				{ margin: 1em 0; padding: 0; }
+.berechtigung li
+				{ list-style: none; margin: 0 0 .75em; padding: 0 0 0 2em; }
+.berechtigung li input
+				{ margin-left: -2em; }
+
+
+/* team-aufstellung.template.txt */
+/* internal: team meldung */
+.hinweisbox		{ float: left; max-width: 24em; padding: 0 1.5em 1em 0; }
+.hauptbox		{ float: left; max-width: 34.5em; }
+@media screen and (max-width: 50em) {
+	.hauptbox	{ float: none; }
+}
+input.rangno	{ width: 3em; }
+input.geburt	{ width: 6em; }
+
+/* team-aufstellung.template.txt */
+.results p.error
+				{ max-width: 25em; }
+.results p.explanation
+				{ margin: 0; max-width: 25em; font-size: 90%; }
+.results td.heading
+				{ padding-top: .5em; font-style: italic; }
+body .results tbody td.reselect
+				{ background-color: green; color: white; }
+.results tbody td.error, .results tbody tr.error td
+				{ background-color: red; color: white; }
+
+
+/* team-intern.template.txt */
+span.komplett	{ color: green; font-weight: bold; }
+span.unvollstaendig	{ color: red; font-weight: bold; }
+
+
+/* team-aufstellung.template.txt */
+/* team-intern.template.txt */
+/* etc. */
+p.fuss			{ clear: both; padding: 1.5em 0; text-align: center; 
+				max-width: none; font-weight: bold; }
+
+/* zzbrick_request/tournamentmap.inc.php */
+@media screen and (max-width: 640px) {
+	#map h1		{ color: #000; }
+}
+
+
+/* team.template.txt */
+@media screen and (max-width: 640px) {
+	p.teamphoto	{ padding: 0; }
+}
