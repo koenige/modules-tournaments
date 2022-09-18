@@ -86,8 +86,10 @@ function mod_tournaments_round($params) {
 	$sql = sprintf($sql, $zz_setting['website_id'], $params[0], wrap_db_escape($params[1]), $public, $params[3]);
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
-	parse_str($event['parameters'], $parameters);
-	$event += $parameters;
+	if ($event['parameters']) {
+		parse_str($event['parameters'], $parameters);
+		$event += $parameters;
+	}
 	$event[$event['event_category']] = true;
 	mf_tournaments_cache($event);
 
