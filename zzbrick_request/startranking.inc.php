@@ -35,7 +35,6 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 	$zz_setting['logfile_name'] = $event['identifier'];
 	$event[str_replace('-', '_', $event['turnierform'])] = true;
 
-	$page['extra']['realm'] = 'sports';
 	$page['dont_show_h1'] = true;
 
 	$meldeliste = false;

@@ -367,7 +367,6 @@ function mod_tournaments_standings($vars) {
 
 	$page['title'] = $event['event'].' '. $event['year'].', Tabellenstand nach der '.$event['runde_no'].'. Runde';
 	$page['dont_show_h1'] = true;
-	$page['extra']['realm'] = 'sports';
 	$page['breadcrumbs'][] = '<a href="../../'.$pfad.'">'.$event['year'].'</a>';
 	if ($event['main_series']) {
 		$page['breadcrumbs'][] = '<a href="../../'.$pfad.$event['main_series_path'].'/">'.$event['main_series'].'</a>';

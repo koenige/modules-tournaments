@@ -493,6 +493,5 @@ function mod_tournaments_tournament($vars, $settings) {
 	}
 
 	$page['text'] = wrap_template('tournament', $event);
-	$page['extra']['realm'] = 'sports';
 	return $page;
 }

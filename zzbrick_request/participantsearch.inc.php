@@ -165,7 +165,6 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 	$event['teamsuche'] = $mannschaft;
 
 	$page['query_strings'] = ['q'];
-	$page['extra']['realm'] = 'sports';
 	$page['breadcrumbs'][] = '<a href="../../">'.$event['year'].'</a>';
 	$page['breadcrumbs'][] = '<a href="../">'.$event['main_series'].'</a>';
 	$page['breadcrumbs'][] = 'Suche';

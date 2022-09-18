@@ -67,7 +67,6 @@ function mod_tournaments_make_playermessage($vars, $settings) {
 	$page['text'] = wrap_template('playermessage', $data);
 	$page['title'] = sprintf('Brett-Nachricht an %s – %s %d', $data['contact'], $data['event'], $data['year']);
 	$page['dont_show_h1'] = true;
-	$page['extra']['realm'] = 'sports';
 	$page['breadcrumbs'][] = '<a href="../../../../">'.$data['year'].'</a>';
 	if ($data['main_series']) {
 		$page['breadcrumbs'][] = '<a href="../../../../'.$data['main_series_path'].'/">'.$data['main_series'].'</a>';

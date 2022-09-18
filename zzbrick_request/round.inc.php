@@ -210,7 +210,6 @@ function mod_tournaments_round($params) {
 		$page['title'] = $event['event'].' '.$event['year'].', Auslosung '.$event['round_event'];
 	else
 		$page['title'] = $event['event'].' '.$event['year'].', Ergebnisse '.$event['round_event'];
-	$page['extra']['realm'] = 'sports';
 	$page['dont_show_h1'] = true;
 	$page['breadcrumbs'][] = '<a href="../../../">'.$event['year'].'</a>';
 	if ($event['main_series']) {

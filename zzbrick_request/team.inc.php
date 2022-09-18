@@ -108,7 +108,6 @@ function mod_tournaments_team($vars, $settings) {
 	}
 	$page['breadcrumbs'][] = '<a href="../">'.$event['event'].'</a>';
 	$page['dont_show_h1'] = true;
-	$page['extra']['realm'] = 'sports';
 	$data = array_merge($team, $event);
 	if ($data['team_status'] !== 'Teilnehmer') {
 		switch ($data['team_status']) {

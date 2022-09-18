@@ -89,7 +89,6 @@ function mod_tournaments_placeholder_team($brick) {
 	);
 
 	$brick['page']['dont_show_h1'] = true;
-	$brick['page']['extra']['realm'] = 'sports';
 	$brick['page']['title'] = sprintf('%s %s: %s %s – ', 
 		$team['event'], $team['year'], $team['team'], $team['team_no']
 	);

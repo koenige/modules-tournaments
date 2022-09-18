@@ -100,8 +100,6 @@ function mod_tournaments_livegames_turnier($turnier) {
 	$page['breadcrumbs'][] = '<a href="../">'.$turnier['event'].'</a>';
 	$page['breadcrumbs'][] = 'Livepartien';
 	$page['title'] = 'Livepartien '.$turnier['event'].' '.$turnier['year'];
-	$page['extra']['realm'] = 'sports';
-
 	$page['head'] = wrap_template('livegames-head');
 	$page['text'] = wrap_template('livegames-tournament', $turnier);
 	return $page;
@@ -140,8 +138,6 @@ function mod_tournaments_livegames_series($tournaments) {
 	$page['breadcrumbs'][] = '<a href="../">'.$series['main_series'].'</a>';
 	$page['breadcrumbs'][] = 'Livepartien';
 	$page['title'] = 'Livepartien '.$series['main_series'].' '.$series['year'];
-	$page['extra']['realm'] = 'sports';
-
 	$page['text'] = wrap_template('livegames-series', $tournaments);
 	return $page;
 }

@@ -37,7 +37,6 @@ function mod_tournaments_tournamentphotos($vars, $settings, $event) {
 		$event['spieler'][$id] += $photo;
 	}
 
-	$page['extra']['realm'] = 'sports';
 	$page['title'] = 'Teilnehmerphotos '.$event['event'].' '.$event['year'];
 	$page['breadcrumbs'][] = 'Photos der Teilnehmer';
 	$page['dont_show_h1'] = true;

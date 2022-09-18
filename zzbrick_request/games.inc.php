@@ -659,7 +659,6 @@ function mod_tournaments_games_html($event, $request, $typ) {
 			$page['breadcrumbs'][] = sprintf('Partie Brett %s', $partie['brett_no']);
 		}
 	}
-	$page['extra']['realm'] = 'sports';
 	$page['meta'][] = ['name' => 'robots', 'content' => 'noindex, follow, noarchive'];
 	$page['text'] = wrap_template('game', $partie);
 	return $page;

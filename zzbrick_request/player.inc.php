@@ -171,7 +171,6 @@ function mod_tournaments_player($vars) {
 	$page['breadcrumbs'][] = '<a href="../../">'.$data['event'].'</a>';
 	$page['breadcrumbs'][] = '<a href="../">Startrangliste</a>';
 	$page['breadcrumbs'][] = $data['name'];
-	$page['extra']['realm'] = 'sports';
 	if (in_array('magnificpopup', $zz_setting['modules']))
 		$page['extra']['magnific_popup'] = true;
 	return $page;

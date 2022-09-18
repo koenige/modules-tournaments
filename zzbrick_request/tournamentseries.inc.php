@@ -215,7 +215,6 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 	// Suche
 	
 	$page['title'] = $event['event'].' '.$event['year'];
-	$page['extra']['realm'] = 'sports';
 	$page['breadcrumbs'][] = '<a href="../">'.$event['year'].'</a>';
 	$page['breadcrumbs'][] = $event['event'];
 	$page['dont_show_h1'] = true;

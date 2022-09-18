@@ -209,7 +209,6 @@ function mod_tournaments_tournamentstats($vars) {
 	}
 
 	$page['text'] = wrap_template('tournamentstats', $data);
-	$page['extra']['realm'] = 'sports';
 	$page['breadcrumbs'][] = '<a href="../../">'.$data['year'].'</a>';
 	$page['breadcrumbs'][] = '<a href="../">'.$data['series_short'].'</a>';
 	$page['breadcrumbs'][] = 'Turnierstatistik';
