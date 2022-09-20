@@ -111,7 +111,6 @@ function mod_tournaments_make_teamaufstellung($vars) {
 	$changed = false; // es kann sein, dass zuviele Spieler angegeben werden
 	if (!empty($_POST)) {
 		$postdata = $_POST; // wird von zzform ggf. überschrieben
-		require_once $zz_conf['dir'].'/zzform.php';
 		foreach ($postdata['rang'] as $code => $rangliste_no) {
 			// Nur Integer werden akzeptiert (warum auch immer da Leute was anderes eingeben)
 			if ($rangliste_no) {
