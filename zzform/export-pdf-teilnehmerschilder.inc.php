@@ -116,6 +116,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		$data[$line['id_value']] = $new;
 	}
 	if (!$data) wrap_quit(404, 'Es gibt keine Teilnehmerschilder für diese Personen.');
+	$data = mf_tournaments_clubs_to_federations($data, 'club_contact_id');
 	
 	// read title from FIDE database if person in German database is only passive
 	// @todo read women’s title as well and check which one is higher
@@ -194,8 +195,13 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				$logo['filename'] = mf_tournaments_p_qrcode($line['participation_id']);
 				$logo['height_factor'] = 1.35;
 				$logo['width_factor'] = 1.35;
+			} elseif (!empty($line['federation_abbr']) AND $event['event_category'] === 'mannschaft') {
+				// @todo better do this via parameters and not event_category
+				$logo['filename'] = sprintf('%s/flaggen/%s.png', $zz_setting['media_folder'], wrap_filename($line['federation_abbr']));
+				$logo['border'] = true;
 			}
 			mf_tournaments_pdf_logo($pdf, $logo, $name_tag);
+			$pdf->SetLineWidth(0.25);
 
 			// event
 			$pdf->setFont('FiraSans-Regular', '', $name_tag['event_font_size']);
@@ -273,7 +279,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
 	$fields = [
 		'usergroup_id', 'parameters', 't_vorname', 't_nachname', 'person_id',
 		't_fidetitel', 't_verein', 'event_id', 'federation_contact_id',
-		'lebensalter', 'rolle', 't_dwz', 't_elo', 'sex'
+		'lebensalter', 'rolle', 't_dwz', 't_elo', 'sex', 'club_contact_id'
 	];
 	$nos = [];
 	foreach ($head as $index => $field) {
@@ -351,6 +357,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 		$new['usergroup'] = 'Organisationsteam';
 	}
 	$new['federation_abbr'] = !empty($nos['federation_contact_id']) ? $line[$nos['federation_contact_id']]['text'] : '';
+	$new['club_contact_id'] = !empty($nos['club_contact_id']) ? $line[$nos['club_contact_id']]['value'] : '';
 	
 	if (!empty($parameters['color'])) {
 		$color = '';
