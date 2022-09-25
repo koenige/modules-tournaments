@@ -823,3 +823,35 @@ function mf_tournaments_team_application_complete($data) {
 	}
 	return false;
 }
+
+/**
+ * add logo to PDF
+ *
+ * @param object $pdf
+ * @param array $logo
+ * @param array $card
+ */
+function mf_tournaments_pdf_logo($pdf, $logo, $card) {
+	global $zz_setting;
+
+	$logo['border'] = $logo['border'] ?? false;
+	$logo['filename'] = $logo['filename'] ?? false;
+
+	if ($logo['filename'] AND !file_exists($logo['filename'])) {
+		$logo['filename'] = false;
+		$logo['border'] = false;
+	}
+	if (!$logo['filename'])
+		// @todo = $settings['logo_filename']
+		$logo['filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
+
+	$logo['size'] = getimagesize($logo['filename']);
+	$logo['width'] = round($logo['size'][0] / $logo['size'][1] * $card['logo_height']);
+	$logo['left'] = $logo['left'] + $card['width'] / 2 - $card['margin'] - $logo['width'];
+
+	if ($logo['border']) {
+		$pdf->SetXY($logo['left'], $logo['top']);
+		$pdf->Cell($logo['width'], $card['logo_height'], '', 1);
+	}
+	$pdf->image($logo['filename'], $logo['left'], $logo['top'], $logo['width'], $card['logo_height']);
+}
