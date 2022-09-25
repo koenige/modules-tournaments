@@ -69,7 +69,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		$name_tag['rows'] = 5;
 		$name_tag['margin'] = 12;
 		$name_tag['image_size'] = 54;
-		$name_tag['logo_height'] = 32;
+		$name_tag['logo_height'] = 28;
 		$name_tag['bar_height'] = 22;
 		$name_tag['bar_font_size'] = 14;
 		$name_tag['event_font_size'] = 10;
@@ -82,7 +82,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		$name_tag['rows'] = 4;
 		$name_tag['margin'] = 20;
 		$name_tag['image_size'] = 68;
-		$name_tag['logo_height'] = 40;
+		$name_tag['logo_height'] = 36;
 		$name_tag['bar_height'] = 28;
 		$name_tag['bar_font_size'] = 18;
 		$name_tag['event_font_size'] = 11;
@@ -164,12 +164,6 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	$pdf->AddFont('FiraSans-SemiBold', '', 'FiraSans-SemiBold.ttf', true);
 	$pdf->SetLineWidth(0.25);
 	
-	$settings['logo_filename'] = $zz_setting['media_folder'].'/urkunden-grafiken/DSJ-Logo.jpg';
-	$settings['logo_filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
-	$logo['size'] = getimagesize($settings['logo_filename']);
-	$settings['logo_width'] = round($logo['size'][0] / $logo['size'][1] * $name_tag['logo_height']);
-	
-	require_once $zz_setting['modules_dir'].'/tournaments/tournaments/functions.inc.php';
 	$event['main_series_long'] = mf_tournaments_event_title_wrap($event['main_series_long']);
 	
 	$cell_width = $name_tag['width'] - 2 * $name_tag['margin'];
@@ -191,21 +185,22 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		for ($j = 0; $j < 2; $j++) {
 			// logo or QR code
 			$left = $name_tag['width'] * $j;
+			
+			$logo = [
+				'top' => $name_tag['margin'] + $top,
+				'left' => $left
+			];
 			if ($j & 1) {
-				$image = mf_tournaments_p_qrcode($line['participation_id']);
-				$width = $name_tag['logo_height'] * 1.2;
-				$height = $name_tag['logo_height'] * 1.2;
-			} else {
-				$image = $settings['logo_filename'];
-				$width = $settings['logo_width'];
-				$height = $name_tag['logo_height'];
+				$logo['filename'] = mf_tournaments_p_qrcode($line['participation_id']);
+				$logo['height_factor'] = 1.35;
+				$logo['width_factor'] = 1.35;
 			}
-			$pdf->image($image, $name_tag['width']*($j+1) - $name_tag['margin'] - $width, $name_tag['margin'] + $top, $width, $height);
+			mf_tournaments_pdf_logo($pdf, $logo, $name_tag);
 
 			// event
 			$pdf->setFont('FiraSans-Regular', '', $name_tag['event_font_size']);
 			$pdf->SetTextColor(0, 0, 0);
-			$pdf->SetXY($name_tag['margin'] + $left, $name_tag['margin'] + $top);
+			$pdf->SetXY($left + $name_tag['width']/2, $name_tag['margin'] + $top);
 			$pdf->MultiCell(125, round($name_tag['event_font_size'] * 1.2), $event['main_series_long']."\n".$event['turnierort'].' '.$event['year'], 0, 'L');
 			
 			// name
