@@ -836,6 +836,9 @@ function mf_tournaments_pdf_logo($pdf, $logo, $card) {
 
 	$logo['border'] = $logo['border'] ?? false;
 	$logo['filename'] = $logo['filename'] ?? false;
+	$logo['height_factor'] = $logo['height_factor'] ?? 1;
+	$logo['width_factor'] = $logo['width_factor'] ?? 1;
+	$logo['height'] = $card['logo_height'] * $logo['height_factor'];
 
 	if ($logo['filename'] AND !file_exists($logo['filename'])) {
 		$logo['filename'] = false;
@@ -846,12 +849,12 @@ function mf_tournaments_pdf_logo($pdf, $logo, $card) {
 		$logo['filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
 
 	$logo['size'] = getimagesize($logo['filename']);
-	$logo['width'] = round($logo['size'][0] / $logo['size'][1] * $card['logo_height']);
+	$logo['width'] = round($logo['size'][0] / $logo['size'][1] * $card['logo_height'] * $logo['width_factor']);
 	$logo['left'] = $logo['left'] + $card['width'] / 2 - $card['margin'] - $logo['width'];
 
 	if ($logo['border']) {
 		$pdf->SetXY($logo['left'], $logo['top']);
-		$pdf->Cell($logo['width'], $card['logo_height'], '', 1);
+		$pdf->Cell($logo['width'], $logo['height'], '', 1);
 	}
-	$pdf->image($logo['filename'], $logo['left'], $logo['top'], $logo['width'], $card['logo_height']);
+	$pdf->image($logo['filename'], $logo['left'], $logo['top'], $logo['width'], $logo['height']);
 }
