@@ -546,6 +546,9 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 			$id = explode('-', $id);
 			$data[$id[0]][$id[1]] += $clubdata[$contact_id];
 		} else {
+			foreach (array_keys($clubdata[$contact_id]) as $field) {
+				if (empty($data[$id][$field])) unset($data[$id][$field]);
+			}
 			$data[$id] += $clubdata[$contact_id];
 		}
 	}
@@ -853,6 +856,7 @@ function mf_tournaments_pdf_logo($pdf, $logo, $card) {
 	$logo['left'] = $logo['left'] + $card['width'] / 2 - $card['margin'] - $logo['width'];
 
 	if ($logo['border']) {
+		$pdf->SetLineWidth(0.6);
 		$pdf->SetXY($logo['left'], $logo['top']);
 		$pdf->Cell($logo['width'], $logo['height'], '', 1);
 	}
