@@ -27,7 +27,6 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	global $zz_setting;
 	global $zz_conf;
 	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
-	wrap_package_activate('tournaments'); // todo should come from zzbrick
 
 	// event information
 	$event = $zz_conf['event'];
@@ -200,6 +199,7 @@ function mf_tournaments_export_pdf_tischkarten_team($ops) {
 	}
 	$sql = 'SELECT team_id
 			, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS name
+			, team
 			, IF(LENGTH(event) > 12, category_short, event) AS usergroup
 			, club_contact_id AS contact_id
 			, categories.parameters
@@ -214,7 +214,7 @@ function mf_tournaments_export_pdf_tischkarten_team($ops) {
 	
 	foreach ($teams as $team_id => $team) {
 		if (empty($team['country'])) $team['country'] = '';
-		$teams[$team_id]['club'] = $team['country'] !== $teams[$team_id]['name'] ? $team['country'] : '';
+		$teams[$team_id]['club'] = $team['country'] !== $teams[$team_id]['team'] ? $team['country'] : '';
 		$teams[$team_id]['ratings'] = [];
 		parse_str($team['parameters'], $team['parameters']);
 		if (empty($team['parameters']['color'])) $team['parameters']['color'] = '#CC0000';
