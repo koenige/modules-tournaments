@@ -69,32 +69,15 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 
 		// logo and tournament
 		$logo = [
-			'filename' => false,
 			'top' => 15 + $top,
-			'border' => false
+			'left' => $left
 		];
 		if (!empty($line['federation_abbr'])) {
 			$logo['filename'] = sprintf('%s/flaggen/%s.png', $zz_setting['media_folder'], wrap_filename($line['federation_abbr']));
-			if (!file_exists($logo['filename'])) {
-				$logo['filename'] = false;
-			} else {
-				$logo['border'] = true;
-			}
+			$logo['border'] = true;
 		}
-		if (!$logo['filename']) {
-			// @todo = $settings['logo_filename']
-			$logo['filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
-		}
+		mf_tournaments_pdf_logo($pdf, $logo, $card);
 
-		$logo['size'] = getimagesize($logo['filename']);
-		$logo['width'] = round($logo['size'][0] / $logo['size'][1] * $card['logo_height']);
-		$logo['left'] = $left + $card['width']/2 - $card['margin'] - $logo['width'];
-		if ($logo['border']) {
-			$pdf->SetXY($logo['left'], $logo['top']);
-			$pdf->Cell($logo['width'], $card['logo_height'], '', 1);
-		}
-		$pdf->image($logo['filename'], $logo['left'], $logo['top'], $logo['width'], $card['logo_height']);
-		
 		$pdf->setFont('FiraSans-Regular', '', 10);
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->SetXY($card['margin'] + $left + $card['width']/2 - 25, 15 + $top);
@@ -228,4 +211,36 @@ function mf_tournaments_export_pdf_tischkarten_team($ops) {
 			$teams['has_club_line'] = true;
 	}
 	return $teams;
+}
+
+/**
+ * add logo to PDF
+ *
+ * @param object $pdf
+ * @param array $logo
+ * @param array $card
+ */
+function mf_tournaments_pdf_logo($pdf, $logo, $card) {
+	global $zz_setting;
+
+	$logo['border'] = $logo['border'] ?? false;
+	$logo['filename'] = $logo['filename'] ?? false;
+
+	if ($logo['filename'] AND !file_exists($logo['filename'])) {
+		$logo['filename'] = false;
+		$logo['border'] = false;
+	}
+	if (!$logo['filename'])
+		// @todo = $settings['logo_filename']
+		$logo['filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
+
+	$logo['size'] = getimagesize($logo['filename']);
+	$logo['width'] = round($logo['size'][0] / $logo['size'][1] * $card['logo_height']);
+	$logo['left'] = $logo['left'] + $card['width'] / 2 - $card['margin'] - $logo['width'];
+
+	if ($logo['border']) {
+		$pdf->SetXY($logo['left'], $logo['top']);
+		$pdf->Cell($logo['width'], $card['logo_height'], '', 1);
+	}
+	$pdf->image($logo['filename'], $logo['left'], $logo['top'], $logo['width'], $card['logo_height']);
 }
