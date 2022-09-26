@@ -230,7 +230,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				$pdf->SetTextColor(0, 0, 0);
 			}
 			$y = $pdf->getY();
-			if (!empty($line['file_name'])) {
+			if (!empty($line['graphic'])) {
 				$line['usergroup'] .= '  '; // move to left
 			}
 			$pdf->Cell($cell_width, $name_tag['bar_height'], $line['usergroup'], 0, 2, 'C', 1);
@@ -248,8 +248,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				$pdf->Cell(5, $name_tag['bar_height'] / 2, ' ', 0, 2, 'R', 1);
 			}
 
-			if (!empty($line['file_name'])) {
-				$pdf->image($line['file_name'], $name_tag['width']*($j+1) - $line['file_width'] - $name_tag['margin'], $top + $name_tag['height'] - $name_tag['margin'] - $name_tag['image_size'], $line['file_width'], $line['file_height']);
+			if (!empty($line['graphic'])) {
+				$pdf->image($line['graphic']['filename'], $name_tag['width']*($j+1) - $line['graphic']['width'] - $name_tag['margin'], $top + $name_tag['height'] - $name_tag['margin'] - $name_tag['image_size'], $line['graphic']['width'], $line['graphic']['height']);
 			}
 		}
 		$i++;
@@ -323,10 +323,10 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 		if (file_exists($filename_2)) $filename = $filename_2;
 	}
 	if ($filename AND file_exists($filename)) {
-		$new['file_name'] = $filename;
-		$size = getimagesize($new['file_name']);
-		$new['file_width'] = floor($size[0] / $size[1] * $name_tag['image_size']);
-		$new['file_height'] = $name_tag['image_size'];
+		$new['graphic']['filename'] = $filename;
+		$size = getimagesize($new['graphic']['filename']);
+		$new['graphic']['width'] = floor($size[0] / $size[1] * $name_tag['image_size']);
+		$new['graphic']['height'] = $name_tag['image_size'];
 	}
 
 	$new['usergroup'] = $line[$nos['usergroup_id']]['text'];
