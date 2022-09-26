@@ -230,7 +230,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				$pdf->SetTextColor(0, 0, 0);
 			}
 			$y = $pdf->getY();
-			if (!empty($line['filename'])) {
+			if (!empty($line['file_name'])) {
 				$line['usergroup'] .= '  '; // move to left
 			}
 			$pdf->Cell($cell_width, $name_tag['bar_height'], $line['usergroup'], 0, 2, 'C', 1);
@@ -248,8 +248,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				$pdf->Cell(5, $name_tag['bar_height'] / 2, ' ', 0, 2, 'R', 1);
 			}
 
-			if (!empty($line['filename'])) {
-				$pdf->image($line['filename'], $name_tag['width']*($j+1) - $line['width'] - $name_tag['margin'], $top + $name_tag['height'] - $name_tag['margin'] - $name_tag['image_size'], $line['width'], $line['height']);
+			if (!empty($line['file_name'])) {
+				$pdf->image($line['file_name'], $name_tag['width']*($j+1) - $line['file_width'] - $name_tag['margin'], $top + $name_tag['height'] - $name_tag['margin'] - $name_tag['image_size'], $line['file_width'], $line['file_height']);
 			}
 		}
 		$i++;
@@ -300,7 +300,6 @@ function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
  */
 function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name_tag) {
 	global $zz_setting;
-	$filename = false;
 	if (!empty($line[$nos['parameters']]['text'])) {
 		parse_str($line[$nos['parameters']]['text'], $parameters);
 	} else {
@@ -323,6 +322,13 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 		$filename_2 = sprintf('%s/gruppen/%s.png', $zz_setting['media_folder'], wrap_filename($line[$nos['rolle']]['text']));
 		if (file_exists($filename_2)) $filename = $filename_2;
 	}
+	if ($filename AND file_exists($filename)) {
+		$new['file_name'] = $filename;
+		$size = getimagesize($new['file_name']);
+		$new['file_width'] = floor($size[0] / $size[1] * $name_tag['image_size']);
+		$new['file_height'] = $name_tag['image_size'];
+	}
+
 	$new['usergroup'] = $line[$nos['usergroup_id']]['text'];
 	if (!empty($nos['sex'])) {
 		if (!empty($parameters['weiblich']) AND $line[$nos['sex']]['text'] === 'female') {
@@ -384,12 +390,6 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 				break;
 			}
 		}
-	}
-	if ($filename AND file_exists($filename)) {
-		$new['filename'] = $filename;
-		$size = getimagesize($new['filename']);
-		$new['width'] = floor($size[0] / $size[1] * $name_tag['image_size']);
-		$new['height'] = $name_tag['image_size'];
 	}
 	return $new;
 }
