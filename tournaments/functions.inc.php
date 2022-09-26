@@ -888,3 +888,22 @@ function mf_tournaments_pdf_colors($parameters, $role) {
 	}
 	return mf_tournaments_colors_hex2dec($color);
 }
+
+/**
+ * mark with extra age group
+ *
+ * @param array $parameters
+ * @param int $age
+ * @return string
+ */
+function mf_tournaments_pdf_agegroups($parameters, $age) {
+	$text = '';
+	if (empty($parameters['aks'])) return $text;
+	foreach ($parameters['aks'] as $ak) {
+		if ($ak >= $age) {
+			$text = $ak;
+			break;
+		}
+	}
+	return $text;
+}

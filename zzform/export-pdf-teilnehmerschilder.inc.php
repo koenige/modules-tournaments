@@ -364,18 +364,11 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 	}
 	$new['federation_abbr'] = !empty($nos['federation_contact_id']) ? $line[$nos['federation_contact_id']]['text'] : '';
 	$new['club_contact_id'] = !empty($nos['club_contact_id']) ? $line[$nos['club_contact_id']]['value'] : '';
-	$new['zusaetzliche_ak'] = '';
-	if (!empty($parameters['aks'])) {
-		foreach ($parameters['aks'] as $ak) {
-			if ($ak >= $line[$nos['lebensalter']]['text']) {
-				$new['zusaetzliche_ak'] = $ak;
-				break;
-			}
-		}
-	}
 
 	$rolle = !empty($nos['rolle']) ? $line[$nos['rolle']]['text'] : '';
 	$new['colors'] = mf_tournaments_pdf_colors($parameters, $rolle);
+	$new['zusaetzliche_ak'] = mf_tournaments_pdf_agegroups($parameters, $line[$nos['lebensalter']]['text']);
+
 	return $new;
 }
 
