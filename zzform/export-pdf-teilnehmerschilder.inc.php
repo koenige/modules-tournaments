@@ -364,24 +364,6 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 	}
 	$new['federation_abbr'] = !empty($nos['federation_contact_id']) ? $line[$nos['federation_contact_id']]['text'] : '';
 	$new['club_contact_id'] = !empty($nos['club_contact_id']) ? $line[$nos['club_contact_id']]['value'] : '';
-	
-	if (!empty($parameters['color'])) {
-		$color = '';
-		if (is_array($parameters['color'])) {
-			$rolle = !empty($nos['rolle']) ? $line[$nos['rolle']]['text'] : '';
-			if ($rolle) {
-				foreach ($parameters['color'] as $index => $my_color) {
-					if ($index AND strstr($rolle, $index)) $color = $my_color;
-				}
-			}
-			if (!$color) $color = $parameters['color'][0];
-		} else {
-			$color = $parameters['color'];
-		}
-	} else {
-		$color = '#CC0000';
-	}
-	$new['colors'] = mf_tournaments_colors_hex2dec($color);
 	$new['zusaetzliche_ak'] = '';
 	if (!empty($parameters['aks'])) {
 		foreach ($parameters['aks'] as $ak) {
@@ -391,6 +373,9 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 			}
 		}
 	}
+
+	$rolle = !empty($nos['rolle']) ? $line[$nos['rolle']]['text'] : '';
+	$new['colors'] = mf_tournaments_pdf_colors($parameters, $rolle);
 	return $new;
 }
 

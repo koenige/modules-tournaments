@@ -862,3 +862,29 @@ function mf_tournaments_pdf_logo($pdf, $logo, $card) {
 	}
 	$pdf->image($logo['filename'], $logo['left'], $logo['top'], $logo['width'], $logo['height']);
 }
+
+/**
+ * get RGB colours from hex colours
+ *
+ * @param array $parameters
+ * @param string $role
+ * @return array
+ */
+function mf_tournaments_pdf_colors($parameters, $role) {
+	if (empty($parameters['color']))
+		$color = '#CC0000';
+	else {
+		$color = '';
+		if (is_array($parameters['color'])) {
+			if ($role) {
+				foreach ($parameters['color'] as $index => $my_color) {
+					if ($index AND strstr($role, $index)) $color = $my_color;
+				}
+			}
+			if (!$color) $color = $parameters['color'][0];
+		} else {
+			$color = $parameters['color'];
+		}
+	}
+	return mf_tournaments_colors_hex2dec($color);
+}
