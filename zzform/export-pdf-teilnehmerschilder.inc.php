@@ -116,6 +116,10 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		$data[$line['id_value']] = $new;
 	}
 	if (!$data) wrap_quit(404, 'Es gibt keine Teilnehmerschilder für diese Personen.');
+	foreach ($data as $participation_id => &$line) {
+		$line['colors'] = mf_tournaments_pdf_colors($line['parameters'], $line['role']);
+		$line['zusaetzliche_ak'] = mf_tournaments_pdf_agegroups($line['parameters'], $line['age']);
+	}
 	$data = mf_tournaments_clubs_to_federations($data, 'club_contact_id');
 	
 	// read title from FIDE database if person in German database is only passive
@@ -301,9 +305,9 @@ function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
 function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name_tag) {
 	global $zz_setting;
 	if (!empty($line[$nos['parameters']]['text'])) {
-		parse_str($line[$nos['parameters']]['text'], $parameters);
+		parse_str($line[$nos['parameters']]['text'], $new['parameters']);
 	} else {
-		$parameters = [];
+		$new['parameters'] = [];
 	}
 
 	// Spieler
@@ -322,10 +326,10 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 	$new['graphic'] = mf_tournaments_pdf_graphic([$new['role'], $new['usergroup']], $name_tag);
 
 	if (!empty($nos['sex'])) {
-		if (!empty($parameters['weiblich']) AND $line[$nos['sex']]['text'] === 'female') {
-			$new['usergroup'] = $parameters['weiblich'];
-		} elseif (!empty($parameters['männlich']) AND  $line[$nos['sex']]['text'] === 'male') {
-			$new['usergroup'] = $parameters['männlich'];
+		if (!empty($new['parameters']['weiblich']) AND $line[$nos['sex']]['text'] === 'female') {
+			$new['usergroup'] = $new['parameters']['weiblich'];
+		} elseif (!empty($new['parameters']['männlich']) AND  $line[$nos['sex']]['text'] === 'male') {
+			$new['usergroup'] = $new['parameters']['männlich'];
 		}
 	}
 
@@ -355,10 +359,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 	}
 	$new['federation_abbr'] = !empty($nos['federation_contact_id']) ? $line[$nos['federation_contact_id']]['text'] : '';
 	$new['club_contact_id'] = !empty($nos['club_contact_id']) ? $line[$nos['club_contact_id']]['value'] : '';
-
-	$rolle = !empty($nos['rolle']) ? $line[$nos['rolle']]['text'] : '';
-	$new['colors'] = mf_tournaments_pdf_colors($parameters, $rolle);
-	$new['zusaetzliche_ak'] = mf_tournaments_pdf_agegroups($parameters, $line[$nos['lebensalter']]['text']);
+	$new['age'] = !empty($nos['lebensalter']) ? $line[$nos['lebensalter']]['value'] : '';
 
 	return $new;
 }

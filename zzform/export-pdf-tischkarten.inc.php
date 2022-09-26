@@ -170,6 +170,7 @@ function mf_tournaments_export_pdf_tischkarten_single($ops) {
 		// ignoriere Orga vorab
 		if (!in_array($line[$nos['usergroup_id']]['text'], ['Spieler'])) continue;
 		$data[$index] = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name_tag);
+		$data[$index]['colors'] = mf_tournaments_pdf_colors($data[$index]['parameters'], $data[$index]['role']);
 
 		// Daten anpassen
 		$data[$index]['ratings'] = [];
