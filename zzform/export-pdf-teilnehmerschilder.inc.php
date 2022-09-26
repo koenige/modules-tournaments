@@ -382,29 +382,3 @@ function mf_tournaments_p_qrcode($id) {
 	exec(sprintf($command, $file, $file));
 	return $file;
 }
-
-/**
- * check if there is a graphic for a usergroup or a role available
- *
- * @param array $graphics possible filenames
- * @param array $card
- * @return array
- */
-function mf_tournaments_pdf_graphic($graphics, $card) {
-	global $zz_setting;
-
-	$filename = false;
-	foreach ($graphics as $graphic) {
-		$filename = sprintf('%s/gruppen/%s.png', $zz_setting['media_folder'], wrap_filename($graphic));
-		if (file_exists($filename)) break;
-		$filename = false;
-	}
-	if (!$filename) return [];
-
-	$graphic = [];
-	$graphic['filename'] = $filename;
-	$size = getimagesize($graphic['filename']);
-	$graphic['width'] = floor($size[0] / $size[1] * $card['image_size']);
-	$graphic['height'] = $card['image_size'];
-	return $graphic;
-}
