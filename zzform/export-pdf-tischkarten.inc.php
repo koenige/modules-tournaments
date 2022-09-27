@@ -216,3 +216,66 @@ function mf_tournaments_export_pdf_tischkarten_team($ops) {
 	}
 	return $teams;
 }
+
+/**
+ * Suche Feld-IDs aus Daten
+ * IDs sind nicht vorherbestimmbar
+ *
+ * @param array $head = $ops['output']['head']
+ * @return array $nos
+ */
+function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
+	$fields = [
+		'usergroup_id', 'parameters', 't_vorname', 't_nachname', 'person_id',
+		't_fidetitel', 't_verein', 'event_id', 'federation_contact_id',
+		'lebensalter', 'rolle', 't_dwz', 't_elo', 'sex', 'club_contact_id',
+		'series_parameters', 'usergroup_category'
+	];
+	$nos = [];
+	foreach ($head as $index => $field) {
+		if (!in_array('field_name', array_keys($field))) continue;
+		if (!in_array($field['field_name'], $fields)) continue;
+		$nos[$field['field_name']] = $index;
+	}
+	return $nos;
+}
+
+/**
+ * Daten anpassen für Ausgabe
+ *
+ * @param array $line
+ * @param array $nos
+ * @return array $line
+ */
+function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
+	if (!empty($line[$nos['parameters']]['text'])) {
+		parse_str($line[$nos['parameters']]['text'], $new['parameters']);
+	} else {
+		$new['parameters'] = [];
+	}
+	if (!empty($line[$nos['series_parameters']]['text'])) {
+		parse_str($line[$nos['series_parameters']]['text'], $series_parameters);
+		$new['parameters'] = array_merge($new['parameters'], $series_parameters);
+	}
+
+	// Spieler
+	$new['fidetitel'] = !empty($nos['t_fidetitel']) ? $line[$nos['t_fidetitel']]['text'] : '';
+	$new['name'] = ($new['fidetitel'] ? $new['fidetitel'].' ' : '')
+		.((!empty($nos['t_vorname']) AND !empty($line[$nos['t_vorname']]['text']))
+		? $line[$nos['t_vorname']]['text'].' '.$line[$nos['t_nachname']]['text']
+		: $line[$nos['person_id']]['text']);
+
+	// further data
+	$new['club'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
+	$new['usergroup'] = $line[$nos['usergroup_id']]['text'];
+	$new['usergroup_category'] = $line[$nos['usergroup_category']]['text'];
+	$new['role'] = (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) ? $line[$nos['rolle']]['text'] : '';
+	$new['sex'] = !empty($nos['sex']) ? $line[$nos['sex']]['text'] : '';
+	$new['event'] = $line[$nos['event_id']]['text'];
+	$new['federation_abbr'] = !empty($nos['federation_contact_id']) ? $line[$nos['federation_contact_id']]['text'] : '';
+	$new['club_contact_id'] = !empty($nos['club_contact_id']) ? $line[$nos['club_contact_id']]['value'] : '';
+	$new['age'] = !empty($nos['lebensalter']) ? $line[$nos['lebensalter']]['value'] : '';
+
+	return $new;
+}
+
