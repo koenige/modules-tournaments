@@ -82,7 +82,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		$card['rows'] = 5;
 		$card['margin'] = 12;
 		$card['image_size'] = 54;
-		$card['logo_height'] = 28;
+		$card['logo_height'] = 26;
 		$card['bar_height'] = 22;
 		$card['bar_font_size'] = 14;
 		$card['event_font_size'] = 10;
