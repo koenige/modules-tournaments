@@ -130,12 +130,12 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			ON participations.federation_contact_id = federations.contact_id
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN teams USING (team_id)
-		WHERE participations.event_id IN (%s)
+		WHERE participations.participation_id IN (%s)
 		AND (ISNULL(usergroups.parameters) OR usergroups.parameters NOT LIKE "%%&present=0%%")
 		ORDER BY IFNULL(t_nachname, last_name), IFNULL(t_vorname, first_name), participation_id
 	';
 	$sql = sprintf($sql
-		, implode(',', array_keys($events))
+		, implode(',', array_keys($data))
 	);
 	$data = wrap_db_fetch($sql, 'participation_id');
 	if (!$data) wrap_quit(404, 'Es gibt keine Teilnehmerschilder für diese Personen.');
