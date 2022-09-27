@@ -21,7 +21,7 @@
  * @return void
  */
 function mod_tournaments_teampdfsarrival($vars) {
-	require_once __DIR__.'/../tournaments/pdf.inc.php';
+	wrap_include_files('pdf', 'tournaments');
 
 	if (count($vars) === 3) {
 		$team_identifier = implode('/', $vars);

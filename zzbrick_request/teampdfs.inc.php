@@ -15,7 +15,7 @@
 
 function mod_tournaments_teampdfs($vars, $settings) {
 	global $zz_setting;
-	require_once __DIR__.'/../tournaments/pdf.inc.php';
+	wrap_include_files('pdf', 'tournaments');
 	
 	if (count($vars) === 3) {
 		$team_identifier = implode('/', $vars);
