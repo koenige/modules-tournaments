@@ -103,26 +103,28 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		) continue;
 		// Daten anpassen
 		$new = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $card);
-		if (array_key_exists($line['id_value'], $formfields)) {
-			foreach ($formfields[$line['id_value']] as $formfield) {
-				if (!$formfield['text']) continue;
-				parse_str($formfield['parameters'], $formfield['parameters']);
-				if (empty($new[$formfield['parameters']['name_tag']]))
-					$new[$formfield['parameters']['name_tag']] = '';
-				else
-					$new[$formfield['parameters']['name_tag']] .= "\n";
-				$new[$formfield['parameters']['name_tag']] .= $formfield['formfield'].': '.str_replace("\n", ", ", $formfield['text']);
-			}
-		}
 		$data[$line['id_value']] = $new;
 	}
 	if (!$data) wrap_quit(404, 'Es gibt keine Teilnehmerschilder für diese Personen.');
-	foreach ($data as $participation_id => &$line) {
+	foreach ($data as $participation_id => $line) {
 		$line['colors'] = mf_tournaments_pdf_colors($line['parameters'], $line['role']);
 		$line['zusaetzliche_ak'] = mf_tournaments_pdf_agegroups($line['parameters'], $line['age']);
 		$line['group_line'] = mf_tournaments_pdf_group_line($line);
 		$line['club_line'] = mf_tournaments_pdf_club_line($line);
 		$line['graphic'] = mf_tournaments_pdf_graphic([$line['role'], $line['usergroup']], $card);
+
+		if (array_key_exists($participation_id, $formfields)) {
+			foreach ($formfields[$participation_id] as $formfield) {
+				if (!$formfield['text']) continue;
+				parse_str($formfield['parameters'], $formfield['parameters']);
+				if (empty($line[$formfield['parameters']['name_tag']]))
+					$line[$formfield['parameters']['name_tag']] = '';
+				else
+					$line[$formfield['parameters']['name_tag']] .= "\n";
+				$line[$formfield['parameters']['name_tag']] .= $formfield['formfield'].': '.str_replace("\n", ", ", $formfield['text']);
+			}
+		}
+		$data[$participation_id] = $line;
 	}
 	$data = mf_tournaments_clubs_to_federations($data, 'club_contact_id');
 	
