@@ -25,6 +25,7 @@
  */
 function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	global $zz_setting;
+	wrap_include_files('pdf', 'tournaments');
 
 	$ids = [];
 	foreach ($ops['output']['rows'] as $line) {
@@ -358,58 +359,4 @@ function mf_tournaments_p_qrcode($id) {
 	$command = 'convert -scale 300x300 %s %s';
 	exec(sprintf($command, $file, $file));
 	return $file;
-}
-
-/**
- * get group line for PDFs
- *
- * @param array $line keys parameters, usergroup, club, role, sex
- * @return string
- */
-function mf_tournaments_pdf_group_line($line) {
-	if (!empty($line['parameters']['pdf_group_line'])
-		AND array_key_exists($line['parameters']['pdf_group_line'], $line)
-		AND !empty($line[$line['parameters']['pdf_group_line']])) {
-		// e. g. pdf_group_line=event, pdf_group_line=role
-		return $line[$line['parameters']['pdf_group_line']];
-	} elseif ($line['role'] AND $line['club']) {
-		// club is filled out, put role into group_line
-		return $line['role'];
-	} elseif ($line['sex']) {
-		// female or male forms?
-		if (!empty($line['parameters']['weiblich']) AND $line['sex'] === 'female') {
-			return $line['parameters']['weiblich'];
-		} elseif (!empty($line['parameters']['female']) AND $line['sex'] === 'female') {
-			return $line['parameters']['female'];
-		} elseif (!empty($line['parameters']['männlich']) AND $line['sex'] === 'male') {
-			return $line['parameters']['männlich'];
-		} elseif (!empty($line['parameters']['male']) AND $line['sex'] === 'male') {
-			return $line['parameters']['male'];
-		}
-	}
-	return $line['usergroup'];
-}
-
-/**
- * get club line for PDFs
- * role overwrites club, sometimes usergroup overwrites club
- *
- * @param array $line keys parameters, usergroup, club, role, sex
- * @return string
- */
-function mf_tournaments_pdf_club_line($line) {
-	if (!empty($line['parameters']['pdf_group_line'])) {
-		switch ($line['parameters']['pdf_group_line']) {
-		case 'role':
-			 // do not show role twice
-			$line['role'] = false;
-			break;
-		case 'usergroup_category':
-			if (!$line['role']) $line['role'] = $line['usergroup'];
-			break;
-		}
-	}
-	if ($line['role']) return $line['role'];
-	
-	return $line['club'];
 }
