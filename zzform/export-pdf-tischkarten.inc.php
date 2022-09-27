@@ -135,7 +135,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 			$pdf->SetTextColor(0, 0, 0);
 		}
 		$y = $pdf->getY();
-		$pdf->Cell(257, 28, ' '.$line['usergroup'], 0, 2, 'L', 1);
+		$pdf->Cell(257, 28, ' '.$line['group_line'], 0, 2, 'L', 1);
 		$pdf->SetXY($pdf->getX(), $y);
 		if (!empty($line['federation_abbr']))
 			$pdf->Cell(257, 28, $line['federation_abbr'].' ', 0, 2, 'R');
@@ -189,7 +189,7 @@ function mf_tournaments_export_pdf_tischkarten_team($ops) {
 	$sql = 'SELECT team_id
 			, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS name
 			, team
-			, IF(LENGTH(event) > 12, category_short, event) AS usergroup
+			, IF(LENGTH(event) > 12, category_short, event) AS group_line
 			, club_contact_id AS contact_id
 			, categories.parameters
 	    FROM teams

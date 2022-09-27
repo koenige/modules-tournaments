@@ -235,9 +235,9 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			}
 			$y = $pdf->getY();
 			if (!empty($line['graphic'])) {
-				$line['usergroup'] .= '  '; // move to left
+				$line['group_line'] .= '  '; // move to left
 			}
-			$pdf->Cell($cell_width, $name_tag['bar_height'], $line['usergroup'], 0, 2, 'C', 1);
+			$pdf->Cell($cell_width, $name_tag['bar_height'], $line['group_line'], 0, 2, 'C', 1);
 			if (!empty($line['zusaetzliche_ak'])) {
 				$pdf->SetXY($pdf->getX(), $y);
 				$pdf->Cell($cell_width, $name_tag['bar_height'], 'U'.$line['zusaetzliche_ak'], 0, 2, 'R'); // 41
@@ -321,28 +321,28 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 	$new['club'] = $new['club_line'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
 
 	// Gruppe
-	$new['usergroup'] = $line[$nos['usergroup_id']]['text'];
+	$new['usergroup'] = $new['group_line'] = $line[$nos['usergroup_id']]['text'];
 	$new['role'] = !empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text']) ? $line[$nos['rolle']]['text'] : '';
 	$new['graphic'] = mf_tournaments_pdf_graphic([$new['role'], $new['usergroup']], $name_tag);
 
 	if (!empty($nos['sex'])) {
 		if (!empty($new['parameters']['weiblich']) AND $line[$nos['sex']]['text'] === 'female') {
-			$new['usergroup'] = $new['parameters']['weiblich'];
+			$new['group_line'] = $new['parameters']['weiblich'];
 		} elseif (!empty($new['parameters']['männlich']) AND  $line[$nos['sex']]['text'] === 'male') {
-			$new['usergroup'] = $new['parameters']['männlich'];
+			$new['group_line'] = $new['parameters']['männlich'];
 		}
 	}
 	if ($new['role'] AND $new['club']) {
-		$new['usergroup'] = $new['role'];
+		$new['group_line'] = $new['role'];
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Betreuer', 'Mitreisende', 'Teilnehmer', 'Referent'])) {
 		if (empty($new['club']) AND $new['role']) {
 			$new['club_line'] = $new['role'];
 		}
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Spieler'])) {
-		$new['usergroup'] = $line[$nos['event_id']]['text'];
+		$new['group_line'] = $line[$nos['event_id']]['text'];
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Gast'])) {
 		if ($new['role']) {
-			$new['usergroup'] = $new['role'];
+			$new['group_line'] = $new['role'];
 		}
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Schiedsrichter'])) {
 		if ($new['role']) {
@@ -354,7 +354,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 		} else {
 			$new['club_line'] = $line[$nos['usergroup_id']]['text'];
 		}
-		$new['usergroup'] = 'Organisationsteam';
+		$new['group_line'] = 'Organisationsteam';
 	}
 	$new['federation_abbr'] = !empty($nos['federation_contact_id']) ? $line[$nos['federation_contact_id']]['text'] : '';
 	$new['club_contact_id'] = !empty($nos['club_contact_id']) ? $line[$nos['club_contact_id']]['value'] : '';
