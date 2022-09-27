@@ -283,7 +283,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
 	$fields = [
 		'usergroup_id', 'parameters', 't_vorname', 't_nachname', 'person_id',
 		't_fidetitel', 't_verein', 'event_id', 'federation_contact_id',
-		'lebensalter', 'rolle', 't_dwz', 't_elo', 'sex', 'club_contact_id'
+		'lebensalter', 'rolle', 't_dwz', 't_elo', 'sex', 'club_contact_id',
+		'series_parameters', 'usergroup_category'
 	];
 	$nos = [];
 	foreach ($head as $index => $field) {
@@ -303,11 +304,14 @@ function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
  * @return array $line
  */
 function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name_tag) {
-	global $zz_setting;
 	if (!empty($line[$nos['parameters']]['text'])) {
 		parse_str($line[$nos['parameters']]['text'], $new['parameters']);
 	} else {
 		$new['parameters'] = [];
+	}
+	if (!empty($line[$nos['series_parameters']]['text'])) {
+		parse_str($line[$nos['series_parameters']]['text'], $series_parameters);
+		$new['parameters'] = array_merge($new['parameters'], $series_parameters);
 	}
 
 	// Spieler
@@ -318,44 +322,17 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 		: $line[$nos['person_id']]['text']);
 
 	// Verein
-	$new['club'] = $new['club_line'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
+	$new['club'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
 
 	// Gruppe
-	$new['usergroup'] = $new['group_line'] = $line[$nos['usergroup_id']]['text'];
-	$new['role'] = !empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text']) ? $line[$nos['rolle']]['text'] : '';
+	$new['usergroup'] = $line[$nos['usergroup_id']]['text'];
+	$new['usergroup_category'] = $line[$nos['usergroup_category']]['text'];
+	$new['role'] = (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) ? $line[$nos['rolle']]['text'] : '';
 	$new['graphic'] = mf_tournaments_pdf_graphic([$new['role'], $new['usergroup']], $name_tag);
-
-	if (!empty($nos['sex'])) {
-		if (!empty($new['parameters']['weiblich']) AND $line[$nos['sex']]['text'] === 'female') {
-			$new['group_line'] = $new['parameters']['weiblich'];
-		} elseif (!empty($new['parameters']['männlich']) AND  $line[$nos['sex']]['text'] === 'male') {
-			$new['group_line'] = $new['parameters']['männlich'];
-		}
-	}
-	if ($new['role'] AND $new['club']) {
-		$new['group_line'] = $new['role'];
-	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Betreuer', 'Mitreisende', 'Teilnehmer', 'Referent'])) {
-		if (empty($new['club']) AND $new['role']) {
-			$new['club_line'] = $new['role'];
-		}
-	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Spieler'])) {
-		$new['group_line'] = $line[$nos['event_id']]['text'];
-	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Gast'])) {
-		if ($new['role']) {
-			$new['group_line'] = $new['role'];
-		}
-	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Schiedsrichter'])) {
-		if ($new['role']) {
-			$new['club_line'] = $new['role'];
-		}
-	} else {
-		if ($new['role']) {
-			$new['club_line'] = $new['role'];
-		} else {
-			$new['club_line'] = $line[$nos['usergroup_id']]['text'];
-		}
-		$new['group_line'] = 'Organisationsteam';
-	}
+	$new['sex'] = !empty($nos['sex']) ? $line[$nos['sex']]['text'] : '';
+	$new['event'] = $line[$nos['event_id']]['text'];
+	$new['group_line'] = mf_tournaments_pdf_group_line($new);
+	$new['club_line'] = mf_tournaments_pdf_club_line($new);
 	$new['federation_abbr'] = !empty($nos['federation_contact_id']) ? $line[$nos['federation_contact_id']]['text'] : '';
 	$new['club_contact_id'] = !empty($nos['club_contact_id']) ? $line[$nos['club_contact_id']]['value'] : '';
 	$new['age'] = !empty($nos['lebensalter']) ? $line[$nos['lebensalter']]['value'] : '';
@@ -381,4 +358,58 @@ function mf_tournaments_p_qrcode($id) {
 	$command = 'convert -scale 300x300 %s %s';
 	exec(sprintf($command, $file, $file));
 	return $file;
+}
+
+/**
+ * get group line for PDFs
+ *
+ * @param array $line keys parameters, usergroup, club, role, sex
+ * @return string
+ */
+function mf_tournaments_pdf_group_line($line) {
+	if (!empty($line['parameters']['pdf_group_line'])
+		AND array_key_exists($line['parameters']['pdf_group_line'], $line)
+		AND !empty($line[$line['parameters']['pdf_group_line']])) {
+		// e. g. pdf_group_line=event, pdf_group_line=role
+		return $line[$line['parameters']['pdf_group_line']];
+	} elseif ($line['role'] AND $line['club']) {
+		// club is filled out, put role into group_line
+		return $line['role'];
+	} elseif ($line['sex']) {
+		// female or male forms?
+		if (!empty($line['parameters']['weiblich']) AND $line['sex'] === 'female') {
+			return $line['parameters']['weiblich'];
+		} elseif (!empty($line['parameters']['female']) AND $line['sex'] === 'female') {
+			return $line['parameters']['female'];
+		} elseif (!empty($line['parameters']['männlich']) AND $line['sex'] === 'male') {
+			return $line['parameters']['männlich'];
+		} elseif (!empty($line['parameters']['male']) AND $line['sex'] === 'male') {
+			return $line['parameters']['male'];
+		}
+	}
+	return $line['usergroup'];
+}
+
+/**
+ * get club line for PDFs
+ * role overwrites club, sometimes usergroup overwrites club
+ *
+ * @param array $line keys parameters, usergroup, club, role, sex
+ * @return string
+ */
+function mf_tournaments_pdf_club_line($line) {
+	if (!empty($line['parameters']['pdf_group_line'])) {
+		switch ($line['parameters']['pdf_group_line']) {
+		case 'role':
+			 // do not show role twice
+			$line['role'] = false;
+			break;
+		case 'usergroup_category':
+			if (!$line['role']) $line['role'] = $line['usergroup'];
+			break;
+		}
+	}
+	if ($line['role']) return $line['role'];
+	
+	return $line['club'];
 }
