@@ -100,7 +100,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 		$pdf->MultiCell(257, 25, $line['name'], 0, 'C');
 		$pdf->SetXY($card['margin'] + $left, ($pdf->GetY() + 2));
 		$pdf->setFont('FiraSans-Regular', '', 12);
-		$pdf->MultiCell(257, 14, $line['club'], 0, 'C');
+		$pdf->MultiCell(257, 14, $line['club_line'], 0, 'C');
 
 		// Wertungen
 		$width = 0;
@@ -203,12 +203,12 @@ function mf_tournaments_export_pdf_tischkarten_team($ops) {
 	
 	foreach ($teams as $team_id => $team) {
 		if (empty($team['country'])) $team['country'] = '';
-		$teams[$team_id]['club'] = $team['country'] !== $teams[$team_id]['team'] ? $team['country'] : '';
+		$teams[$team_id]['club_line'] = $team['country'] !== $teams[$team_id]['team'] ? $team['country'] : '';
 		$teams[$team_id]['ratings'] = [];
 		parse_str($team['parameters'], $team['parameters']);
 		if (empty($team['parameters']['color'])) $team['parameters']['color'] = '#CC0000';
 		$teams[$team_id]['colors'] = mf_tournaments_colors_hex2dec($team['parameters']['color']);
-		if ($teams[$team_id]['club'])
+		if ($teams[$team_id]['club_line'])
 			$teams['has_club_line'] = true;
 	}
 	return $teams;

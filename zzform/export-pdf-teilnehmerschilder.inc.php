@@ -222,7 +222,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			}
 			$pdf->Cell($cell_width, 24, $line['name'], 0, 2, 'L');
 			$pdf->setFont('FiraSans-Regular', '', $name_tag['club_font_size']);
-			$pdf->MultiCell($cell_width, round($name_tag['club_font_size'] * 1.33), $line['club'], 0, 'L');
+			$pdf->MultiCell($cell_width, round($name_tag['club_font_size'] * 1.33), $line['club_line'], 0, 'L');
 
 			// bar
 			$pdf->SetXY($name_tag['margin'] + $left, $top + $name_tag['height'] - $name_tag['margin'] - 20 - $name_tag['bar_height']);
@@ -318,7 +318,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 		: $line[$nos['person_id']]['text']);
 
 	// Verein
-	$new['club'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
+	$new['club'] = $new['club_line'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
 
 	// Gruppe
 	$new['usergroup'] = $line[$nos['usergroup_id']]['text'];
@@ -332,28 +332,27 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 			$new['usergroup'] = $new['parameters']['männlich'];
 		}
 	}
-
-	if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text']) AND $new['club']) {
-		$new['usergroup'] = $line[$nos['rolle']]['text'];
+	if ($new['role'] AND $new['club']) {
+		$new['usergroup'] = $new['role'];
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Betreuer', 'Mitreisende', 'Teilnehmer', 'Referent'])) {
-		if (empty($new['club']) AND !empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
-			$new['club'] = $line[$nos['rolle']]['text'];
+		if (empty($new['club']) AND $new['role']) {
+			$new['club_line'] = $new['role'];
 		}
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Spieler'])) {
 		$new['usergroup'] = $line[$nos['event_id']]['text'];
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Gast'])) {
-		if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
-			$new['usergroup'] = $line[$nos['rolle']]['text'];
+		if ($new['role']) {
+			$new['usergroup'] = $new['role'];
 		}
 	} elseif (in_array($line[$nos['usergroup_id']]['text'], ['Schiedsrichter'])) {
-		if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
-			$new['club'] = $line[$nos['rolle']]['text'];
+		if ($new['role']) {
+			$new['club_line'] = $new['role'];
 		}
 	} else {
-		if (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) {
-			$new['club'] = $line[$nos['rolle']]['text'];
+		if ($new['role']) {
+			$new['club_line'] = $new['role'];
 		} else {
-			$new['club'] = $line[$nos['usergroup_id']]['text'];
+			$new['club_line'] = $line[$nos['usergroup_id']]['text'];
 		}
 		$new['usergroup'] = 'Organisationsteam';
 	}
