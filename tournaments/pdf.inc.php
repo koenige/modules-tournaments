@@ -365,6 +365,7 @@ function mf_tournaments_pdf_graphic($graphics, $card) {
 
 	$filename = false;
 	foreach ($graphics as $graphic) {
+		if (!$graphic) continue;
 		$filename = sprintf('%s/gruppen/%s.png', $zz_setting['media_folder'], wrap_filename($graphic));
 		if (file_exists($filename)) break;
 		$filename = false;
@@ -417,6 +418,7 @@ function mf_tournaments_pdf_group_line($line) {
  * @return string
  */
 function mf_tournaments_pdf_club_line($line) {
+	if ($line['club']) return $line['club'];
 	if (!empty($line['parameters']['pdf_group_line'])) {
 		switch ($line['parameters']['pdf_group_line']) {
 		case 'role':
@@ -429,6 +431,5 @@ function mf_tournaments_pdf_club_line($line) {
 		}
 	}
 	if ($line['role']) return $line['role'];
-	
-	return $line['club'];
+	return '';
 }
