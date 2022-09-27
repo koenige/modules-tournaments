@@ -172,6 +172,8 @@ function mf_tournaments_export_pdf_tischkarten_single($ops) {
 		if (!in_array($line[$nos['usergroup_id']]['text'], ['Spieler'])) continue;
 		$data[$index] = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name_tag);
 		$data[$index]['colors'] = mf_tournaments_pdf_colors($data[$index]['parameters'], $data[$index]['role']);
+		$data[$index]['group_line'] = mf_tournaments_pdf_group_line($data[$index]);
+		$data[$index]['club_line'] = mf_tournaments_pdf_club_line($data[$index]);
 
 		// Daten anpassen
 		$data[$index]['ratings'] = [];

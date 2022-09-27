@@ -120,6 +120,9 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	foreach ($data as $participation_id => &$line) {
 		$line['colors'] = mf_tournaments_pdf_colors($line['parameters'], $line['role']);
 		$line['zusaetzliche_ak'] = mf_tournaments_pdf_agegroups($line['parameters'], $line['age']);
+		$line['group_line'] = mf_tournaments_pdf_group_line($line);
+		$line['club_line'] = mf_tournaments_pdf_club_line($line);
+		$line['graphic'] = mf_tournaments_pdf_graphic([$line['role'], $line['usergroup']], $card);
 	}
 	$data = mf_tournaments_clubs_to_federations($data, 'club_contact_id');
 	
@@ -301,10 +304,9 @@ function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
  *
  * @param array $line
  * @param array $nos
- * @param array $card
  * @return array $line
  */
-function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $card) {
+function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 	if (!empty($line[$nos['parameters']]['text'])) {
 		parse_str($line[$nos['parameters']]['text'], $new['parameters']);
 	} else {
@@ -327,11 +329,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $card
 	$new['usergroup'] = $line[$nos['usergroup_id']]['text'];
 	$new['usergroup_category'] = $line[$nos['usergroup_category']]['text'];
 	$new['role'] = (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) ? $line[$nos['rolle']]['text'] : '';
-	$new['graphic'] = mf_tournaments_pdf_graphic([$new['role'], $new['usergroup']], $card);
 	$new['sex'] = !empty($nos['sex']) ? $line[$nos['sex']]['text'] : '';
 	$new['event'] = $line[$nos['event_id']]['text'];
-	$new['group_line'] = mf_tournaments_pdf_group_line($new);
-	$new['club_line'] = mf_tournaments_pdf_club_line($new);
 	$new['federation_abbr'] = !empty($nos['federation_contact_id']) ? $line[$nos['federation_contact_id']]['text'] : '';
 	$new['club_contact_id'] = !empty($nos['club_contact_id']) ? $line[$nos['club_contact_id']]['value'] : '';
 	$new['age'] = !empty($nos['lebensalter']) ? $line[$nos['lebensalter']]['value'] : '';
