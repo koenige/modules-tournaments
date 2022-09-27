@@ -65,29 +65,29 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 
 	switch ($event['name_tag_size']) {
 	case '9x5.5':
-		$name_tag['width'] = 255.12;
-		$name_tag['height'] = 155.9;
-		$name_tag['rows'] = 5;
-		$name_tag['margin'] = 12;
-		$name_tag['image_size'] = 54;
-		$name_tag['logo_height'] = 28;
-		$name_tag['bar_height'] = 22;
-		$name_tag['bar_font_size'] = 14;
-		$name_tag['event_font_size'] = 10;
-		$name_tag['club_font_size'] = 10;
+		$card['width'] = 255.12;
+		$card['height'] = 155.9;
+		$card['rows'] = 5;
+		$card['margin'] = 12;
+		$card['image_size'] = 54;
+		$card['logo_height'] = 28;
+		$card['bar_height'] = 22;
+		$card['bar_font_size'] = 14;
+		$card['event_font_size'] = 10;
+		$card['club_font_size'] = 10;
 		break;
 	default:
 	case '10.5x7':
-		$name_tag['width'] = 297.5;
-		$name_tag['height'] = 198.5;
-		$name_tag['rows'] = 4;
-		$name_tag['margin'] = 20;
-		$name_tag['image_size'] = 68;
-		$name_tag['logo_height'] = 36;
-		$name_tag['bar_height'] = 28;
-		$name_tag['bar_font_size'] = 18;
-		$name_tag['event_font_size'] = 11;
-		$name_tag['club_font_size'] = 12;
+		$card['width'] = 297.5;
+		$card['height'] = 198.5;
+		$card['rows'] = 4;
+		$card['margin'] = 20;
+		$card['image_size'] = 68;
+		$card['logo_height'] = 36;
+		$card['bar_height'] = 28;
+		$card['bar_font_size'] = 18;
+		$card['event_font_size'] = 11;
+		$card['club_font_size'] = 12;
 		break;
 	}
 
@@ -102,7 +102,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			['Landesverband: Organisator', 'Verein: Organisator', 'Bewerber'])
 		) continue;
 		// Daten anpassen
-		$new = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name_tag);
+		$new = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $card);
 		if (array_key_exists($line['id_value'], $formfields)) {
 			foreach ($formfields[$line['id_value']] as $formfield) {
 				if (!$formfield['text']) continue;
@@ -172,28 +172,28 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	
 	$event['main_series_long'] = mf_tournaments_event_title_wrap($event['main_series_long']);
 	
-	$cell_width = $name_tag['width'] - 2 * $name_tag['margin'];
+	$cell_width = $card['width'] - 2 * $card['margin'];
 
 	$i = 0;
 	foreach ($data as $line) {
 		// PDF setzen
-		$row = $i % $name_tag['rows'];
+		$row = $i % $card['rows'];
 		if (!$row) {
 			$pdf->addPage();
-			$pos_x = $name_tag['width'];
+			$pos_x = $card['width'];
 			while($pos_x < 595) {
 				$pdf->Line($pos_x, 0, $pos_x, 842);
-				$pos_x += $name_tag['width'];
+				$pos_x += $card['width'];
 			}
 		}
-		$top = $name_tag['height'] * $row;
-		$pdf->Line(0, $top + $name_tag['height'], 595, $top + $name_tag['height']);
+		$top = $card['height'] * $row;
+		$pdf->Line(0, $top + $card['height'], 595, $top + $card['height']);
 		for ($j = 0; $j < 2; $j++) {
 			// logo or QR code
-			$left = $name_tag['width'] * $j;
+			$left = $card['width'] * $j;
 			
 			$logo = [
-				'top' => $name_tag['margin'] + $top,
+				'top' => $card['margin'] + $top,
 				'left' => $left
 			];
 			if ($j & 1) {
@@ -205,29 +205,29 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				$logo['filename'] = sprintf('%s/flaggen/%s.png', $zz_setting['media_folder'], wrap_filename($line['federation_abbr']));
 				$logo['border'] = true;
 			}
-			mf_tournaments_pdf_logo($pdf, $logo, $name_tag);
+			mf_tournaments_pdf_logo($pdf, $logo, $card);
 			$pdf->SetLineWidth(0.25);
 
 			// event
-			$pdf->setFont('FiraSans-Regular', '', $name_tag['event_font_size']);
+			$pdf->setFont('FiraSans-Regular', '', $card['event_font_size']);
 			$pdf->SetTextColor(0, 0, 0);
-			$pdf->SetXY($left + $name_tag['width']/2, $name_tag['margin'] + $top);
-			$pdf->MultiCell(125, round($name_tag['event_font_size'] * 1.2), $event['main_series_long']."\n".$event['turnierort'].' '.$event['year'], 0, 'L');
+			$pdf->SetXY($left + $card['width']/2, $card['margin'] + $top);
+			$pdf->MultiCell(125, round($card['event_font_size'] * 1.2), $event['main_series_long']."\n".$event['turnierort'].' '.$event['year'], 0, 'L');
 			
 			// name
-			$pdf->SetXY($name_tag['margin'] + $left, $pdf->GetY() + $name_tag['margin'] * 1.2);
+			$pdf->SetXY($card['margin'] + $left, $pdf->GetY() + $card['margin'] * 1.2);
 			if (strlen($line['name']) > 23) {
 				$pdf->setFont('FiraSans-SemiBold', '', 16);
 			} else {
 				$pdf->setFont('FiraSans-SemiBold', '', 20);
 			}
 			$pdf->Cell($cell_width, 24, $line['name'], 0, 2, 'L');
-			$pdf->setFont('FiraSans-Regular', '', $name_tag['club_font_size']);
-			$pdf->MultiCell($cell_width, round($name_tag['club_font_size'] * 1.33), $line['club_line'], 0, 'L');
+			$pdf->setFont('FiraSans-Regular', '', $card['club_font_size']);
+			$pdf->MultiCell($cell_width, round($card['club_font_size'] * 1.33), $line['club_line'], 0, 'L');
 
 			// bar
-			$pdf->SetXY($name_tag['margin'] + $left, $top + $name_tag['height'] - $name_tag['margin'] - 20 - $name_tag['bar_height']);
-			$pdf->setFont('FiraSans-SemiBold', '', $name_tag['bar_font_size']);
+			$pdf->SetXY($card['margin'] + $left, $top + $card['height'] - $card['margin'] - 20 - $card['bar_height']);
+			$pdf->setFont('FiraSans-SemiBold', '', $card['bar_font_size']);
 			$pdf->Cell($cell_width, 24, $line['federation_abbr'], 0, 2, 'R');
 			$pdf->SetTextColor(255, 255, 255);
 			$pdf->SetFillColor($line['colors']['red'], $line['colors']['green'], $line['colors']['blue']);
@@ -238,23 +238,23 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			if (!empty($line['graphic'])) {
 				$line['group_line'] .= '  '; // move to left
 			}
-			$pdf->Cell($cell_width, $name_tag['bar_height'], $line['group_line'], 0, 2, 'C', 1);
+			$pdf->Cell($cell_width, $card['bar_height'], $line['group_line'], 0, 2, 'C', 1);
 			if (!empty($line['zusaetzliche_ak'])) {
 				$pdf->SetXY($pdf->getX(), $y);
-				$pdf->Cell($cell_width, $name_tag['bar_height'], 'U'.$line['zusaetzliche_ak'], 0, 2, 'R'); // 41
+				$pdf->Cell($cell_width, $card['bar_height'], 'U'.$line['zusaetzliche_ak'], 0, 2, 'R'); // 41
 			}
 			if ($line['volljaehrig']) {
 				$pdf->SetXY($pdf->getX() + 5, $y);
 				$pdf->SetFillColor(255, 255, 255);
-				$pdf->Cell(5, $name_tag['bar_height'], ' ', 0, 2, 'R', 1);
+				$pdf->Cell(5, $card['bar_height'], ' ', 0, 2, 'R', 1);
 			} elseif ($line['evtl_volljaehrig']) {
 				$pdf->SetXY($pdf->getX() + 5, $y + 14);
 				$pdf->SetFillColor(255, 255, 255);
-				$pdf->Cell(5, $name_tag['bar_height'] / 2, ' ', 0, 2, 'R', 1);
+				$pdf->Cell(5, $card['bar_height'] / 2, ' ', 0, 2, 'R', 1);
 			}
 
 			if (!empty($line['graphic'])) {
-				$pdf->image($line['graphic']['filename'], $name_tag['width']*($j+1) - $line['graphic']['width'] - $name_tag['margin'], $top + $name_tag['height'] - $name_tag['margin'] - $name_tag['image_size'], $line['graphic']['width'], $line['graphic']['height']);
+				$pdf->image($line['graphic']['filename'], $card['width']*($j+1) - $line['graphic']['width'] - $card['margin'], $top + $card['height'] - $card['margin'] - $card['image_size'], $line['graphic']['width'], $line['graphic']['height']);
 			}
 		}
 		$i++;
@@ -301,10 +301,10 @@ function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
  *
  * @param array $line
  * @param array $nos
- * @param array $name_tag
+ * @param array $card
  * @return array $line
  */
-function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name_tag) {
+function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $card) {
 	if (!empty($line[$nos['parameters']]['text'])) {
 		parse_str($line[$nos['parameters']]['text'], $new['parameters']);
 	} else {
@@ -322,14 +322,12 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name
 		? $line[$nos['t_vorname']]['text'].' '.$line[$nos['t_nachname']]['text']
 		: $line[$nos['person_id']]['text']);
 
-	// Verein
+	// further data
 	$new['club'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
-
-	// Gruppe
 	$new['usergroup'] = $line[$nos['usergroup_id']]['text'];
 	$new['usergroup_category'] = $line[$nos['usergroup_category']]['text'];
 	$new['role'] = (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) ? $line[$nos['rolle']]['text'] : '';
-	$new['graphic'] = mf_tournaments_pdf_graphic([$new['role'], $new['usergroup']], $name_tag);
+	$new['graphic'] = mf_tournaments_pdf_graphic([$new['role'], $new['usergroup']], $card);
 	$new['sex'] = !empty($nos['sex']) ? $line[$nos['sex']]['text'] : '';
 	$new['event'] = $line[$nos['event_id']]['text'];
 	$new['group_line'] = mf_tournaments_pdf_group_line($new);
