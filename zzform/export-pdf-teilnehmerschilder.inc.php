@@ -37,15 +37,26 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		WHERE participation_id IN (%s)';
 	$sql = sprintf($sql, implode(',', $ids));
 	$data = wrap_db_fetch($sql, 'participation_id');
-
-	// get event
-	$line = reset($data);
-	$event = my_event($line['event_id']);
+	
+	$events = [];
+	foreach ($data as $line) {
+		if (array_key_exists($line['event_id'], $events)) continue;
+		$events[$line['event_id']] = my_event($line['event_id']);
+		if ($events[$line['event_id']]['series_parameter']) {
+			parse_str($events[$line['event_id']]['series_parameter'], $events[$line['event_id']]['series_parameter']);
+		}
+ 	}
+ 	if (array_key_exists($ops['page']['extra']['event_id'], $events)) {
+	 	$event = $events[$ops['page']['extra']['event_id']];
+	 } else {
+	 	$event = my_event($ops['page']['extra']['event_id']);
+		if ($event['series_parameter']) {
+			parse_str($event['series_parameter'], $event['series_parameter']);
+		}
+	 }
 	if ($event['series_parameter']) {
-		parse_str($event['series_parameter'], $event['series_parameter']);
 		$event += $event['series_parameter'];
 	}
-	if (empty($event['name_tag_size'])) $event['name_tag_size'] = '10.5x7';
 	
 	// extra form fields?
 	$sql = 'SELECT formfield_id, formfield, parameters, formfield_category_id
@@ -57,13 +68,14 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	    LEFT JOIN registrationtexts USING (formfield_id)
 	    LEFT JOIN anmeldungen
 	    	ON IFNULL(registrationvarchars.anmeldung_id, registrationtexts.anmeldung_id) = anmeldungen.anmeldung_id
-	    WHERE forms.event_id = %d
+	    WHERE forms.event_id IN (%s)
 	    AND parameters LIKE "%%&name_tag=%%"
 	';
-	$sql = sprintf($sql, $event['event_id']);
+	$sql = sprintf($sql, implode(',', array_keys($events)));
 	$formfields = wrap_db_fetch($sql, ['participation_id', 'formfield_id']);
 
-	switch ($event['name_tag_size']) {
+	$name_tag_size = !empty($event['name_tag_size']) ? $event['name_tag_size'] : '10.5x7';
+	switch ($name_tag_size) {
 	case '9x5.5':
 		$card['width'] = 255.12;
 		$card['height'] = 155.9;
