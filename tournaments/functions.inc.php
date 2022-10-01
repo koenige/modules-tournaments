@@ -338,7 +338,7 @@ function mf_tournaments_cache($event) {
  * @return bool
  */
 function mf_tournaments_lineup($event) {
-	if ($event['runde_no'] != mf_tournaments_current_round($event['identifier']) + 1) return false;
+	if ($event['runde_no'] != mf_tournaments_current_round($event['event_identifier']) + 1) return false;
 
 	$sql = 'SELECT IF(DATE_ADD(NOW(), INTERVAL %d MINUTE) > CONCAT(date_begin, " ", time_begin), NULL, 1) AS lineup_open
 		FROM events
