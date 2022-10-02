@@ -322,6 +322,7 @@ function mf_tournaments_make_team_mp($round_no) {
 		LEFT JOIN teams USING (team_id)
 	    WHERE runde_no <= %d
 		AND team_status = "Teilnehmer"
+		AND spielfrei = "nein"
 	    GROUP BY team_id
 	    ORDER BY rating DESC, team_id';
 	$sql = sprintf($sql, $round_no);
@@ -340,6 +341,7 @@ function mf_tournaments_make_team_bp($round_no) {
 		LEFT JOIN teams USING (team_id)
 	    WHERE runde_no <= %d
 		AND team_status = "Teilnehmer"
+		AND spielfrei = "nein"
 	    GROUP BY team_id
 	    ORDER BY rating DESC, team_id';
 	$sql = sprintf($sql, $round_no);
@@ -366,7 +368,9 @@ function mf_tournaments_make_team_sonneborn_berger($round_no) {
 			FROM paarungen_ergebnisse_view
 			LEFT JOIN teams USING (team_id)
 			WHERE paarungen_ergebnisse_view.runde_no <= %d
-			AND team_status = "Teilnehmer"';
+			AND team_status = "Teilnehmer"
+			AND spielfrei = "nein"
+		';
 		$sql = sprintf($sql, $round_no, $round_no);
 		$board_points = wrap_db_fetch($sql, ['team_id', '_dummy_'], 'numeric');
 		
@@ -392,6 +396,7 @@ function mf_tournaments_make_team_sonneborn_berger($round_no) {
 			LEFT JOIN teams USING (team_id)
 			WHERE paarungen_ergebnisse_view.runde_no <= %d
 			AND team_status = "Teilnehmer"
+			AND spielfrei = "nein"
 			GROUP BY team_id
 			ORDER BY sb DESC, team_id
 		';
@@ -417,6 +422,7 @@ function mf_tournaments_make_team_buchholz($round_no) {
 		LEFT JOIN teams USING (team_id)
 		WHERE runde_no = %d
 		AND team_status = "Teilnehmer"
+		AND spielfrei = "nein"
 		ORDER BY buchholz_mit_korrektur DESC, team_id';
 	$sql = sprintf($sql, $round_no);
 	return wrap_db_fetch($sql, 'team_id', 'key/value');
@@ -434,6 +440,7 @@ function mf_tournaments_make_team_buchholz_mp($round_no) {
 		LEFT JOIN teams USING (team_id)
 	    WHERE runde_no = %d
 		AND team_status = "Teilnehmer"
+		AND spielfrei = "nein"
 	    ORDER BY buchholz_mit_korrektur DESC, team_id';
 	$sql = sprintf($sql, $round_no);
 	return wrap_db_fetch($sql, 'team_id', 'key/value');
@@ -462,6 +469,7 @@ function mf_tournaments_make_team_buchholz_bp($round_no) {
 		WHERE paarungen_ergebnisse_view.runde_no <= tabellenstaende_termine_view.runde_no
 		AND tabellenstaende_termine_view.runde_no = %d
 		AND team_status = "Teilnehmer"
+		AND spielfrei = "nein"
 		GROUP BY tabellenstaende_termine_view.team_id
 		ORDER BY buchholz DESC';
 	$sql = sprintf($sql, $round_no);
@@ -504,6 +512,7 @@ function mf_tournaments_make_team_bw($round_no) {
 		LEFT JOIN teams USING (team_id)
 		WHERE runde_no <= %d
 		AND team_status = "Teilnehmer"
+		AND spielfrei = "nein"
 		GROUP BY team_id
 		ORDER BY rating DESC, team_id';
 	$sql = sprintf($sql, $round_no);
