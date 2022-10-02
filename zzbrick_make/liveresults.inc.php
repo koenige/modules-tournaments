@@ -102,6 +102,8 @@ function mod_tournament_make_liveresults_tournament($params) {
 	';
 	$sql = sprintf($sql, $params[0], $params[0], $turnier['series_category_id']);
 	$series_identifier = wrap_db_fetch($sql, '', 'single value');
+	if ($series_identifier === $params[0])
+		$series_identifier = false;
 
 	$sql = 'SELECT partien.partie_id, partien.brett_no
 			, IF(partiestatus_category_id = %d, 0.5,
