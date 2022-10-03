@@ -112,6 +112,8 @@ function mod_tournaments_make_lineup_active($params) {
 		parse_str($data['parameter'], $parameter);
 		$data += $parameter;
 	}
+	if (wrap_access('tournaments_lineup_until_begin_of_round'))
+		$data['lineup_before_round_mins'] = 0;
 
 	// 2, 3) change lineup until n minutes before start of round
 	// @todo alternatively check if there are already games played in round
