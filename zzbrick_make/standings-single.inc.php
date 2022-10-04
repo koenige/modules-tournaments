@@ -560,7 +560,7 @@ function mf_tournaments_make_single_rg($event_id, $runde_no, $tabelle) {
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function mf_tournaments_make_single_buchholz_korrektur($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function mf_tournaments_make_single_bhz($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach (array_keys($tabelle) as $person_id) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholz($event_id, $person_id, 'Buchholz');
