@@ -439,6 +439,7 @@ function cms_partienupdate_pgnfind(&$games, $partie, $event) {
  */
 function cms_partienupdate_normalize_name($name) {
 	static $names;
+	if (!$name) return '';
 	if (empty($names)) $names = [];
 	if (in_array($name, array_keys($names))) return $names[$name];
 	$names[$name] = strtolower(wrap_filename(str_replace('-', '', $name), ''));
