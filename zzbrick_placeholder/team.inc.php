@@ -16,6 +16,7 @@
 function mod_tournaments_placeholder_team($brick) {
 	global $zz_setting;
 	if (!empty($brick['parameter'])) {
+		if (substr_count($brick['parameter'], '/') !== 2) wrap_quit(404);
 		list($year, $identifier, $team_idf) = explode('/', $brick['parameter']);
 	} else {
 		list($year, $identifier, $team_idf) = [$brick['vars'][1], $brick['vars'][2]];
