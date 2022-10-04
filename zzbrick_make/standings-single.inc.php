@@ -123,9 +123,10 @@ function mod_tournaments_make_standings_write_single($event_id, $runde_no, $tabe
 			, SUM(IF(schwarz_ergebnis = "0.0" AND schwarz_person_id = person_id, 1,
 				IF(weiss_ergebnis = "0.0" AND weiss_person_id = person_id, 1, 0))) AS spiele_v
 		FROM participations
+		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN partien
-			ON (partien.weiss_person_id = participations.person_id
-			OR partien.schwarz_person_id = participations.person_id)
+			ON (partien.weiss_person_id = persons.person_id
+			OR partien.schwarz_person_id = persons.person_id)
 			AND partien.event_id = participations.event_id
 		WHERE participations.event_id = %d
 		AND runde_no <= %d
@@ -220,6 +221,7 @@ class mod_tournaments_make_standings_single {
 	function getSpieler($event_id) {
 		$sql = 'SELECT person_id, setzliste_no
 			FROM participations
+			LEFT JOIN persons USING (contact_id)
 			WHERE event_id = %d
 			AND usergroup_id = %d
 			AND teilnahme_status = "Teilnehmer"';
