@@ -42,11 +42,11 @@ function mod_tournaments_get_swisschess($vars) {
 			, fide.identifier AS fide_kennzahl
 			, SUBSTRING_INDEX(pk.identifier, "-", -1) AS teilnehmerkennung
 			, IF(persons.sex = "female", "w", "m") AS teilnehmerattribut
-			, IF(spielberechtigt = _utf8"vorläufig nein", "N", NULL) AS selektionszeichen
+			, IF(spielberechtigt = _utf8mb4"vorläufig nein", "N", NULL) AS selektionszeichen
 			, SUBSTRING(pk.identifier, 1, 3) AS verband
 			, SUBSTRING_INDEX(pk.identifier, "-", 1) AS zps_verein
 			, SUBSTRING_INDEX(pk.identifier, "-", -1) AS zps_spieler
-			, IF(spielberechtigt = _utf8"vorläufig nein", SUBSTRING(REPLACE(participations.anmerkung, "\n", "/"), 1, 40), NULL) AS teilnehmer_info_1
+			, IF(spielberechtigt = _utf8mb4"vorläufig nein", SUBSTRING(REPLACE(participations.anmerkung, "\n", "/"), 1, 40), NULL) AS teilnehmer_info_1
 			, NULL AS teilnehmer_info_2
 			, NULL AS teilnehmer_info_3
 			, CONCAT("person_id=", persons.person_id, IFNULL(CONCAT("&team_id=", team_id), "")) AS teilnehmer_info_4
@@ -94,7 +94,7 @@ function mod_tournaments_get_swisschess($vars) {
 	);
 	$data = wrap_db_fetch($sql, 'teilnehmer_info_4');
 	if (!$data) {
-		wrap_db_query('SET NAMES utf8');
+		wrap_db_query('SET NAMES utf8mb4');
 		return false;
 	}
 	$zz_setting['character_set'] = 'windows-1252';
