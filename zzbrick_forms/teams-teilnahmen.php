@@ -114,9 +114,8 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 				ON contacts_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", dwz_spieler.Mgl_Nr)
 				AND contacts_identifiers.current = "yes"
 				AND contacts_identifiers.identifier_category_id = %d
-			LEFT JOIN persons USING (contact_id)
 			LEFT JOIN participations
-				ON participations.person_id = persons.person_id
+				ON participations.contact_id = contacts_identifiers.contact_id
 				AND participations.usergroup_id = %d
 				AND participations.event_id = %d
 			WHERE contact_id = %d
@@ -156,9 +155,9 @@ $zz['fields'][24]['table'] = 'persons';
 $zz['fields'][24]['table_name'] = 'persons_birth';
 $zz['fields'][24]['exclude_from_search'] = true;
 $zz['fields'][24]['fields'][2]['type'] = 'foreign_key';
-$zz['fields'][24]['fields'][2]['field_name'] = 'person_id';
-$zz['fields'][24]['fields'][2]['key_field_name'] = 'person_id';
-$zz['fields'][24]['subselect']['sql'] = 'SELECT person_id, YEAR(date_of_birth)
+$zz['fields'][24]['fields'][2]['field_name'] = 'contact_id';
+$zz['fields'][24]['fields'][2]['key_field_name'] = 'contact_id';
+$zz['fields'][24]['subselect']['sql'] = 'SELECT contact_id, YEAR(date_of_birth)
 	FROM persons';
 
 $zz['fields'][23]['title'] = 'E-Mail';

@@ -128,12 +128,12 @@ function mod_tournaments_standings($vars) {
 			FROM tabellenstaende
 			JOIN tournaments USING (event_id)
 			JOIN events USING (event_id)
-			LEFT JOIN participations
-				ON participations.person_id = tabellenstaende.person_id
-				AND participations.event_id = tabellenstaende.event_id
-				AND participations.usergroup_id = %d
 			LEFT JOIN persons
 				ON tabellenstaende.person_id = persons.person_id
+			LEFT JOIN participations
+				ON participations.contact_id = persons.contact_id
+				AND participations.event_id = tabellenstaende.event_id
+				AND participations.usergroup_id = %d
 			WHERE tabellenstaende.event_id = %d
 			AND tabellenstaende.runde_no = %d
 			%s

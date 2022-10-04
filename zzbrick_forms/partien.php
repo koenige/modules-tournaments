@@ -57,6 +57,7 @@ if (count($brick['vars']) === 3) {
 	$zz['fields'][8]['sql'] = sprintf('SELECT person_id
 		, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 		FROM participations
+		LEFT JOIN persons USING (contact_id)
 		WHERE usergroup_id = %d
 		AND event_id = %d
 		ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'), $brick['data']['event_id']);
@@ -121,7 +122,9 @@ function mf_tournaments_get_paring_player($paarung, $farbe) {
 		$sql = sprintf($sql, $paarung['paarung_id']);
 		$partien = wrap_db_fetch($sql);
 
-		$sql = 'SELECT team_id, person_id FROM participations
+		$sql = 'SELECT team_id, person_id
+			FROM participations
+			LEFT JOIN persons USING (contact_id)
 			WHERE team_id IN (%d, %d)
 			AND NOT ISNULL(brett_no)
 			AND spielberechtigt = "ja"

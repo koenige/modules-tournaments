@@ -43,6 +43,7 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 		FROM spieler_nachrichten
 		LEFT JOIN participations
 			ON spieler_nachrichten.teilnehmer_id = participations.participation_id
+		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
@@ -51,11 +52,11 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 		LEFT JOIN partien white
 			ON white.event_id = events.event_id
 			AND white.runde_no = (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id)
-			AND white.weiss_person_id = participations.person_id
+			AND white.weiss_person_id = persons.person_id
 		LEFT JOIN partien black
 			ON black.event_id = events.event_id
 			AND black.runde_no = (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id)
-			AND black.schwarz_person_id = participations.person_id
+			AND black.schwarz_person_id = persons.person_id
 		WHERE nachricht_id IN (%s)
 		AND verified = "yes"
 		ORDER BY federations.contact_short, series.sequence, IFNULL(white.brett_no, black.brett_no), eintragszeit';

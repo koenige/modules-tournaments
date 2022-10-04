@@ -122,7 +122,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			, usergroups.parameters
 			, participations.event_id
 		FROM participations
-		LEFT JOIN persons USING (person_id)
+		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN usergroups USING (usergroup_id)
 		LEFT JOIN categories usergroup_categories
 			ON usergroups.usergroup_category_id = usergroup_categories.category_id
@@ -181,7 +181,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			, IFNULL(dwz_spieler.FIDE_Titel, fide_players.title) AS FIDE_Titel
 		FROM participations
 		LEFT JOIN events USING (event_id)
-		LEFT JOIN persons USING (person_id)
+		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN contacts_identifiers
 			ON contacts_identifiers.contact_id = persons.contact_id
 			AND contacts_identifiers.current = "yes"

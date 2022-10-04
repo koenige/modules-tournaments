@@ -275,7 +275,7 @@ function mf_tournaments_games_sql($event, $where) {
 		LEFT JOIN contacts white_contact
 			ON weiss.contact_id = white_contact.contact_id
 		LEFT JOIN participations weiss_status
-			ON weiss_status.person_id = weiss.person_id
+			ON weiss_status.contact_id = weiss.contact_id
 			AND weiss_status.usergroup_id = %d
 			AND weiss_status.event_id = %d
 		LEFT JOIN persons schwarz
@@ -283,7 +283,7 @@ function mf_tournaments_games_sql($event, $where) {
 		LEFT JOIN contacts black_contact
 			ON schwarz.contact_id = black_contact.contact_id
 		LEFT JOIN participations schwarz_status
-			ON schwarz_status.person_id = schwarz.person_id
+			ON schwarz_status.contact_id = schwarz.contact_id
 			AND schwarz_status.usergroup_id = %d
 			AND schwarz_status.event_id = %d
 		WHERE partien.event_id = %d
@@ -658,7 +658,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 				) AS e_mail
 				, GROUP_CONCAT(category_short, ": ", identification SEPARATOR "<br>") AS telefon
 			FROM participations
-			LEFT JOIN persons USING (person_id)
+			LEFT JOIN persons USING (contact_id)
 			LEFT JOIN contacts USING (contact_id)
 			LEFT JOIN contactdetails USING (contact_id)
 			LEFT JOIN usergroups USING (usergroup_id)
@@ -677,7 +677,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 		$vereinsbetreuer = wrap_db_fetch($sql, ['club_contact_id', 'group_identifier', 'participation_id']);
 	}
 
-	$sql = 'SELECT team_id, participation_id, participations.person_id, contacts.contact_id
+	$sql = 'SELECT team_id, participation_id, persons.person_id, contacts.contact_id
 			, usergroups.usergroup
 			, usergroups.identifier AS group_identifier
 			, contact AS person
@@ -702,7 +702,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 				END) AS status, spielberechtigt
 			, contacts_identifiers.identifier AS zps_code
 		FROM participations
-		LEFT JOIN persons USING (person_id)
+		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN contacts USING (contact_id)
 		LEFT JOIN contactdetails USING (contact_id)
 		LEFT JOIN usergroups USING (usergroup_id)

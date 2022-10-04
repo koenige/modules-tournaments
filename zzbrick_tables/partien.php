@@ -64,6 +64,7 @@ $zz['fields'][6]['sql'] = sprintf('SELECT person_id, brett_no
 	, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 	, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
 	FROM participations
+	LEFT JOIN persons USING (contact_id)
 	LEFT JOIN teams USING (team_id)
 	WHERE usergroup_id = %d AND NOT ISNULL(brett_no)
 	'.$values['where_teams'].'
@@ -92,6 +93,7 @@ $zz['fields'][8]['sql'] = sprintf('SELECT person_id, brett_no
 	, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 	, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
 	FROM participations
+	LEFT JOIN persons USING (contact_id)
 	LEFT JOIN teams USING (team_id)
 	WHERE usergroup_id = %d AND NOT ISNULL(brett_no)
 	'.$values['where_teams'].'
@@ -263,13 +265,17 @@ $zz['sql'] = sprintf('SELECT partien.*
 	LEFT JOIN paarungen USING (paarung_id)
 	LEFT JOIN categories
 		ON categories.category_id = partien.partiestatus_category_id
+	LEFT JOIN persons white_contact
+		ON white_contact.person_id = partien.weiss_person_id
+	LEFT JOIN persons black_contact
+		ON black_contact.person_id = partien.schwarz_person_id
 	LEFT JOIN participations weiss
-		ON weiss.person_id = partien.weiss_person_id
+		ON weiss.contact_id = white_contact.contact_id
 		AND weiss.event_id = partien.event_id
 		AND (ISNULL(weiss.team_id) OR weiss.team_id = IF(heim_spieler_farbe = "schwarz", paarungen.auswaerts_team_id, paarungen.heim_team_id))
 		AND weiss.usergroup_id = %d
 	LEFT JOIN participations schwarz
-		ON schwarz.person_id = partien.schwarz_person_id
+		ON schwarz.contact_id = black_contact.contact_id
 		AND schwarz.event_id = partien.event_id
 		AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", paarungen.heim_team_id, paarungen.auswaerts_team_id))
 		AND schwarz.usergroup_id = %d

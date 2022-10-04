@@ -55,7 +55,7 @@ function mod_tournaments_tournament($vars, $settings) {
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, main_series.category_short AS main_series
 			, runden, modus.category AS modus
-			, IF(spielerphotos = "ja", IF((SELECT COUNT(person_id) FROM participations
+			, IF(spielerphotos = "ja", IF((SELECT COUNT(contact_id) FROM participations
 				WHERE participations.event_id = events.event_id AND usergroup_id = %d AND NOT ISNULL(setzliste_no)), 1, NULL), NULL) AS spielerphotos
 			, registration
 			, livebretter
@@ -277,8 +277,9 @@ function mod_tournaments_tournament($vars, $settings) {
 				, tabellenstaende_wertungen.wertung
 				, participations.club_contact_id
 			FROM participations
+			LEFT JOIN persons USING (contact_id)
 			LEFT JOIN tabellenstaende
-				ON participations.person_id = tabellenstaende.person_id
+				ON persons.person_id = tabellenstaende.person_id
 				AND tabellenstaende.event_id = participations.event_id
 				AND tabellenstaende.runde_no = %d
 			LEFT JOIN tabellenstaende_wertungen
@@ -402,13 +403,13 @@ function mod_tournaments_tournament($vars, $settings) {
 			, usergroup, usergroups.identifier AS group_identifier
 			%s
 		FROM participations
-		LEFT JOIN persons USING (person_id)
+		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN contacts USING (contact_id)
 		%s
 		LEFT JOIN usergroups USING (usergroup_id)
 		WHERE event_id = %d
 		AND usergroup_id IN (%d, %d, %d)
-		GROUP BY participations.person_id, usergroups.usergroup_id
+		GROUP BY participations.contact_id, usergroups.usergroup_id
 		ORDER BY last_name, first_name
 	';
 	$sql = sprintf($sql, $sql_fields, $sql_join, $event['event_id'],

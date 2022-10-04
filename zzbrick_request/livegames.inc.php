@@ -169,11 +169,15 @@ function mod_tournaments_livegames_bretter($turnier) {
 			, partien.last_update, events.identifier
 		FROM partien
 		LEFT JOIN events USING (event_id)
+		LEFT JOIN persons white_persons
+			ON partien.weiss_person_id = white_persons.person_id
+		LEFT JOIN persons black_persons
+			ON partien.schwarz_person_id = black_persons.person_id
 		LEFT JOIN participations weiss
-			ON partien.weiss_person_id = weiss.person_id AND weiss.usergroup_id = %d
+			ON white_persons.contact_id = weiss.contact_id AND weiss.usergroup_id = %d
 			AND weiss.event_id = partien.event_id
 		LEFT JOIN participations schwarz
-			ON partien.schwarz_person_id = schwarz.person_id AND schwarz.usergroup_id = %d
+			ON black_persons.contact_id = schwarz.contact_id AND schwarz.usergroup_id = %d
 			AND schwarz.event_id = partien.event_id
 		WHERE partien.event_id = %d
 		AND partien.runde_no = %d

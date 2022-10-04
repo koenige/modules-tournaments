@@ -20,6 +20,7 @@ function mod_tournaments_tournamentphotos($vars, $settings, $event) {
 	$sql = 'SELECT person_id, setzliste_no,
 		CONCAT(t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), ""), " ", t_nachname) AS spieler
 		FROM participations
+		LEFT JOIN persons USING (contact_id)
 		WHERE event_id = %d
 		AND usergroup_id = %d
 		AND teilnahme_status = "Teilnehmer"

@@ -73,13 +73,13 @@ function mf_tournaments_final_standings($event_ids) {
 				AND team_status = "Teilnehmer"
 				AND teams.event_id = events.event_id) AS teams
 			, (SELECT COUNT(*) FROM participations
-				LEFT JOIN persons USING (person_id)
+				LEFT JOIN persons USING (contact_id)
 				WHERE teilnahme_status = "Teilnehmer"
 				AND usergroup_id = %d
 				AND sex = "male"
 				AND participations.event_id = events.event_id) AS spieler
 			, (SELECT COUNT(*) FROM participations
-				LEFT JOIN persons USING (person_id)
+				LEFT JOIN persons USING (contact_id)
 				WHERE teilnahme_status = "Teilnehmer"
 				AND usergroup_id = %d
 				AND sex = "female"
@@ -123,12 +123,12 @@ function mf_tournaments_final_standings($event_ids) {
 			FROM tabellenstaende
 			LEFT JOIN tournaments USING (event_id)
 			LEFT JOIN teams USING (team_id)
-			LEFT JOIN participations
-				ON participations.person_id = tabellenstaende.person_id
-				AND participations.event_id = tabellenstaende.event_id
-				AND ISNULL(participations.team_id)
 			LEFT JOIN persons
 				ON tabellenstaende.person_id = persons.person_id 
+			LEFT JOIN participations
+				ON participations.contact_id = persons.contact_id
+				AND participations.event_id = tabellenstaende.event_id
+				AND ISNULL(participations.team_id)
 			WHERE tabellenstaende.event_id IN (%s)
 			AND (ISNULL(participations.teilnahme_status) OR participations.teilnahme_status = "Teilnehmer")
 			AND (%s)

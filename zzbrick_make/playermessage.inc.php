@@ -30,7 +30,6 @@ function mod_tournaments_make_playermessage($vars, $settings) {
 
 	$sql = 'SELECT participation_id, contact
 		FROM participations
-		LEFT JOIN persons USING (person_id)
 		LEFT JOIN contacts USING (contact_id)
 		WHERE event_id = %d
 		AND setzliste_no = %d';

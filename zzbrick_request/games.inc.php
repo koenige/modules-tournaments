@@ -461,24 +461,24 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 			ON paarungen.heim_team_id = heim_teams.team_id
 		LEFT JOIN teams auswaerts_teams
 			ON paarungen.auswaerts_team_id = auswaerts_teams.team_id
+		LEFT JOIN persons white_persons
+			ON white_persons.person_id = partien.weiss_person_id
+		LEFT JOIN persons black_persons
+			ON black_persons.person_id = partien.schwarz_person_id
 		JOIN participations weiss
-			ON partien.weiss_person_id = weiss.person_id AND weiss.usergroup_id = %d
+			ON white_persons.contact_id = weiss.contact_id AND weiss.usergroup_id = %d
 			AND (ISNULL(weiss.team_id) OR weiss.team_id = IF(heim_spieler_farbe = "schwarz", auswaerts_teams.team_id, heim_teams.team_id))
 			AND weiss.event_id = partien.event_id
 		JOIN participations schwarz
-			ON partien.schwarz_person_id = schwarz.person_id AND schwarz.usergroup_id = %d
+			ON black_persons.contact_id = schwarz.contact_id AND schwarz.usergroup_id = %d
 			AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", heim_teams.team_id, auswaerts_teams.team_id))
 			AND schwarz.event_id = partien.event_id
-		LEFT JOIN persons weiss_persons
-			ON weiss_persons.person_id = weiss.person_id
-		LEFT JOIN persons schwarz_persons
-			ON schwarz_persons.person_id = schwarz.person_id
 		LEFT JOIN contacts_identifiers weiss_fide_id
-			ON weiss_fide_id.contact_id = weiss_persons.contact_id
+			ON weiss_fide_id.contact_id = white_persons.contact_id
 			AND weiss_fide_id.current = "yes"
 			AND weiss_fide_id.identifier_category_id = %d
 		LEFT JOIN contacts_identifiers schwarz_fide_id
-			ON schwarz_fide_id.contact_id = schwarz_persons.contact_id
+			ON schwarz_fide_id.contact_id = black_persons.contact_id
 			AND schwarz_fide_id.current = "yes"
 			AND schwarz_fide_id.identifier_category_id = %d
 		WHERE events.event_id = (%d)
@@ -600,12 +600,16 @@ function mod_tournaments_games_html($event, $request, $typ) {
 				ON paarungen.heim_team_id = heim_teams.team_id
 			LEFT JOIN teams auswaerts_teams
 				ON paarungen.auswaerts_team_id = auswaerts_teams.team_id
+			LEFT JOIN persons white_persons
+				ON partien.weiss_person_id = white_persons.person_id
+			LEFT JOIN persons black_persons
+				ON partien.schwarz_person_id = black_persons.person_id
 			LEFT JOIN participations weiss
-				ON partien.weiss_person_id = weiss.person_id AND weiss.usergroup_id = %d
+				ON white_persons.contact_id = weiss.contact_id AND weiss.usergroup_id = %d
 				AND (ISNULL(weiss.team_id) OR weiss.team_id = IF(heim_spieler_farbe = "schwarz", auswaerts_teams.team_id, heim_teams.team_id))
 				AND weiss.event_id = partien.event_id
 			LEFT JOIN participations schwarz
-				ON partien.schwarz_person_id = schwarz.person_id AND schwarz.usergroup_id = %d
+				ON black_persons.contact_id = schwarz.contact_id AND schwarz.usergroup_id = %d
 				AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", heim_teams.team_id, auswaerts_teams.team_id))
 				AND schwarz.event_id = partien.event_id
 			WHERE partien.event_id = %d

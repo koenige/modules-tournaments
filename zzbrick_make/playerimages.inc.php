@@ -32,9 +32,11 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 				AND missing_image = "yes"
 			) AS message_received
 		FROM participations
+		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN events USING (event_id)
-		LEFT JOIN contacts ON (contact_id = federation_contact_id)
+		LEFT JOIN contacts
+			ON contacts.contact_id = participations.federation_contact_id
 		WHERE event_id IN (%s)
 		AND usergroup_id = %d
 		AND spielerphotos = "ja"

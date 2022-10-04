@@ -56,7 +56,7 @@ $zz['filter'][1]['field_name'] = 'processed';
 $zz['filter'][1]['where'] = '/*_PREFIX_*/spieler_nachrichten.processed';
 $zz['filter'][1]['default_selection'] = 'NULL';
 
-$zz['filter'][2]['sql'] = sprintf('SELECT contact_id, contact_short
+$zz['filter'][2]['sql'] = sprintf('SELECT contacts.contact_id, contact_short
 	FROM spieler_nachrichten
 	LEFT JOIN participations
 		ON participations.participation_id = spieler_nachrichten.teilnehmer_id

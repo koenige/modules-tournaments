@@ -70,7 +70,7 @@ function mod_tournaments_tournamentmap($vars) {
 		$event['year'], $event['series_category_id'],
 		wrap_id('usergroups', 'spieler'),
 		($federation ? sprintf(
-			'AND (contact_id IN (%s) OR country_id = %d)',
+			'AND (contacts.contact_id IN (%s) OR country_id = %d)',
 			implode(',', $contact_ids), $federation['country_id']) : '')
 	);
 	$tn = wrap_db_fetch($sql, '', 'single value');
@@ -163,7 +163,6 @@ function mod_tournaments_tournamentmap_json($params) {
 			, teams.identifier AS team_identifier
 			, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 		FROM participations
-		LEFT JOIN persons USING (person_id)
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN teams USING (team_id)
 		LEFT JOIN categories series
@@ -171,11 +170,11 @@ function mod_tournaments_tournamentmap_json($params) {
 		LEFT JOIN categories main_series
 			ON series.main_category_id = main_series.category_id
 		LEFT JOIN contacts_identifiers zps
-			ON persons.contact_id = zps.contact_id
+			ON participations.contact_id = zps.contact_id
 			AND zps.identifier_category_id = %d
 			AND zps.current = "yes"
 		LEFT JOIN contacts_identifiers fide
-			ON persons.contact_id = fide.contact_id
+			ON participations.contact_id = fide.contact_id
 			AND fide.identifier_category_id = %d
 			AND fide.current = "yes"
 		WHERE main_series.path = "reihen/%s"

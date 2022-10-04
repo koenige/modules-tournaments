@@ -44,7 +44,7 @@ $zz['fields'][5]['sql'] = 'SELECT person_id
 		, IFNULL(YEAR(date_of_birth), "unbek.") AS geburtsjahr
 		, identifier
 	FROM persons
-	LEFT JOIN participations USING (person_id)
+	LEFT JOIN participations USING (contact_id)
 	LEFT JOIN contacts USING (contact_id)
 	WHERE participations.usergroup_id = %d
 	AND event_id = %d

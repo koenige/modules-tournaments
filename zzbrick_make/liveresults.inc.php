@@ -130,12 +130,16 @@ function mod_tournament_make_liveresults_tournament($params) {
 			, IF(heim_spieler_farbe = "schwarz", 1, NULL) AS heim_schwarz
 			, heim_wertung, auswaerts_wertung, heim_spieler_farbe
 		FROM partien
+		LEFT JOIN persons white_persons
+			ON partien.weiss_person_id = white_persons.person_id
 		LEFT JOIN participations weiss
-			ON weiss.person_id = partien.weiss_person_id
+			ON weiss.contact_id = white_persons.contact_id
 			AND weiss.event_id = partien.event_id
 			AND weiss.usergroup_id = %d
+		LEFT JOIN persons black_persons
+			ON partien.schwarz_person_id = black_persons.person_id
 		LEFT JOIN participations schwarz
-			ON schwarz.person_id = partien.schwarz_person_id
+			ON schwarz.contact_id = black_persons.contact_id
 			AND schwarz.event_id = partien.event_id
 			AND schwarz.usergroup_id = %d
 		LEFT JOIN paarungen USING (paarung_id)

@@ -51,6 +51,7 @@ function mf_tournaments_team_own($status = ['Teilnehmer', 'Teilnahmeberechtigt']
 
 	$sql = 'SELECT participation_id, team_id, team_status, usergroup_id, meldung
 		FROM participations
+		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN teams USING (team_id)
 		WHERE usergroup_id IN (%d, %d)
 		AND person_id = %d

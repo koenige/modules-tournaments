@@ -46,7 +46,6 @@ $zz['fields'][7]['type'] = 'select';
 $zz['fields'][7]['sql'] = 'SELECT participation_id, contact
 	, CONCAT(events.event, " ", IFNULL(event_year, YEAR(events.date_begin))) AS event
 	FROM participations
-	LEFT JOIN persons USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
 	LEFT JOIN events USING (event_id)';
 $zz['fields'][7]['display_field'] = 'contact';
@@ -85,7 +84,6 @@ $zz['sql'] = 'SELECT spieler_nachrichten.*
 	FROM spieler_nachrichten
 	LEFT JOIN participations
 		ON spieler_nachrichten.teilnehmer_id = participations.participation_id
-	LEFT JOIN persons USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN contacts federations

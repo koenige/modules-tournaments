@@ -472,9 +472,11 @@ function mf_tournaments_make_single_performance($event_id, $runde_no) {
 	$sql = 'SELECT partien_einzelergebnisse.person_id
 			, ROUND(SUM(IFNULL(IFNULL(t_elo, t_dwz), 0))/COUNT(partie_id)) AS wertung
 		FROM partien_einzelergebnisse
+		LEFT JOIN persons
+			ON partien_einzelergebnisse.gegner_id = persons.person_id
 		LEFT JOIN participations
 			ON partien_einzelergebnisse.event_id = participations.event_id
-			AND partien_einzelergebnisse.gegner_id = participations.person_id
+			AND persons.contact_id = participations.contact_id
 		WHERE runde_no <= %d
 		AND NOT ISNULL(partien_einzelergebnisse.person_id)
 		AND NOT ISNULL(partien_einzelergebnisse.gegner_id)
@@ -517,9 +519,10 @@ function mf_tournaments_make_single_sw($event_id, $runde_no, $tabelle) {
 function mf_tournaments_make_single_gespielte_partien($event_id, $runde_no) {
 	$sql = 'SELECT person_id, COUNT(partie_id) AS partien
 		FROM participations
+		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN partien
-			ON (participations.person_id = partien.schwarz_person_id
-			OR participations.person_id = partien.weiss_person_id)
+			ON (persons.person_id = partien.schwarz_person_id
+			OR persons.person_id = partien.weiss_person_id)
 			AND partien.event_id = participations.event_id
 		WHERE participations.event_id = %d
 		AND partien.runde_no <= %d

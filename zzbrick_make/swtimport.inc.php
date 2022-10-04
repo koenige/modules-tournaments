@@ -236,6 +236,7 @@ function mod_tournaments_make_swtimport_turniercheck($event, $form, $data) {
 	
 	if ($form === 'einzelturnier') {
 		$sql = 'SELECT person_id FROM participations
+			LEFT JOIN persons USING (contact_id)
 			WHERE usergroup_id = %d AND event_id = %d';
 		$sql = sprintf($sql,
 			wrap_id('usergroups', 'spieler'), $event['event_id']
@@ -534,6 +535,7 @@ function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $im
 			// importiert.
 			$sql = 'SELECT person_id
 				FROM participations
+				LEFT JOIN persons USING (contact_id)
 				WHERE event_id = %d AND usergroup_id = %d
 				AND fremdschluessel = "%s"';
 			$sql = sprintf($sql,
@@ -553,6 +555,7 @@ function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $im
 			// zu lassen
 			$sql = 'SELECT person_id
 				FROM participations
+				LEFT JOIN persons USING (contact_id)
 				WHERE event_id = %d AND usergroup_id = %d
 				AND t_vorname = "%s" AND t_nachname = "%s"';
 			$sql = sprintf($sql,
@@ -578,7 +581,7 @@ function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $im
 			$kennungen['fide-id'] = $spieler[2033];
 			// alte SWT-Versionen konnten keine PKZ speichern
 			$kennungen['pkz'] = !empty($spieler[2034]) ? $spieler[2034] : '';
-			my_person_kennungen_speichern($person_id, $kennungen);
+			my_person_kennungen_speichern($contact_id, $kennungen);
 
 			if (!isset($ids['t']['Personen']['successful_insert'])) {
 				$ids['t']['Personen']['successful_insert'] = 0;
@@ -622,6 +625,7 @@ function mod_tournaments_make_swtimport_participations($event, $spielerliste, $i
 			// (2. Mannschaft)
 			$sql = 'SELECT participation_id
 				FROM participations
+				LEFT JOIN persons USING (contact_id)
 				WHERE person_id = %d AND event_id = %d
 				AND usergroup_id = %d AND team_id = %d';
 			$sql = sprintf($sql,
@@ -632,6 +636,7 @@ function mod_tournaments_make_swtimport_participations($event, $spielerliste, $i
 		} else {
 			$sql = 'SELECT participation_id
 				FROM participations
+				LEFT JOIN persons USING (contact_id)
 				WHERE person_id = %d AND event_id = %d
 				AND usergroup_id = %d';
 			$sql = sprintf($sql,
@@ -649,8 +654,11 @@ function mod_tournaments_make_swtimport_participations($event, $spielerliste, $i
 			$values['POST']['team_id'] = $ids['team_dec'][$spieler[2016]];
 		}
 		if ($values['action'] === 'insert') {
+			$sql = 'SELECT contact_id FROM persons WHERE person_id = %d';
+			$sql = sprintf($sql, $person_id);
+			$contact_id = wrap_db_fetch($sql, '', 'single value');
 			$values['POST']['usergroup_id'] = wrap_id('usergroups', 'spieler');
-			$values['POST']['person_id'] = $person_id;
+			$values['POST']['contact_id'] = $contact_id;
 			$values['POST']['event_id'] = $event['event_id'];
 			if (!empty($spielername[1])) {
 				$values['POST']['t_vorname'] = $spielername[1];
@@ -699,7 +707,7 @@ function mod_tournaments_make_swtimport_participations($event, $spielerliste, $i
 		$values['POST']['teilnahme_status'] = 'Teilnehmer';
 		$values['POST']['fremdschluessel'] = hexdec($spieler[2020]);
 		$values['ids'] = [
-			'usergroup_id', 'event_id', 'team_id', 'person_id', 'club_contact_id'
+			'usergroup_id', 'event_id', 'team_id', 'contact_id', 'club_contact_id'
 		];
 		$ops = zzform_multi('teilnahmen', $values);
 		if (!$ops['id']) {

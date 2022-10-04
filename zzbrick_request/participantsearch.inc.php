@@ -110,7 +110,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 				JOIN teams USING (team_id)
 				JOIN events
 					ON teams.event_id = events.event_id
-				JOIN persons USING (person_id)
+				JOIN persons USING (contact_id)
 				JOIN contacts USING (contact_id)
 				WHERE participations.event_id IN (%s)
 				AND usergroup_id = %d
@@ -142,7 +142,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 				, participations.setzliste_no
 			FROM participations
 			JOIN events USING (event_id)
-			JOIN persons USING (person_id)
+			JOIN persons USING (contact_id)
 			JOIN contacts USING (contact_id)
 			WHERE participations.event_id IN (%s)
 			AND usergroup_id = %d

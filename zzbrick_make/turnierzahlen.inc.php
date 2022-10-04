@@ -75,7 +75,7 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 			, t_dwz, t_elo
 			, anmerkung
 		FROM participations
-		LEFT JOIN persons USING (person_id)
+		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN contacts USING (contact_id)
 		WHERE event_id = %d
 		AND usergroup_id = %d

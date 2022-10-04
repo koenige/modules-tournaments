@@ -99,7 +99,7 @@ function mod_tournaments_startranking_single($event) {
 			, qualification
 			, participations.club_contact_id
 		FROM participations
-		JOIN persons USING (person_id)
+		JOIN persons USING (contact_id)
 		LEFT JOIN contacts organisationen
 			ON participations.club_contact_id = organisationen.contact_id
 		LEFT JOIN contacts_contacts

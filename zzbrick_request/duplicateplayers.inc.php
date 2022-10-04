@@ -35,13 +35,12 @@ function mod_tournaments_duplicateplayers($vars) {
 	$turniere = wrap_db_fetch($sql, 'event_id');
 	if (!$turniere) return false;
 
-	$sql = 'SELECT person_id
+	$sql = 'SELECT contact_id
 		FROM participations
-		LEFT JOIN persons USING (person_id)
 		WHERE usergroup_id = %d
 		AND event_id IN (%s)
-		GROUP BY person_id
-		HAVING COUNT(person_id) > 1
+		GROUP BY contact_id
+		HAVING COUNT(contact_id) > 1
 	';
 	$sql = sprintf($sql,
 		wrap_id('usergroups', 'spieler'),
@@ -51,7 +50,7 @@ function mod_tournaments_duplicateplayers($vars) {
 	if (!$doppelte) {
 		$data['keine_doppelten'] = true;
 	} else {
-		$sql = 'SELECT participation_id, person_id
+		$sql = 'SELECT participation_id, contact_id
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), IFNULL(t_nachname, "")) AS spieler
 				, event, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 				, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
@@ -62,7 +61,7 @@ function mod_tournaments_duplicateplayers($vars) {
 	 		FROM participations
 	 		LEFT JOIN events USING (event_id)
 	 		LEFT JOIN teams USING (team_id)
-	 		WHERE person_id IN (%s)
+	 		WHERE contact_id IN (%s)
 	 		AND usergroup_id = %d
 	 		AND events.event_id IN (%s)
 	 		ORDER BY t_nachname, t_namenszusatz, t_vorname, team, team_no
@@ -72,7 +71,7 @@ function mod_tournaments_duplicateplayers($vars) {
 	 		wrap_id('usergroups', 'spieler'),
 			implode(',', array_keys($turniere))
 	 	);
-	 	$data = wrap_db_fetch($sql, ['person_id', 'participation_id'], 'list person_id turniere');
+	 	$data = wrap_db_fetch($sql, ['contact_id', 'participation_id'], 'list contact_id turniere');
 	 	foreach ($data as $id => $spieler) {
 	 		foreach ($spieler['turniere'] as $participation_id => $teilnahme) {
 	 			$data[$id]['spieler'] = $teilnahme['spieler'];

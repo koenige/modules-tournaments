@@ -134,6 +134,7 @@ function mod_tournaments_make_lineup_active($params) {
 			, CONCAT(t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), ""), " ", t_nachname) AS person
 			, person_id
 	    FROM participations
+	    LEFT JOIN persons USING (contact_id)
 	    WHERE team_id = %d
 	    AND usergroup_id = %d
 	    AND teilnahme_status = "Teilnehmer"

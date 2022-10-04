@@ -174,12 +174,16 @@ function mod_tournaments_make_games($vars) {
 			, CONCAT (partien.runde_no, ".", IFNULL(CONCAT(paarungen.tisch_no, "."), ""), partien.brett_no) AS Round_With_Board
 		FROM partien
 		LEFT JOIN paarungen USING (paarung_id)
+		LEFT JOIN persons white_person
+			ON partien.weiss_person_id = white_person.person_id
 		LEFT JOIN participations weiss
-			ON partien.weiss_person_id = weiss.person_id
+			ON weiss.contact_id = white_person.contact_id
 			AND weiss.usergroup_id = %d
 			AND weiss.event_id = partien.event_id
+		LEFT JOIN persons black_person
+			ON partien.schwarz_person_id = black_person.person_id
 		LEFT JOIN participations schwarz
-			ON partien.schwarz_person_id = schwarz.person_id
+			ON schwarz.contact_id = black_person.contact_id
 			AND schwarz.usergroup_id = %d
 			AND schwarz.event_id = partien.event_id
 		WHERE partien.event_id = %d

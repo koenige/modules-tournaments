@@ -51,12 +51,12 @@ function mod_tournaments_get_swisschess($vars) {
 			, NULL AS teilnehmer_info_3
 			, CONCAT("person_id=", persons.person_id, IFNULL(CONCAT("&team_id=", team_id), "")) AS teilnehmer_info_4
 		FROM participations
+		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN teams USING (team_id)
 		LEFT JOIN contacts organisationen
 			ON teams.club_contact_id = organisationen.contact_id
 		LEFT JOIN events
 			ON participations.event_id = events.event_id
-		LEFT JOIN persons USING (person_id)
 		LEFT JOIN contacts_identifiers pk
 			ON persons.contact_id = pk.contact_id
 			AND pk.current = "yes"

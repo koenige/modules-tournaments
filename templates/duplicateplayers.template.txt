@@ -9,7 +9,7 @@
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 # List of fields:
-# { person_id, turniere { participation_id, person_id, spieler, event, year,
+# { contact_id, turniere { participation_id, contact_id, spieler, event, year,
 # team, brett_no, rang_no, event_identifier, team_identifier }, spieler }
 #
 <div class="results">

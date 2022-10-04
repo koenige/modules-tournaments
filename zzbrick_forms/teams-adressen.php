@@ -20,7 +20,6 @@ if ($brick['data']['turnierform'] === 'm-v') {
 
 $sql = 'SELECT contact_id
 	FROM participations
-	JOIN persons USING (person_id)
 	JOIN events USING (event_id)
 	LEFT JOIN categories series
 		ON events.series_category_id = series.category_id

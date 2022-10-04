@@ -275,16 +275,16 @@ function cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler) {
 
 	// Speicherung in Personen
 	// 1. Abgleich: gibt es schon Paßnr.? Alles andere zu unsicher
-	$person_id = my_person_speichern($spieler);
+	$contact_id = my_person_speichern($spieler);
 
 	// direkte Speicherung in participations
 	$values = [];
 	$values['action'] = 'insert';
-	$values['ids'] = ['usergroup_id', 'event_id', 'team_id', 'person_id', 'club_contact_id'];
+	$values['ids'] = ['usergroup_id', 'event_id', 'team_id', 'contact_id', 'club_contact_id'];
 	$values['POST']['usergroup_id'] = wrap_id('usergroups', 'spieler');
 	$values['POST']['event_id'] = $data['event_id'];
 	$values['POST']['team_id'] = $data['team_id'];
-	$values['POST']['person_id'] = $person_id;
+	$values['POST']['contact_id'] = $contact_id;
 	$values['POST']['rang_no'] = $rangliste_no;
 	$values['POST']['t_vorname'] = $spieler['first_name'];
 	$values['POST']['t_nachname'] = $spieler['last_name'];
@@ -301,8 +301,8 @@ function cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler) {
 	}
 	$ops = zzform_multi('teilnahmen', $values);
 	if (!$ops['id']) {
-		wrap_error(sprintf('Teilnahme für Person mit ID %d konnte nicht hinzugefügt werden',
-			$person_id), E_USER_ERROR);
+		wrap_error(sprintf('Teilnahme für Kontakt mit ID %d konnte nicht hinzugefügt werden',
+			$contact_id), E_USER_ERROR);
 	}
 	return true;
 }

@@ -280,7 +280,7 @@ $zz['fields'][25]['subselect']['sql'] = sprintf('SELECT team_id
 		) AS e_mail
 		, GROUP_CONCAT(CONCAT(category_short, ": ", identification) SEPARATOR "<br>") AS telefon
 	FROM participations
-	LEFT JOIN persons USING (person_id)
+	LEFT JOIN persons USING (contact_id)
 	LEFT JOIN contacts USING (contact_id)
 	LEFT JOIN logins USING (person_id)
 	LEFT JOIN contactdetails USING (contact_id)
