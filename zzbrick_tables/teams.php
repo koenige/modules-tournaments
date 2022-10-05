@@ -261,10 +261,10 @@ $zz['fields'][25]['fields'] = [];
 $zz['fields'][25]['fields'][2]['type'] = 'foreign_key';
 $zz['fields'][25]['fields'][2]['field_name'] = 'team_id';
 $zz['fields'][25]['fields'][2]['key_field_name'] = 'team_id';
-$zz['fields'][25]['fields'][3]['field_name'] = 'person_id';
+$zz['fields'][25]['fields'][3]['field_name'] = 'contact_id';
 $zz['fields'][25]['fields'][3]['type'] = 'select';
 $zz['fields'][25]['fields'][3]['search'] = 'IF(logins.active = "yes", "(+)", "(-)")';
-$zz['fields'][25]['fields'][4]['field_name'] = 'person_id';
+$zz['fields'][25]['fields'][4]['field_name'] = 'contact_id';
 $zz['fields'][25]['fields'][4]['type'] = 'select';
 $zz['fields'][25]['fields'][4]['search'] = 'contact';
 $zz['fields'][25]['hide_in_form'] = true;
@@ -280,9 +280,8 @@ $zz['fields'][25]['subselect']['sql'] = sprintf('SELECT team_id
 		) AS e_mail
 		, GROUP_CONCAT(CONCAT(category_short, ": ", identification) SEPARATOR "<br>") AS telefon
 	FROM participations
-	LEFT JOIN persons USING (contact_id)
 	LEFT JOIN contacts USING (contact_id)
-	LEFT JOIN logins USING (person_id)
+	LEFT JOIN logins USING (contact_id)
 	LEFT JOIN contactdetails USING (contact_id)
 	LEFT JOIN categories
 		ON contactdetails.provider_category_id = categories.category_id
