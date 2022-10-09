@@ -73,7 +73,7 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 			, contact, identifier
 			, CONCAT(last_name, ", ", first_name) AS contact_last_first
 			, t_dwz, t_elo
-			, remarks
+			, participations.remarks
 		FROM participations
 		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN contacts USING (contact_id)
@@ -93,8 +93,10 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 
 	$rating_systems = ['dwz', 'elo'];
 
-	$ratings['DSB'] = mod_tournaments_make_turnierzahlen_dsb($contact_ids);
-	$ratings['FIDE'] = mod_tournaments_make_turnierzahlen_fide($contact_ids);
+	if ($contact_ids) {
+		$ratings['DSB'] = mod_tournaments_make_turnierzahlen_dsb($contact_ids);
+		$ratings['FIDE'] = mod_tournaments_make_turnierzahlen_fide($contact_ids);
+	}
 
 	$zz_conf['user'] = 'Turnierzahlen '.implode('/', $vars);
 
