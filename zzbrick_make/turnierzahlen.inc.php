@@ -73,7 +73,7 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 			, contact, identifier
 			, CONCAT(last_name, ", ", first_name) AS contact_last_first
 			, t_dwz, t_elo
-			, anmerkung
+			, remarks
 		FROM participations
 		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN contacts USING (contact_id)
@@ -148,10 +148,10 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 				$status => 1,
 				'link' => wrap_path('contacts_profile[person]', $participation['identifier'], false) // @todo remove ,false
 			];
-			$values['POST']['anmerkung'] = $participation['anmerkung']
-				? $participation['anmerkung']."\n\n"
+			$values['POST']['remarks'] = $participation['remarks']
+				? $participation['remarks']."\n\n"
 				: "";
-			$values['POST']['anmerkung'] .= sprintf(wrap_text('No ratings found when updating on %s.'), wrap_date(date('Y-m-d')));
+			$values['POST']['remarks'] .= sprintf(wrap_text('No ratings found when updating on %s.'), wrap_date(date('Y-m-d')));
 		}
 		$values['action'] = 'update';
 		if (!$data['testlauf']) {

@@ -46,7 +46,7 @@ function mod_tournaments_get_swisschess($vars) {
 			, SUBSTRING(pk.identifier, 1, 3) AS verband
 			, SUBSTRING_INDEX(pk.identifier, "-", 1) AS zps_verein
 			, SUBSTRING_INDEX(pk.identifier, "-", -1) AS zps_spieler
-			, IF(spielberechtigt = _utf8mb4"vorläufig nein", SUBSTRING(REPLACE(participations.anmerkung, "\n", "/"), 1, 40), NULL) AS teilnehmer_info_1
+			, IF(spielberechtigt = _utf8mb4"vorläufig nein", SUBSTRING(REPLACE(participations.remarks, "\n", "/"), 1, 40), NULL) AS teilnehmer_info_1
 			, NULL AS teilnehmer_info_2
 			, NULL AS teilnehmer_info_3
 			, CONCAT("person_id=", persons.person_id, IFNULL(CONCAT("&team_id=", team_id), "")) AS teilnehmer_info_4
