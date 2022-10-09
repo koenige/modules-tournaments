@@ -228,7 +228,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
 	$fields = [
 		'usergroup_id', 'parameters', 't_vorname', 't_nachname', 'person_id',
 		't_fidetitel', 't_verein', 'event_id', 'federation_contact_id',
-		'lebensalter', 'rolle', 't_dwz', 't_elo', 'sex', 'club_contact_id',
+		'lebensalter', 'role', 't_dwz', 't_elo', 'sex', 'club_contact_id',
 		'series_parameters', 'usergroup_category'
 	];
 	$nos = [];
@@ -269,7 +269,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 	$new['club'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
 	$new['usergroup'] = $line[$nos['usergroup_id']]['text'];
 	$new['usergroup_category'] = $line[$nos['usergroup_category']]['text'];
-	$new['role'] = (!empty($nos['rolle']) AND !empty($line[$nos['rolle']]['text'])) ? $line[$nos['rolle']]['text'] : '';
+	$new['role'] = (!empty($nos['role']) AND !empty($line[$nos['role']]['text'])) ? $line[$nos['role']]['text'] : '';
 	$new['sex'] = !empty($nos['sex']) ? $line[$nos['sex']]['text'] : '';
 	$new['event'] = $line[$nos['event_id']]['text'];
 	$new['federation_abbr'] = !empty($nos['federation_contact_id']) ? $line[$nos['federation_contact_id']]['text'] : '';

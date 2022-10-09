@@ -115,7 +115,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			, t_verein AS club
 			, usergroups.usergroup
 			, usergroup_categories.category AS usergroup_category
-			, rolle AS role
+			, role
 			, federations.contact_abbr AS federation_abbr
 			, IFNULL(participations.club_contact_id, teams.club_contact_id) AS club_contact_id
 			, YEAR(CURDATE()) - YEAR(date_of_birth) AS age
