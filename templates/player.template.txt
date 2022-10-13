@@ -20,17 +20,6 @@
 %%% condition endif %%%
 %%% loop end %%%
 </p>
-%%% condition elseif spielerphotos %%%
-<p class="spielerbild">
-%%% condition if bildpfad_underscore %%%
-<a href="http://www.dem%%% item year %%%.de/impressionen/photos/600/%%% item ak %%%/%%% item filename_underscore %%%"><img src="http://www.dem%%% item year %%%.de/impressionen/photos/120/%%% item ak %%%/%%% item filename_underscore %%%" alt="[Photo] %%% item name %%%" title="%%% item name %%%" width="120" height="80"></a>
-%%% condition elseif alter_bildpfad %%%
-<a href="http://www.dem%%% item year %%%.de/impressionen/photos/600/%%% item ak %%%/%%% item filename %%%"><img src="http://www.dem%%% item year %%%.de/impressionen/photos/120/%%% item ak %%%/%%% item filename %%%" alt="[Photo] %%% item name %%%" title="%%% item name %%%" width="120" height="80"></a>
-%%% condition else %%%
-<a href="http://www.dem%%% item year %%%.de/impressionen/bilder/teilnehmer/%%% item turnier_kennung %%%/600/%%% item personen_kennung %%%.jpg">
-<img src="http://www.dem%%% item year %%%.de/impressionen/bilder/teilnehmer/%%% item turnier_kennung %%%/120/%%% item personen_kennung %%%.jpg" alt="[Photo] %%% item name %%%" title="%%% item name %%%" width="120" height="80"></a>
-%%% condition endif %%%
-</p>
 %%% condition endif %%%
 <table>
 <tr><th>Verein:</th><td>%%% condition if verein_kennung %%%<a href="%%% condition if setting localhost %%%https://schach.in.local%%% condition else %%%https://schach.in%%%condition endif %%%/%%% item verein_kennung %%%/">%%% condition endif %%%%%% item t_verein %%%%%% item verein_kennung </a> %%%</td></tr>

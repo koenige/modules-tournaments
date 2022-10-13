@@ -87,25 +87,6 @@ function mod_tournaments_player($vars) {
 		$data['bilder'] = mf_mediadblink_media(
 			$data['year'].'/'.$data['main_series_path'], 'Website/Spieler', 'person', $data['person_id']
 		);
-		$data['spielerphotos'] = NULL;
-	} else {
-		// @deprecated
-		$data['filename'] = str_replace(" ", "", $data['t_vorname']).'-'
-			.($data['t_namenszusatz'] ? str_replace(" ", "", $data['t_namenszusatz']).'-' : '')
-			.str_replace(" ", "", $data['t_nachname']);
-		$data['filename'] = wrap_filename($data['filename']).'.jpg';
-
-		$data['filename_underscore'] = str_replace(" ", "_", $data['t_vorname']).'_'.str_replace(" ", "_", $data['t_nachname']);
-		$data['filename_underscore'] = wrap_filename($data['filename_underscore'], '_', ['_' => '_']).'.jpg';
-
-		$data['ak'] = substr($vars[1], strrpos($vars[1], '-') + 1);
-		if (in_array($data['year'], ['2011', '2012', '2013']) AND $data['ak'] === 'u25a') {
-			$data['ak'] = 'u25';
-		} elseif (in_array($data['year'], ['2011', '2012', '2013']) AND $data['ak'] === 'kika') {
-			$data['ak'] = 'ukika';
-		}
-		$data['alter_bildpfad'] = true;
-		if (in_array($data['year'], [2010, 2011])) $data['bildpfad_underscore'] = true;
 	}
 	
 	// Partien
