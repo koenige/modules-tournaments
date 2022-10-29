@@ -103,7 +103,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		break;
 	}
 
-	$sql = 'SELECT participation_id
+	$sql = 'SELECT participation_id, participations.contact_id
 			, t_fidetitel AS fidetitel
 			, CONCAT(
 				IFNULL(CONCAT(t_fidetitel, " "), ""),
@@ -121,6 +121,12 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			, YEAR(CURDATE()) - YEAR(date_of_birth) AS age
 			, usergroups.parameters
 			, participations.event_id
+			, IF(IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) > 18, 1,
+				IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_begin, 1, NULL)
+			) AS volljaehrig
+			, IF(SUBSTRING(date_of_birth, 5, 6) = "-00-00" AND IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) = 18, 1, 
+				IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_end AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) >= events.date_begin, 1, NULL)
+			) AS evtl_volljaehrig
 		FROM participations
 		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN usergroups USING (usergroup_id)
@@ -139,7 +145,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	);
 	$data = wrap_db_fetch($sql, 'participation_id');
 	if (!$data) wrap_quit(404, 'Es gibt keine Teilnehmerschilder für diese Personen.');
-
+	$data = mf_tournaments_players_title($data);
+	
 	foreach ($data as $participation_id => $line) {
 		if ($line['parameters'])
 			parse_str($line['parameters'], $line['parameters']);
@@ -153,6 +160,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		$line['group_line'] = mf_tournaments_pdf_group_line($line);
 		$line['club_line'] = mf_tournaments_pdf_club_line($line);
 		$line['graphic'] = mf_tournaments_pdf_graphic([$line['role'], $line['usergroup']], $card);
+		if (empty($line['fidetitel']) AND !empty($line['fide_title']))
+			$line['name'] = $line['fide_title'].' '.$line['name'];
 
 		if (array_key_exists($participation_id, $formfields)) {
 			foreach ($formfields[$participation_id] as $formfield) {
@@ -169,44 +178,6 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	}
 	$data = mf_tournaments_clubs_to_federations($data, 'club_contact_id');
 	
-	// read title from FIDE database if person in German database is only passive
-	// @todo read women’s title as well and check which one is higher
-	$sql = 'SELECT participation_id
-			, IF(IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) > 18, 1,
-				IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_begin, 1, NULL)
-			) AS volljaehrig
-			, IF(SUBSTRING(date_of_birth, 5, 6) = "-00-00" AND IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) = 18, 1, 
-				IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_end AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) >= events.date_begin, 1, NULL)
-			) AS evtl_volljaehrig
-			, IFNULL(dwz_spieler.FIDE_Titel, fide_players.title) AS FIDE_Titel
-		FROM participations
-		LEFT JOIN events USING (event_id)
-		LEFT JOIN persons USING (contact_id)
-		LEFT JOIN contacts_identifiers
-			ON contacts_identifiers.contact_id = persons.contact_id
-			AND contacts_identifiers.current = "yes"
-			AND contacts_identifiers.identifier_category_id = %d
-		LEFT JOIN dwz_spieler
-			ON contacts_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", dwz_spieler.Mgl_Nr)
-		LEFT JOIN contacts_identifiers fide
-			ON fide.contact_id = persons.contact_id
-			AND fide.current = "yes"
-			AND fide.identifier_category_id = %d
-		LEFT JOIN fide_players
-			ON fide_players.player_id = fide.identifier
-		WHERE participation_id IN (%s)';
-	$sql = sprintf($sql
-		, wrap_category_id('identifiers/zps')
-		, wrap_category_id('identifiers/fide-id')
-		, implode(',', array_keys($data))
-	);
-	$more_data = wrap_db_fetch($sql, 'participation_id');
-	foreach ($more_data as $id => $line) {
-		$data[$id] += $more_data[$id];
-		if (empty($data[$id]['fidetitel']) AND !empty($data[$id]['FIDE_Titel']))
-			$data[$id]['name'] = $data[$id]['FIDE_Titel'].' '.$data[$id]['name'];
-	}
-
 	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
 
 	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
@@ -337,4 +308,58 @@ function mf_tournaments_p_qrcode($id) {
 	$command = 'convert -scale 300x300 %s %s';
 	exec(sprintf($command, $file, $file));
 	return $file;
+}
+
+/**
+ * get FIDE title for players
+ *
+ * @param array $data with field 'contact_id'
+ * @return array
+ * @todo read women’s title as well and check which one is higher
+ */
+function mf_tournaments_players_title($data) {
+	$contact_ids = [];
+	foreach ($data as $line)
+		$contact_ids[] = $line['contact_id'];
+
+	$titles = [];
+	// check in FIDE database, German database does not have all titles
+	// why? no players without membership in German federation
+	// players that have a new FIDE ID
+	$sql = 'SELECT contact_id, fide_players.title
+		FROM fide_players
+		LEFT JOIN contacts_identifiers
+			ON fide_players.player_id = contacts_identifiers.identifier
+		WHERE contacts_identifiers.current = "yes"
+		AND contacts_identifiers.identifier_category_id = %d
+		AND contacts_identifiers.contact_id IN (%s)
+		AND NOT ISNULL(fide_players.title)
+	';
+	$sql = sprintf($sql
+		, wrap_category_id('identifiers/fide-id')
+		, implode(',', $contact_ids)
+	);
+	$titles += wrap_db_fetch($sql, 'contact_id', 'key/value');
+
+	// probably unnecessary query since all titles should be in FIDE database
+	$sql = 'SELECT contact_id, dwz_spieler.FIDE_Titel
+		FROM dwz_spieler
+		LEFT JOIN contacts_identifiers
+			ON contacts_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", dwz_spieler.Mgl_Nr)
+		WHERE contacts_identifiers.current = "yes"
+		AND contacts_identifiers.identifier_category_id = %d
+		AND contacts_identifiers.contact_id IN (%s)
+		AND NOT ISNULL(dwz_spieler.FIDE_Titel)
+	';
+	$sql = sprintf($sql
+		, wrap_category_id('identifiers/zps')
+		, implode(',', $contact_ids)
+	);
+	$titles += wrap_db_fetch($sql, 'contact_id', 'key/value');
+
+	foreach ($data as $index => $line) {
+		if (!array_key_exists($line['contact_id'], $titles)) continue;
+		$data[$index]['fide_title'] = $titles[$line['contact_id']];
+	}
+	return $data;
 }
