@@ -114,10 +114,11 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
  */
 function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
 	global $zz_conf;
+	global $zz_setting;
 	$zz_conf['user'] = sprintf('SWT-Import: %s', $event['identifier']);
 
-	$old_error_handling = $zz_conf['error_handling'];
-	$zz_conf['error_handling'] = 'output';
+	$old_error_handling = wrap_get_setting('error_handling');
+	$zz_setting['error_handling'] = 'output';
 	$ids = [];
 	$ids['t'] = [];
 
@@ -153,7 +154,7 @@ function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
 
 	$page['text'] = 'Import erfolgreich';
 	$zz_setting['error_prefix'] = '';
-	$zz_conf['error_handling'] = $old_error_handling;
+	$zz_setting['error_handling'] = $old_error_handling;
 	
 	if ($form === 'mannschaftsturnier') {
 		$ids = mod_tournaments_make_swtimport_delete($ids, $event['event_id'], 'teams');

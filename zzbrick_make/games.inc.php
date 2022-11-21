@@ -213,8 +213,8 @@ function mod_tournaments_make_games($vars) {
 
 	require_once $zz_conf['dir'].'/functions.inc.php';
 
-	$old_error_handling = $zz_conf['error_handling'];
-	$zz_conf['error_handling'] = 'output';
+	$old_error_handling = wrap_get_setting('error_handling');
+	$zz_setting['error_handling'] = 'output';
 
 	$event['db_errors'] = 0;
 	$event['updates'] = 0;
@@ -355,7 +355,7 @@ function mod_tournaments_make_games($vars) {
 	if ($runde_no) $event['runde_no'] = $runde_no;
 	if ($tisch_no) $event['tisch_no'] = $tisch_no;
 	if ($brett_no) $event['brett_no'] = $brett_no;
-	$zz_conf['error_handling'] = $old_error_handling;
+	$zz_setting['error_handling'] = $old_error_handling;
 	$page['text'] = wrap_template('games-update', $event);
 	mf_tournaments_job_finish('partien', 1, $event['event_id'], $runde_url);
 	return $page;

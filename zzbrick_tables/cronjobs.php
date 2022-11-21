@@ -79,4 +79,4 @@ $zz['filter'][1]['sql'] = 'SELECT DISTINCT category_id, category
 		ON categories.category_id = cronjobs.cronjob_category_id
 	ORDER BY category';
 
-$zz_conf['logging'] = false;
+$zz_setting['zzform_logging'] = false;
