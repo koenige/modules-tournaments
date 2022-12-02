@@ -322,7 +322,7 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 	$event['filename_suffix'] = 'meldebogen';
 	$event['send_as_singular'] = 'Meldebogen';
 	$event['send_as_plural'] = 'Meldebögen';
-	return mf_tournaments_pdf_send($pdf, $event);
+	return mf_tournaments_pdf_send($pdf, $event, $return);
 }
 
 /**

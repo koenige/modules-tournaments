@@ -230,9 +230,10 @@ function mf_tournaments_pdf_prepare($event) {
  *
  * @param object $pdf
  * @param array $event
+ * @param string $return (optional)
  * @return void
  */
-function mf_tournaments_pdf_send($pdf, $event) {
+function mf_tournaments_pdf_send($pdf, $event, $return = 'send') {
 	global $zz_setting;
 
 	$folder = $zz_setting['tmp_dir'].'/team-meldungen';
@@ -251,6 +252,7 @@ function mf_tournaments_pdf_send($pdf, $event) {
 	$file['caching'] = false;
 	$file['etag_generate_md5'] = true;
 	$pdf->output('F', $file['name'], true);
+	if ($return === 'filename') return $file['name'];
 	wrap_file_send($file);
 }
 
