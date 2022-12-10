@@ -172,9 +172,9 @@ function mod_tournaments_games_json($event, $request) {
 	$partie['PgnMoveText'] = $data['html'];
 	if ($zz_setting['character_set'] === 'utf-8') {
 		// PGN = Latin1
-		$partie['PgnMoveText'] = utf8_encode($partie['PgnMoveText']);
+		$partie['PgnMoveText'] = mb_convert_encoding($partie['PgnMoveText'], 'UTF-8', 'ISO-8859-1');
 		if (!empty($partie['PGN']))
-			$partie['PGN'] = utf8_encode($partie['PGN']);
+			$partie['PGN'] = mb_convert_encoding($partie['PGN'], 'UTF-8', 'ISO-8859-1');
 	}
 
 	$page['content_type'] = 'json';
@@ -210,7 +210,7 @@ function mod_tournaments_games_series($events, $request) {
 	if (!$page['text']) return wrap_quit(404);
 	$page['content_type'] = 'pgn';
 	if ($character_encoding === 'utf-8')
-		$page['text'] = utf8_encode($page['text']);
+		$page['text'] = mb_convert_encoding($page['text'], 'UTF-8', 'ISO-8859-1');
 	$zz_setting['character_set'] = $character_encoding;
 	return $page;
 }
@@ -366,7 +366,7 @@ function mod_tournaments_games_file($event, $request, $typ = false, $qs = []) {
 	}
 	$page['content_type'] = 'pgn';
 	if ($zz_setting['character_set'] === 'utf-8')
-		$page['text'] = utf8_encode($page['text']);
+		$page['text'] = mb_convert_encoding($page['text'], 'UTF-8', 'ISO-8859-1');
 	return $page;
 }
 
@@ -633,7 +633,7 @@ function mod_tournaments_games_html($event, $request, $typ) {
 		// PGN from file, Latin 1
 		if ($zz_setting['character_set'] === 'utf-8') {
 			if (!mb_detect_encoding($pgn['moves'], 'UTF-8', true))
-				$pgn['moves'] = utf8_encode($pgn['moves']);
+				$pgn['moves'] = mb_convert_encoding($pgn['moves'], 'UTF-8', 'ISO-8859-1');
 		}
 	}
 	$partie = array_merge($event, $partie);
