@@ -140,7 +140,7 @@ function mod_tournaments_team($vars, $settings) {
 	$sql = sprintf($sql, $data['contact_id']);
 	$data = array_merge($data, wrap_db_fetch($sql));
 
-	$data['bilder'] = mf_mediadblink_media([$data['event_identifier'], 'Website'], 'group', $data['team_id']);
+	$data['bilder'] = mf_mediadblink_media([$data['event_identifier'], 'Website'], [], 'group', $data['team_id']);
 
 	// Prev/Next-Navigation
 	$sql = 'SELECT team_id, identifier

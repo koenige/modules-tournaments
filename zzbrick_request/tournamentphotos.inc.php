@@ -31,7 +31,7 @@ function mod_tournaments_tournamentphotos($vars, $settings, $event) {
 	if (!$event['spieler']) return false;
 
 	$photos = mf_mediadblink_media(
-		[$event['year'], $event['main_series_path'], 'Website/Spieler'], 'person', array_keys($event['spieler'])
+		[$event['year'], $event['main_series_path'], 'Website/Spieler'], [], 'person', array_keys($event['spieler'])
 	);
 	if (!$photos) return false;
 	foreach ($photos as $id => $photo) {
