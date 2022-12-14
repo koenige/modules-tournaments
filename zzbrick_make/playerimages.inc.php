@@ -46,7 +46,7 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 	';
 	$sql = sprintf($sql, implode(',', $event_ids), wrap_id('usergroups', 'spieler'));
 	$event['players'] = wrap_db_fetch($sql, 'person_id');
-	$images = mf_mediadblink_media($params[0].'/'.$params[1], 'Website/Spieler', 'person', array_keys($event['players']));
+	$images = mf_mediadblink_media([$params[0], $params[1], 'Website/Spieler'], 'person', array_keys($event['players']));
 	$event['players'] = array_diff_key($event['players'], $images);
 	$event['form'] = false;
 	foreach ($event['players'] as $player) {

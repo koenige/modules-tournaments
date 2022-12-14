@@ -85,7 +85,7 @@ function mod_tournaments_player($vars) {
 
 	if ($data['year'] >= wrap_get_setting('dem_spielerphotos_aus_mediendb') AND $data['spielerphotos']) {
 		$data['bilder'] = mf_mediadblink_media(
-			$data['year'].'/'.$data['main_series_path'], 'Website/Spieler', 'person', $data['person_id']
+			[$data['year'], $data['main_series_path'], 'Website/Spieler'], 'person', $data['person_id']
 		);
 	}
 	
