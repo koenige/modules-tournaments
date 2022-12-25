@@ -45,7 +45,7 @@
 <li><a href="urkunden/">Druck der Urkunden</a></li>
 <li><a href="doppelte/">Spieler/in in mehreren Turnieren gemeldet?</a></li>
 <li><a href="siegerehrung.json">Daten für Siegerehrung im JSON-Format</a></li>
-<li><a href="siegerehrungkarten/">Karten mit Platzierungen für Siegerehrung</a></li>
+<li><a href="siegerehrungkarten.pdf">Karten mit Platzierungen für Siegerehrung</a></li>
 %%% condition endif %%%
 %%% rights - %%%
 %%% rights Webmaster Vorstand Geschäftsstelle "AK Spielbetrieb" %%%
