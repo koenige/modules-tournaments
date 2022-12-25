@@ -55,8 +55,6 @@ function mod_tournaments_make_liveresults($params) {
 		if (!$series) return false;
 		$event['event'] = $series['category'];
 	}
-	$page['breadcrumbs'][] = '<a href="../../">'.$event['year'].'</a>';
-	$page['breadcrumbs'][] = '<a href="../">'.$event['event'].'</a>';
 	$page['breadcrumbs'][] = 'Liveergebnisse';
 	$page['text'] = wrap_template('liveresults-overview', $tournaments);
 	$page['title'] = 'Liveergebnisse <br><a href="../">'.$event['event'].'</a>';
@@ -271,7 +269,6 @@ function mod_tournament_make_liveresults_tournament($params) {
 	if ($updated) return wrap_redirect_change();
 
 	$page['dont_show_h1'] = true;
-	$page['breadcrumbs'][] = '<a href="../../">'.$turnier['year'].'</a>';
 	if ($series_identifier AND substr($series_identifier, -7) !== '/reihen') {
 		$page['breadcrumbs'][] = '<a href="../../../'.$series_identifier.'/liveergebnisse/">Liveergebnisse</a>';
 		$page['breadcrumbs'][] = $turnier['event'];
