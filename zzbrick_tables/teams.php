@@ -20,7 +20,7 @@ $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'team_id';
 $zz['fields'][1]['type'] = 'id';
 
-$zz['fields'][2]['title'] = 'Termin';
+$zz['fields'][2]['title'] = 'Event';
 $zz['fields'][2]['field_name'] = 'event_id';
 $zz['fields'][2]['type'] = 'select';
 $zz['fields'][2]['sql'] = 'SELECT event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year, identifier
@@ -93,7 +93,7 @@ $zz['fields'][6]['fields'] = ['event_id[identifier]', 'team', 'team_no'];
 $zz['fields'][6]['conf_identifier']['concat'] = ['/', '/', '-'];
 $zz['fields'][6]['hide_in_list'] = true;
 
-$zz['fields'][6]['separator'] = 'text <div>Vor dem Turnier</div>';
+$zz['fields'][6]['separator'] = 'text <div class="separator">Vor dem Turnier</div>';
 
 $zz['fields'][7]['title'] = 'Berechtigung';
 $zz['fields'][7]['field_name'] = 'berechtigung_category_id';
@@ -149,7 +149,7 @@ $zz['fields'][33]['hide_in_list'] = true;
 $zz['fields'][33]['function'] = 'my_random_hash';
 $zz['fields'][33]['fields'] = ['identifier', 'team_id', 'meldung_hash'];
 
-if (brick_access_rights(['Webmaster'])) {
+if (wrap_access('tournament_teams_foreign_key')) {
 	$zz['fields'][40]['title'] = 'Fremdschlüssel';
 	$zz['fields'][40]['title_tab'] = 'FS';
 	$zz['fields'][40]['field_name'] = 'fremdschluessel';
@@ -157,13 +157,13 @@ if (brick_access_rights(['Webmaster'])) {
 	$zz['fields'][40]['hide_in_list_if_empty'] = true;
 }
 
-$zz['fields'][17]['separator_before'] = 'text <div>Während des Turniers</div>';
+$zz['fields'][17]['separator_before'] = 'text <div class="separator">Während des Turniers</div>';
 $zz['fields'][17]['title'] = 'Setzliste Nr.';
 $zz['fields'][17]['field_name'] = 'setzliste_no';
 $zz['fields'][17]['title_tab'] = 'Setz';
 $zz['fields'][17]['hide_in_list'] = true;
 
-$zz['fields'][17]['separator'] = 'text <div>Rahmendaten</div>';
+$zz['fields'][17]['separator'] = 'text <div class="separator">Rahmendaten</div>';
 
 $zz['fields'][34]['title_append'] = 'Anreise';
 $zz['fields'][34]['title_tab'] = 'An- und Abreise';
@@ -211,23 +211,17 @@ $zz['fields'][35]['list_prefix'] = ', ~&nbsp;';
 $zz['fields'][35]['list_suffix'] = '&nbsp;Uhr';
 $zz['fields'][35]['replace_values'] = ['--' => '', 'Uhr' => '', '-:-' => ''];
 
-$zz['fields'][35]['separator'] = true;
-
-if (brick_access_rights(['Webmaster'])) {
-	$zz['fields'][35]['separator'] = false;
-
+if (wrap_get_setting('tournaments_team_league')) {
 	$zz['fields'][48]['field_name'] = 'spielbeginn';
 	$zz['fields'][48]['type'] = 'time';
 	$zz['fields'][48]['suffix'] = ' Uhr';
 	$zz['fields'][48]['prefix'] = 'um ';
 	$zz['fields'][48]['hide_in_list'] = true;
-	$zz['fields'][48]['separator'] = true;
 	$zz['fields'][48]['explanation'] = 'Falls immer abweichend vom festgesetzten Spielbeginn';
-
-	$zz['fields'][48]['separator'] = 'text <div>Sonstiges</div>';
 }
 
 $zz['fields'][21] = zzform_include_table('anmerkungen');
+$zz['fields'][21]['separator_before'] = 'text <div class="separator">Sonstiges</div>';
 $zz['fields'][21]['title_tab'] = 'Bemerkungen / Kontakt';
 $zz['fields'][21]['title'] = 'Anmerkungen';
 $zz['fields'][21]['type'] = 'subtable';
@@ -325,14 +319,14 @@ $zz['fields'][28]['path'] = [
 	'webroot' => $zz_setting['media_internal_path'].'/meldeboegen/',
 	'field1' => 'identifier',
 	'string1' => '.',
-	'string2' => 'pdf'
+	'extension' => 'pdf'
 ];
 $zz['fields'][28]['input_filetypes'] = ['pdf'];
 $zz['fields'][28]['link'] = [
 	'string1' => $zz_setting['media_internal_path'].'/meldeboegen/',
 	'field1' => 'identifier',
 	'string2' => '.',
-	'string3' => 'pdf'
+	'extension' => 'pdf'
 ];
 $zz['fields'][28]['optional_image'] = true;
 $zz['fields'][28]['explanation'] = 'Hochladen des ausgefüllten, gescannten Meldebogens';
@@ -405,14 +399,12 @@ $zz['subtitle']['event_id']['link_no_append'] = true;
 $zz['conditions'][1]['scope'] = 'record';
 $zz['conditions'][1]['where'] = 'spielfrei = "ja"';
 
-if (brick_access_rights(['Webmaster'])) {
-	$zz['filter'][1]['title'] = 'Meldung';
-	$zz['filter'][1]['type'] = 'list';
-	$zz['filter'][1]['where'] = 'meldung';
-	$zz['filter'][1]['sql'] = 'SELECT DISTINCT meldung, meldung AS titel
-		FROM teams
-		ORDER BY meldung';
-}
+$zz['filter'][1]['title'] = 'Meldung';
+$zz['filter'][1]['type'] = 'list';
+$zz['filter'][1]['where'] = 'meldung';
+$zz['filter'][1]['sql'] = 'SELECT DISTINCT meldung, meldung AS titel
+	FROM teams
+	ORDER BY meldung';
 
 if (!empty($zz_conf['multi'])) $zz_conf['delete'] = true;
 
