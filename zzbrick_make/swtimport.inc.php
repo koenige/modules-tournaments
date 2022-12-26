@@ -28,7 +28,6 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
 	$zz_setting['cache'] = false;
 	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 
-	if (!brick_access_rights(['Webmaster', 'AK Spielbetrieb'])) wrap_quit(403);
 	ignore_user_abort(1);
 	ini_set('max_execution_time', 180);
 
