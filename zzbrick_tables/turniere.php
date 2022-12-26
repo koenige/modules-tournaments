@@ -231,7 +231,7 @@ $zz['fields'][22]['optional_image'] = true;
 $zz['fields'][22]['image'][0]['title'] = 'gro&szlig;';
 $zz['fields'][22]['image'][0]['field_name'] = 'gross';
 $zz['fields'][22]['image'][0]['path'] = $zz['fields'][22]['path'];
-$zz['fields'][22]['if'][1]['separator'] = 'text <div>Für Mannschaftsturniere</div>';
+$zz['fields'][22]['if'][1]['separator'] = 'text <div class="separator">Für Mannschaftsturniere</div>';
 $zz['fields'][22]['if'][2]['separator'] = true;
 $zz['fields'][22]['if']['add']['hide_in_form'] = true;
 
