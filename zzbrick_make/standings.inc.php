@@ -115,7 +115,7 @@ function mod_tournaments_make_standings_round($vars) {
 	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 
 	// Zugriffsberechtigt?
-	if (!brick_access_rights(['Webmaster'])) wrap_quit(403);
+	if (!brick_access_rights()) wrap_quit(403);
 
 	$runde = 1; // beginne bei Runde 1 oder bei angegebener Runde
 	if (count($vars) === 3 AND is_numeric($vars[2])) $runde = $vars[2];

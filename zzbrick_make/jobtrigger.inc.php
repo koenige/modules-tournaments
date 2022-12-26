@@ -25,9 +25,8 @@ function mod_tournaments_make_jobtrigger($params) {
 		return $page;
 	}
 
-	if (!brick_access_rights(['Webmaster'])) {
-		wrap_quit(403);
-	}
+	if (!brick_access_rights()) wrap_quit(403);
+
 	require_once $zz_setting['core'].'/syndication.inc.php'; // wrap_lock()
 	
 	$sql = 'SELECT category_id, category

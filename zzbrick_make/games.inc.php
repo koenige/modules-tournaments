@@ -29,8 +29,8 @@ function mod_tournaments_make_games($vars) {
 	if (empty($vars)) return false;
 	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 
-	// Zugriffsberechtigt?
-	if (!brick_access_rights(['Webmaster'])) wrap_quit(403);
+	// access only for admins and cron jobs
+	if (!brick_access_rights()) wrap_quit(403);
 	ignore_user_abort(1);
 	ini_set('max_execution_time', 60);
 
