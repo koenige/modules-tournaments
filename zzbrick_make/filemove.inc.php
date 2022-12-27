@@ -103,7 +103,7 @@ function mod_tournaments_make_filemove() {
 			$tournament['queue_dir'] = sprintf($pgn_queue, $tournament['path']);
 			if (!file_exists($tournament['queue_dir'])) wrap_mkdir($tournament['queue_dir']);
 		
-			mod_tournaments_make_filemove_queue($tournament);
+			mod_tournaments_make_filemove_queue($tournament, $parameter);
 			mod_tournaments_make_filemove_final_pgn($tournament);
 		}
 		mod_tournaments_make_filemove_bulletin_pgn($tournament);
@@ -121,14 +121,18 @@ function mod_tournaments_make_filemove() {
  * @param array $tournament
  * @return void
  */
-function mod_tournaments_make_filemove_queue($tournament) {
+function mod_tournaments_make_filemove_queue($tournament, $parameter = []) {
 	global $zz_setting;
 	// pgn-live/2016-dvm-u20/games.pgn
 	$pgn_live = $zz_setting['media_folder'].wrap_get_setting('pgn_live_folder').'/%s/games.pgn';
 
 	$source = sprintf($pgn_live, $tournament['path']);
-	if ($merged_source = mod_tournaments_make_filemove_concat_pgn($source)) {
+	if ($merged_source = mod_tournaments_make_filemove_concat_pgn($source))
 		$source = $merged_source;
+	if (!empty($parameter['live_pgn_offset_mins'])) {
+		$new_time = filemtime($source) + $parameter['live_pgn_offset_mins'] * 60;
+		touch($source, $new_time, $new_time);
+		clearstatcache();
 	}
 	$params = [];
 	$params['destination'] = ['timestamp'];
