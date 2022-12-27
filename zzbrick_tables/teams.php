@@ -149,7 +149,7 @@ $zz['fields'][33]['hide_in_list'] = true;
 $zz['fields'][33]['function'] = 'my_random_hash';
 $zz['fields'][33]['fields'] = ['identifier', 'team_id', 'meldung_hash'];
 
-if (wrap_access('tournament_teams_foreign_key')) {
+if (wrap_access('tournaments_teams_foreign_key')) {
 	$zz['fields'][40]['title'] = 'Fremdschlüssel';
 	$zz['fields'][40]['title_tab'] = 'FS';
 	$zz['fields'][40]['field_name'] = 'fremdschluessel';
