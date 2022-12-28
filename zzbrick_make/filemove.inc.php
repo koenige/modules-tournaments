@@ -319,6 +319,8 @@ function mod_tournaments_make_filemove_ftp_pgn($tournament, $ftp_paths) {
  * @return void
  */
 function mod_tournaments_make_filemove_ftp_other($tournament, $ftp_other) {
+	global $zz_setting;
+	$zz_setting['cache'] = true; // file requests might change cache to false
 	$params['log_destination'] = false;
 
 	foreach ($ftp_other as $other) {
