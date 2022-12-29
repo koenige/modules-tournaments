@@ -8,12 +8,13 @@
 # @copyright Copyright © 2013 Falco Nogatz
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
-<link rel="stylesheet" type="text/css" href="/_layout/chess/livegames.css">
+<link rel="stylesheet" type="text/css" href="%%% setting layout_path %%%/chess/livegames.css">
 
-<script src="/fileadmin/pgn4web/pgn4web.js" type="text/javascript"></script>
-<script src="/fileadmin/pgn4web/crc32.js" type="text/javascript"></script>
+<script src="%%% setting behaviour_path %%%/pgn4web/pgn4web.js"></script>
+<script src="%%% setting behaviour_path %%%/pgn4web/crc32.js"></script>
+<script src="%%% setting behaviour_path %%%/tournaments/round-team-live.js"></script>
 
-<script type="text/javascript">
+<script>
   "use strict";
 
   var pgnFile = "/%%% item event_identifier %%%/partien/%%% item runde_no %%%-live-utf8.pgn";
@@ -41,7 +42,7 @@
   var headlessPage = false;
 
   SetPgnUrl(pgnFile);
-  SetImagePath ("/fileadmin/pgn4web/images/alpha/32");
+  SetImagePath ("%%% setting behaviour_path %%%/pgn4web/images/alpha/32");
   SetImageType("png");
   SetHighlightOption(false);
   SetCommentsIntoMoveText(false);
