@@ -14,7 +14,6 @@
 
 
 function mod_tournaments_startranking($vars, $settings, $event) {
-	global $zz_conf;
 	global $zz_setting;
 
 	if (empty($event)) return false;
@@ -76,8 +75,6 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 }
 
 function mod_tournaments_startranking_single($event) {
-	global $zz_setting;
-
 	// @todo Sortierung nach DWZ oder Elo, je nach Turniereinstellung
 	$sql = 'SELECT person_id
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
@@ -149,8 +146,6 @@ function mod_tournaments_startranking_single($event) {
 }
 	
 function mod_tournaments_startranking_team($event) {
-	global $zz_setting;
-
 	$sql = 'SELECT team_id
 			, team, team_no
 			, IF(NOT ISNULL(teams.setzliste_no), teams.identifier, "") AS team_identifier, team_status
