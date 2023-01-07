@@ -74,7 +74,6 @@ function mod_tournaments_teaminternal($vars, $settings) {
 			, events.identifier AS event_identifier
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, main_series.category_short AS main_series
-			, berechtigung_zusage, berechtigung_absage, berechtigung_spaeter
 			, IF(tournaments.zimmerbuchung = "ja", 1, NULL) AS zimmerbuchung
 			, place_categories.parameters
 		FROM events
@@ -97,7 +96,24 @@ function mod_tournaments_teaminternal($vars, $settings) {
 		parse_str($event['parameters'], $parameters);
 		$event += $parameters;
 	}
-
+	$sql = 'SELECT eventtext_id, eventtext, categories.parameters
+			, SUBSTRING_INDEX(categories.path, "/", -1) AS path
+		FROM eventtexts
+		LEFT JOIN categories
+			ON eventtexts.eventtext_category_id = categories.category_id
+		WHERE event_id = %d
+		AND published = "yes"';
+	$sql = sprintf($sql, $event['event_id']);
+	$texts = wrap_db_fetch($sql, 'eventtext_id');
+	foreach ($texts as $text) {
+		if ($text['parameters']) {
+			parse_str($text['parameters'], $text['parameters']);
+			if (!empty($text['parameters']['alias']))
+				$text['path'] = $text['parameters']['alias'];
+		}
+		$event[$text['path']] = $text['eventtext'];
+	}
+	
 	$page['title'] = $event['event'].' '.$event['year'].': '.$team['team'].' '.$team['team_no'];
 	$page['breadcrumbs'][] = '<a href="../../">'.$event['year'].'</a>';
 	if ($event['main_series']) {
@@ -189,7 +205,7 @@ Bei Absage wird ebenfalls der angekreuzte Text geloggt, der Status
 aber auf gelöscht gestellt. Eine Meldung oder Statusänderung ist dann
 nicht mehr möglich.
 */
-		$values['POST']['anmerkung'] = $data['berechtigung_absage'].
+		$values['POST']['anmerkung'] = $data['cancellation'].
 			(!empty($_POST['bemerkungen']) ? ' – '.$_POST['bemerkungen'] : '');
 		$values['POST']['team_id'] = $data['team_id'];
 		$values['POST']['anmerkung_status'] = 'offen';
@@ -218,7 +234,7 @@ kann ganz normal melden. Dazu wird im Hintergrund die Zusage mit
 Termin, Team, Zusagetext und Timestamp in einer Logtabelle
 gespeichert.
 		*/
-		$values['POST']['anmerkung'] = $data['berechtigung_zusage'].
+		$values['POST']['anmerkung'] = $data['acceptance'].
 			(!empty($_POST['bemerkungen']) ? ' – '.$_POST['bemerkungen'] : '');
 		$values['POST']['team_id'] = $data['team_id'];
 		$values['POST']['anmerkung_status'] = !empty($_POST['bemerkungen']) ? 'offen' : 'erledigt';
@@ -241,7 +257,7 @@ dem Freitextfeld. Dadurch kann zu einem späteren Zeitpunkt zu- oder
 abgesagt werden oder auch zwischendurch eine Nachricht geschrieben
 werden.
 */
-		$values['POST']['anmerkung'] = $data['berechtigung_spaeter']
+		$values['POST']['anmerkung'] = $data['delay']
 			.(!empty($_POST['bemerkungen']) ? ' – '.$_POST['bemerkungen'] : '');
 		$values['POST']['team_id'] = $data['team_id'];
 		$values['POST']['anmerkung_status'] = 'offen';

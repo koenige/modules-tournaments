@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2022 Gustaf Mossakowski
+# @copyright Copyright © 2012-2023 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 # List of fields:
@@ -48,6 +48,7 @@
   <li><a href="meldeformular/">Meldeformular</a></li>
 	<li><a href="zeitplan/">Zeitplan</a> – außerschachlicher Terminplan</li>
 	<li><a href="kosten/">Kosten</a> – Kosten für die Teilnehmer</li>
+	<li><a href="texte/">Veranstaltungstexte</a> – Textblöcke zu einer Veranstaltung</li>
 </ul>
 </li>
 %%% rights - %%%
