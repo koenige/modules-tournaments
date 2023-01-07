@@ -77,8 +77,6 @@ function mod_tournaments_team($vars, $settings) {
 			, events.identifier AS event_identifier
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, main_series.category_short AS main_series
-			, berechtigung_zusage, berechtigung_absage, berechtigung_spaeter
-			, IF(tournaments.zimmerbuchung = "ja", 1, NULL) AS zimmerbuchung
 			, place_categories.parameters
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
