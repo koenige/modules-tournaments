@@ -8,13 +8,14 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
 function mod_tournaments_tournament($vars, $settings) {
 	global $zz_setting;
+	wrap_package_activate('events');
 
 	if (!empty($settings['intern'])) {
 		$intern = true;
@@ -169,8 +170,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	$sql = sprintf($sql, $event['tournament_id']);
 	$event['bedenkzeit'] = wrap_db_fetch($sql, 'tb_id');
 
-	require_once $zz_setting['custom'].'/zzbrick_request/termin.inc.php';
-	$event['organisationen'] = cms_event_organisations($event['event_id']);
+	$event['organisations'] = mf_events_event_organisations($event['event_id']);
 
 	$sql = 'SELECT events.event_id, event
 			, CONCAT(IFNULL(date_begin, ""), IFNULL(CONCAT("/", date_end), "")) AS duration
