@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2015, 2017, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2015, 2017, 2019-2021, 2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -33,8 +33,9 @@ if ($brick['data']['last_tournament_id']) {
 	);
 }
 
-$zz['fields'][25]['explanation'] = 'Hier bitte nur Gesamtdateien hochladen.
-<br>Für Runden gibt es die Möglichkeit zum Upload bei der <a href="../runde/">Rundenübersicht</a>.';
+if (!empty($zz['fields'][25]))
+	$zz['fields'][25]['explanation'] = 'Hier bitte nur Gesamtdateien hochladen.
+	<br>Für Runden gibt es die Möglichkeit zum Upload bei der <a href="../runde/">Rundenübersicht</a>.';
 
 $zz['where']['event_id'] = $brick['data']['event_id'];
 $zz['access'] = 'add_then_edit';
