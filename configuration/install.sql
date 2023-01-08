@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2020-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2020-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -197,8 +197,6 @@ CREATE TABLE `tournaments` (
   `ratings_updated` date DEFAULT NULL,
   `teams_max` smallint unsigned DEFAULT NULL,
   `wertung_spielfrei` enum('Sieg','Unentschieden','keine') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'Sieg',
-  `hinweis_aufstellung` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `hinweis_meldebogen` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `zimmerbuchung` enum('ja','nein') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'ja',
   `teilnehmerliste` enum('ja','nein') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'nein',
   `turnierkennung` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,

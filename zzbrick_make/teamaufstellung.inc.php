@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016-2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2016-2017, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -35,7 +35,10 @@ function mod_tournaments_make_teamaufstellung($vars) {
 			, main_series.category_short AS main_series
 			, geschlecht, alter_min, alter_max, bretter_min, bretter_max
 			, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
-			, hinweis_aufstellung
+			, (SELECT eventtext FROM eventtexts
+				WHERE eventtexts.event_id = events.event_id
+				AND eventtexts.eventtext_category_id = %d
+			) AS hinweis_aufstellung
 			, turnierformen.parameters AS turnierform_parameter
 		FROM teams
 		LEFT JOIN contacts organisationen
@@ -55,7 +58,12 @@ function mod_tournaments_make_teamaufstellung($vars) {
 		LEFT JOIN categories main_series
 			ON series.main_category_id = main_series.category_id
 		WHERE teams.identifier = "%d/%s/%s"';
-	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]), wrap_db_escape($vars[2]));
+	$sql = sprintf($sql
+		, wrap_category_id('event-texts/note-lineup')
+		, $vars[0]
+		, wrap_db_escape($vars[1])
+		, wrap_db_escape($vars[2])
+	);
 	$data = wrap_db_fetch($sql);
 	if (!$data) return false;
 	if (!mf_tournaments_team_access($data['team_id'], ['Teilnehmer'])) wrap_quit(403);

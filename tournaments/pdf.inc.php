@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -36,13 +36,20 @@ function mf_tournaments_pdf_event($event_params) {
 			, pseudo_dwz
 			, date_begin
 			, ratings_updated
-			, hinweis_meldebogen
+			, (SELECT eventtext FROM eventtexts
+				WHERE eventtexts.event_id = events.event_id
+				AND eventtexts.eventtext_category_id = %d
+			) AS hinweis_meldebogen
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN categories turnierformen
 			ON tournaments.turnierform_category_id = turnierformen.category_id
 		WHERE events.identifier = "%d/%s"';
-	$sql = sprintf($sql, $event_params[0], wrap_db_escape($event_params[1]));
+	$sql = sprintf($sql
+		, wrap_category_id('event-texts/note-registration-form')
+		, $event_params[0]
+		, wrap_db_escape($event_params[1])
+	);
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
 

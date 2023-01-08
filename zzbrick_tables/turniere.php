@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -285,22 +285,6 @@ $zz['fields'][50]['default'] = 'Sieg';
 $zz['fields'][50]['explanation'] = 'Wertung von spielfreien Partien, keine = wird nicht importiert';
 $zz['fields'][50]['hide_in_list'] = true;
 $zz['fields'][50]['if'][2] = false;
-
-$zz['fields'][17]['title'] = 'Hinweis Aufstellung';
-$zz['fields'][17]['field_name'] = 'hinweis_aufstellung';
-$zz['fields'][17]['type'] = 'memo';
-$zz['fields'][17]['explanation'] = 'Hinweise, was bei der Aufstellung beachtet werden muß.';
-$zz['fields'][17]['hide_in_list'] = true;
-$zz['fields'][17]['format'] = 'markdown';
-$zz['fields'][17]['if'][2] = false;
-
-$zz['fields'][18]['title'] = 'Hinweis Meldebogen';
-$zz['fields'][18]['field_name'] = 'hinweis_meldebogen';
-$zz['fields'][18]['type'] = 'memo';
-$zz['fields'][18]['explanation'] = 'Hinweis für die Meldung, der unten auf dem Meldebogen steht.';
-$zz['fields'][18]['hide_in_list'] = true;
-$zz['fields'][18]['format'] = 'markdown';
-$zz['fields'][18]['if'][2] = false;
 
 $zz['fields'][29]['field_name'] = 'zimmerbuchung';
 $zz['fields'][29]['type'] = 'select';

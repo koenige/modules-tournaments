@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2013-2014, 2017-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2013-2014, 2017-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -55,7 +55,7 @@ function mod_tournaments_teampdfsarrival($vars) {
  * # }, datum_anreise, uhrzeit_anreise, datum_abreise, uhrzeit_abreise, kosten
  * # {buchungskategorie, betrag, usergroup, kosten, anmerkungen, kosten_betrag,
  * # betrag_waehrung, anzahl_tage, anzahl_weiblich, anzahl_maennlich, betrag},
- * # betrag, meldung_datum, team_identifier }, hinweis_meldebogen, event_identifier,
+ * # betrag, meldung_datum, team_identifier }, event_identifier,
  * # dateiname, konten_veranstalter {inhaber, iban, bic, institut},
  * # konten_ausrichter {inhaber, iban, bic, institut}, bretter_min,
  * # gastspieler_status, dauer_tage

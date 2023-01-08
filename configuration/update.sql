@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2021-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2021-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -26,3 +26,8 @@
 /* 2022-06-13-1 */	DROP VIEW `buchholz_einzel_mit_kampflosen_view`;
 /* 2022-07-25-1 */	DROP TABLE `turniere_partien`;
 /* 2022-07-25-2 */	DELETE FROM `_relations` WHERE `detail_table` = 'turniere_partien';
+/* 2023-01-08-1 */	INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `parameters`, `sequence`, `last_update`, `glossary`) VALUES ('Note Registration Form', 'Notice for registration, which is at the end of the registration form.', (SELECT category_id FROM categories WHERE path = 'event-texts' OR parameters LIKE '%&alias=event-texts&%'), 'event-texts/note-registration-form', '&alias=event-texts/note-registration-form&module=tournaments&team=1', 5, NOW(), 'no');
+/* 2023-01-08-2 */	INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `parameters`, `sequence`, `last_update`, `glossary`) VALUES ('Note Lineup', 'Information on what to consider during lineup.', (SELECT category_id FROM categories WHERE path = 'event-texts' OR parameters LIKE '%&alias=event-texts&%'), 'event-texts/note-lineup', '&alias=event-texts/note-lineup&module=tournaments&team=1', 4, NOW(), 'no');
+/* 2023-01-08-3 */	INSERT INTO eventtexts (event_id, eventtext, eventtext_category_id, published) SELECT event_id, hinweis_aufstellung, (SELECT category_id FROM categories WHERE path = 'event-texts/note-lineup' OR parameters LIKE '%&alias=event-texts/note-lineup%'), 'yes' FROM tournaments WHERE NOT ISNULL(hinweis_aufstellung);
+/* 2023-01-08-4 */	INSERT INTO eventtexts (event_id, eventtext, eventtext_category_id, published) SELECT event_id, hinweis_meldebogen, (SELECT category_id FROM categories WHERE path = 'event-texts/note-registration-form' OR parameters LIKE '%&alias=event-texts/note-registration-form%'), 'yes' FROM tournaments WHERE NOT ISNULL(hinweis_meldebogen);
+/* 2023-01-08-5 */	ALTER TABLE `tournaments` DROP `hinweis_aufstellung`, DROP `hinweis_meldebogen`;
