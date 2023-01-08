@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2015, 2017-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2015, 2017-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -191,7 +191,7 @@ $zz['fields'][23]['path'] = [
 	'field2' => 'runde_no',
 	'string3' => '-',
 	'field3' => 'tisch_no',
-	'string4' => '.',
+	'string4' => '-',
 	'field4' => 'brett_no',
 	'string5' => '.pgn'
 ];
@@ -215,7 +215,7 @@ $zz['fields'][23]['link'] = [
 	'field2' => 'runde_no',
 	'string3' => '-',
 	'field3' => 'tisch_no',
-	'string4' => '.',
+	'string4' => '-',
 	'field4' => 'brett_no',
 	'string5' => '.pgn'
 ];
@@ -306,6 +306,7 @@ $zz['subtitle']['paarung_id']['suffix'] = '</small>';
 $zz['hooks']['after_insert'][] = 'mf_tournaments_standings_update';
 $zz['hooks']['after_update'][] = 'mf_tournaments_standings_update';
 $zz['hooks']['after_delete'][] = 'mf_tournaments_standings_update';
+$zz['hooks']['after_upload'][] = 'mf_tournaments_games_update';
 
 $zz['hooks']['before_insert'][] = 'mf_tournaments_result_reported';
 $zz['hooks']['before_update'][] = 'mf_tournaments_result_reported';

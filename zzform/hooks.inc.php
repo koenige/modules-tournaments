@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -152,22 +152,38 @@ function mf_tournaments_games_update($ops) {
 	// Von welchem Formular aus wurde Datei hochgeladen?
 	$event_id = '';
 	foreach ($ops['return'] as $index => $table) {
-		if ($table['table'] === 'events') {
+		switch ($table['table']) {
+		case 'events':
 			if (!$ops['record_new'][$index]['runde_no']) return false;
 			$event_id = $ops['record_new'][$index]['main_event_id'];
 			$runde_no = $ops['record_new'][$index]['runde_no'];
-		} elseif ($table['table'] === 'tournaments') {
+			break 2;
+		case 'tournaments':
 			$event_id = $ops['record_new'][$index]['event_id'];
 			$runde_no = '';
+			break 2;
+		case 'partien':
+			$event_id = $ops['record_new'][$index]['event_id'];
+			if (!empty($ops['record_old'][$index]['tisch_no']))
+				$runde_no = sprintf('%s/%s.%s'
+					, $ops['record_new'][$index]['runde_no']
+					, $ops['record_old'][$index]['tisch_no']
+					, $ops['record_new'][$index]['brett_no']
+				);
+			else
+				$runde_no = sprintf('%s/%s'
+					, $ops['record_new'][$index]['runde_no']
+					, $ops['record_new'][$index]['brett_no']
+				);
+			break 2;
 		}
 	}
 	
+	if (!$event_id) return false;
 	// PGN-Import in Datenbank anstoßen
-	if ($event_id) {
-		require_once __DIR__.'/../tournaments/cronjobs.inc.php';
-		mf_tournaments_job_create('partien', $event_id, $runde_no);
-		mf_tournaments_job_trigger();
-	}
+	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
+	mf_tournaments_job_create('partien', $event_id, $runde_no);
+	mf_tournaments_job_trigger();
 }
 
 /**

@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -100,7 +100,7 @@ function mod_tournaments_make_games($vars) {
 	if ($brett_no) $error_msg .= sprintf(', Brett %s', wrap_html_escape($brett_no));
 
 	// Termin, Partien in Datenbank vorhanden?
-	$sql = 'SELECT event_id, events.identifier, event, IFNULL(event_year, YEAR(date_begin)) AS year
+	$sql = 'SELECT events.event_id, events.identifier, event, IFNULL(event_year, YEAR(date_begin)) AS year
 			, COUNT(partie_id) AS partien
 			, SUBSTRING_INDEX(categories.path, "/", -1) AS event_category
 			, tournament_id
@@ -108,6 +108,7 @@ function mod_tournaments_make_games($vars) {
 		FROM events
 		JOIN partien USING (event_id)
 		JOIN tournaments USING (event_id)
+		LEFT JOIN paarungen USING (paarung_id)
 		JOIN categories
 			ON events.event_category_id = categories.category_id
 		WHERE events.identifier = "%d/%s"
