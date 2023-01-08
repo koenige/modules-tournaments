@@ -108,8 +108,11 @@ function mod_tournaments_teaminternal($vars, $settings) {
 	foreach ($texts as $text) {
 		if ($text['parameters']) {
 			parse_str($text['parameters'], $text['parameters']);
-			if (!empty($text['parameters']['alias']))
+			if (!empty($text['parameters']['alias'])) {
 				$text['path'] = $text['parameters']['alias'];
+				if ($pos = strpos($text['path'], '/'))
+					$text['path'] = substr($text['path'], $pos + 1);
+			}
 		}
 		$event[$text['path']] = $text['eventtext'];
 	}
