@@ -148,9 +148,17 @@ function mod_tournaments_tournament($vars, $settings) {
 			ON turniere_kennungen.kennung_category_id = categories.category_id
 		WHERE tournament_id = %d';
 	$sql = sprintf($sql, $event['tournament_id']);
-	$event = array_merge($event, wrap_db_fetch($sql, '_dummy_', 'key/value'));
-	if ($event['year'] < 2011 AND array_key_exists('dwz', $event)) {
-		$event['dwz_db_archiv'] = true;
+	$ratings = wrap_db_fetch($sql, '_dummy_', 'key/value');
+	foreach ($ratings as $rating => $code) {
+		$area = ($pos = strpos($rating, '_')) ? substr($rating, 0, $pos) : $rating;
+		if ($event['year'] < 2011 AND $area === 'dwz') {
+			$setting = sprintf('tournaments_rating_link[%s_before_2011]', $area);
+			$fields = [$event['year'], $code];
+		} else {
+			$setting = sprintf('tournaments_rating_link[%s]', $area);
+			$fields = [$code];
+		}
+		$event[$area.'_tournament_link'] = vsprintf(wrap_get_setting($setting), $fields);
 	}
 	
 	// Bedenkzeit?

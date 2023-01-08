@@ -280,13 +280,11 @@
 <p><a href="partien/gesamt.pgn">Partien aller Runden [PGN]</a>
 <br><a href="partien/gesamt-utf8.pgn">Partien aller Runden [PGN, Unicode UTF-8]</a></p>
 %%% condition endif %%%
-%%% condition if fide_id %%%
-<p><a href="http://ratings.fide.com/tournament_details.phtml?event=%%% item fide_id %%%">Elo-Auswertung bei der FIDE</a></p>
+%%% condition if fide_tournament_link %%%
+<p><a href="%%% item fide_tournament_link %%%">Elo-Auswertung beim Weltschachbund FIDE</a></p>
 %%% condition endif %%%
-%%% condition if dwz & dwz_db_archiv %%%
-<p><a href="http://altdwz.schachbund.net/turniere/%%% item year %%%.html?code=%%% item dwz %%%">DWZ-Auswertung beim Schachbund</a></p>
-%%% condition elseif dwz %%%
-<p><a href="http://www.schachbund.de/turnier/%%% item dwz %%%.html">DWZ-Auswertung beim Schachbund</a></p>
+%%% condition if dwz_tournament_link %%%
+<p><a href="%%% item dwz_tournament_link %%%">DWZ-Auswertung beim Deutschen Schachbund</a></p>
 %%% condition endif %%%
 </div>
 
