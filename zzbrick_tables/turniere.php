@@ -184,56 +184,63 @@ $zz['fields'][27]['explanation'] = 'Zusätzliche Tabellenstände als Filter, Ein
  (<a href="/hilfe/anleitung/#tabellenstaende">Anleitung</a>)';
 $zz['fields'][27]['separator'] = true;
 
-$zz['fields'][25]['title'] = 'PGN-Datei';
-$zz['fields'][25]['field_name'] = 'pgnfile';
-$zz['fields'][25]['dont_show_missing'] = true;
-$zz['fields'][25]['type'] = 'upload_image';
-$zz['fields'][25]['path'] = [
-	'root' => $zz_setting['media_folder'].'/pgn/',
-	'webroot' => $zz_setting['media_internal_path'].'/pgn/',
-	'field1' => 'event_identifier',
-	'string2' => '/gesamt',
-	'string3' => '.pgn'
-];
-$zz['fields'][25]['input_filetypes'] = ['pgn'];
-$zz['fields'][25]['link'] = [
-	'string1' => $zz_setting['media_internal_path'].'/pgn/',
-	'field1' => 'event_identifier',
-	'string2' => '/gesamt',
-	'string3' => '.pgn'
-];
-$zz['fields'][25]['optional_image'] = true;
-$zz['fields'][25]['image'][0]['title'] = 'pgn';
-$zz['fields'][25]['image'][0]['field_name'] = 'pgn';
-$zz['fields'][25]['image'][0]['path'] = $zz['fields'][25]['path'];
-$zz['fields'][25]['list_append_next'] = true;
-$zz['fields'][25]['list_suffix'] = '<br>';
-$zz['fields'][25]['title_tab'] = 'Dateien';
-$zz['fields'][25]['if']['add']['hide_in_form'] = true;
+if (wrap_get_setting('tournaments_upload_pgn')) {
+	$zz['fields'][25]['title'] = 'PGN-Datei';
+	$zz['fields'][25]['field_name'] = 'pgnfile';
+	$zz['fields'][25]['dont_show_missing'] = true;
+	$zz['fields'][25]['type'] = 'upload_image';
+	$zz['fields'][25]['path'] = [
+		'root' => $zz_setting['media_folder'].'/pgn/',
+		'webroot' => $zz_setting['media_internal_path'].'/pgn/',
+		'field1' => 'event_identifier',
+		'string2' => '/gesamt',
+		'string3' => '.pgn'
+	];
+	$zz['fields'][25]['input_filetypes'] = ['pgn'];
+	$zz['fields'][25]['link'] = [
+		'string1' => $zz_setting['media_internal_path'].'/pgn/',
+		'field1' => 'event_identifier',
+		'string2' => '/gesamt',
+		'string3' => '.pgn'
+	];
+	$zz['fields'][25]['optional_image'] = true;
+	$zz['fields'][25]['image'][0]['title'] = 'pgn';
+	$zz['fields'][25]['image'][0]['field_name'] = 'pgn';
+	$zz['fields'][25]['image'][0]['path'] = $zz['fields'][25]['path'];
+	if (wrap_get_setting('tournaments_upload_swt')) {
+		$zz['fields'][25]['list_append_next'] = true;
+		$zz['fields'][25]['list_suffix'] = '<br>';
+	}
+	$zz['fields'][25]['title_tab'] = 'Dateien';
+	$zz['fields'][25]['if']['add']['hide_in_form'] = true;
+}
 
-$zz['fields'][22]['title'] = 'SWT-Datei';
-$zz['fields'][22]['field_name'] = 'swt';
-$zz['fields'][22]['dont_show_missing'] = true;
-$zz['fields'][22]['type'] = 'upload_image';
-$zz['fields'][22]['path'] = [
-	'root' => $zz_setting['media_folder'].'/swt/',
-	'webroot' => $zz_setting['media_internal_path'].'/swt/',
-	'field1' => 'event_identifier', 
-	'string2' => '.swt'
-];
-$zz['fields'][22]['input_filetypes'] = ['swt'];
-$zz['fields'][22]['link'] = [
-	'string1' => $zz_setting['media_internal_path'].'/swt/',
-	'field1' => 'event_identifier',
-	'string2' => '.swt'
-];
-$zz['fields'][22]['optional_image'] = true;
-$zz['fields'][22]['image'][0]['title'] = 'gro&szlig;';
-$zz['fields'][22]['image'][0]['field_name'] = 'gross';
-$zz['fields'][22]['image'][0]['path'] = $zz['fields'][22]['path'];
-$zz['fields'][22]['if'][1]['separator'] = 'text <div class="separator">Für Mannschaftsturniere</div>';
-$zz['fields'][22]['if'][2]['separator'] = true;
-$zz['fields'][22]['if']['add']['hide_in_form'] = true;
+if (wrap_get_setting('tournaments_upload_swt')) {
+	$zz['fields'][22]['title'] = 'SWT-Datei';
+	$zz['fields'][22]['field_name'] = 'swt';
+	$zz['fields'][22]['dont_show_missing'] = true;
+	$zz['fields'][22]['type'] = 'upload_image';
+	$zz['fields'][22]['path'] = [
+		'root' => $zz_setting['media_folder'].'/swt/',
+		'webroot' => $zz_setting['media_internal_path'].'/swt/',
+		'field1' => 'event_identifier', 
+		'string2' => '.swt'
+	];
+	$zz['fields'][22]['input_filetypes'] = ['swt'];
+	$zz['fields'][22]['link'] = [
+		'string1' => $zz_setting['media_internal_path'].'/swt/',
+		'field1' => 'event_identifier',
+		'string2' => '.swt'
+	];
+	$zz['fields'][22]['optional_image'] = true;
+	$zz['fields'][22]['image'][0]['title'] = 'gro&szlig;';
+	$zz['fields'][22]['image'][0]['field_name'] = 'gross';
+	$zz['fields'][22]['image'][0]['path'] = $zz['fields'][22]['path'];
+	$zz['fields'][22]['if'][1]['separator'] = 'text <div class="separator">Für Mannschaftsturniere</div>';
+	$zz['fields'][22]['if'][2]['separator'] = true;
+	$zz['fields'][22]['if']['add']['hide_in_form'] = true;
+	$zz['fields'][22]['title_tab'] = 'Dateien';
+}
 
 $zz['fields'][13]['title_tab'] = 'Bretter';
 $zz['fields'][13]['title_append'] = 'Bretter';

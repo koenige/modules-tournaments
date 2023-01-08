@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2017, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -27,6 +27,34 @@ $zz['fields'][2]['fields'] = [
 $zz['fields'][2]['conf_identifier']['concat'] = [
 	'/', '/runde/'
 ];
+
+if (wrap_get_setting('tournaments_upload_pgn')) {
+	$zz['fields'][23]['title'] = 'PGN-Datei';
+	$zz['fields'][23]['field_name'] = 'pgn';
+	$zz['fields'][23]['dont_show_missing'] = true;
+	$zz['fields'][23]['type'] = 'upload_image';
+	$zz['fields'][23]['path'] = [
+		'root' => $zz_setting['media_folder'].'/pgn/',
+		'webroot' => $zz_setting['media_internal_path'].'/pgn/',
+		'field1' => 'main_event_identifier', 
+		'string2' => '/',
+		'field2' => 'runde_no',
+		'string3' => '.pgn'
+	];
+	$zz['fields'][23]['input_filetypes'] = ['pgn'];
+	$zz['fields'][23]['link'] = [
+		'string1' => $zz_setting['media_internal_path'].'/pgn/',
+		'field1' => 'main_event_identifier',
+		'string2' => '/',
+		'field2' => 'runde_no',
+		'string3' => '.pgn'
+	];
+	$zz['fields'][23]['optional_image'] = true;
+	$zz['fields'][23]['image'][0]['title'] = 'gro&szlig;';
+	$zz['fields'][23]['image'][0]['field_name'] = 'gross';
+	$zz['fields'][23]['image'][0]['path'] = $zz['fields'][23]['path'];
+	$zz['fields'][23]['unless']['export_mode']['list_prefix'] = '<br>';
+}
 
 $zz['fields'][26]['hide_in_list'] = true;
 $zz['fields'][26]['hide_in_form'] = true;

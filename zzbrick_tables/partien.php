@@ -180,64 +180,66 @@ $zz['fields'][24]['default'] = 'nein';
 $zz['fields'][24]['hide_in_list'] = true;
 $zz['fields'][24]['explanation'] = 'Wurde fälschlich mit vertauschten Farben gespielt?';
 
-$zz['fields'][23]['title'] = 'PGN-Datei';
-$zz['fields'][23]['field_name'] = 'pgn';
-$zz['fields'][23]['type'] = 'upload_image';
-$zz['fields'][23]['path'] = [
-	'root' => $zz_setting['media_folder'].'/pgn/',
-	'webroot' => $zz_setting['media_internal_path'].'/pgn/',
-	'field1' => 'event_identifier', 
-	'string2' => '/',
-	'field2' => 'runde_no',
-	'string3' => '-',
-	'field3' => 'tisch_no',
-	'string4' => '-',
-	'field4' => 'brett_no',
-	'string5' => '.pgn'
-];
-$zz['fields'][23]['if'][1]['path'] = [
-	'root' => $zz_setting['media_folder'].'/pgn/',
-	'webroot' => $zz_setting['media_internal_path'].'/pgn/',
-	'field1' => 'event_identifier', 
-	'string2' => '/',
-	'field2' => 'runde_no',
-	'string3' => '-',
-	'field3' => '',
-	'string4' => '',
-	'field4' => 'brett_no',
-	'string5' => '.pgn'
-];
-$zz['fields'][23]['input_filetypes'] = ['pgn'];
-$zz['fields'][23]['link'] = [
-	'string1' => $zz_setting['media_internal_path'].'/pgn/',
-	'field1' => 'event_identifier',
-	'string2' => '/',
-	'field2' => 'runde_no',
-	'string3' => '-',
-	'field3' => 'tisch_no',
-	'string4' => '-',
-	'field4' => 'brett_no',
-	'string5' => '.pgn'
-];
-$zz['fields'][23]['if'][1]['link'] = [
-	'string1' => $zz_setting['media_internal_path'].'/pgn/',
-	'field1' => 'event_identifier',
-	'string2' => '/',
-	'field2' => 'runde_no',
-	'string3' => '-',
-	'field3' => '',
-	'string4' => '',
-	'field4' => 'brett_no',
-	'string5' => '.pgn'
-];
-$zz['fields'][23]['optional_image'] = true;
+if (wrap_get_setting('tournaments_upload_pgn')) {
+	$zz['fields'][23]['title'] = 'PGN-Datei';
+	$zz['fields'][23]['field_name'] = 'pgn';
+	$zz['fields'][23]['type'] = 'upload_image';
+	$zz['fields'][23]['path'] = [
+		'root' => $zz_setting['media_folder'].'/pgn/',
+		'webroot' => $zz_setting['media_internal_path'].'/pgn/',
+		'field1' => 'event_identifier', 
+		'string2' => '/',
+		'field2' => 'runde_no',
+		'string3' => '-',
+		'field3' => 'tisch_no',
+		'string4' => '-',
+		'field4' => 'brett_no',
+		'string5' => '.pgn'
+	];
+	$zz['fields'][23]['if'][1]['path'] = [
+		'root' => $zz_setting['media_folder'].'/pgn/',
+		'webroot' => $zz_setting['media_internal_path'].'/pgn/',
+		'field1' => 'event_identifier', 
+		'string2' => '/',
+		'field2' => 'runde_no',
+		'string3' => '-',
+		'field3' => '',
+		'string4' => '',
+		'field4' => 'brett_no',
+		'string5' => '.pgn'
+	];
+	$zz['fields'][23]['input_filetypes'] = ['pgn'];
+	$zz['fields'][23]['link'] = [
+		'string1' => $zz_setting['media_internal_path'].'/pgn/',
+		'field1' => 'event_identifier',
+		'string2' => '/',
+		'field2' => 'runde_no',
+		'string3' => '-',
+		'field3' => 'tisch_no',
+		'string4' => '-',
+		'field4' => 'brett_no',
+		'string5' => '.pgn'
+	];
+	$zz['fields'][23]['if'][1]['link'] = [
+		'string1' => $zz_setting['media_internal_path'].'/pgn/',
+		'field1' => 'event_identifier',
+		'string2' => '/',
+		'field2' => 'runde_no',
+		'string3' => '-',
+		'field3' => '',
+		'string4' => '',
+		'field4' => 'brett_no',
+		'string5' => '.pgn'
+	];
+	$zz['fields'][23]['optional_image'] = true;
 
-$zz['fields'][23]['image'][0]['title'] = 'gro&szlig;';
-$zz['fields'][23]['image'][0]['field_name'] = 'gross';
-$zz['fields'][23]['image'][0]['path'] = $zz['fields'][23]['path'];
-$zz['fields'][23]['if'][1]['image'][0]['path'] = $zz['fields'][23]['if'][1]['path'];
-$zz['fields'][23]['dont_show_missing'] = true;
-$zz['fields'][23]['hide_in_list_if_empty'] = true;
+	$zz['fields'][23]['image'][0]['title'] = 'gro&szlig;';
+	$zz['fields'][23]['image'][0]['field_name'] = 'gross';
+	$zz['fields'][23]['image'][0]['path'] = $zz['fields'][23]['path'];
+	$zz['fields'][23]['if'][1]['image'][0]['path'] = $zz['fields'][23]['if'][1]['path'];
+	$zz['fields'][23]['dont_show_missing'] = true;
+	$zz['fields'][23]['hide_in_list_if_empty'] = true;
+}
 
 $zz['fields'][25]['title'] = 'URL';
 $zz['fields'][25]['field_name'] = 'url';
