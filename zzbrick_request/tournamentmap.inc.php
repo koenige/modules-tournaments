@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2008, 2012, 2014-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2008, 2012, 2014-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -23,6 +23,9 @@
  */
 function mod_tournaments_tournamentmap($vars) {
 	global $zz_setting;
+
+	if (str_ends_with(end($vars), '.geojson'))
+		return mod_tournaments_tournamentmap_json($vars);
 	
 	$federation = count($vars) === 3 ? array_pop($vars) : '';
 	$event = my_turniertermin($vars);
@@ -90,8 +93,6 @@ function mod_tournaments_tournamentmap($vars) {
 	if (!$federation) {
 		$page['breadcrumbs'][] = 'Herkunftsorte';
 	} else {
-		$page['breadcrumbs'][] = sprintf('<a href="../../../">%d</a>', $event['year']);
-		$page['breadcrumbs'][] = sprintf('<a href="../../">%s</a>', $event['event']);
 		$page['breadcrumbs'][] = '<a href="../">Herkunftsorte</a>';
 		$page['breadcrumbs'][] = $federation['contact'];
 	}
