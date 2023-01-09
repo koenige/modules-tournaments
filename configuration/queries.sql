@@ -19,6 +19,7 @@ SELECT event_id, identifier
 , tournament_id
 , series.parameters AS series_parameters
 , (SELECT COUNT(*) FROM access_codes WHERE event_id = events.event_id) AS access_codes
+, (SELECT COUNT(*) FROM categories c WHERE main_category_id = series.category_id) AS series
 FROM events
 LEFT JOIN tournaments USING (event_id)
 LEFT JOIN categories series
@@ -33,6 +34,7 @@ SELECT event_id, identifier
 , tournament_id
 , series.parameters AS series_parameters
 , (SELECT COUNT(*) FROM access_codes WHERE event_id = events.event_id) AS access_codes
+, (SELECT COUNT(*) FROM categories c WHERE main_category_id = series.category_id) AS series
 FROM events
 LEFT JOIN tournaments USING (event_id)
 LEFT JOIN categories series
