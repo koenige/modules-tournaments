@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -22,7 +22,7 @@
  *  [2]: Startranglisten-Nr. des Spielers
  * @return array $page
  */
-function mod_tournaments_player($vars) {
+function mod_tournaments_player($vars, $settings, $event) {
 	global $zz_setting;
 	if (count($vars) !== 3) return false;
 
@@ -32,13 +32,8 @@ function mod_tournaments_player($vars) {
 			, t_verein, organisationen.identifier AS verein_kennung
 			, t_dwz, t_elo, t_fidetitel
 			, setzliste_no
-			, events.event_id, event, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
-			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
-			, IFNULL(place, places.contact) AS turnierort
 			, YEAR(date_of_birth) AS geburtsjahr
 			, platz_no
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
-			, main_series.category_short AS main_series
 			, contacts.identifier AS personen_kennung
 			, SUBSTRING_INDEX(events.identifier, "/", -1) AS turnier_kennung
 			, (SELECT identifier FROM contacts_identifiers zps WHERE zps.contact_id = contacts.contact_id AND current = "yes" AND identifier_category_id = %d) AS zps_code
@@ -55,31 +50,26 @@ function mod_tournaments_player($vars) {
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN contacts USING (contact_id)
-		LEFT JOIN contacts places
-			ON events.place_contact_id = places.contact_id
-		LEFT JOIN addresses
-			ON places.contact_id = addresses.contact_id
 		LEFT JOIN tabellenstaende
 			ON tabellenstaende.person_id = persons.person_id
 			AND participations.event_id = tabellenstaende.event_id
 			AND tabellenstaende.runde_no = tournaments.tabellenstand_runde_no 
 		LEFT JOIN contacts organisationen
 			ON participations.club_contact_id = organisationen.contact_id
-		LEFT JOIN categories series
-			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
 		WHERE setzliste_no = %d
 		AND teilnahme_status = "Teilnehmer"
-		AND events.identifier = "%d/%s"
+		AND events.event_id = %d
 	';
 	$sql = sprintf($sql
 		, wrap_category_id('identifiers/zps')
 		, wrap_category_id('identifiers/fide-id')
-		, $vars[2], $vars[0], wrap_db_escape($vars[1])
+		, $vars[2], $event['event_id']
 	);
 	$data = wrap_db_fetch($sql);
 	if (!$data) return false;
+
+	$data += $event;
+
 	$data = mf_tournaments_clubs_to_federations($data);
 	$data['fidetitel_lang'] = mf_tournaments_fide_title($data['t_fidetitel']);
 
@@ -145,11 +135,6 @@ function mod_tournaments_player($vars) {
 	$page['dont_show_h1'] = true;
 	$page['title'] = $data['t_vorname'].' '.$data['t_namenszusatz'].' '.$data['t_nachname'].' – '.$data['event'].' '.$data['year'];
 	$page['text'] = wrap_template('player', $data);
-	$page['breadcrumbs'][] = '<a href="../../../">'.$data['year'].'</a>';
-	if ($data['main_series']) {
-		$page['breadcrumbs'][] = '<a href="../../../'.$data['main_series_path'].'/">'.$data['main_series'].'</a>';
-	}
-	$page['breadcrumbs'][] = '<a href="../../">'.$data['event'].'</a>';
 	$page['breadcrumbs'][] = '<a href="../">Startrangliste</a>';
 	$page['breadcrumbs'][] = $data['name'];
 	if (in_array('magnificpopup', $zz_setting['modules']))
