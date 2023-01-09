@@ -88,8 +88,6 @@ function mod_tournaments_tournamentmap($vars) {
 	$page['text'] = wrap_template('tournamentmap', $event);
 	$page['dont_show_h1'] = true;
 	if (!$federation) {
-		$page['breadcrumbs'][] = sprintf('<a href="../../">%d</a>', $event['year']);
-		$page['breadcrumbs'][] = sprintf('<a href="../">%s</a>', $event['event']);
 		$page['breadcrumbs'][] = 'Herkunftsorte';
 	} else {
 		$page['breadcrumbs'][] = sprintf('<a href="../../../">%d</a>', $event['year']);

@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2016, 2018-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2016, 2018-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -93,11 +93,6 @@ function mod_tournaments_livegames_turnier($turnier) {
 	$turnier = mod_tournaments_livegames_bretter($turnier);
 	$turnier['last_update'] = substr($turnier['last_update'], 11, 5);
 	
-	$page['breadcrumbs'][] = '<a href="../../">'.$turnier['year'].'</a>';
-	if ($turnier['main_series']) {
-		$page['breadcrumbs'][] = '<a href="../../'.$turnier['main_series_path'].'/">'.$turnier['main_series'].'</a>';
-	}
-	$page['breadcrumbs'][] = '<a href="../">'.$turnier['event'].'</a>';
 	$page['breadcrumbs'][] = 'Livepartien';
 	$page['title'] = 'Livepartien '.$turnier['event'].' '.$turnier['year'];
 	$page['head'] = wrap_template('livegames-head');
@@ -134,8 +129,6 @@ function mod_tournaments_livegames_series($tournaments) {
 			$tournaments['last_update'] = $tournaments[$event_id]['last_update'];
 	}
 	$tournaments['last_update'] = substr($tournaments['last_update'], 11, 5);
-	$page['breadcrumbs'][] = '<a href="../../">'.$series['year'].'</a>';
-	$page['breadcrumbs'][] = '<a href="../">'.$series['main_series'].'</a>';
 	$page['breadcrumbs'][] = 'Livepartien';
 	$page['title'] = 'Livepartien '.$series['main_series'].' '.$series['year'];
 	$page['text'] = wrap_template('livegames-series', $tournaments);
