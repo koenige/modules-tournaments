@@ -32,14 +32,12 @@ function mod_tournaments_standings($vars) {
 		unset($vars[2]);
 	}
 	$filter_kennung = false;
-	$long_breadcrumbs = false;
 	if (count($vars) === 4) {
 		$filter_kennung = array_pop($vars);
 		$runde = array_pop($vars);
 		$pfad = '../../';
 	} elseif (count($vars) === 3) {
 		// Runde steht in URL
-		$long_breadcrumbs = true;
 		$runde = array_pop($vars);
 		if (!is_numeric($runde)) {
 			$filter_kennung = $runde;
@@ -369,13 +367,6 @@ function mod_tournaments_standings($vars) {
 
 	$page['title'] = $event['event'].' '. $event['year'].', Tabellenstand nach der '.$event['runde_no'].'. Runde';
 	$page['dont_show_h1'] = true;
-	if ($long_breadcrumbs) {
-		$page['breadcrumbs'][] = '<a href="../../'.$pfad.'">'.$event['year'].'</a>';
-		if ($event['main_series']) {
-			$page['breadcrumbs'][] = '<a href="../../'.$pfad.$event['main_series_path'].'/">'.$event['main_series'].'</a>';
-		}
-		$page['breadcrumbs'][] = '<a href="../'.$pfad.'">'.$event['event'].'</a>';
-	}
 	if (!empty($filter['untertitel'])) {
 		$page['title'] .= ' ('.$filter['untertitel'].')';
 		$page['breadcrumbs'][] = '<a href="../">'.sprintf('Tabelle %s. Runde', $event['runde_no']).'</a>';
