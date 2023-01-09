@@ -16,9 +16,8 @@
 function mod_tournaments_round($params) {
 	global $zz_setting;
 
-	if (count($params) !== 4) return false;
-	if ($params[2] !== 'runde') return false;
-	if (!is_numeric($params[3])) return false;
+	if (count($params) !== 3) return false;
+	if (!is_numeric($params[2])) return false;
 
 	if (!brick_access_rights('Webmaster')) {
 		$public = ' AND NOT ISNULL(events_websites.website_id) ';
@@ -83,7 +82,7 @@ function mod_tournaments_round($params) {
 		%s
 		AND events.runde_no = %d
 	';
-	$sql = sprintf($sql, $zz_setting['website_id'], $params[0], wrap_db_escape($params[1]), $public, $params[3]);
+	$sql = sprintf($sql, $zz_setting['website_id'], $params[0], wrap_db_escape($params[1]), $public, $params[2]);
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
 	if ($event['parameters']) {
@@ -213,11 +212,6 @@ function mod_tournaments_round($params) {
 	else
 		$page['title'] = $event['event'].' '.$event['year'].', Ergebnisse '.$event['round_event'];
 	$page['dont_show_h1'] = true;
-	$page['breadcrumbs'][] = '<a href="../../../">'.$event['year'].'</a>';
-	if ($event['main_series']) {
-		$page['breadcrumbs'][] = '<a href="../../../'.$event['main_series_path'].'/">'.$event['main_series'].'</a>';
-	}
-	$page['breadcrumbs'][] = '<a href="../../">'.$event['event'].'</a>';
 	$page['breadcrumbs'][] = $event['round_event'];
 	if (!empty($event['next'])) {
 		$page['link']['next'][0]['href'] = '../'.$event['next'].'/';
