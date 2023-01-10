@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2005, 2012-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2005, 2012-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -21,21 +21,14 @@
  *		string [1]: Turnierkennung
  *		string [2]: 1.pgn, gesamt.pgn, 1-2-4
  */
-function mod_tournaments_games($vars) {
+function mod_tournaments_games($vars, $settings = [], $event = []) {
 	global $zz_setting;
+	require_once $zz_setting['modules_dir'].'/chess/chess/pgn.inc.php';
 	
 	$qs = mod_tournaments_games_check_qs();
+	
+	if (empty($settings['type'])) $settings['type'] = false;
 
-	require_once $zz_setting['modules_dir'].'/chess/chess/pgn.inc.php';
-
-	$typ = false;
-	if (!empty($vars[2])) {
-		if ($vars[2] === 'partien') unset($vars[2]);
-		elseif ($vars[2] === 'pdt') {
-			unset($vars[2]);
-			$typ = 'pdt';
-		}
-	}
 	if (count($vars) !== 3 AND count($vars) !== 4) return false;
 	$request = array_pop($vars);
 
@@ -101,11 +94,11 @@ function mod_tournaments_games($vars) {
 	if (!$event) return false;
 
 	if (substr($request, -4) === '.pgn') {
-		return mod_tournaments_games_file($event, substr($request, 0, -4), $typ, $qs);
+		return mod_tournaments_games_file($event, substr($request, 0, -4), $settings['type'], $qs);
 	} elseif (substr($request, -5) === '.json') {
 		return mod_tournaments_games_json($event, $request);
 	} else {
-		return mod_tournaments_games_html($event, $request, $typ);
+		return mod_tournaments_games_html($event, $request, $settings['type']);
 	}
 }
 
@@ -648,11 +641,6 @@ function mod_tournaments_games_html($event, $request, $typ) {
 		.(!empty($partie['runde_no']) ? ', Runde '.$partie['runde_no'].': ' : '')
 		.(!empty($partie['tag']) ? ', Tag '.$partie['tag'].': ' : '')
 		.$partie['weiss'].'–'.$partie['schwarz'];
-	$page['breadcrumbs'][] = '<a href="../../../">'.$partie['year'].'</a>';
-	if (!empty($partie['main_series'])) {
-		$page['breadcrumbs'][] = '<a href="../../../'.$partie['main_series_path'].'/">'.$partie['main_series'].'</a>';
-	}
-	$page['breadcrumbs'][] = '<a href="../../">'.$partie['event'].'</a>';
 	if (!empty($partie['breadcrumbs'])) {
 		$page['breadcrumbs'][] = $partie['breadcrumbs'];
 	} else {
