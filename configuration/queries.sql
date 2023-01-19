@@ -16,6 +16,7 @@ SELECT event_id, identifier
 , IF(date_begin > CURDATE(), 1, NULL) AS future_event
 , IF(date_begin <= CURDATE() AND date_end >= CURDATE(), 1, NULL) AS running_event
 , IF(IFNULL(date_end, date_begin) < CURDATE(), 1, NULL) AS past_event
+, IF(IFNULL(date_end, date_begin) >= CURDATE(), 1, NULL) AS future_or_running_event
 , tournament_id
 , series.parameters AS series_parameters
 , eventtype.parameters AS eventtype_parameters
@@ -41,6 +42,7 @@ SELECT event_id, identifier
 , IF(date_begin > CURDATE(), 1, NULL) AS future_event
 , IF(date_begin <= CURDATE() AND date_end >= CURDATE(), 1, NULL) AS running_event
 , IF(IFNULL(date_end, date_begin) < CURDATE(), 1, NULL) AS past_event
+, IF(IFNULL(date_end, date_begin) >= CURDATE(), 1, NULL) AS future_or_running_event
 , tournament_id
 , series.parameters AS series_parameters
 , eventtype.parameters AS eventtype_parameters
