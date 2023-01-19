@@ -20,6 +20,13 @@ SELECT event_id, identifier
 , series.parameters AS series_parameters
 , (SELECT COUNT(*) FROM access_codes WHERE event_id = events.event_id) AS access_codes
 , (SELECT COUNT(*) FROM categories c WHERE main_category_id = series.category_id) AS series
+, (SELECT COUNT(*) FROM events t
+	LEFT JOIN categories t_series ON t.series_category_id = t_series.category_id
+	LEFT JOIN categories t_eventtype ON t.event_category_id = t_eventtype.category_id
+	WHERE t_series.main_category_id = events.series_category_id
+	AND IFNULL(t.event_year, YEAR(t.date_begin)) = IFNULL(events.event_year, YEAR(events.date_begin))
+	AND t_eventtype.parameters LIKE "%%&single=1%%"
+) AS includes_single_tournaments
 FROM events
 LEFT JOIN tournaments USING (event_id)
 LEFT JOIN categories series
@@ -35,6 +42,13 @@ SELECT event_id, identifier
 , series.parameters AS series_parameters
 , (SELECT COUNT(*) FROM access_codes WHERE event_id = events.event_id) AS access_codes
 , (SELECT COUNT(*) FROM categories c WHERE main_category_id = series.category_id) AS series
+, (SELECT COUNT(*) FROM events t
+	LEFT JOIN categories t_series ON t.series_category_id = t_series.category_id
+	LEFT JOIN categories t_eventtype ON t.event_category_id = t_eventtype.category_id
+	WHERE t_series.main_category_id = events.series_category_id
+	AND IFNULL(t.event_year, YEAR(t.date_begin)) = IFNULL(events.event_year, YEAR(events.date_begin))
+	AND t_eventtype.parameters LIKE "%%&single=1%%"
+) AS includes_single_tournaments
 FROM events
 LEFT JOIN tournaments USING (event_id)
 LEFT JOIN categories series
