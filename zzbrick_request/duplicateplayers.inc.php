@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015-2016, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2015-2016, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -81,8 +81,6 @@ function mod_tournaments_duplicateplayers($vars) {
 	
 	$turnier = reset($turniere);
 	
-	$page['breadcrumbs'][] = '<a href="../../">'.$turnier['year'].'</a>';
-	$page['breadcrumbs'][] = '<a href="../">'.$turnier['series'].'</a>';
 	$page['breadcrumbs'][] = 'Doppelt gemeldete Spieler';
 	$page['title'] = $turnier['series'].' '.$turnier['year'].':<br> Doppelt gemeldete Spieler';
 	$page['text'] = wrap_template('duplicateplayers', $data);
