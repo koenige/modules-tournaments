@@ -18,6 +18,7 @@ SELECT event_id, identifier
 , IF(IFNULL(date_end, date_begin) < CURDATE(), 1, NULL) AS past_event
 , tournament_id
 , series.parameters AS series_parameters
+, eventtype.parameters AS eventtype_parameters
 , (SELECT COUNT(*) FROM access_codes WHERE event_id = events.event_id) AS access_codes
 , (SELECT COUNT(*) FROM categories c WHERE main_category_id = series.category_id) AS series
 , (SELECT COUNT(*) FROM events t
@@ -31,6 +32,8 @@ FROM events
 LEFT JOIN tournaments USING (event_id)
 LEFT JOIN categories series
 	ON events.series_category_id = series.category_id
+LEFT JOIN categories eventtype
+	ON events.event_category_id = eventtype.category_id
 WHERE event_id = %d
 
 -- tournaments_event --
@@ -40,6 +43,7 @@ SELECT event_id, identifier
 , IF(IFNULL(date_end, date_begin) < CURDATE(), 1, NULL) AS past_event
 , tournament_id
 , series.parameters AS series_parameters
+, eventtype.parameters AS eventtype_parameters
 , (SELECT COUNT(*) FROM access_codes WHERE event_id = events.event_id) AS access_codes
 , (SELECT COUNT(*) FROM categories c WHERE main_category_id = series.category_id) AS series
 , (SELECT COUNT(*) FROM events t
@@ -53,4 +57,6 @@ FROM events
 LEFT JOIN tournaments USING (event_id)
 LEFT JOIN categories series
 	ON events.series_category_id = series.category_id
+LEFT JOIN categories eventtype
+	ON events.event_category_id = eventtype.category_id
 WHERE identifier = '%s'
