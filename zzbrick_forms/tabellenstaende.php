@@ -8,10 +8,13 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2015, 2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2015, 2017, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
+
+if (count($brick['vars']) === 1 AND strstr($brick['vars'][0], '/'))
+	$brick['vars'] = explode('/', $brick['vars'][0]);
 
 // Wertungen
 $sql = 'SELECT wertung_category_id
@@ -75,6 +78,7 @@ if (!isset($_GET['filter']['typ'])) {
 	$zz['fields'][6]['hide_in_form'] = true; // Platz
 }
 
+// @todo we are below rounds, make this breadcrumb superfluous
 $zz_conf['breadcrumbs'][] = [
 	'linktext' => 'Runden',
 	'url' => $zz_setting['events_internal_path'].'/'.$brick['data']['identifier'].'/runde/'

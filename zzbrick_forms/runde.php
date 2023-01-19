@@ -94,26 +94,37 @@ $zz['hooks']['after_upload'][] = 'mf_tournaments_games_update';
 
 $zz_conf['referer'] = '../';
 
-if (brick_access_rights(['Webmaster'])
-	OR brick_access_rights('AK Spielbetrieb')
-	OR brick_access_rights(['Schiedsrichter', 'Technik', 'Turnierleitung'], $brick['data']['event_rights'])) {
-	if ($brick['data']['turnierform'] === 'e') {
-		$zz['details'][0]['title'] = 'Partien';
-	} else {
-		$zz['details'][0]['title'] = 'Paarungen';
+if (wrap_access('tournaments_games') AND !wrap_access('tournaments_pairings')) {
+	// just allow to upload PGN files
+	$fields = [4, 5, 54, 55, 22, 20];
+	foreach ($fields as $no) {
+		$zz['fields'][$no]['type_detail'] = $zz['fields'][$no]['type'];
+		$zz['fields'][$no]['type'] = 'display';
+		unset($zz['fields'][$no]['explanation']);
 	}
+	$zz['fields'][2]['hide_in_form'] = true; // identifier
+	$zz['fields'][6]['hide_in_form'] = true; // event
+	unset($zz['fields'][5]['display_field']); // date_end
+	$zz_conf['delete'] = false;
+	$zz_conf['add'] = false;
+}
+if (wrap_access('tournaments_games') OR wrap_access('tournaments_pairings')) {
+	if ($brick['data']['turnierform'] === 'e')
+		$zz['details'][0]['title'] = 'Partien';
+	else
+		$zz['details'][0]['title'] = 'Paarungen';
 	$zz['details'][0]['link'] = [
+	// @todo use area
 		'string0' => $zz_setting['events_internal_path'].'/', 'field1' => 'identifier', 'string1' => '/'
 	];
+}
+if (wrap_access('tournaments_standings')) {
 	$zz['details'][1]['title'] = 'Tabellenstand';
 	$zz['details'][1]['link'] = [
+	// @todo use area
+	//	'area' => 'tournaments_standings',
+	//	'fields' => ['main_event_identifier', 'runde_no']
 		'string0' => $zz_setting['events_internal_path'].'/', 'field1' => 'main_event_identifier',
 		'string1' => '/tabelle/', 'field2' => 'runde_no', 'string2' => '/'
 	];
-	$zz['access'] = 'all';
-} elseif (brick_access_rights(['Bulletin'], $brick['data']['event_rights'])) {
-	$zz['access'] = '';
-	$zz_conf['delete'] = false;
-} else {
-	$zz['access'] = '';
 }
