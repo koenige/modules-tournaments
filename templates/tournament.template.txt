@@ -242,7 +242,7 @@
 %%% loop end %%%
 %%% condition unless intern %%%
 %%% condition if ausschreibung %%%
-<dd><a href="%%% setting events_path %%%/%%% item identifier %%%/#zeitplan">Kompletter Zeitplan …</a></dd>
+<dd><a href="%%% setting events_public_url %%%#zeitplan">Kompletter Zeitplan …</a></dd>
 %%% condition endif %%%
 %%% condition endif %%%
 %%% condition endif %%%
@@ -265,7 +265,7 @@
 %%% condition if links | ausschreibung %%%
 <dt>Links:</dt>
 %%% condition if ausschreibung %%%
-<dd><a href="%%% setting events_path %%%/%%% item identifier %%%/">Ausschreibung des Turniers</a></dd>
+<dd><a href="%%% setting events_public_url %%%">Ausschreibung des Turniers</a></dd>
 %%% condition endif %%%
 %%% condition if links %%%
 %%% loop links %%%
@@ -277,8 +277,8 @@
 %%% condition endif %%%
 <div class="tournament_links">
 %%% condition if partien %%%
-<p><a href="partien/gesamt.pgn">Partien aller Runden [PGN]</a>
-<br><a href="partien/gesamt-utf8.pgn">Partien aller Runden [PGN, Unicode UTF-8]</a></p>
+<p><a href="%%% setting tournaments_public_url %%%partien/gesamt.pgn">Partien aller Runden [PGN]</a>
+<br><a href="%%% setting tournaments_public_url %%%partien/gesamt-utf8.pgn">Partien aller Runden [PGN, Unicode UTF-8]</a></p>
 %%% condition endif %%%
 %%% condition if fide_tournament_link %%%
 <p><a href="%%% item fide_tournament_link %%%">Elo-Auswertung beim Weltschachbund FIDE</a></p>
@@ -295,7 +295,7 @@
 
 %%% condition if offen %%%
 %%% condition if einzel %%%
-<p><strong>Dieses Turnier ist ein offenes Turnier! <a href="%%% setting events_path %%%/%%% item identifier %%%/#anmeldung">Jetzt melden!</a></strong></p>
+<p><strong>Dieses Turnier ist ein offenes Turnier! <a href="%%% setting events_public_url %%%#anmeldung">Jetzt melden!</a></strong></p>
 %%% condition else %%%
 <p><strong>Dieses Turnier ist ein offenes Turnier!
 %%% condition if meldung_moeglich & online_meldung  %%%
@@ -309,7 +309,7 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% condition endif %%%
 %%% condition elseif freiplatz %%%
 %%% condition if einzel %%%
-<p><strong>Für dieses Turnier gibt es Freiplätze. <a href="%%% setting events_path %%%/%%% item identifier %%%/#anmeldung">Jetzt bewerben!</a></strong></p>
+<p><strong>Für dieses Turnier gibt es Freiplätze. <a href="%%% setting events_public_url %%%#anmeldung">Jetzt bewerben!</a></strong></p>
 %%% condition endif %%%
 %%% condition endif %%%
 

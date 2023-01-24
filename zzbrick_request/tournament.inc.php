@@ -67,6 +67,9 @@ function mod_tournaments_tournament($vars, $settings) {
 			, (SELECT setting_value FROM _settings
 				WHERE setting_key = "canonical_hostname" AND _settings.website_id = events.website_id
 			) AS canonical_hostname
+			, (SELECT setting_value FROM _settings
+				WHERE setting_key = "events_path" AND _settings.website_id = events.website_id
+			) AS events_path
 			, IF(NOT ISNULL(IFNULL(events.description, series.description)), 1, NULL) AS ausschreibung
 			, main_tournament_id
 		FROM events
@@ -102,6 +105,18 @@ function mod_tournaments_tournament($vars, $settings) {
 	);
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
+
+	$zz_setting['tournaments_public_url'] = sprintf('https://%s%s/%s/'
+		, $event['canonical_hostname']
+		, $zz_setting['local_access'] ? '.local' : ''
+		, $event['identifier']
+	);
+	$zz_setting['events_public_url'] = sprintf('https://%s%s%s/%s/'
+		, $event['canonical_hostname']
+		, $zz_setting['local_access'] ? '.local' : ''
+		, $event['events_path']
+		, $event['identifier']
+	);
 	$zz_setting['logfile_name'] = $event['identifier'];
 	if (!$intern AND !$event['tournament_id']) {
 		return wrap_redirect(
