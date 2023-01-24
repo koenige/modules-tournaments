@@ -29,6 +29,10 @@ SELECT event_id, identifier
 	AND IFNULL(t.event_year, YEAR(t.date_begin)) = IFNULL(events.event_year, YEAR(events.date_begin))
 	AND t_eventtype.parameters LIKE "%%&single=1%%"
 ) AS includes_single_tournaments
+, (SELECT COUNT(*) FROM participations
+	WHERE participations.event_id = events.event_id
+	AND usergroup_id = /*_ID usergroups bewerber _*/
+) AS applicants
 FROM events
 LEFT JOIN tournaments USING (event_id)
 LEFT JOIN categories series
@@ -55,6 +59,10 @@ SELECT event_id, identifier
 	AND IFNULL(t.event_year, YEAR(t.date_begin)) = IFNULL(events.event_year, YEAR(events.date_begin))
 	AND t_eventtype.parameters LIKE "%%&single=1%%"
 ) AS includes_single_tournaments
+, (SELECT COUNT(*) FROM participations
+	WHERE participations.event_id = events.event_id
+	AND usergroup_id = /*_ID usergroups bewerber _*/
+) AS applicants
 FROM events
 LEFT JOIN tournaments USING (event_id)
 LEFT JOIN categories series
