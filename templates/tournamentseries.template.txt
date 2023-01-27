@@ -5,16 +5,8 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2014-2022 Gustaf Mossakowski
+# @copyright Copyright © 2014-2023 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
-#
-# List of fields:
-# event_id, event, date_begin, date_end, ort, takes_place, description, year,
-# duration, category_short, series_description, series_category_id,
-# series_path, turnierort, tournaments { event_id, identifier, event, duration,
-# date_begin, date_end, turnierort, teilnehmerliste, turnierform, partien, teams,
-# spieler, spieler_mit_verein }, spieler, teams, mannschaft_(verein),
-# teilnehmerliste, kontingent, event_links
 #
 <h1>%%% item event %%%
 <br>%%% item duration wrap_date %%% %%% item turnierort "<em>in %s</em>" %%%</h1>
