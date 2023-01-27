@@ -69,7 +69,7 @@ function mod_tournaments_placeholder_team($brick) {
 		$team += $parameters;
 	}
 
-	if (!empty($brick['local_settings']['internal'])) {
+	if (!empty($brick['local_settings']['internal']) AND empty($brick['local_settings']['no_team_breadcrumbs'])) {
 		$bc_template = '<a href="'.wrap_get_setting('events_internal_path').'/%s/">%s</a>';
 
 		$brick['page']['breadcrumbs'][] = sprintf(
