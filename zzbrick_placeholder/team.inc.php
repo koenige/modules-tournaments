@@ -8,18 +8,17 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
 function mod_tournaments_placeholder_team($brick) {
-	global $zz_setting;
 	if (!empty($brick['parameter'])) {
 		if (substr_count($brick['parameter'], '/') !== 2) wrap_quit(404);
 		list($year, $identifier, $team_idf) = explode('/', $brick['parameter']);
 	} else {
-		list($year, $identifier, $team_idf) = [$brick['vars'][1], $brick['vars'][2]];
+		list($year, $identifier, $team_idf) = [$brick['vars'][1], $brick['vars'][2], $brick['vars'][3]];
 	}
 
 	$sql = 'SELECT team_id, team, team_no, meldung
@@ -33,6 +32,7 @@ function mod_tournaments_placeholder_team($brick) {
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, club_contact_id AS contact_id, clubs.contact
+			, clubs.identifier AS contact_identifier
 			, IF(tournaments.zimmerbuchung = "ja", 1, NULL) AS zimmerbuchung
 			, IF(tournaments.gastspieler = "ja", 1, NULL) AS gastspieler
 			, CONCAT("event_id:", events.event_id) AS event_rights
@@ -53,13 +53,14 @@ function mod_tournaments_placeholder_team($brick) {
 			ON tournaments.turnierform_category_id = turnierformen.category_id
 		LEFT JOIN categories place_categories
 			ON places.contact_category_id = place_categories.category_id
-		WHERE teams.identifier = "%d/%s/%s"';
+		WHERE teams.identifier = "%d/%s/%s"
+		AND spielfrei = "nein"';
 	$sql = sprintf($sql, $year, wrap_db_escape($identifier), wrap_db_escape($team_idf));
 	$team = wrap_db_fetch($sql);
 	if (!$team) wrap_quit(404);
 
 	$status = !empty($brick['local_settings']['status']) ? $brick['local_settings']['status'] : ['offen', 'teiloffen'];
-	if (!in_array($team['meldung'], $status)) wrap_quit(403);
+	if ($status !== 'all' AND !in_array($team['meldung'], $status)) wrap_quit(403);
 
 	if (!mf_tournaments_team_access($team['team_id'], ['Teilnehmer'])) wrap_quit(403);
 
@@ -69,7 +70,7 @@ function mod_tournaments_placeholder_team($brick) {
 	}
 
 	if (!empty($brick['local_settings']['internal'])) {
-		$bc_template = '<a href="'.$zz_setting['events_internal_path'].'/%s/">%s</a>';
+		$bc_template = '<a href="'.wrap_get_setting('events_internal_path').'/%s/">%s</a>';
 	} else {
 		$bc_template = '<a href="/%s/">%s</a>';
 	}
@@ -85,9 +86,10 @@ function mod_tournaments_placeholder_team($brick) {
 	$brick['page']['breadcrumbs'][] = sprintf(
 		$bc_template, $team['event_identifier'], $team['event']
 	);
-	$brick['page']['breadcrumbs'][] = sprintf(
-		$bc_template, implode('/', [$year, $identifier, $team_idf]), $team['team']
-	);
+	if (!empty($brick['vars'][4]) OR $brick['parameter'])
+		$brick['page']['breadcrumbs'][] = sprintf(
+			$bc_template, implode('/', [$year, $identifier, $team_idf]), $team['team']
+		);
 
 	$brick['page']['dont_show_h1'] = true;
 	$brick['page']['title'] = sprintf('%s %s: %s %s – ', 
