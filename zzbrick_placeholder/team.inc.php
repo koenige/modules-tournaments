@@ -71,25 +71,23 @@ function mod_tournaments_placeholder_team($brick) {
 
 	if (!empty($brick['local_settings']['internal'])) {
 		$bc_template = '<a href="'.wrap_get_setting('events_internal_path').'/%s/">%s</a>';
-	} else {
-		$bc_template = '<a href="/%s/">%s</a>';
-	}
 
-	$brick['page']['breadcrumbs'][] = sprintf(
-		$bc_template, $team['year'], $team['year']
-	);
-	if ($team['main_series_path']) {
 		$brick['page']['breadcrumbs'][] = sprintf(
-			$bc_template, $team['year'].'/'.$team['main_series_path'], $team['main_series']
+			$bc_template, $team['year'], $team['year']
 		);
+		if ($team['main_series_path']) {
+			$brick['page']['breadcrumbs'][] = sprintf(
+				$bc_template, $team['year'].'/'.$team['main_series_path'], $team['main_series']
+			);
+		}
+		$brick['page']['breadcrumbs'][] = sprintf(
+			$bc_template, $team['event_identifier'], $team['event']
+		);
+		if (!empty($brick['vars'][4]) OR $brick['parameter'])
+			$brick['page']['breadcrumbs'][] = sprintf(
+				$bc_template, implode('/', [$year, $identifier, $team_idf]), $team['team']
+			);
 	}
-	$brick['page']['breadcrumbs'][] = sprintf(
-		$bc_template, $team['event_identifier'], $team['event']
-	);
-	if (!empty($brick['vars'][4]) OR $brick['parameter'])
-		$brick['page']['breadcrumbs'][] = sprintf(
-			$bc_template, implode('/', [$year, $identifier, $team_idf]), $team['team']
-		);
 
 	$brick['page']['dont_show_h1'] = true;
 	$brick['page']['title'] = sprintf('%s %s: %s %s – ', 
