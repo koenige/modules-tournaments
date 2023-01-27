@@ -8,23 +8,6 @@
 # @copyright Copyright © 2012-2023 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
-# List of fields:
-# team_id, team, team_no, setzliste_no, platz_no, zps_code, contact_id, team_identifier,
-# team_identifier_short, meldung_datum, regionalgruppe, meldung, url,
-# contact, latitude, longitude, veranstaltungsort, place,
-# address, postcode, federation_identifier, main_series_path, event_identifier,
-# turnierform, country, endstand, zwischenstand,
-# mannschaft_(verein), event_id, event, bretter_min, bretter_max,
-# alter_max, alter_min, geschlecht, gastspieler_status, duration, dauer_tage,
-# teilnehmerliste, pseudo_dwz,
-# turnierort, year, main_series, _prev_team_id, _prev_identifier, _next_team_id,
-# _next_identifier, map, spielberechtigt, dwz_schnitt, spieler { team_id,
-# person_id, person, t_verein, t_dwz, t_elo, t_fidetitel, spielberechtigt,
-# rang_no, brett_no, gastspieler, gastspieler_status, geburtsjahr,
-# pseudo_dwz, zps_code, partien { ergebnis }, summe_bp }, paarungen {
-# runde_no, tisch_no, gegner, punkte, verloren, unentschieden, gewonnen,
-# spielfrei }, summe_bp, summe_mp, links
-#
 <h1>%%% item team %%% %%% item team_no %%%
 <br><a href="../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
 

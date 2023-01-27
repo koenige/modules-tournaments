@@ -13,36 +13,21 @@
  */
 
 
-function mod_tournaments_team($vars, $settings) {
-	global $zz_setting;
-
-	$sql_condition = ' AND NOT ISNULL(events_websites.website_id) ';
-	
-	$sql = 'SELECT teams.team_id, team, team_no
-			, setzliste_no
+function mod_tournaments_team($vars, $settings, $data) {
+	$sql = 'SELECT setzliste_no
 			, platz_no
-			, contacts.contact_id, contacts.contact_id
 			, teams.identifier AS team_identifier
 			, SUBSTRING_INDEX(teams.identifier, "/", -1) AS team_identifier_short
-			, meldung_datum
-			, meldung
-			, contacts.contact
-			, contacts.identifier AS contact_identifier
-			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, @laufende_partien:= (SELECT IF(COUNT(partie_id) = 0, NULL, 1) FROM partien
-				WHERE partien.event_id = events.event_id AND ISNULL(weiss_ergebnis)
+				WHERE partien.event_id = teams.event_id AND ISNULL(weiss_ergebnis)
 			) AS zwischenstand
 			, IF(ISNULL(@laufende_partien)
 				AND tournaments.tabellenstand_runde_no = tournaments.runden, 1, NULL) AS endstand 
 			, teams.team_status
-			, teams.club_contact_id
 		FROM teams
-		LEFT JOIN contacts
-			ON teams.club_contact_id = contacts.contact_id
-		LEFT JOIN events USING (event_id)
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN events_websites
-			ON events_websites.event_id = events.event_id
+			ON events_websites.event_id = teams.event_id
 			AND events_websites.website_id = %d
 		LEFT JOIN categories turnierformen
 			ON tournaments.turnierform_category_id = turnierformen.category_id
@@ -50,63 +35,36 @@ function mod_tournaments_team($vars, $settings) {
 			ON tabellenstaende.team_id = teams.team_id
 			AND (ISNULL(tabellenstaende.runde_no)
 				OR tabellenstaende.runde_no = tournaments.tabellenstand_runde_no)
-		WHERE teams.identifier = "%s"
-		AND spielfrei = "nein"
-		%s
+		WHERE teams.team_id = %d
+		AND NOT ISNULL(events_websites.website_id)
 	';
 	$sql = sprintf($sql
-		, $zz_setting['website_id']
-		, wrap_db_escape(implode('/', $vars))
-		, $sql_condition
+		, wrap_get_setting('website_id')
+		, $data['team_id']
 	);
-	$team = wrap_db_fetch($sql);
-	if (!$team) return false;
-	$team = mf_tournaments_clubs_to_federations($team, 'club_contact_id');
-	$team[str_replace('-', '_', $team['turnierform'])] = true;
-	$team += mf_contacts_contactdetails($team['contact_id']);
+	$data = array_merge($data, wrap_db_fetch($sql));
+	if (!$data) return false;
 
-	array_pop($vars);
-	$sql = 'SELECT event_id, event, bretter_min, bretter_max, alter_max, alter_min
+	$data = mf_tournaments_clubs_to_federations($data, 'contact_id');
+	$data[str_replace('-', '_', $data['turnierform'])] = true;
+	$data += mf_contacts_contactdetails($data['contact_id']);
+
+	$sql = 'SELECT bretter_min, bretter_max, alter_max, alter_min
 			, geschlecht, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
-			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
-			, DATEDIFF(date_end, date_begin) AS dauer_tage
 			, IF(teilnehmerliste = "ja", 1, 0) AS teilnehmerliste
 			, pseudo_dwz
-			, IFNULL(place, places.contact) AS turnierort
-			, IFNULL(event_year, YEAR(date_begin)) AS year
-			, events.identifier AS event_identifier
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
-			, main_series.category_short AS main_series
-			, place_categories.parameters
-		FROM events
-		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN contacts places
-			ON places.contact_id = events.place_contact_id
-		LEFT JOIN addresses
-			ON addresses.contact_id = places.contact_id
-		LEFT JOIN categories series
-			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
-		LEFT JOIN categories place_categories
-			ON places.contact_category_id = place_categories.category_id
-		WHERE events.identifier = "%s"';
-	$sql = sprintf($sql, wrap_db_escape(implode('/', $vars)));
-	$event = wrap_db_fetch($sql);
-	if (!$event) return false;
-	if ($event['parameters']) {
-		parse_str($event['parameters'], $parameters);
-		$event += $parameters;
+		FROM tournaments
+		WHERE event_id = %d';
+	$sql = sprintf($sql, $data['event_id']);
+	$data = array_merge($data, wrap_db_fetch($sql));
+
+	if ($data['parameters']) {
+		parse_str($data['parameters'], $parameters);
+		$data += $parameters;
 	}
 
-	$page['title'] = $event['event'].' '.$event['year'].': '.$team['team'].' '.$team['team_no'];
-	$page['breadcrumbs'][] = '<a href="../../">'.$event['year'].'</a>';
-	if ($event['main_series']) {
-		$page['breadcrumbs'][] = '<a href="../../'.$event['main_series_path'].'/">'.$event['main_series'].'</a>';
-	}
-	$page['breadcrumbs'][] = '<a href="../">'.$event['event'].'</a>';
+	$page['title'] = $data['event'].' '.$data['year'].': '.$data['team'].' '.$data['team_no'];
 	$page['dont_show_h1'] = true;
-	$data = array_merge($team, $event);
 	if ($data['team_status'] !== 'Teilnehmer') {
 		switch ($data['team_status']) {
 			case 'Löschung':
