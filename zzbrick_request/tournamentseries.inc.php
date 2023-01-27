@@ -16,7 +16,7 @@
 function mod_tournaments_tournamentseries($vars, $settings) {
 	global $zz_setting;
 
-	$internal = !empty($settings['intern']) ? true : false;
+	$internal = !empty($settings['internal']) ? true : false;
 	if (count($vars) !== 2) return false;
 
 	// @todo access_codes müssen mindestens einmal erstellt worden sein, sonst wird URL nicht verlinkt

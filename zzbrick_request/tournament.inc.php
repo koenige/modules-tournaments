@@ -17,11 +17,11 @@ function mod_tournaments_tournament($vars, $settings) {
 	global $zz_setting;
 	wrap_package_activate('events');
 
-	if (!empty($settings['intern'])) {
-		$intern = true;
+	if (!empty($settings['internal'])) {
+		$internal = true;
 		$sql_condition = '';
 	} else {
-		$intern = false;
+		$internal = false;
 		$sql_condition = ' AND NOT ISNULL(event_website_id) ';
 	}
 
@@ -118,7 +118,7 @@ function mod_tournaments_tournament($vars, $settings) {
 		, $event['identifier']
 	);
 	$zz_setting['logfile_name'] = $event['identifier'];
-	if (!$intern AND !$event['tournament_id']) {
+	if (!$internal AND !$event['tournament_id']) {
 		return wrap_redirect(
 			sprintf('%s/%s/', $zz_setting['events_path'], implode('/', $vars)), 307);
 	}
@@ -127,7 +127,7 @@ function mod_tournaments_tournament($vars, $settings) {
 		$event += $series_parameter;
 	}
 	mf_tournaments_cache($event);
-	$event['intern'] = $intern ? true : false;
+	$event['intern'] = $internal ? true : false;
 	if ($event['turnierform'])
 		$event[str_replace('-', '_', $event['turnierform'])] = true;
 	$event[str_replace('-', '_', $event['event_category'])] = true;
@@ -209,7 +209,7 @@ function mod_tournaments_tournament($vars, $settings) {
 		AND event_category_id IN (%d, %d, %d)
 		ORDER BY IFNULL(date_begin, date_end) ASC, IFNULL(time_begin, time_end) ASC, runde_no
 	';
-	$sql = sprintf($sql, $intern ? 1 : 'NULL', $event['event_id']
+	$sql = sprintf($sql, $internal ? 1 : 'NULL', $event['event_id']
 		, wrap_category_id('zeitplan/runde')
 		, wrap_category_id('zeitplan/meldefrist')
 		, wrap_category_id('zeitplan/zahlungsfrist')
@@ -250,7 +250,7 @@ function mod_tournaments_tournament($vars, $settings) {
 		} else {
 			$letzte_dauer = $my_datum['duration'];
 		}
-		if ($intern 
+		if ($internal 
 			AND (!brick_access_rights(['Webmaster']) 
 			AND !brick_access_rights(['Schiedsrichter', 'Technik', 'Turnierleitung'], 'event:'.$event['identifier']))
 		) {
@@ -291,7 +291,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	$event['links'] = wrap_db_fetch($sql, 'event_link_id');
 
 	$runde = mf_tournaments_current_round($event['identifier']);
-	if ($runde AND !$intern) $event['tabelle'] = true;
+	if ($runde AND !$internal) $event['tabelle'] = true;
 
 	if ($event['turnierform'] === 'e') {
 		$sql = 'SELECT participation_id, platz_no
@@ -401,7 +401,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	}
 
 	// Organisatoren
-	if ($intern) {
+	if ($internal) {
 		$sql_fields = sprintf('
 		, GROUP_CONCAT(category, ": ", identification SEPARATOR "<br>") AS telefon
 		, (SELECT identification FROM contactdetails
@@ -467,7 +467,7 @@ function mod_tournaments_tournament($vars, $settings) {
 		$eigene_teams = mf_tournaments_team_own();
 		foreach ($event['teams'] as $id => $team) {
 			if ($event['teilnehmerliste'] AND $team['team_status'] === 'Teilnehmer') $event['teams'][$id]['aktiv'] = 1;
-			elseif (in_array($id, $eigene_teams) AND $intern) $event['teams'][$id]['aktiv'] = 1;
+			elseif (in_array($id, $eigene_teams) AND $internal) $event['teams'][$id]['aktiv'] = 1;
 			elseif (brick_access_rights('Webmaster') AND $event['intern']) $event['teams'][$id]['aktiv'] = 1;
 			if (!empty($event['turnierform']))
 				$event['teams'][$id][str_replace('-', '_', $event['turnierform'])] = true;
@@ -481,7 +481,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	}
 	$page['breadcrumbs'][] = $event['event'];
 	$page['dont_show_h1'] = true;
-	if ($intern) {
+	if ($internal) {
 		$page['query_strings'][] = 'absage';
 		if (array_key_exists('absage', $_GET)) {
 			$event['team_abgesagt'] = true;
@@ -489,7 +489,7 @@ function mod_tournaments_tournament($vars, $settings) {
 	}
 
 	if (empty($event['einzel'])) {
-		if ($event['latitude'] AND !$intern) {
+		if ($event['latitude'] AND !$internal) {
 			$page['head'] = wrap_template('termin-map-head');
 			$event['map'] = my_teilnehmerkarte($event);
 		}
@@ -501,7 +501,7 @@ function mod_tournaments_tournament($vars, $settings) {
 		$sql = sprintf($sql, wrap_id('usergroups', 'spieler'), $event['event_id']);
 		$event['einzelteilnehmerliste'] = wrap_db_fetch($sql, '', 'single value');
 	}
-	if ($intern) $event['tabellenstaende'] = [];
+	if ($internal) $event['tabellenstaende'] = [];
 	if ($event['tabellenstaende']) {
 		$ts = explode(',', $event['tabellenstaende']);
 		$event['tabellenstaende'] = [];
