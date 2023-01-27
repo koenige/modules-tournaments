@@ -103,7 +103,7 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 	);
 	$event['tournaments'] = wrap_db_fetch($sql, 'event_id');
 	parse_str($event['series_parameter'], $parameter);
-	$event['kontingente'] = !empty($parameter['kontingent']) ? true : (!empty($parameter['quotadvm'] ? true : false));
+	$event['kontingente'] = !empty($parameter['kontingent']) ? true : (!empty($parameter['quotadvm']) ? true : false);
 
 	$event['turnierstart'] = 0;
 	foreach ($event['tournaments'] AS $turnier) {
