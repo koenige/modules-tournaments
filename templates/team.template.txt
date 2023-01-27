@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2022 Gustaf Mossakowski
+# @copyright Copyright © 2012-2023 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 # List of fields:
@@ -30,7 +30,7 @@
 
 %%% condition if team_withdrawn %%%
 <p>Dieses Team wurde zurückgezogen.</p>
-<p><a href="https://schach.in%%% condition if setting localhost %%%.local%%% condition endif %%%/%%% item organisation_kennung %%%/">Weitere Infos: %%% item contact %%%</a></p>
+<p><a href="https://schach.in%%% condition if setting localhost %%%.local%%% condition endif %%%/%%% item contact_identifier %%%/">Weitere Infos: %%% item contact %%%</a></p>
 
 %%% condition else %%%
 
@@ -202,7 +202,7 @@ nicht abschließend geprüft.)</em></p>
 %%% condition if veranstaltungsort %%%
 <p>Ort: %%% item veranstaltungsort %%%, %%% item address %%%, %%% item postcode %%% %%% item place %%%</p>
 %%% condition endif %%%
-<p><a href="https://schach.in%%% condition if setting localhost %%%.local%%% condition endif %%%/%%% item organisation_kennung %%%/">Weitere Infos: %%% item contact %%%</a></p>
+<p><a href="https://schach.in%%% condition if setting localhost %%%.local%%% condition endif %%%/%%% item contact_identifier %%%/">Weitere Infos: %%% item contact %%%</a></p>
 
 %%% condition if url %%%
 %%% loop url 1 %%%

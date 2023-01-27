@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -27,7 +27,7 @@ function mod_tournaments_team($vars, $settings) {
 			, meldung_datum
 			, meldung
 			, contacts.contact
-			, contacts.identifier AS organisation_kennung
+			, contacts.identifier AS contact_identifier
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, @laufende_partien:= (SELECT IF(COUNT(partie_id) = 0, NULL, 1) FROM partien
 				WHERE partien.event_id = events.event_id AND ISNULL(weiss_ergebnis)
