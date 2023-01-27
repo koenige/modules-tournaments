@@ -8,32 +8,25 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-function mod_tournaments_tournamentseries($vars, $settings) {
-	global $zz_setting;
-
+function mod_tournaments_tournamentseries($vars, $settings, $event) {
 	$internal = !empty($settings['internal']) ? true : false;
-	if (count($vars) !== 2) return false;
+	// displayed on this website?
+	if (!$internal and !$event['website_id']) return false;
 
 	// @todo access_codes müssen mindestens einmal erstellt worden sein, sonst wird URL nicht verlinkt
 	// ggf. anders lösen, via Turniereinstellungen, Kategorien o. ä.
 	// sobald Download-Code etabliert und vielfältig einsetzbar
-	$sql = 'SELECT events.event_id
-			, event, date_begin, date_end, places.contact AS ort, takes_place, events.description, events.identifier
-			, IFNULL(event_year, YEAR(date_begin)) AS year
-			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
-			, series.category_short, series.description AS series_description, series_category_id
+	$sql = 'SELECT 
+			places.contact AS ort, takes_place, events.description
+			, series.description AS series_description
 			, SUBSTRING_INDEX(series.path, "/", -1) AS series_path
-			, IFNULL(place, places.contact) AS turnierort
 			, website_org.contact_abbr
 			, (SELECT COUNT(*) FROM access_codes WHERE event_id = events.event_id) AS access_codes
-			, series.parameters
-			, (SELECT COUNT(*) FROM categories WHERE categories.main_category_id = series.category_id) AS sub_series
-			, events_websites.website_id
 		FROM events
 		LEFT JOIN websites USING (website_id)
 		LEFT JOIN contacts website_org USING (contact_id)
@@ -42,38 +35,16 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 			AND events_websites.website_id = %d
 		LEFT JOIN contacts places
 			ON places.contact_id = events.place_contact_id
-		LEFT JOIN addresses
-			ON places.contact_id = addresses.contact_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
-		WHERE events.identifier = "%s/%s"
+		WHERE events.event_id = %d
 		AND ISNULL(main_event_id)
 	';
 	$sql = sprintf($sql
-		, $zz_setting['website_id']
-		, wrap_db_escape($vars[0])
-		, wrap_db_escape($vars[1])
+		, wrap_get_setting('website_id')
+		, $event['event_id']
 	);
-	$event = wrap_db_fetch($sql);
-	if ($event AND !$internal and !$event['website_id']) return false;
-	if ($event AND !$event['sub_series']) $event = [];
-	$series = [];
-	if (!$event) {
-		$sql = 'SELECT category_id, category, category_short, description, parameters
-			FROM categories
-			WHERE path = "reihen/%s"';
-		$sql = sprintf($sql, wrap_db_escape($vars[1]));
-		$series = wrap_db_fetch($sql);
-		if (!$series) return false;
-		$event = [
-			'series_category_id' => $series['category_id'],
-			'year' => intval($vars[0]),
-			'event' => $series['category'],
-			'parameters' => $series['parameters'],
-			'turnierort' => ''
-		];
-	}
-
+	$event = array_merge($event, wrap_db_fetch($sql));
 	if ($internal) $event['intern'] = true;
 
 	// Turniere auslesen
@@ -126,33 +97,19 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 	$sql = sprintf($sql,
 		wrap_id('usergroups', 'spieler'),
 		wrap_id('usergroups', 'spieler'),
-		$zz_setting['website_id'],
+		wrap_get_setting('website_id'),
 		$event['series_category_id'],
 		$event['year']
 	);
 	$event['tournaments'] = wrap_db_fetch($sql, 'event_id');
-	if ($series AND !$event['tournaments']) return false;
-	parse_str($event['parameters'], $parameter);
-	$event['kontingente'] = !empty($parameter['kontingent']) ? true : false;
+	parse_str($event['series_parameter'], $parameter);
+	$event['kontingente'] = !empty($parameter['kontingent']) ? true : (!empty($parameter['quotadvm'] ? true : false));
 
 	$event['turnierstart'] = 0;
 	foreach ($event['tournaments'] AS $turnier) {
 		$event['turnierstart'] += $turnier['turnierstart'];
 		if ($turnier['kontingente']) $event['kontingente'] = true;
 		if ($turnier['partien']) $event['pgn'] = true;
-		if ($series) {
-			// Keine Reihe im Terminkalender, also Daten aus Turnieren auslesen
-			if (empty($event['date_begin'])) {
-				$event['date_begin'] = $turnier['date_begin'];
-			} elseif ($turnier['date_begin'] AND $turnier['date_begin'] < $event['date_begin']) {
-				$event['date_begin'] = $turnier['date_begin'];
-			}
-			if (empty($event['date_end'])) {
-				$event['date_end'] = $turnier['date_end'];
-			} elseif ($turnier['date_end'] > $event['date_end']) {
-				$event['date_end'] = $turnier['date_end'];
-			}
-		}
 		if ($turnier['spieler']) $event['spieler'] = true;
 		if ($turnier['teams']) $event['teams'] = true;
 		$event[$turnier['turnierform']] = true;
@@ -168,10 +125,6 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 		} else {
 			$event['teilnehmerliste'] = true;
 		}
-	}
-	if ($series) {
-		$event['duration'] = !empty($event['date_begin']) ? $event['date_begin'] : '';
-		$event['duration'] .= '/'.(!empty($event['date_end']) ? $event['date_end'] : '');
 	}
 
 	// Kontingente?
@@ -215,7 +168,6 @@ function mod_tournaments_tournamentseries($vars, $settings) {
 	// Suche
 	
 	$page['title'] = $event['event'].' '.$event['year'];
-	$page['breadcrumbs'][] = '<a href="../">'.$event['year'].'</a>';
 	$page['breadcrumbs'][] = $event['event'];
 	$page['dont_show_h1'] = true;
 	$page['text'] = wrap_template('tournamentseries', $event);
