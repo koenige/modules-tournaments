@@ -13,7 +13,7 @@
  */
 
 
-function mod_tournaments_tournament($vars, $settings) {
+function mod_tournaments_tournament($vars, $settings, $event) {
 	global $zz_setting;
 	wrap_package_activate('events');
 
@@ -25,14 +25,9 @@ function mod_tournaments_tournament($vars, $settings) {
 		$sql_condition = ' AND NOT ISNULL(event_website_id) ';
 	}
 
-	$sql = 'SELECT events.event_id, event
-			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
-			, date_begin
-			, IFNULL(event_year, YEAR(date_begin)) AS year
-			, places.contact AS veranstaltungsort
+	$sql = 'SELECT places.contact AS veranstaltungsort
 			, address, postcode, place, places.description
 			, latitude, longitude, place_contact_id
-			, series.category_id AS series_category_id, events.identifier
 			, IF(offen = "ja", IF(date_begin < CURDATE(), 0, 1), 0) AS offen
 			, IF(LOCATE("meldung=1", series.parameters), 1, NULL) AS online_meldung
 			, IF(ISNULL(teams_max), 1, 
@@ -40,10 +35,7 @@ function mod_tournaments_tournament($vars, $settings) {
 			) AS meldung_moeglich
 			, (SELECT COUNT(*) FROM forms WHERE forms.event_id = events.event_id AND forms.form_category_id = %d) AS freiplatz
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
-			, IFNULL(place, places.contact) AS turnierort
-			, pseudo_dwz, bretter_min
-			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
-			, SUBSTRING_INDEX(event_categories.path, "/", -1) AS event_category
+			, pseudo_dwz
 			, tournament_id
 			, tabellenstaende
 			, IF(NOT ISNULL(events.date_end),
@@ -51,10 +43,7 @@ function mod_tournaments_tournament($vars, $settings) {
 				IF(events.date_begin < CURDATE(), 1, NULL)
 			) AS event_over
 			, series.category AS series, series.description AS series_description
-			, series.parameters AS series_parameter
 			, SUBSTRING_INDEX(series.path, "/", -1) AS series_path
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
-			, main_series.category_short AS main_series
 			, runden, modus.category AS modus
 			, IF(spielerphotos = "ja", IF((SELECT COUNT(contact_id) FROM participations
 				WHERE participations.event_id = events.event_id AND usergroup_id = %d AND NOT ISNULL(setzliste_no)), 1, NULL), NULL) AS spielerphotos
@@ -75,36 +64,29 @@ function mod_tournaments_tournament($vars, $settings) {
 		FROM events
 		LEFT JOIN websites USING (website_id)
 		LEFT JOIN contacts website_org USING (contact_id)
-		LEFT JOIN categories event_categories
-			ON events.event_category_id = event_categories.category_id
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = %d
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON main_series.category_id = series.main_category_id
-		LEFT JOIN categories turnierformen
-			ON tournaments.turnierform_category_id = turnierformen.category_id
 		LEFT JOIN categories modus
 			ON tournaments.modus_category_id = modus.category_id
 		LEFT JOIN contacts places
 			ON events.place_contact_id = places.contact_id
 		LEFT JOIN addresses
 			ON addresses.contact_id = places.contact_id
-		WHERE events.identifier = "%s"
+		WHERE events.event_id = %d
 		%s
 	';
 	$sql = sprintf($sql
 		, wrap_category_id('formulare/freiplatzantrag')
 		, wrap_id('usergroups', 'spieler')
 		, $zz_setting['website_id']
-		, wrap_db_escape(implode('/', $vars))
+		, $event['event_id']
 		, $sql_condition
 	);
-	$event = wrap_db_fetch($sql);
-	if (!$event) return false;
+	$event = array_merge($event, wrap_db_fetch($sql));
 
 	$zz_setting['tournaments_public_url'] = sprintf('https://%s%s/%s/'
 		, $event['canonical_hostname']
@@ -475,10 +457,6 @@ function mod_tournaments_tournament($vars, $settings) {
 	}
 
 	$page['title'] = $event['event'].', '.wrap_date($event['duration']);
-	$page['breadcrumbs'][] = '<a href="../">'.$event['year'].'</a>';
-	if ($event['main_series']) {
-		$page['breadcrumbs'][] = '<a href="../'.$event['main_series_path'].'/">'.$event['main_series'].'</a>';
-	}
 	$page['breadcrumbs'][] = $event['event'];
 	$page['dont_show_h1'] = true;
 	if ($internal) {
