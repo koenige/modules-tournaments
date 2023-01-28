@@ -94,7 +94,7 @@ $zz['hooks']['after_upload'][] = 'mf_tournaments_games_update';
 
 $zz_conf['referer'] = '../';
 
-if (wrap_access('tournaments_games') AND !wrap_access('tournaments_pairings')) {
+if (wrap_access('tournaments_games', $brick['data']['event_rights']) AND !wrap_access('tournaments_pairings', $brick['data']['event_rights'])) {
 	// just allow to upload PGN files
 	$fields = [4, 5, 54, 55, 22, 20];
 	foreach ($fields as $no) {
@@ -108,7 +108,7 @@ if (wrap_access('tournaments_games') AND !wrap_access('tournaments_pairings')) {
 	$zz_conf['delete'] = false;
 	$zz_conf['add'] = false;
 }
-if (wrap_access('tournaments_games') OR wrap_access('tournaments_pairings')) {
+if (wrap_access('tournaments_games', $brick['data']['event_rights']) OR wrap_access('tournaments_pairings', $brick['data']['event_rights'])) {
 	if ($brick['data']['turnierform'] === 'e')
 		$zz['details'][0]['title'] = 'Partien';
 	else
@@ -118,7 +118,7 @@ if (wrap_access('tournaments_games') OR wrap_access('tournaments_pairings')) {
 		'string0' => $zz_setting['events_internal_path'].'/', 'field1' => 'identifier', 'string1' => '/'
 	];
 }
-if (wrap_access('tournaments_standings')) {
+if (wrap_access('tournaments_standings', $brick['data']['event_rights'])) {
 	$zz['details'][1]['title'] = 'Tabellenstand';
 	$zz['details'][1]['link'] = [
 	// @todo use area
