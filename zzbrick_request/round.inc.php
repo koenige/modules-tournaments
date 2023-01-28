@@ -8,12 +8,12 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-function mod_tournaments_round($params) {
+function mod_tournaments_round($params, $vars, $event) {
 	global $zz_setting;
 
 	if (count($params) !== 3) return false;
@@ -24,10 +24,7 @@ function mod_tournaments_round($params) {
 	} else {
 		$public = '';
 	}
-	$sql = 'SELECT main_events.event_id, main_events.event
-			, events.event AS round_event, events.runde_no
-			, main_events.identifier AS event_identifier
-			, SUBSTRING_INDEX(main_events.identifier, "/", 1) AS turnierjahr
+	$sql = 'SELECT events.event AS round_event, events.runde_no
 			, CONCAT("U", SUBSTRING(SUBSTRING_INDEX(SUBSTRING_INDEX(main_events.identifier, "/", -1), "-", -1), 2)) AS turnierkennung
 			, (SELECT IF(COUNT(tabellenstand_id), 1, NULL) FROM tabellenstaende
 				WHERE tabellenstaende.event_id = main_events.event_id
@@ -38,10 +35,8 @@ function mod_tournaments_round($params) {
 				AND ISNULL(weiss_ergebnis)
 				AND partien.runde_no = events.runde_no
 			) AS live
-			, SUBSTRING_INDEX(event_categories.path, "/", -1) AS event_category
 			, tournaments.livebretter
 			, events.date_begin
-			, YEAR(main_events.date_begin) AS year
 			, CASE WEEKDAY(events.date_begin) 
 				WHEN 0 THEN "Montag"
 				WHEN 1 THEN "Dienstag"
@@ -53,40 +48,23 @@ function mod_tournaments_round($params) {
 				END AS wochentag
 			, DATE_FORMAT(events.time_begin, "%%H:%%i") AS time_begin
 			, DATE_FORMAT(events.time_end, "%%H:%%i") AS time_end
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
-			, main_series.category_short AS main_series
-			, CONCAT(main_events.date_begin, IFNULL(CONCAT("/", main_events.date_end), "")) AS duration
-			, IFNULL(place, places.contact) AS turnierort
 			, IF (CONCAT(events.date_begin, " ", events.time_begin) > NOW(), 1, NULL) AS auslosung
-			, urkunde_parameter AS parameters
-			, events.identifier
 		FROM events
 		LEFT JOIN events main_events
 			ON events.main_event_id = main_events.event_id
-		LEFT JOIN contacts places
-			ON places.contact_id = main_events.place_contact_id
-		LEFT JOIN addresses
-			ON places.contact_id = addresses.contact_id
-		LEFT JOIN categories series
-			ON main_events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON main_series.category_id = series.main_category_id
 		LEFT JOIN tournaments
 			ON main_events.event_id = tournaments.event_id
-		LEFT JOIN categories event_categories
-			ON main_events.event_category_id = event_categories.category_id
 		LEFT JOIN events_websites
 			ON events_websites.event_id = main_events.event_id
 			AND events_websites.website_id = %d
-		WHERE main_events.identifier = "%d/%s"
+		WHERE main_events.event_id = %d
 		%s
 		AND events.runde_no = %d
 	';
-	$sql = sprintf($sql, $zz_setting['website_id'], $params[0], wrap_db_escape($params[1]), $public, $params[2]);
-	$event = wrap_db_fetch($sql);
-	if (!$event) return false;
-	if ($event['parameters']) {
-		parse_str($event['parameters'], $parameters);
+	$sql = sprintf($sql, $zz_setting['website_id'], $event['event_id'], $public, $params[2]);
+	$event = array_merge($event, wrap_db_fetch($sql));
+	if ($event['tournament_parameter']) {
+		parse_str($event['tournament_parameter'], $parameters);
 		$event += $parameters;
 	}
 	$event[$event['event_category']] = true;
@@ -193,14 +171,14 @@ function mod_tournaments_round($params) {
 	}
 
 	$page['head'] = '';
-	if (mf_tournaments_current_round($event['event_identifier']) < $event['runde_no']) {
+	if (mf_tournaments_current_round($event['identifier']) < $event['runde_no']) {
 		// @todo ausgestellt, muß aber wieder an wenn keine Live–Übertragung
 //		$page['head'] .= sprintf(
 //			"\t<meta http-equiv='refresh' content='60; URL=%s%s/%s/'>\r", $zz_setting['host_base'], $zz_setting['events_path'], $zz_setting['url_parameter']
 //		);
 		// @todo das sollte aus der Datenbank kommen, da nicht alle Turniere
 		// immer mit Swiss-Chess ausgewertet werden
-		$filename = $zz_setting['media_folder'].'/swt/'.$event['event_identifier'].'.swt';
+		$filename = $zz_setting['media_folder'].'/swt/'.$event['identifier'].'.swt';
 		if (file_exists($filename)) {
 		// @todo Livedatum ggf. auch aus letzter Änderung Tabelle auslesen
 			$event['livedatum'] = date('d.m. H:i', filemtime($filename));

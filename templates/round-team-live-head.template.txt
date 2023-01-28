@@ -17,7 +17,7 @@
 <script>
   "use strict";
 
-  var pgnFile = "/%%% item event_identifier %%%/partien/%%% item runde_no %%%-live-utf8.pgn";
+  var pgnFile = "/%%% item identifier %%%/partien/%%% item runde_no %%%-live-utf8.pgn";
 
   var demoFlag = false;
   var alertFlag = false;
