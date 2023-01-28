@@ -28,7 +28,40 @@ function mod_tournaments_tournamentmap($vars) {
 		return mod_tournaments_tournamentmap_json($vars);
 	
 	$federation = count($vars) === 3 ? array_pop($vars) : '';
-	$event = my_turniertermin($vars);
+	$sql = 'SELECT event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year, series_category_id
+			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
+			, IFNULL(place, places.contact) AS turnierort
+			, events.identifier
+		FROM events
+		LEFT JOIN contacts places
+			ON events.place_contact_id = places.contact_id
+		LEFT JOIN addresses
+			ON events.place_contact_id = addresses.contact_id
+		WHERE events.identifier = "%d/%s"';
+	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
+	$event = wrap_db_fetch($sql);
+	if (!$event) {
+		// vielleicht eine Reihe?
+		$sql = 'SELECT NULL AS event_id, main_series.category AS event
+				, IFNULL(event_year, YEAR(date_begin)) AS year, main_series.category_id AS series_category_id
+				,  CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
+				, IFNULL(place, places.contact) AS turnierort
+				, CONCAT(IFNULL(event_year, YEAR(date_begin)), "/", main_series.path) AS kennung
+			FROM events
+			LEFT JOIN categories series
+				ON events.series_category_id = series.category_id
+			LEFT JOIN categories main_series
+				ON main_series.category_id = series.main_category_id
+			LEFT JOIN contacts places
+				ON events.place_contact_id = places.contact_id
+			LEFT JOIN addresses
+				ON events.place_contact_id = addresses.contact_id
+			WHERE IFNULL(event_year, YEAR(date_begin)) = %d
+			AND main_series.path = "reihen/%s"
+			LIMIT 1';
+		$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
+		$event = wrap_db_fetch($sql);
+	}
 	if (!$event) return false;
 	
 	if ($federation) {
