@@ -24,13 +24,7 @@
  *		int [2]: (optional) Runde
  * @return array
  */
-function mod_tournaments_standings($vars) {
-	global $zz_setting;
-
-	// 'tabelle' entfernen, brauchen wir nicht.
-	if (count($vars) >= 3 AND $vars[2] === 'tabelle') {
-		unset($vars[2]);
-	}
+function mod_tournaments_standings($vars, $settings, $event) {
 	$filter_kennung = false;
 	if (count($vars) === 4) {
 		$filter_kennung = array_pop($vars);
@@ -57,9 +51,7 @@ function mod_tournaments_standings($vars) {
 	$filter = mf_tournaments_standings_filter($filter_kennung);
 	if ($filter['error']) return false;
 
-	$sql = 'SELECT events.event_id, event, tournaments.runden, bretter_min, pseudo_dwz
-			, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
-			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
+	$sql = 'SELECT tournaments.runden, pseudo_dwz
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
 			, (SELECT COUNT(*) FROM partien
 				WHERE partien.event_id = events.event_id
@@ -71,31 +63,16 @@ function mod_tournaments_standings($vars) {
 				AND partien.runde_no = %d
 			) AS live
 			, IF(ISNULL(@live) AND tournaments.runden = %d, 1, NULL) AS endstand
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
-			, main_series.category_short AS main_series
-			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
-			, IFNULL(place, places.contact) AS turnierort
-			, events.identifier
 		FROM events
 		JOIN tournaments USING (event_id)
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = %d
-		LEFT JOIN contacts places
-			ON events.place_contact_id = places.contact_id
-		LEFT JOIN addresses
-			ON places.contact_id = addresses.contact_id
-		LEFT JOIN categories series
-			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
-		LEFT JOIN categories turnierformen
-			ON turnierformen.category_id = tournaments.turnierform_category_id
-		WHERE events.identifier = "%d/%s"
+		WHERE events.event_id = %d
 	';
-	$sql = sprintf($sql, $runde, $runde, $runde, $zz_setting['website_id'], $vars[0], wrap_db_escape($vars[1]));
-	$event = wrap_db_fetch($sql);
-	if (!$event) return false;
+	$sql = sprintf($sql, $runde, $runde, $runde, wrap_get_setting('website_id'), $event['event_id']);
+	$event = array_merge($event, wrap_db_fetch($sql));
+	if (!$event['runden']) return false;
 	$event['runde_no'] = $runde;
 	mf_tournaments_cache($event);
 
