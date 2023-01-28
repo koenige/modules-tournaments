@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2014, 2016-2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2014, 2016-2017, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -109,7 +109,7 @@ function mod_tournaments_get_swisschess($vars) {
 	$data['_extension'] = 'lst';
 	$data['_query_strings'] = ['alle'];
 	
-	$data['_setting']['export_csv_show_empty_cells'] = true;
-	$data['_setting']['export_csv_heading'] = false;
+	$zz_setting['export_csv_show_empty_cells'] = true;
+	$zz_setting['export_csv_heading'] = false;
 	return $data;
 }
