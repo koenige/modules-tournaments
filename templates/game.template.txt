@@ -157,7 +157,7 @@ SAN letters: <input type=text name="SAN" value="KQRBNP" size=7>
 %%% item White %%%
 %%% condition endif %%%<br>
 %%% condition endif %%%
-<a href="../../">%%% item event %%%</a> %%% item place %%%,
+<a href="../../">%%% item event %%%</a> %%% item turnierort %%%,
  %%% condition if runde_no %%%<a href="../../runde/%%% item runde_no %%%/">%%% item runde_no %%%. Runde</a>%%% condition endif %%%
  %%% item tag " Tag %s" %%%
 %%% condition if tisch_no %%%

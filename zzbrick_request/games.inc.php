@@ -64,33 +64,26 @@ function mod_tournaments_games($vars, $settings = [], $event = []) {
 		return mod_tournaments_games_series($events, $request);
 	}
 
-	$sql = 'SELECT events.event_id, series.category_short AS series_short
-			, IFNULL(event_year, YEAR(date_begin)) AS year
-			, events.identifier, runden, events.event
-			, place, tournament_id, livebretter
+	$sql = 'SELECT series.category_short AS series_short
+			, runden, tournament_id, livebretter
 			, IF(bretter_min, bretter_min, (SELECT COUNT(*)/2 FROM participations
 				WHERE event_id = events.event_id
 				AND usergroup_id = %d)) AS bretter_max
-			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 		FROM events
-		LEFT JOIN addresses
-			ON events.place_contact_id = addresses.contact_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
 		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN categories turnierformen
-			ON tournaments.turnierform_category_id = turnierformen.category_id
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = %d
-		WHERE events.identifier = "%d/%s"
+		WHERE events.event_id = %d
 	';
 	$sql = sprintf($sql,
 		wrap_id('usergroups', 'spieler'),
 		$zz_setting['website_id'],
-		$vars[0], wrap_db_escape($vars[1])
+		$event['event_id']
 	);
-	$event = wrap_db_fetch($sql);
+	$event = array_merge($event, wrap_db_fetch($sql));
 	if (!$event) return false;
 
 	if (substr($request, -4) === '.pgn') {
@@ -569,10 +562,6 @@ function mod_tournaments_games_html($event, $request, $typ) {
 				, DATE_FORMAT(partien.last_update, "%%H:%%i") AS last_update
 				, tournaments.livebretter
 				, IF(vertauschte_farben = "ja", 1, NULL) AS vertauschte_farben
-				, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
-				, main_series.category_short AS main_series
-				, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
-				, IFNULL(place, places.contact) AS turnierort
 				, IF(partiestatus_category_id NOT IN (%d, %d), partiestatus.category, "") AS partiestatus
 				, url
 			FROM partien
@@ -580,14 +569,8 @@ function mod_tournaments_games_html($event, $request, $typ) {
 				ON partiestatus.category_id = partien.partiestatus_category_id
 			LEFT JOIN tournaments USING (event_id)
 			LEFT JOIN events USING (event_id)
-			LEFT JOIN contacts places
-				ON events.place_contact_id = places.contact_id
-			LEFT JOIN addresses
-				ON places.contact_id = addresses.contact_id
 			LEFT JOIN categories series
 				ON events.series_category_id = series.category_id
-			LEFT JOIN categories main_series
-				ON main_series.category_id = series.main_category_id
 			LEFT JOIN paarungen USING (paarung_id)
 			LEFT JOIN teams heim_teams
 				ON paarungen.heim_team_id = heim_teams.team_id
@@ -617,6 +600,9 @@ function mod_tournaments_games_html($event, $request, $typ) {
 			$event['event_id'], $runde, $tisch, $brett
 		);
 		$partie = wrap_db_fetch($sql);
+		$copy_fields = ['main_series_path', 'main_series', 'duration', 'turnierort'];
+		foreach ($copy_fields as $copy_field)
+			$partie[$copy_field] = $event[$copy_field];
 		if (!$partie) return false;
 		$pgn = ['moves' => $partie['pgn']];
 		if (!$partie['weiss_ergebnis'] AND !$partie['schwarz_ergebnis']) {
