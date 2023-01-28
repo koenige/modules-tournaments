@@ -22,21 +22,15 @@
  * 		[2]: Teamkennung
  * @return array $page
  */
-function mod_tournaments_make_teamaufstellung($vars) {
+function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 	global $zz_conf;
 	require_once $zz_conf['dir_inc'].'/validate.inc.php';
-
-	$sql = 'SELECT team_id, team, team_no, meldung
-			, organisationen.contact_id, organisationen.contact_id, v_ok.identifier AS zps_code
-			, event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year
-			, IFNULL(place, places.contact) AS turnierort
-			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
-			, main_series.category_short AS main_series
+	
+	$sql = 'SELECT v_ok.identifier AS zps_code
 			, geschlecht, alter_min, alter_max, bretter_min, bretter_max
 			, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
 			, (SELECT eventtext FROM eventtexts
-				WHERE eventtexts.event_id = events.event_id
+				WHERE eventtexts.event_id = tournaments.event_id
 				AND eventtexts.eventtext_category_id = %d
 			) AS hinweis_aufstellung
 			, turnierformen.parameters AS turnierform_parameter
@@ -45,27 +39,15 @@ function mod_tournaments_make_teamaufstellung($vars) {
 			ON teams.club_contact_id = organisationen.contact_id
 		LEFT JOIN contacts_identifiers v_ok
 			ON v_ok.contact_id = organisationen.contact_id AND v_ok.current = "yes"
-		LEFT JOIN events USING (event_id)
-		LEFT JOIN contacts places
-			ON places.contact_id = events.place_contact_id
-		LEFT JOIN addresses
-			ON places.contact_id = addresses.contact_id
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN categories turnierformen
 			ON tournaments.turnierform_category_id = turnierformen.category_id
-		LEFT JOIN categories series
-			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
-		WHERE teams.identifier = "%d/%s/%s"';
+		WHERE teams.team_id = %d';
 	$sql = sprintf($sql
 		, wrap_category_id('event-texts/note-lineup')
-		, $vars[0]
-		, wrap_db_escape($vars[1])
-		, wrap_db_escape($vars[2])
+		, $data['team_id']
 	);
-	$data = wrap_db_fetch($sql);
-	if (!$data) return false;
+	$data = array_merge($data, wrap_db_fetch($sql));
 	if (!mf_tournaments_team_access($data['team_id'], ['Teilnehmer'])) wrap_quit(403);
 	if ($data['meldung'] !== 'offen') wrap_quit(403);
 	parse_str($data['turnierform_parameter'], $data['turnierform_parameter']);
