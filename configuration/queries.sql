@@ -30,8 +30,14 @@ SELECT event_id, identifier
 	AND t_eventtype.parameters LIKE "%%&single=1%%"
 ) AS includes_single_tournaments
 , (SELECT COUNT(*) FROM participations
-	WHERE participations.event_id = events.event_id
-	AND usergroup_id = /*_ID usergroups bewerber _*/
+	LEFT JOIN events p_events USING (event_id)
+	LEFT JOIN categories p_series
+		ON p_events.series_category_id = p_series.category_id
+	LEFT JOIN events main_p_events
+	ON main_p_events.series_category_id = p_series.main_category_id
+	AND IFNULL(main_p_events.event_year, YEAR(main_p_events.date_begin)) = IFNULL(p_events.event_year, YEAR(p_events.date_begin))
+	WHERE usergroup_id = /*_ID usergroups bewerber _*/
+	AND main_p_events.event_id = events.event_id
 ) AS applicants
 FROM events
 LEFT JOIN tournaments USING (event_id)
