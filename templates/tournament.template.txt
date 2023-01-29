@@ -281,7 +281,7 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% condition endif %%%
 
 %%% condition if photouebersicht %%%
-<p><a href="photos/">Photos aller Teilnehmer</a></p>
+<p><a href="%%% setting tournaments_public_url %%%photos/">Photos aller Teilnehmer</a></p>
 %%% condition endif %%%
 
 %%% condition if main_series_path %%%
