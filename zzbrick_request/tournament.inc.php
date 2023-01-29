@@ -38,10 +38,6 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 			, pseudo_dwz
 			, tournament_id
 			, tabellenstaende
-			, IF(NOT ISNULL(events.date_end),
-				IF(events.date_end < CURDATE(), 1, NULL),
-				IF(events.date_begin < CURDATE(), 1, NULL)
-			) AS event_over
 			, series.category AS series, series.description AS series_description
 			, SUBSTRING_INDEX(series.path, "/", -1) AS series_path
 			, runden, modus.category AS modus
@@ -109,12 +105,10 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		$event += $series_parameter;
 	}
 	mf_tournaments_cache($event);
-	$event['intern'] = $internal ? true : false;
+	$event['internal'] = $internal ? true : false;
 	if ($event['turnierform'])
 		$event[str_replace('-', '_', $event['turnierform'])] = true;
 	$event[str_replace('-', '_', $event['event_category'])] = true;
-	// @todo im Grunde überflüssig, da Auswahlskript hier eh nur Turniere ankommen läßt
-	$event['turnier'] = true;
 	
 	if (!empty($event['show_main_tournament_archive'])) {
 		// series, series_path
@@ -185,7 +179,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 				WHERE event_id = events.main_event_id
 				AND runde_no = events.runde_no
 				AND NOT ISNULL(pgn)) AS pgn
-			, %s AS intern
+			, %s AS internal
 		FROM events
 		WHERE main_event_id = %d
 		AND event_category_id IN (%d, %d, %d)
@@ -450,7 +444,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		foreach ($event['teams'] as $id => $team) {
 			if ($event['teilnehmerliste'] AND $team['team_status'] === 'Teilnehmer') $event['teams'][$id]['aktiv'] = 1;
 			elseif (in_array($id, $eigene_teams) AND $internal) $event['teams'][$id]['aktiv'] = 1;
-			elseif (brick_access_rights('Webmaster') AND $event['intern']) $event['teams'][$id]['aktiv'] = 1;
+			elseif (brick_access_rights('Webmaster') AND $event['internal']) $event['teams'][$id]['aktiv'] = 1;
 			if (!empty($event['turnierform']))
 				$event['teams'][$id][str_replace('-', '_', $event['turnierform'])] = true;
 		}
