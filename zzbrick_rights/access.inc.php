@@ -14,29 +14,6 @@
 
 
 /**
- * Prüfe Zugriffsrechte auf Team, nur eigenes Team erlaubt
- *
- * @param int $team_id
- * @return bool
- */
-function mf_tournaments_team_access($team_id, $status = ['Teilnehmer', 'Teilnahmeberechtigt']) {
-	if (brick_access_rights('Webmaster')) return true;
-	if (brick_access_rights('AK Spielbetrieb')) return true;
-	if (brick_access_rights('Geschäftsstelle')) return true;
-	$sql = 'SELECT CONCAT("event_id:", events.event_id) AS event_rights
-		FROM events
-		LEFT JOIN teams USING (event_id)
-		WHERE team_id = %d';
-	$sql = sprintf($sql, $team_id);
-	$event_rights = wrap_db_fetch($sql, '', 'single value');
-	if (brick_access_rights(['Organisator', 'Technik', 'Turnierleitung'], $event_rights)) return true;
-
-	$teams = mf_tournaments_team_own($status);
-	if (!in_array($team_id, $teams)) return false;
-	return true;
-}
-
-/**
  * read a list of teams that are user’s own teams
  *
  * @param array $status
