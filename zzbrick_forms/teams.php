@@ -108,9 +108,6 @@ if (!brick_access_rights('Gremien') AND brick_access_rights(['Technik', 'Organis
 	$zz['fields'][13]['list_append_next'] = false;
 }
 
-// hide link to internal team view if one has no access
-$zz['fields'][4]['unless'][2]['link'] = false;
-
 if (!empty($zz['filter'][1])) {
 	$zz['filter'][1]['sql'] = sprintf('SELECT meldung, CONCAT(meldung, " (", COUNT(meldung), ")") AS titel
 		FROM teams
@@ -134,6 +131,3 @@ $zz['filter'][2]['sql'] = sprintf('SELECT team_status, CONCAT(team_status, " (",
 	WHERE event_id = %d
 	GROUP BY team_status
 	ORDER BY team_status', $brick['data']['event_id']);
-
-$zz['conditions'][2]['scope'] = 'access';
-$zz['conditions'][2]['function'] = 'mf_tournaments_team_access';

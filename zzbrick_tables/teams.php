@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -55,9 +55,8 @@ $zz['fields'][4]['field_name'] = 'team';
 $zz['fields'][4]['append_next'] = true;
 $zz['fields'][4]['list_append_next'] = true;
 $zz['fields'][4]['link'] = [
-	'string1' => $zz_setting['events_internal_path'].'/',
-	'field1' => 'identifier',
-	'string2' => '/'
+	'area' => 'tournaments_team_application',
+	'fields' => ['identifier']
 ];
 $zz['fields'][4]['unless']['export_mode']['list_prefix'] = '<strong>';
 $zz['fields'][4]['if'][1]['link'] = false;
