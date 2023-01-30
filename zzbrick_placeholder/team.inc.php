@@ -14,6 +14,8 @@
 
 
 function mod_tournaments_placeholder_team($brick) {
+	global $zz_page;
+
 	if (!empty($brick['parameter'])) {
 		if (substr_count($brick['parameter'], '/') !== 2) wrap_quit(404);
 		list($year, $identifier, $team_idf) = explode('/', $brick['parameter']);
@@ -36,6 +38,7 @@ function mod_tournaments_placeholder_team($brick) {
 			, IF(tournaments.zimmerbuchung = "ja", 1, NULL) AS zimmerbuchung
 			, IF(tournaments.gastspieler = "ja", 1, NULL) AS gastspieler
 			, CONCAT("event_id:", events.event_id) AS event_rights
+			, CONCAT("team_id:", team_id) AS team_rights
 			, place_categories.parameters
 		FROM teams
 		LEFT JOIN events USING (event_id)
@@ -59,11 +62,11 @@ function mod_tournaments_placeholder_team($brick) {
 	$team = wrap_db_fetch($sql);
 	if (!$team) wrap_quit(404);
 
-	$status = !empty($brick['local_settings']['status']) ? $brick['local_settings']['status'] : ['offen', 'teiloffen'];
-	if ($status !== 'all' AND !in_array($team['meldung'], $status)) wrap_quit(403);
-
-	if (!empty($brick['local_settings']['internal']))
-		if (!mf_tournaments_team_access($team['team_id'], ['Teilnehmer'])) wrap_quit(403);
+	if (!empty($brick['local_settings']['internal'])) {
+		$zz_page['access'] = []; // remove rights from event placeholder
+		$zz_page['access'][] = $team['team_rights'].'+'.$team['event_rights']; // first team, then event, for condition
+		wrap_access_page(!empty($brick['local_settings']['access']) ? $brick['local_settings'] : $zz_page['db']['parameters'], $zz_page['access']);
+	}
 
 	if ($team['parameters']) {
 		parse_str($team['parameters'], $parameters);
