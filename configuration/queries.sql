@@ -45,7 +45,7 @@ LEFT JOIN categories series
 	ON events.series_category_id = series.category_id
 LEFT JOIN categories eventtype
 	ON events.event_category_id = eventtype.category_id
-WHERE event_id = %d
+WHERE event_id = %d;
 
 -- tournaments_event --
 SELECT event_id, identifier
@@ -75,4 +75,11 @@ LEFT JOIN categories series
 	ON events.series_category_id = series.category_id
 LEFT JOIN categories eventtype
 	ON events.event_category_id = eventtype.category_id
-WHERE identifier = '%s'
+WHERE identifier = '%s';
+
+-- tournaments_team_id --
+SELECT team_id
+, IF(meldung = 'komplett', 1, NULL) AS team_application_complete
+, IF(meldung IN ('offen','teiloffen','komplett'), 1, NULL) AS team_application_active
+FROM teams
+WHERE team_id = %d;
