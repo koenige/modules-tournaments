@@ -25,6 +25,8 @@
 function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 	global $zz_conf;
 	require_once $zz_conf['dir_inc'].'/validate.inc.php';
+
+	if ($data['meldung'] !== 'offen') wrap_quit(403, 'Das Team wurde bereits abschließend gemeldet. Eine Änderung der Aufstellung ist nicht mehr möglich.');
 	
 	$sql = 'SELECT v_ok.identifier AS zps_code
 			, geschlecht, alter_min, alter_max, bretter_min, bretter_max
@@ -48,8 +50,6 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 		, $data['team_id']
 	);
 	$data = array_merge($data, wrap_db_fetch($sql));
-	if (!mf_tournaments_team_access($data['team_id'], ['Teilnehmer'])) wrap_quit(403);
-	if ($data['meldung'] !== 'offen') wrap_quit(403);
 	parse_str($data['turnierform_parameter'], $data['turnierform_parameter']);
 
 	$data['geschlecht'] = explode(',', strtoupper($data['geschlecht']));
