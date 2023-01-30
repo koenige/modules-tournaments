@@ -2,11 +2,14 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2017-2022 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2017-2023 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Kontaktdaten einer Person eines Teams eines Turniers
 
 
-if (empty(wrap_get_setting('tournaments_request_address_data'))) wrap_quit(404);
+if (empty(wrap_get_setting('tournaments_request_address_data')))
+	wrap_quit(404, 'Für dieses Turnier werden keine Adressdaten erhoben.');
+if ($brick['data']['meldung'] === 'gesperrt')
+	wrap_quit(403, 'Dieses Team wurde gesperrt. Sie können keine Änderungen vornehmen.');
 
 $contact_id = $brick['data']['contact_id'];
 $organisation = $brick['data']['contact'];

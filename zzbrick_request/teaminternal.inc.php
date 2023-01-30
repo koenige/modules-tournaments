@@ -80,10 +80,6 @@ function mod_tournaments_teaminternal($vars, $settings, $data) {
 	$page['title'] = $data['event'].' '.$data['year'].': '.$data['team'].' '.$data['team_no'];
 	$page['dont_show_h1'] = true;
 
-	if (!mf_tournaments_team_access($data['team_id'])) {
-		$page = brick_format('%%% redirect /'.$data['team_identifier'].'/ %%%');
-		return $page;
-	}
 	if ($data['team_status'] === 'Teilnahmeberechtigt') {
 		$data['abfrage_teilnahme'] = true;
 		if (!empty($_POST['berechtigung'])) {

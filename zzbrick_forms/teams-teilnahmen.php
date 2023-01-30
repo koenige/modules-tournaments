@@ -9,12 +9,16 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-if (empty($brick['data'])) wrap_quit(404);
+if ($brick['data']['meldung'] === 'gesperrt')
+	wrap_quit(403, 'Dieses Team wurde gesperrt. Sie können keine Änderungen vornehmen.');
+if (!in_array($brick['data']['meldung'], ['offen', 'teiloffen']))
+	wrap_quit(403, 'Das Team wurde bereits abschließend gemeldet. Änderungen sind nicht mehr möglich.');
+
 $zz = zzform_include_table('teilnahmen');
 
 $brick['page']['title'] .= 'Kontaktdaten';
@@ -196,9 +200,8 @@ $zz['title'] = '';
 $zz['access'] = 'add+delete';
 
 $zz_conf['copy'] = false;
-if (!brick_access_rights('Webmaster')) {
+if (!brick_access_rights('Webmaster'))
 	$zz_conf['if'][22]['delete'] = false; // User darf sich nicht selbst löschen!
-}
 $zz_conf['max_select'] = 200;
 
 $zz['details'][0]['title'] = 'Kontaktdaten';

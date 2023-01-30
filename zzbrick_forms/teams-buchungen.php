@@ -8,16 +8,18 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014, 2016-2020, 2022 Gustaf Mossakowski
+ * @copyright Copyright © 2014, 2016-2020, 2022-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-if (empty($brick['data'])) wrap_quit(404);
+if (!$brick['data']['zimmerbuchung']) wrap_quit(404, 'Zimmerbuchungen erfolgen direkt über Ausrichter!');
+if (!in_array($brick['data']['meldung'], ['offen', 'teiloffen']))
+	wrap_quit(403, 'Das Team wurde bereits abschließend gemeldet. Änderungen sind nicht mehr möglich.');
+// @todo show data in read-only mode instead?
+
 $brick['page']['title'] .= 'Buchungen';
 $brick['page']['breadcrumbs'][] = 'Buchungen';
-
-if (!$brick['data']['zimmerbuchung']) wrap_quit(404, 'Zimmerbuchungen erfolgen direkt über Ausrichter!');
 
 $zz = zzform_include_table('buchungen');
 

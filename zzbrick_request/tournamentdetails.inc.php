@@ -28,7 +28,7 @@ function mod_tournaments_tournamentdetails($params, $settings, $event) {
 	elseif (count($params) === 2)
 		return brick_format('%%% request tournament * *=event %%%');
 	elseif (count($params) === 3 AND !empty($event['event_team']))
-		return brick_format('%%% request team * *=team status=all %%%');
+		return brick_format('%%% request team * *=team %%%');
 	
 	return false;
 }

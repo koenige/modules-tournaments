@@ -125,10 +125,6 @@ function mf_tournaments_pdf_teams($event, $params) {
 	$sql = sprintf($sql, $where);
 	$teams = wrap_db_fetch($sql, 'team_id');
 	if (!$teams) return [];
-	if (!empty($params['team_identifier'])) {
-		$team_id = key($teams);
-		if (!mf_tournaments_team_access($team_id, ['Teilnehmer'])) wrap_quit(403);
-	}
 
 	$teams = mf_tournaments_clubs_to_federations($teams);
 

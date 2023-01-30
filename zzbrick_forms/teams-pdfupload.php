@@ -8,12 +8,11 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2018-2019, 2021-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2018-2019, 2021-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-if (empty($brick['data'])) wrap_quit(404);
 $brick['page']['title'] .= 'PDF Upload';
 $brick['page']['breadcrumbs'][] = 'PDF Upload';
 
