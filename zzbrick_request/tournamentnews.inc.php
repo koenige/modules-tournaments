@@ -24,7 +24,7 @@ function mod_tournaments_tournamentnews($params, $settings) {
 			ON articles_categories.article_id = articles.article_id
 			AND articles_categories.type_category_id = %d
 		WHERE events.identifier = "%d/%s"
-		AND published = "yes"
+		AND articles.published = "yes"
 		AND articles_categories.category_id = %d
 		ORDER BY date DESC';
 	$sql = sprintf($sql
