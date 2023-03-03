@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2017-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -125,7 +125,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 			ON contacts_identifiers.identifier = fide_players.player_id
 		WHERE event_id = %d
 		AND usergroup_id = %d
-		AND teilnahme_status IN ("Teilnehmer", "disqualifiziert")
+		AND status_category_id IN (%d, %d)
 		%s
 		ORDER BY team_id, brett_no, rang_no, IF(ISNULL(contacts_identifiers.identifier), 1, NULL), contacts_identifiers.identifier, participation_id';
 	$sql = sprintf($sql
@@ -133,6 +133,8 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		, wrap_category_id('identifiers/fide-id')
 		, $event['event_id']
 		, wrap_id('usergroups', 'spieler')
+		, wrap_category_id('participation-status/participant')
+		, wrap_category_id('participation-status/disqualified')
 		, $where
 	);
 	$players = wrap_db_fetch($sql, 'participation_id');

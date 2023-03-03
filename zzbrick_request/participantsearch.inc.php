@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -124,9 +124,17 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 					OR IF(ISNULL(t_vorname), CONCAT(last_name, " ", first_name), CONCAT(t_nachname, " ", t_vorname)) LIKE "%%%s%%"
 					OR contacts.identifier LIKE _latin1"%%%s%%"
 				)
-				AND teilnahme_status IN ("Teilnehmer", "angemeldet", "disqualifiziert")';
-			$sql = sprintf($sql, implode(',', array_keys($events)), wrap_id('usergroups', 'spieler'),
-				wrap_db_escape($_GET['q']), wrap_db_escape($_GET['q']), wrap_db_escape($_GET['q']), wrap_db_escape($_GET['q'])
+				AND status_category_id IN (%d, %d, %d)';
+			$sql = sprintf($sql
+				, implode(',', array_keys($events))
+				, wrap_id('usergroups', 'spieler')
+				, wrap_db_escape($_GET['q'])
+				, wrap_db_escape($_GET['q'])
+				, wrap_db_escape($_GET['q'])
+				, wrap_db_escape($_GET['q'])
+				, wrap_category_id('participation-status/participant')
+				, wrap_category_id('participation-status/verified')
+				, wrap_category_id('participation-status/disqualified')
 			);
 			$event['spieler'] = wrap_db_fetch($sql, 'person_id');
 		}
@@ -155,9 +163,17 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 				OR IF(ISNULL(t_vorname), CONCAT(last_name, " ", first_name), CONCAT(t_nachname, " ", t_vorname)) LIKE "%%%s%%"
 				OR contacts.identifier LIKE _latin1"%%%s%%"
 			)
-			AND teilnahme_status IN ("Teilnehmer", "angemeldet", "disqualifiziert")';
-		$sql = sprintf($sql, implode(',', array_keys($events)), wrap_id('usergroups', 'spieler'),
-			wrap_db_escape($_GET['q']), wrap_db_escape($_GET['q']), wrap_db_escape($_GET['q']), wrap_db_escape($_GET['q'])
+			AND status_category_id IN (%d, %d, %d)';
+		$sql = sprintf($sql
+			, implode(',', array_keys($events))
+			, wrap_id('usergroups', 'spieler')
+			, wrap_db_escape($_GET['q'])
+			, wrap_db_escape($_GET['q'])
+			, wrap_db_escape($_GET['q'])
+			, wrap_db_escape($_GET['q'])
+			, wrap_category_id('participation-status/participant')
+			, wrap_category_id('participation-status/verified')
+			, wrap_category_id('participation-status/disqualified')
 		);
 		$event['spieler'] = wrap_db_fetch($sql, 'participation_id');
 	}

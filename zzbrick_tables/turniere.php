@@ -414,7 +414,7 @@ $zz['sql'] = 'SELECT tournaments.*
 		) AS teams
 		, (SELECT COUNT(*) FROM participations
 			WHERE participations.event_id = tournaments.event_id
-			AND teilnahme_status = "Teilnehmer"
+			AND status_category_id = %d
 			AND usergroup_id = %d
 		) AS spieler
 	FROM tournaments
@@ -426,7 +426,10 @@ $zz['sql'] = 'SELECT tournaments.*
 	LEFT JOIN categories turnierformen
 		ON tournaments.turnierform_category_id = turnierformen.category_id
 ';
-$zz['sql'] = sprintf($zz['sql'], wrap_id('usergroups', 'spieler'));
+$zz['sql'] = sprintf($zz['sql']
+	, wrap_category_id('participation-status/participant')
+	, wrap_id('usergroups', 'spieler')
+);
 $zz['sqlorder'] = ' ORDER BY events.date_begin DESC, events.time_begin DESC,
 	events.identifier';
 

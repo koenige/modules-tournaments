@@ -286,7 +286,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 				AND tabellenstaende_wertungen.wertung_category_id = %d
 			WHERE participations.event_id = %d
 			AND usergroup_id = %d
-			AND teilnahme_status = "Teilnehmer"
+			AND status_category_id = %d
 			AND NOT ISNULL(platz_no)
 			ORDER BY platz_no';
 		$sql = sprintf($sql
@@ -294,6 +294,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 			, $event['haupt_wertung_category_id']
 			, $event['event_id']
 			, wrap_id('usergroups', 'spieler')
+			, wrap_category_id('participation-status/participant')
 		);
 		$event['spieler'] = wrap_db_fetch($sql, 'participation_id');
 		if ($event['spieler'])

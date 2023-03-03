@@ -130,12 +130,15 @@ function mod_tournaments_make_standings_write_single($event_id, $runde_no, $tabe
 			AND partien.event_id = participations.event_id
 		WHERE participations.event_id = %d
 		AND runde_no <= %d
-		AND teilnahme_status = "Teilnehmer"
+		AND status_category_id = %d
 		AND usergroup_id = %d
 		GROUP BY person_id
 	';
-	$sql = sprintf($sql,
-		$event_id, $runde_no, wrap_id('usergroups', 'spieler')
+	$sql = sprintf($sql
+		, $event_id
+		, $runde_no
+		, wrap_category_id('participation-status/participant')
+		, wrap_id('usergroups', 'spieler')
 	);
 	$guv = wrap_db_fetch($sql, 'person_id');
 	$punktspalten = ['g', 'u', 'v'];
@@ -224,8 +227,12 @@ class mod_tournaments_make_standings_single {
 			LEFT JOIN persons USING (contact_id)
 			WHERE event_id = %d
 			AND usergroup_id = %d
-			AND teilnahme_status = "Teilnehmer"';
-		$sql = sprintf($sql, $event_id, wrap_id('usergroups', 'spieler'));
+			AND status_category_id = %d';
+		$sql = sprintf($sql
+			, $event_id
+			, wrap_id('usergroups', 'spieler')
+			, wrap_category_id('participation-status/participant')
+		);
 		$spieler = wrap_db_fetch($sql, 'person_id');
 		return $spieler;
 	}

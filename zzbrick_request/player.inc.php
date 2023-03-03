@@ -57,13 +57,15 @@ function mod_tournaments_player($vars, $settings, $event) {
 		LEFT JOIN contacts organisationen
 			ON participations.club_contact_id = organisationen.contact_id
 		WHERE setzliste_no = %d
-		AND teilnahme_status = "Teilnehmer"
+		AND status_category_id = %d
 		AND events.event_id = %d
 	';
 	$sql = sprintf($sql
 		, wrap_category_id('identifiers/zps')
 		, wrap_category_id('identifiers/fide-id')
-		, $vars[2], $event['event_id']
+		, $vars[2]
+		, wrap_category_id('participation-status/participant')
+		, $event['event_id']
 	);
 	$data = wrap_db_fetch($sql);
 	if (!$data) return false;
@@ -121,9 +123,12 @@ function mod_tournaments_player($vars, $settings, $event) {
 		FROM participations
 		WHERE event_id = %d
 		AND NOT ISNULL(setzliste_no)
-		AND teilnahme_status = "Teilnehmer"
+		AND status_category_id = %d
 		ORDER BY setzliste_no';
-	$sql = sprintf($sql, $data['event_id']);
+	$sql = sprintf($sql
+		, $data['event_id']
+		, wrap_category_id('participation-status/participant')
+	);
 	$participants = wrap_db_fetch($sql, 'participation_id');
 	
 	$data = array_merge($data, wrap_get_prevnext_flat($participants, $data['participation_id'], true));

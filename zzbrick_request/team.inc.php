@@ -332,10 +332,13 @@ function mf_tournaments_team_players($team_ids, $event) {
 		LEFT JOIN persons USING (contact_id)
 		WHERE usergroups.identifier = "spieler"
 		AND (ISNULL(spielberechtigt) OR spielberechtigt = "ja")
-		AND participations.teilnahme_status = "Teilnehmer"
+		AND participations.status_category_id = %d
 		AND team_id IN (%s)
 		ORDER BY ISNULL(brett_no), brett_no, rang_no, t_dwz DESC, t_elo DESC, t_nachname, t_vorname';
-	$sql = sprintf($sql, is_array($team_ids) ? implode(',', $team_ids) : $team_ids);
+	$sql = sprintf($sql
+		, wrap_category_id('participation-status/participant')
+		, is_array($team_ids) ? implode(',', $team_ids) : $team_ids
+	);
 	$alle_spieler = wrap_db_fetch($sql, ['team_id', 'person_id']);
 	if (!$alle_spieler) return [];
 	foreach ($alle_spieler as $id => $team_spieler) {

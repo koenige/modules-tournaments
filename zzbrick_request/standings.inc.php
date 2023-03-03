@@ -100,7 +100,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 				, participations.setzliste_no
 				, t_verein, tabellenstaende.person_id
-				, teilnahme_status AS status
+				, status_category_id AS status
 				, participations.club_contact_id
 			FROM tabellenstaende
 			JOIN tournaments USING (event_id)
@@ -224,7 +224,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 			$tabelle[$tabellenstand_id]['country'] = '–';
 		if ($tabellenstand['spiele_g']) $tabelle['zeige_guv'] = true;
 		if (!empty($tabellenstand['setzliste_no'])) $tabelle['zeige_setzliste'] = true;
-		if ($tabellenstand['status'] === 'disqualifiziert') {
+		if ($tabellenstand['status'].'' === wrap_category_id('participation-status/disqualified').'') {
 			$decrease++;
 			unset($tabelle[$tabellenstand_id]);
 		}

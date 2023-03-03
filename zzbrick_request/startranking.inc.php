@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -40,7 +40,7 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 	if ($event['turnierform'] === 'e') {
 		$event = mod_tournaments_startranking_single($event);
 		foreach ($event['spieler'] as $spieler) {
-			if ($spieler['teilnahme_status'] !== 'angemeldet') continue;
+			if ($spieler['status_category_id'].'' !== wrap_category_id('participation-status/verified').'') continue;
 			$meldeliste = true;
 			break;
 		}
@@ -85,7 +85,7 @@ function mod_tournaments_startranking_single($event) {
 			, setzliste_no
 			, places.contact AS veranstaltungsort, place, latitude, longitude
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
-			, teilnahme_status
+			, status_category_id
 			, DATE_FORMAT(eintrag_datum, "%%d.%%m %%H:%%i") AS eintrag_datum
 			, eintrag_datum AS eintrag_datum_raw
 			, IF(SUBSTRING(qualification.event, 1, LENGTH(events.event)) = events.event
@@ -115,12 +115,15 @@ function mod_tournaments_startranking_single($event) {
 			ON participations.qualification_event_id = qualification.event_id
 		WHERE events.event_id = %d
 		AND usergroup_id = %d
-		AND teilnahme_status IN (%s"Teilnehmer", "disqualifiziert", "geblockt")
+		AND status_category_id IN (%s%d, %d, %d)
 		ORDER BY setzliste_no, IFNULL(t_dwz, t_elo) DESC, t_elo DESC, t_nachname, t_vorname';
 	$sql = sprintf($sql
 		, $event['event_id']
 		, wrap_id('usergroups', 'spieler')
-		, ($event['date_end'] >= date('Y-m-d')) ? '"angemeldet", ' : ''
+		, ($event['date_end'] >= date('Y-m-d')) ? sprintf('%d, ', wrap_category_id('participation-status/verified')) : ''
+		, wrap_category_id('participation-status/participant')
+		, wrap_category_id('participation-status/disqualified')
+		, wrap_category_id('participation-status/blocked')
 	);
 	$event['spieler'] = wrap_db_fetch($sql, 'person_id');
 	$event['spieler'] = mf_tournaments_clubs_to_federations($event['spieler'], 'club_contact_id');

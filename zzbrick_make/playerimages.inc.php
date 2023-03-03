@@ -10,7 +10,7 @@
  * @author Erik Kothe <kontakt@erikkothe.de>
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2017 Erik Kothe
- * @copyright Copyright © 2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2017, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -41,10 +41,14 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 		AND usergroup_id = %d
 		AND spielerphotos = "ja"
 		AND spielernachrichten = "ja"
-		AND teilnahme_status = "Teilnehmer"
+		AND status_category_id = %d
 		ORDER BY contacts.contact
 	';
-	$sql = sprintf($sql, implode(',', $event_ids), wrap_id('usergroups', 'spieler'));
+	$sql = sprintf($sql
+		, implode(',', $event_ids)
+		, wrap_id('usergroups', 'spieler')
+		, wrap_category_id('participation-status/participant')
+	);
 	$event['players'] = wrap_db_fetch($sql, 'person_id');
 	$images = mf_mediadblink_media([$params[0], $params[1], 'Website/Spieler'], [], 'person', array_keys($event['players']));
 	$event['players'] = array_diff_key($event['players'], $images);

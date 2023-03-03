@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -74,13 +74,13 @@ function mf_tournaments_final_standings($event_ids) {
 				AND teams.event_id = events.event_id) AS teams
 			, (SELECT COUNT(*) FROM participations
 				LEFT JOIN persons USING (contact_id)
-				WHERE teilnahme_status = "Teilnehmer"
+				WHERE status_category_id = %d
 				AND usergroup_id = %d
 				AND sex = "male"
 				AND participations.event_id = events.event_id) AS spieler
 			, (SELECT COUNT(*) FROM participations
 				LEFT JOIN persons USING (contact_id)
-				WHERE teilnahme_status = "Teilnehmer"
+				WHERE status_category_id = %d
 				AND usergroup_id = %d
 				AND sex = "female"
 				AND participations.event_id = events.event_id) AS spielerinnen
@@ -89,10 +89,12 @@ function mf_tournaments_final_standings($event_ids) {
 		LEFT JOIN tournaments USING (event_id)
 		WHERE event_id IN (%s)
 		AND ((ISNULL(events.date_end) AND events.date_begin < CURDATE()) OR events.date_end < CURDATE())';
-	$sql = sprintf($sql,
-		wrap_id('usergroups', 'spieler'),
-		wrap_id('usergroups', 'spieler'),
-		implode(',', $event_ids)
+	$sql = sprintf($sql
+		, wrap_category_id('participation-status/participant')
+		, wrap_id('usergroups', 'spieler')
+		, wrap_category_id('participation-status/participant')
+		, wrap_id('usergroups', 'spieler')
+		, implode(',', $event_ids)
 	);
 	$turniere = wrap_db_fetch($sql, 'event_id');
 	$tabellenstaende = [];
@@ -130,12 +132,13 @@ function mf_tournaments_final_standings($event_ids) {
 				AND participations.event_id = tabellenstaende.event_id
 				AND ISNULL(participations.team_id)
 			WHERE tabellenstaende.event_id IN (%s)
-			AND (ISNULL(participations.teilnahme_status) OR participations.teilnahme_status = "Teilnehmer")
+			AND (ISNULL(participations.status_category_id) OR participations.status_category_id = %d)
 			AND (%s)
 			ORDER BY platz_no';
-		$sql = sprintf($sql,
-			implode(',', $ids),
-			implode(') AND (', $filter[$fkennung]['where'])
+		$sql = sprintf($sql
+			, implode(',', $ids)
+			, wrap_category_id('participation-status/participant')
+			, implode(') AND (', $filter[$fkennung]['where'])
 		);
 		$tabellen[$fkennung] = wrap_db_fetch($sql, ['event_id', 'tabellenstand_id']);
 		foreach ($tabellen[$fkennung] as $event_id => $tabellenstand) {

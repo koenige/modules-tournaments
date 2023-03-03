@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2020-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2020-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -137,10 +137,14 @@ function mod_tournaments_make_lineup_active($params) {
 	    LEFT JOIN persons USING (contact_id)
 	    WHERE team_id = %d
 	    AND usergroup_id = %d
-	    AND teilnahme_status = "Teilnehmer"
+	    AND status_category_id = %d
 	    AND (ISNULL(spielberechtigt) OR spielberechtigt = "ja")
 	    ORDER BY brett_no, rang_no';
-	$sql = sprintf($sql, $data['team_id'], wrap_id('usergroups', 'spieler'));
+	$sql = sprintf($sql
+		, $data['team_id']
+		, wrap_id('usergroups', 'spieler')
+		, wrap_category_id('participation-status/participant')
+	);
 	$data['players'] = wrap_db_fetch($sql, 'participation_id');
 	if (!$data['players']) return false;
 	

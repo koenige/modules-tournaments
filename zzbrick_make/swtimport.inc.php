@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -404,8 +404,8 @@ function mod_tournaments_make_swtimport_delete($ids, $event_id, $type) {
 		$id_source = 'participations';
 		$key = 'Teilnahmen (Spieler)';
 		$where = sprintf(' AND usergroup_id = %d', wrap_id('usergroups', 'spieler'));
-		$status_field_name = 'teilnahme_status';
-		$status = 'gelöscht';
+		$status_field_name = 'status_category_id';
+		$status = wrap_category_id('participation-status/deleted');
 		break;
 	default:
 		wrap_error(sprintf('Löschen: Typ nicht unterstützt (%s)', $typ));
@@ -423,6 +423,8 @@ function mod_tournaments_make_swtimport_delete($ids, $event_id, $type) {
 	foreach ($loeschen_ids as $id) {
 		$values = [];
 		$values['action'] = 'delete';
+		if ($status_field_name === 'status_category_id')
+			$values['ids'] = ['status_category_id'];
 		$values['POST'][$id_field] = $id;
 		$values['POST'][$status_field_name] = $status;
 		$ops = zzform_multi($table, $values);
@@ -704,7 +706,7 @@ function mod_tournaments_make_swtimport_participations($event, $spielerliste, $i
 			$values['POST']['setzliste_no'] = hexdec($spieler[2020]);
 		}
 		$values['POST']['spielberechtigt'] = 'ja';
-		$values['POST']['teilnahme_status'] = 'Teilnehmer';
+		$values['POST']['status_category_id'] = wrap_category_id('participation-status/participant');
 		$values['POST']['fremdschluessel'] = hexdec($spieler[2020]);
 		$values['ids'] = [
 			'usergroup_id', 'event_id', 'team_id', 'contact_id', 'club_contact_id'
