@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017-2020, 2022 Gustaf Mossakowski
+ * @copyright Copyright © 2017-2020, 2022-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -66,8 +66,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	    LEFT JOIN forms USING (form_id)
 	    LEFT JOIN registrationvarchars USING (formfield_id)
 	    LEFT JOIN registrationtexts USING (formfield_id)
-	    LEFT JOIN anmeldungen
-	    	ON IFNULL(registrationvarchars.registration_id, registrationtexts.registration_id) = anmeldungen.registration_id
+	    LEFT JOIN registrations
+	    	ON IFNULL(registrationvarchars.registration_id, registrationtexts.registration_id) = registrations.registration_id
 	    WHERE forms.event_id IN (%s)
 	    AND parameters LIKE "%%&name_tag=%%"
 	';
