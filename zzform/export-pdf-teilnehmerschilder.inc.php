@@ -67,7 +67,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	    LEFT JOIN registrationvarchars USING (formfield_id)
 	    LEFT JOIN registrationtexts USING (formfield_id)
 	    LEFT JOIN anmeldungen
-	    	ON IFNULL(registrationvarchars.anmeldung_id, registrationtexts.anmeldung_id) = anmeldungen.anmeldung_id
+	    	ON IFNULL(registrationvarchars.registration_id, registrationtexts.registration_id) = anmeldungen.registration_id
 	    WHERE forms.event_id IN (%s)
 	    AND parameters LIKE "%%&name_tag=%%"
 	';
