@@ -23,7 +23,6 @@
  * @return array $page
  */
 function mod_tournaments_player($vars, $settings, $event) {
-	global $zz_setting;
 	if (count($vars) !== 3) return false;
 
 	$sql = 'SELECT persons.person_id, participation_id
@@ -91,25 +90,36 @@ function mod_tournaments_player($vars, $settings, $event) {
 	$data['hat_punkte'] = false;
 	$round_no = 1;
 	$index = 0;
-	foreach ($data['games'] as $index => $partie) {
-		if (mf_tournaments_live_round($data['livebretter'], $partie['brett_no'])) {
+	$log_round_error = true;
+	foreach ($data['games'] as $index => $game) {
+		if (mf_tournaments_live_round($data['livebretter'], $game['brett_no'])) {
 			$data['games'][$index]['live'] = true;
 		}
-		if ($partie['schwarz_person_id'] === $data['person_id']) {
+		if ($game['schwarz_person_id'] === $data['person_id']) {
 			$data['games'][$index]['spielt_schwarz'] = true;
-			$data['punkte'] += $partie['auswaerts_ergebnis_numerisch'];
-			if (isset($partie['auswaerts_ergebnis_numerisch'])) $data['hat_punkte'] = true;
+			$data['punkte'] += $game['auswaerts_ergebnis_numerisch'];
+			if (isset($game['auswaerts_ergebnis_numerisch'])) $data['hat_punkte'] = true;
 		} else {
 			$data['games'][$index]['spielt_weiss'] = true;
-			$data['punkte'] += $partie['heim_ergebnis_numerisch'];
-			if (isset($partie['heim_ergebnis_numerisch'])) $data['hat_punkte'] = true;
+			$data['punkte'] += $game['heim_ergebnis_numerisch'];
+			if (isset($game['heim_ergebnis_numerisch'])) $data['hat_punkte'] = true;
 		}
-		while ($round_no.'' !== $partie['runde_no'].'') {
-			array_splice($data['games'], $index, 0, [
-				['runde_no' => $round_no, 'no_pairing' => 1]
-			]);
-			$index++;
-			$round_no++;
+		if ($game['runde_no'] < $round_no) {
+			if ($log_round_error) // log only once
+				wrap_error(sprintf(
+					'There’s a player having played more than one game per round: Event %s, round %d, %s–%s'
+					, $event['identifier'], $game['runde_no'], $game['player_white'], $game['player_black']
+				));
+				$log_round_error = false;
+		} else {
+			while ($round_no.'' !== $game['runde_no'].'') {
+				exit;
+				array_splice($data['games'], $index, 0, [
+					['runde_no' => $round_no, 'no_pairing' => 1]
+				]);
+				$index++;
+				$round_no++;
+			}
 		}
 		$index++;
 		$round_no++;
@@ -142,7 +152,7 @@ function mod_tournaments_player($vars, $settings, $event) {
 	$page['text'] = wrap_template('player', $data);
 	$page['breadcrumbs'][] = '<a href="../">Startrangliste</a>';
 	$page['breadcrumbs'][] = $data['name'];
-	if (in_array('magnificpopup', $zz_setting['modules']))
+	if (in_array('magnificpopup', wrap_get_setting('modules')))
 		$page['extra']['magnific_popup'] = true;
 	return $page;
 }

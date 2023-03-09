@@ -226,11 +226,11 @@ function mf_tournaments_games_sql($event, $where) {
 			, @schwarz_spieler := IF(ISNULL(schwarz_status.t_vorname),
 				black_contact.contact,
 				CONCAT(schwarz_status.t_vorname, " ", IFNULL(CONCAT(schwarz_status.t_namenszusatz, " "), ""), schwarz_status.t_nachname)
-			)
+			) AS player_black
 			, @weiss_spieler := IF(ISNULL(weiss_status.t_vorname),
 				white_contact.contact,
 				CONCAT(weiss_status.t_vorname, " ", IFNULL(CONCAT(weiss_status.t_namenszusatz, " "), ""), weiss_status.t_nachname)
-			)
+			) AS player_white
 			, IFNULL(IF(heim_spieler_farbe = "schwarz", @schwarz_spieler, @weiss_spieler), "N. N.") AS heim_spieler
 			, IFNULL(IF(heim_spieler_farbe = "schwarz", @weiss_spieler, @schwarz_spieler), "N. N.") AS auswaerts_spieler
 			, weiss_person_id, schwarz_person_id
