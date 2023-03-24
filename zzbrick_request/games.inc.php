@@ -22,8 +22,7 @@
  *		string [2]: 1.pgn, gesamt.pgn, 1-2-4
  */
 function mod_tournaments_games($vars, $settings = [], $event = []) {
-	global $zz_setting;
-	require_once $zz_setting['modules_dir'].'/chess/chess/pgn.inc.php';
+	require_once wrap_setting('modules_dir').'/chess/chess/pgn.inc.php';
 	
 	$qs = mod_tournaments_games_check_qs();
 	
@@ -54,7 +53,7 @@ function mod_tournaments_games($vars, $settings = [], $event = []) {
 		AND (tournaments.notationspflicht = "ja" OR addresses.country_id = %d)
 	';
 	$sql = sprintf($sql
-		, $zz_setting['website_id']
+		, wrap_setting('website_id')
 		, $vars[0]
 		, wrap_db_escape($vars[1])
 		, wrap_id('countries', '--') // internet
@@ -80,7 +79,7 @@ function mod_tournaments_games($vars, $settings = [], $event = []) {
 	';
 	$sql = sprintf($sql,
 		wrap_id('usergroups', 'spieler'),
-		$zz_setting['website_id'],
+		wrap_setting('website_id'),
 		$event['event_id']
 	);
 	$event = array_merge($event, wrap_db_fetch($sql));
@@ -99,8 +98,7 @@ function mod_tournaments_games($vars, $settings = [], $event = []) {
  * Auslesen einer Live-Partie als JSON
  */
 function mod_tournaments_games_json($event, $request) {
-	global $zz_setting;
-	$zz_setting['cache'] = false;
+	wrap_setting('cache', false);
 
 	$request = substr($request, 0, -5);
 	if (!strstr($request, '-')) return false;
@@ -156,7 +154,7 @@ function mod_tournaments_games_json($event, $request) {
 	];
 	$data = mf_chess_pgn_to_html($pgn);
 	$partie['PgnMoveText'] = $data['html'];
-	if ($zz_setting['character_set'] === 'utf-8') {
+	if (wrap_setting('character_set') === 'utf-8') {
 		// PGN = Latin1
 		$partie['PgnMoveText'] = mb_convert_encoding($partie['PgnMoveText'], 'UTF-8', 'ISO-8859-1');
 		if (!empty($partie['PGN']))
@@ -177,7 +175,6 @@ function mod_tournaments_games_json($event, $request) {
  * @param string $request
  */
 function mod_tournaments_games_series($events, $request) {
-	global $zz_setting;
 	wrap_package_activate('chess');
 
 	switch ($request) {
@@ -197,7 +194,7 @@ function mod_tournaments_games_series($events, $request) {
 	$page['content_type'] = 'pgn';
 	if ($character_encoding === 'utf-8')
 		$page['text'] = mb_convert_encoding($page['text'], 'UTF-8', 'ISO-8859-1');
-	$zz_setting['character_set'] = $character_encoding;
+	wrap_setting('character_set', $character_encoding);
 	return $page;
 }
 
@@ -221,8 +218,6 @@ function mod_tournaments_games_series($events, $request) {
  * @return void
  */
 function mod_tournaments_games_file($event, $request, $typ = false, $qs = []) {
-	global $zz_setting;
-	
 	// ignore query strings behind .pgn
 	if ($qs) $page['query_strings'] = $qs;
 	
@@ -232,7 +227,7 @@ function mod_tournaments_games_file($event, $request, $typ = false, $qs = []) {
 		if (!in_array($request, ['gesamt', 'gesamt-utf8'])) return false;
 		$events = $event;
 	} else {
-		$pgn_path = $zz_setting['media_folder'].'/pgn/'.$event['identifier'].'/%s.pgn';
+		$pgn_path = wrap_setting('media_folder').'/pgn/'.$event['identifier'].'/%s.pgn';
 	}
 	if ($typ) {
 		// separate file, e.g. pdt
@@ -241,13 +236,13 @@ function mod_tournaments_games_file($event, $request, $typ = false, $qs = []) {
 		if (!file_exists($file['name'])) return false;
 		$file['send_as'] = $event['year'].' '.$typ.' Runde '.$request.'.pgn';
 		$file['etag_generate_md5'] = true;
-		$zz_setting['character_set'] = 'iso-8859-1';
+		wrap_setting('character_set', 'iso-8859-1');
 		wrap_file_send($file);
 	}
 
-	$zz_setting['character_set'] = 'iso-8859-1';
+	wrap_setting('character_set', 'iso-8859-1');
 	if (substr($request, -5) === '-utf8') {
-		$zz_setting['character_set'] = 'utf-8';
+		wrap_setting('character_set', 'utf-8');
 		$request = substr($request, 0, -5);
 	}
 	$file = [];
@@ -270,8 +265,8 @@ function mod_tournaments_games_file($event, $request, $typ = false, $qs = []) {
 		$partien = mod_tournaments_games_pgn($event['event_id'], $runde_no);
 		$partien = mod_tournaments_games_liveonly($partien, $event);
 		$page['headers']['filename'] = ' Runde '.$runde_no.' (Live)';
-		$zz_setting['cache_age'] = 1;
-		wrap_cache_header(sprintf('Cache-Control: max-age=%d', wrap_get_setting('live_cache_control_age')));
+		wrap_setting('cache_age', 1);
+		wrap_cache_header(sprintf('Cache-Control: max-age=%d', wrap_setting('live_cache_control_age')));
 
 	} elseif ($request === 'live-raw') {
 		// output of raw live games, current round, directly how they come from the boards
@@ -290,14 +285,14 @@ function mod_tournaments_games_file($event, $request, $typ = false, $qs = []) {
 		} else {
 			$page['headers']['filename'] =  ' Runde '.$runde_no.' (Live)';
 		}
-		wrap_cache_header(sprintf('Cache-Control: max-age=%d', wrap_get_setting('live_cache_control_age')));
+		wrap_cache_header(sprintf('Cache-Control: max-age=%d', wrap_setting('live_cache_control_age')));
 
 	} elseif (preg_match('/^(\d+)-live$/', $request, $matches)) {
 		$runde_no = $matches[1];
 		$partien = mod_tournaments_games_pgn($event['event_id'], $runde_no);
 		$partien = mod_tournaments_games_liveonly($partien, $event);
 		$page['headers']['filename'] = ' Runde '.$runde_no.' (Live)';
-		$zz_setting['cache'] = false;
+		wrap_setting('cache', false);
 
 	} elseif (preg_match('/^(\d+)-live-raw$/', $request, $matches)) {
 		// output of raw live games per round, directly how they come from the boards
@@ -329,7 +324,7 @@ function mod_tournaments_games_file($event, $request, $typ = false, $qs = []) {
 	$page['headers']['filename'] = $event['year'].' '.$event['series_short'].$page['headers']['filename'].'.pgn';
 	
 	if (!empty($file)) {
-		if ($zz_setting['character_set'] === 'iso-8859-1') {
+		if (wrap_setting('character_set') === 'iso-8859-1') {
 			// output file directly
 			$file['send_as'] = $page['headers']['filename'];
 			$file['etag_generate_md5'] = true;
@@ -347,11 +342,11 @@ function mod_tournaments_games_file($event, $request, $typ = false, $qs = []) {
 
 	$page['text'] = str_replace("\n", "\r\n", $page['text']);
 	if (!$page['text']) {
-		$zz_setting['character_set'] = 'utf-8';
+		wrap_setting('character_set', 'utf-8');
 		return false;
 	}
 	$page['content_type'] = 'pgn';
-	if ($zz_setting['character_set'] === 'utf-8')
+	if (wrap_setting('character_set') === 'utf-8')
 		$page['text'] = mb_convert_encoding($page['text'], 'UTF-8', 'ISO-8859-1');
 	return $page;
 }
@@ -372,7 +367,7 @@ function mod_tournaments_games_pgn($event_id, $runde_no = false, $brett_no = fal
 	if ($tisch_no) $where[] = sprintf('paarungen.tisch_no = %d', $tisch_no);
 	
 	wrap_db_query('SET NAMES latin1');
-	$zz_setting['character_set'] = 'iso-8859-1';
+	wrap_setting('character_set', 'iso-8859-1');
 
 	$sql = 'SELECT partien.partie_id
 			, events.event, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
@@ -504,15 +499,13 @@ function mod_tournaments_games_cleanup($partien) {
  * @return array
  */
 function mod_tournaments_games_html($event, $request, $typ) {
-	global $zz_setting;
-
 	if ($typ === 'pdt') {
 		$request = explode('-', $request);
 		if (count($request) !== 2) return false;
 		$partie = [];
 		$partie['tag'] = $request[0];
 		$partie['partie_no'] = $request[1];
-		$filename = $zz_setting['media_folder'].'/pgn/'.$event['identifier'].'/'.$typ.'-'.$request[0].'.pgn';
+		$filename = wrap_setting('media_folder').'/pgn/'.$event['identifier'].'/'.$typ.'-'.$request[0].'.pgn';
 		if (!file_exists($filename)) {
 			return false;
 		}
@@ -610,7 +603,7 @@ function mod_tournaments_games_html($event, $request, $typ) {
 		}
 	} else {
 		// PGN from file, Latin 1
-		if ($zz_setting['character_set'] === 'utf-8') {
+		if (wrap_setting('character_set') === 'utf-8') {
 			if (!mb_detect_encoding($pgn['moves'], 'UTF-8', true))
 				$pgn['moves'] = mb_convert_encoding($pgn['moves'], 'UTF-8', 'ISO-8859-1');
 		}
@@ -680,16 +673,15 @@ function mod_tournaments_games_liveonly($partien, $event) {
  * @return array
  */
 function mod_tournaments_games_check_qs() {
-	global $zz_setting;
 	global $zz_page;
 
-	$url = parse_url($zz_setting['request_uri']);
+	$url = parse_url(wrap_setting('request_uri'));
 	if (!str_ends_with($url['path'], '.pgn')) return [];
 	if (empty($url['query'])) return [];
 	parse_str($url['query'], $qs);
 	$zz_page['url']['full']['query'] = false;
-	if (!empty($zz_setting['cache_age'])) {
-		wrap_send_cache($zz_setting['cache_age']);
+	if (wrap_setting('cache_age')) {
+		wrap_send_cache(wrap_setting('cache_age'));
 	}
 	return array_keys($qs);
 }

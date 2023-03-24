@@ -8,13 +8,12 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2013-2014, 2017-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2013-2014, 2017-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
 function mod_tournaments_teampdfs($vars, $settings) {
-	global $zz_setting;
 	wrap_include_files('pdf', 'tournaments');
 	
 	if (count($vars) === 3) {
@@ -50,7 +49,7 @@ function mod_tournaments_teampdfs($vars, $settings) {
 		$my_event['teams'] = [$id => $team];
 		$pdfs[] = mod_tournaments_teampdfs_pdf($my_event, 'filename');
 	}
-	$folder = $zz_setting['tmp_dir'].'/team-meldungen';
+	$folder = wrap_setting('tmp_dir').'/team-meldungen';
 	$turnier_folder = dirname($folder.'/'.$event['event_identifier']);
 	$file['name'] = $folder.'/'.$event['dateiname'].'-meldebogen.pdf';
 	$file['send_as'] = 'Meldebögen '.$event['event'].'.pdf';

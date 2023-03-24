@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2013-2016, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2013-2016, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -26,8 +26,6 @@
  * @todo Datenherkunft aus Turniere
  */
 function mod_tournaments_make_swtwriter($vars, $settings, $event) {
-	global $zz_setting;
-
 	ignore_user_abort(1);
 	ini_set('max_execution_time', 120);
 
@@ -37,14 +35,14 @@ function mod_tournaments_make_swtwriter($vars, $settings, $event) {
 		wrap_error(sprintf('SWT-Import: Falsche Zahl von Parametern: %s', $writer['identifier']));
 		return false;
 	}
-	$zz_setting['logfile_name'] = $writer['identifier'];
+	wrap_setting('logfile_name', $writer['identifier']);
 	
 	// Variante 1: Direkt SWT-Datei auslesen
 	$swt = $event['identifier'].'.swt';
-	$filename = $zz_setting['media_folder'].'/swt/'.$swt;
+	$filename = wrap_setting('media_folder').'/swt/'.$swt;
 	if (!file_exists($filename)) {
 		wrap_log(sprintf('Datei swt/%s existiert nicht', $swt));
-		$zz_setting['error_prefix'] = '';
+		wrap_setting('error_prefix', '');
 		return false;
 	}
 	
@@ -60,20 +58,20 @@ function mod_tournaments_make_swtwriter($vars, $settings, $event) {
 
 	if (!is_writable($filename)) {
 		wrap_log(sprintf('Datei swt/%s ist nicht schreibbar', $swt));
-		$zz_setting['error_prefix'] = '';
+		wrap_setting('error_prefix', '');
 		return false;
 	}
 
     if (!$handle = fopen($filename, "r+b")) {
 		wrap_log(sprintf('Datei swt/%s ist nicht öffenbar', $swt));
-		$zz_setting['error_prefix'] = '';
+		wrap_setting('error_prefix', '');
 		return false;
     }
 
 	// SWT-Parser einbinden
-	require_once $zz_setting['lib'].'/swtparser/swtparser.php';
+	require_once wrap_setting('lib').'/swtparser/swtparser.php';
 	// @todo unterstütze Parameter für UTF-8-Codierung
-	$tournament = swtparser($filename, $zz_setting['character_set']);
+	$tournament = swtparser($filename, wrap_setting('character_set'));
 	$field_names = swtparser_get_field_names('de');
 
 	if (isset($_GET['delete'])) {
@@ -117,7 +115,7 @@ function mod_tournaments_make_swtwriter($vars, $settings, $event) {
 	}
     fclose($handle);
 	
-	$zz_setting['error_prefix'] = '';
+	wrap_setting('error_prefix', '');
 	if (!empty($writer['changes'])) {
 		wrap_log(sprintf('SWT-Writer für %s: %d Personen, %d Teams geschrieben.',
 			$swt, $writer['changes_person_id'], $writer['changes_team_id']

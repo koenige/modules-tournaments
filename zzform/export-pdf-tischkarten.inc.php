@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2017, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -24,9 +24,8 @@
  * @param array $ops
  */
 function mf_tournaments_export_pdf_tischkarten($ops) {
-	global $zz_setting;
 	global $zz_conf;
-	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
+	require_once wrap_setting('modules_dir').'/default/libraries/tfpdf.inc.php';
 	wrap_include_files('pdf', 'tournaments');
 
 	// event information
@@ -74,7 +73,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 			'left' => $left
 		];
 		if (!empty($line['federation_abbr'])) {
-			$logo['filename'] = sprintf('%s/flaggen/%s.png', $zz_setting['media_folder'], wrap_filename($line['federation_abbr']));
+			$logo['filename'] = sprintf('%s/flaggen/%s.png', wrap_setting('media_folder'), wrap_filename($line['federation_abbr']));
 			$logo['border'] = true;
 		}
 		mf_tournaments_pdf_logo($pdf, $logo, $card);
@@ -144,7 +143,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	}
 
 	// write PDF to cache folder, send
-	$folder = $zz_setting['tmp_dir'].'/schilder/'.$event['identifier'];
+	$folder = wrap_setting('tmp_dir').'/schilder/'.$event['identifier'];
 	wrap_mkdir($folder);
 	if (file_exists($folder.'/tischkarten.pdf')) {
 		unlink($folder.'/tischkarten.pdf');

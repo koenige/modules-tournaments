@@ -37,7 +37,7 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 		AND ISNULL(main_event_id)
 	';
 	$sql = sprintf($sql
-		, wrap_get_setting('website_id')
+		, wrap_setting('website_id')
 		, $event['event_id']
 	);
 	$event = array_merge($event, wrap_db_fetch($sql));
@@ -92,7 +92,7 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 		, wrap_category_id('participation-status/participant')
 		, wrap_id('usergroups', 'spieler')
 		, wrap_category_id('participation-status/participant')
-		, wrap_get_setting('website_id')
+		, wrap_setting('website_id')
 		, $event['series_category_id']
 		, $event['year']
 	);

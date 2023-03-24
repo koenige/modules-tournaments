@@ -8,15 +8,14 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2016-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
 function mod_tournaments_make_filemove() {
-	global $zz_setting;
-	$zz_setting['log_username'] = $zz_setting['robot_username'];
-	$zz_setting['log_trigger'] = 'cron';
+	wrap_setting('log_username', wrap_setting('robot_username'));
+	wrap_setting('log_trigger', 'cron');
 
 	// Laufende Turniere auslesen
 	// for C24, put JSON files to server 2 DAYs before start
@@ -56,7 +55,7 @@ function mod_tournaments_make_filemove() {
 		AND takes_place = "yes"
 		ORDER BY main_event_id, runde_no';
 	$sql = sprintf($sql
-		, wrap_get_setting('filemove_begin_before_round_mins')
+		, wrap_setting('filemove_begin_before_round_mins')
 		, implode(',', array_keys($tournaments))
 		, wrap_category_id('zeitplan/runde')
 	);
@@ -80,11 +79,11 @@ function mod_tournaments_make_filemove() {
 		}
 	}
 
-	$pgn_queue = $zz_setting['media_folder'].wrap_get_setting('pgn_queue_folder').'/%s';
-	$pgn_sys = $zz_setting['media_folder'].wrap_get_setting('pgn_folder').'/%s';
+	$pgn_queue = wrap_setting('media_folder').wrap_setting('pgn_queue_folder').'/%s';
+	$pgn_sys = wrap_setting('media_folder').wrap_setting('pgn_folder').'/%s';
 
-	require_once $zz_setting['core'].'/syndication.inc.php';
-	$zz_setting['syndication_timeout_ms'] = 2500;
+	require_once wrap_setting('core').'/syndication.inc.php';
+	wrap_setting('syndication_timeout_ms', 2500);
 
 	foreach ($tournaments as $tournament) {
 		parse_str($tournament['parameter'], $parameter);
@@ -122,9 +121,8 @@ function mod_tournaments_make_filemove() {
  * @return void
  */
 function mod_tournaments_make_filemove_queue($tournament, $parameter = []) {
-	global $zz_setting;
 	// pgn-live/2016-dvm-u20/games.pgn
-	$pgn_live = $zz_setting['media_folder'].wrap_get_setting('pgn_live_folder').'/%s/games.pgn';
+	$pgn_live = wrap_setting('media_folder').wrap_setting('pgn_live_folder').'/%s/games.pgn';
 
 	$source = sprintf($pgn_live, $tournament['path']);
 	if ($merged_source = mod_tournaments_make_filemove_concat_pgn($source))
@@ -154,7 +152,7 @@ function mod_tournaments_make_filemove_queue($tournament, $parameter = []) {
 function mod_tournaments_make_filemove_final_pgn($tournament) {
 	$now = time();
 	$live_pgn = $tournament['final_dir'].'/'.$tournament['current_round']['runde_no'].'-live.pgn';
-	$pgn_delay = wrap_get_setting('live_pgn_delay_mins') * 60;
+	$pgn_delay = wrap_setting('live_pgn_delay_mins') * 60;
 
 	$files = array_diff(scandir($tournament['queue_dir']), ['.', '..']);
 	foreach ($files as $file) {
@@ -235,9 +233,7 @@ function mod_tournaments_make_filemove_scandir($folder) {
  * @return void
  */
 function mod_tournaments_make_filemove_bulletin_pgn($tournament) {
-	global $zz_setting;
-
-	$bulletin_dir = $zz_setting['media_folder'].wrap_get_setting('pgn_bulletin_folder').'/'.$tournament['main_series'];
+	$bulletin_dir = wrap_setting('media_folder').wrap_setting('pgn_bulletin_folder').'/'.$tournament['main_series'];
 	if (!file_exists($bulletin_dir)) return;
 
 	$params['log_destination'] = true;
@@ -283,9 +279,8 @@ function mod_tournaments_make_filemove_bulletin_pgn($tournament) {
  * @return void
  */
 function mod_tournaments_make_filemove_ftp_pgn($tournament, $ftp_paths) {
-	global $zz_setting;
-	$website_id = $zz_setting['website_id'];
-	$zz_setting['website_id'] = wrap_id('websites', $tournament['domain']);
+	$website_id = wrap_setting('website_id');
+	wrap_setting('website_id', wrap_id('websites', $tournament['domain']));
 	$params['log_destination'] = false;
 	$params['destination'] = ['timestamp'];
 
@@ -305,7 +300,7 @@ function mod_tournaments_make_filemove_ftp_pgn($tournament, $ftp_paths) {
 			}
 		}
 	}
-	$zz_setting['website_id'] = $website_id;
+	wrap_setting('website_id', $website_id);
 }
 
 /**
@@ -319,8 +314,7 @@ function mod_tournaments_make_filemove_ftp_pgn($tournament, $ftp_paths) {
  * @return void
  */
 function mod_tournaments_make_filemove_ftp_other($tournament, $ftp_other) {
-	global $zz_setting;
-	$zz_setting['cache'] = true; // file requests might change cache to false
+	wrap_setting('cache', true); // file requests might change cache to false
 	$params['log_destination'] = false;
 
 	foreach ($ftp_other as $other) {

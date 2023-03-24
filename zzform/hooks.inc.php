@@ -193,7 +193,6 @@ function mf_tournaments_games_update($ops) {
  * @return array
  */
 function mf_tournaments_team_points($ops) {
-	global $zz_setting;
 	static $settings;
 	if (empty($settings)) {
 		// @todo solve via tournament settings object
@@ -383,9 +382,9 @@ function mf_tournaments_remarks_mail($ops) {
 		$mail['message'] = $msg;
 		$mail['headers']['From']['name'] = $record['contact'];
 		$mail['headers']['From']['e_mail'] = $record['e_mail'];
-		$mail['to']['name'] = wrap_get_setting('project');
+		$mail['to']['name'] = wrap_setting('project');
 		// @todo read from tournament settings, not general settings
-		$mail['to']['e_mail'] = wrap_get_setting('tournaments_remarks_mail_to');
+		$mail['to']['e_mail'] = wrap_setting('tournaments_remarks_mail_to');
 		$success = wrap_mail($mail);
 	}
 	return;

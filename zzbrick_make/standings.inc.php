@@ -9,7 +9,7 @@
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
- * @copyright Copyright © 2012-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2023 Gustaf Mossakowski
  * @copyright Copyright © 2014 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
@@ -28,8 +28,7 @@
  * @return void
  */
 function mod_tournaments_make_standings($vars) {
-	global $zz_setting;
-	$zz_setting['cache'] = false;
+	wrap_setting('cache', false);
 
 	ignore_user_abort(1);
 	ini_set('max_execution_time', 60);
@@ -59,7 +58,6 @@ function mod_tournaments_make_standings($vars) {
  * @return array $page
  */
 function mod_tournaments_make_standings_overview($vars) {
-	global $zz_setting;
 	if (count($vars) !== 2) return false;
 
 	$sql = 'SELECT event_id, event, identifier
@@ -70,7 +68,7 @@ function mod_tournaments_make_standings_overview($vars) {
 	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
-	$zz_setting['logfile_name'] = $event['identifier'];
+	wrap_setting('logfile_name', $event['identifier']);
 
 	$sql = 'SELECT events.event_id, events.runde_no
 			, (SELECT COUNT(*) FROM partien
@@ -131,7 +129,7 @@ function mod_tournaments_make_standings_round($vars) {
 	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
-	$zz_setting['logfile_name'] = $event['identifier'];
+	wrap_setting('logfile_name', $event['identifier']);
 
 	if ($runde > $event['runden_gespielt']) {
 		mf_tournaments_job_finish('tabelle', 0, $event['event_id'], $runde);

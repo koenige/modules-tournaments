@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -22,7 +22,6 @@
  */
 function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 	global $zz_conf;
-	global $zz_setting;
 
 	$sql = 'SELECT tournament_id
 			, IF(NOT ISNULL(events.date_end),

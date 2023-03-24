@@ -24,8 +24,7 @@
  * @todo Einzelturniere unterstützen
  */
 function mod_tournaments_make_swtimport($vars, $settings, $event) {
-	global $zz_setting;
-	$zz_setting['cache'] = false;
+	wrap_setting('cache', false);
 	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 
 	ignore_user_abort(1);
@@ -35,7 +34,7 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
 		wrap_log(sprintf('SWT-Import: Falsche Zahl von Parametern: %s', implode('/', $vars)));
 		return false;
 	}
-	$zz_setting['logfile_name'] = implode('/', $vars);
+	wrap_setting('logfile_name', implode('/', $vars));
 	if (empty($event['event_id'])) {
 		wrap_log('SWT-Import: Kein Termin für diese Parameter in der Datenbank');
 		return false;
@@ -66,20 +65,20 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
 
 	// Direkt SWT-Datei auslesen
 	$swt = $event['identifier'].'.swt';
-	if (!file_exists($zz_setting['media_folder'].'/swt/'.$swt)) {
+	if (!file_exists(wrap_setting('media_folder').'/swt/'.$swt)) {
 		wrap_error(sprintf('Datei swt/%s existiert nicht', $swt));
-		$zz_setting['error_prefix'] = '';
+		wrap_setting('error_prefix', '');
 		$page['text'] = '<p class="error">Die SWT-Datei für dieses Turnier existiert (noch) nicht. Bitte lade erst eine hoch.</p>';
 		$page['status'] = 404;
-		if ($_SESSION['username'] === $zz_setting['robot_username'])
+		if ($_SESSION['username'] === wrap_setting('robot_username'))
 			mf_tournaments_job_finish('swt', 0, $event['event_id']);
 		return $page;
 	}
 
 	// SWT-Parser einbinden
-	require_once $zz_setting['lib'].'/swtparser/swtparser.php';
+	require_once wrap_setting('lib').'/swtparser/swtparser.php';
 	// @todo unterstütze Parameter für UTF-8-Codierung
-	$tournament = swtparser($zz_setting['media_folder'].'/swt/'.$swt, $zz_setting['character_set']);
+	$tournament = swtparser(wrap_setting('media_folder').'/swt/'.$swt, wrap_setting('character_set'));
 	$field_names = swtparser_get_field_names('de');
 
 	if ($tournament['out'][35] === 1) {
@@ -98,7 +97,7 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
 
 	$import['identifier'] = $event['identifier'];
 	$page['text'] = wrap_template('swtimport', $import);
-	if ($_SESSION['username'] === $zz_setting['robot_username'])
+	if ($_SESSION['username'] === wrap_setting('robot_username'))
 		mf_tournaments_job_finish('swt', 1, $event['event_id']);
 	return $page;
 }
@@ -113,11 +112,10 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
  */
 function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
 	global $zz_conf;
-	global $zz_setting;
 	$zz_conf['user'] = sprintf('SWT-Import: %s', $event['identifier']);
 
-	$old_error_handling = wrap_get_setting('error_handling');
-	$zz_setting['error_handling'] = 'output';
+	$old_error_handling = wrap_setting('error_handling');
+	wrap_setting('error_handling', 'output');
 	$ids = [];
 	$ids['t'] = [];
 
@@ -152,8 +150,8 @@ function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
 	mod_tournaments_make_swtimport_partien_loeschen($event['event_id'], $ids['partien']);
 
 	$page['text'] = 'Import erfolgreich';
-	$zz_setting['error_prefix'] = '';
-	$zz_setting['error_handling'] = $old_error_handling;
+	wrap_setting('error_prefix', '');
+	wrap_setting('error_handling', $old_error_handling);
 	
 	if ($form === 'mannschaftsturnier') {
 		$ids = mod_tournaments_make_swtimport_delete($ids, $event['event_id'], 'teams');
@@ -217,7 +215,6 @@ function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
  * return bool (exit on error)
  */ 
 function mod_tournaments_make_swtimport_turniercheck($event, $form, $data) {
-	global $zz_setting;
 	if ($form === 'einzelturnier' AND $event['turnierform'] !== 'e') {
 		wrap_error(
 			'Turnier wurde als Mannschaftsturnier angelegt, die SWT-Datei ist aber für ein Einzelturnier!',
@@ -450,10 +447,9 @@ function mod_tournaments_make_swtimport_delete($ids, $event_id, $type) {
  * @return array $ids
  */
 function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $import) {
-	global $zz_setting;
 	global $zz_conf;
 	require_once $zz_conf['dir_custom'].'/editing.inc.php';
-	require_once $zz_setting['custom_wrap_dir'].'/persons.inc.php';
+	require_once wrap_setting('custom_wrap_dir').'/persons.inc.php';
 	
 	$ids['person_spielfrei'] = [];
 	$ids['person'] = [];

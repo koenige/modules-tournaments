@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -482,8 +482,6 @@ function mf_tournaments_person_identifiers($players, $categories) {
  * @return array
  */
 function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_id') {
-	global $zz_setting;
-	
 	$mode = 'list';
 	if (!is_numeric(key($data))) {
 		$mode = 'single';
@@ -534,9 +532,9 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 		LEFT JOIN regionalgruppen
 			ON regionalgruppen.federation_contact_id = landesverbaende.contact_id
 		WHERE organisationen.contact_id IN (%s)
-	', $zz_setting['contact_ids']['dsb']
+	', wrap_setting('contact_ids[dsb]')
 		, wrap_category_id('contact/federation')
-		, $zz_setting['contact_ids']['dsb']
+		, wrap_setting('contact_ids[dsb]')
 		, implode(', ', $clubs)
 	);
 	$clubdata = wrap_db_fetch($sql, 'contact_id');

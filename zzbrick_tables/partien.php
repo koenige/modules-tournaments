@@ -180,13 +180,13 @@ $zz['fields'][24]['default'] = 'nein';
 $zz['fields'][24]['hide_in_list'] = true;
 $zz['fields'][24]['explanation'] = 'Wurde fälschlich mit vertauschten Farben gespielt?';
 
-if (wrap_get_setting('tournaments_upload_pgn')) {
+if (wrap_setting('tournaments_upload_pgn')) {
 	$zz['fields'][23]['title'] = 'PGN-Datei';
 	$zz['fields'][23]['field_name'] = 'pgn';
 	$zz['fields'][23]['type'] = 'upload_image';
 	$zz['fields'][23]['path'] = [
-		'root' => $zz_setting['media_folder'].'/pgn/',
-		'webroot' => $zz_setting['media_internal_path'].'/pgn/',
+		'root' => wrap_setting('media_folder').'/pgn/',
+		'webroot' => wrap_setting('media_internal_path').'/pgn/',
 		'field1' => 'event_identifier', 
 		'string2' => '/',
 		'field2' => 'runde_no',
@@ -197,8 +197,8 @@ if (wrap_get_setting('tournaments_upload_pgn')) {
 		'string5' => '.pgn'
 	];
 	$zz['fields'][23]['if'][1]['path'] = [
-		'root' => $zz_setting['media_folder'].'/pgn/',
-		'webroot' => $zz_setting['media_internal_path'].'/pgn/',
+		'root' => wrap_setting('media_folder').'/pgn/',
+		'webroot' => wrap_setting('media_internal_path').'/pgn/',
 		'field1' => 'event_identifier', 
 		'string2' => '/',
 		'field2' => 'runde_no',
@@ -210,7 +210,7 @@ if (wrap_get_setting('tournaments_upload_pgn')) {
 	];
 	$zz['fields'][23]['input_filetypes'] = ['pgn'];
 	$zz['fields'][23]['link'] = [
-		'string1' => $zz_setting['media_internal_path'].'/pgn/',
+		'string1' => wrap_setting('media_internal_path').'/pgn/',
 		'field1' => 'event_identifier',
 		'string2' => '/',
 		'field2' => 'runde_no',
@@ -221,7 +221,7 @@ if (wrap_get_setting('tournaments_upload_pgn')) {
 		'string5' => '.pgn'
 	];
 	$zz['fields'][23]['if'][1]['link'] = [
-		'string1' => $zz_setting['media_internal_path'].'/pgn/',
+		'string1' => wrap_setting('media_internal_path').'/pgn/',
 		'field1' => 'event_identifier',
 		'string2' => '/',
 		'field2' => 'runde_no',

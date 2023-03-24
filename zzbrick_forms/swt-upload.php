@@ -13,7 +13,7 @@
  */
 
 
-if (!wrap_get_setting('tournaments_upload_swt'))
+if (!wrap_setting('tournaments_upload_swt'))
 	wrap_quit(403, 'SWT-Upload ist auf dieser Plattform nicht erlaubt.');
 
 $zz = zzform_include_table('turniere');

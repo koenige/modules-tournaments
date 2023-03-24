@@ -14,8 +14,6 @@
 
 
 function mod_tournaments_exportc24($vars, $settings, $event) {
-	global $zz_setting;
-
 	if (empty($settings['json'])) return false;
 	if (count($vars) !== 2) return false;
 	$event['path'] = str_replace('/', '-', $event['identifier']);
@@ -40,8 +38,8 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 	
 	$data['id'] = $event['path'];
 	$data['hidden'] = false;
-	if (!empty($zz_setting['chess24com']['logo_url']))
-		$data['logo'] = $zz_setting['chess24com']['logo_url'];
+	if (!empty(wrap_setting('chess24com[logo_url]')))
+		$data['logo'] = wrap_setting('chess24com[logo_url]');
 	if ($event['turnierform'] === 'e') {
 		$data['eventType'] = 'open';
 		// without table: bunchOfGames
@@ -82,7 +80,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 			WHERE team_status = "Teilnehmer"
 			AND event_id = %d';
 		$sql = sprintf($sql
-			, $zz_setting['host_base']
+			, wrap_setting('host_base')
 			, $event['event_id']
 		);
 		$data['teams'] = wrap_db_fetch($sql, 'team_id');
@@ -175,7 +173,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		WHERE events.main_event_id = %d
 		AND NOT ISNULL(runde_no)
 		ORDER BY events.runde_no';
-	$sql = sprintf($sql, wrap_get_setting('live_pgn_delay_mins') * 60, $event['event_id']);
+	$sql = sprintf($sql, wrap_setting('live_pgn_delay_mins') * 60, $event['event_id']);
 	$data['rounds'] = wrap_db_fetch($sql, 'runde_no');
 	foreach ($data['rounds'] as $id => $round) {
 		$data['rounds'][$id]['timeControl'] = [

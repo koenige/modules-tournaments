@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014, 2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2014, 2017, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -20,7 +20,7 @@ $zz['where']['runde_no'] = $brick['vars'][2];
 
 $zz_conf['breadcrumbs'][] = [
 	'linktext' => 'Runden',
-	'url' => $zz_setting['events_internal_path'].'/'.$brick['data']['identifier'].'/runde/'
+	'url' => wrap_setting('events_internal_path').'/'.$brick['data']['identifier'].'/runde/'
 ];
 $zz_conf['breadcrumbs'][] = ['linktext' => $brick['vars'][2]];
 $zz_conf['dont_show_title_as_breadcrumb'] = true;

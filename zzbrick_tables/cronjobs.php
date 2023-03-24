@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2015, 2019-2021, 2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -79,4 +79,4 @@ $zz['filter'][1]['sql'] = 'SELECT DISTINCT category_id, category
 		ON categories.category_id = cronjobs.cronjob_category_id
 	ORDER BY category';
 
-$zz_setting['zzform_logging'] = false;
+wrap_setting('zzform_logging', false);

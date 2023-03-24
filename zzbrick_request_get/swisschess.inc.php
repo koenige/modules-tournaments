@@ -14,8 +14,6 @@
 
 
 function mod_tournaments_get_swisschess($vars) {
-	global $zz_setting;
-
 	// Land wurde zugunsten der Gastspielergenehmigung fallen gelassen
 	//		, SUBSTRING(landesverbaende.contact_abbr, 1, 3) AS land
 
@@ -87,7 +85,7 @@ function mod_tournaments_get_swisschess($vars) {
 		, wrap_category_id('identifiers/zps')
 		, wrap_category_id('identifiers/fide-id')
 		, wrap_category_id('identifiers/pkz')
-		, $zz_setting['contact_ids']['dsb']
+		, wrap_setting('contact_ids[dsb]')
 		, $vars[0], wrap_db_escape($vars[1])
 		, wrap_id('usergroups', 'spieler')
 		, $where
@@ -97,7 +95,7 @@ function mod_tournaments_get_swisschess($vars) {
 		wrap_db_query('SET NAMES utf8mb4');
 		return false;
 	}
-	$zz_setting['character_set'] = 'windows-1252';
+	wrap_setting('character_set', 'windows-1252');
 
 	$sql = 'SELECT CONCAT(event, " ", YEAR(date_begin)) AS event
 		FROM events
@@ -109,7 +107,7 @@ function mod_tournaments_get_swisschess($vars) {
 	$data['_extension'] = 'lst';
 	$data['_query_strings'] = ['alle'];
 	
-	$zz_setting['export_csv_show_empty_cells'] = true;
-	$zz_setting['export_csv_heading'] = false;
+	wrap_setting('export_csv_show_empty_cells', true);
+	wrap_setting('export_csv_heading', false);
 	return $data;
 }

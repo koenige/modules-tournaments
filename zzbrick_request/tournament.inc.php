@@ -14,7 +14,6 @@
 
 
 function mod_tournaments_tournament($vars, $settings, $event) {
-	global $zz_setting;
 	wrap_package_activate('events');
 
 	if (!empty($settings['internal'])) {
@@ -78,27 +77,27 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	$sql = sprintf($sql
 		, wrap_category_id('formulare/freiplatzantrag')
 		, wrap_id('usergroups', 'spieler')
-		, $zz_setting['website_id']
+		, wrap_setting('website_id')
 		, $event['event_id']
 		, $sql_condition
 	);
 	$event = array_merge($event, wrap_db_fetch($sql));
 
-	$zz_setting['tournaments_public_url'] = sprintf('https://%s%s/%s/'
+	wrap_setting('tournaments_public_url', sprintf('https://%s%s/%s/'
 		, $event['canonical_hostname']
-		, $zz_setting['local_access'] ? '.local' : ''
+		, wrap_setting('local_access') ? '.local' : ''
 		, $event['identifier']
-	);
-	$zz_setting['events_public_url'] = sprintf('https://%s%s%s/%s/'
+	));
+	wrap_setting('events_public_url', sprintf('https://%s%s%s/%s/'
 		, $event['canonical_hostname']
-		, $zz_setting['local_access'] ? '.local' : ''
+		, wrap_setting('local_access') ? '.local' : ''
 		, $event['events_path']
 		, $event['identifier']
-	);
-	$zz_setting['logfile_name'] = $event['identifier'];
+	));
+	wrap_setting('logfile_name', $event['identifier']);
 	if (!$internal AND !$event['tournament_id']) {
 		return wrap_redirect(
-			sprintf('%s/%s/', $zz_setting['events_path'], implode('/', $vars)), 307);
+			sprintf('%s/%s/', wrap_setting('events_path'), implode('/', $vars)), 307);
 	}
 	if ($event['series_parameter']) {
 		parse_str($event['series_parameter'], $series_parameter);
@@ -150,7 +149,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 			$setting = sprintf('tournaments_rating_link[%s]', $area);
 			$fields = [$code];
 		}
-		$event[$area.'_tournament_link'] = vsprintf(wrap_get_setting($setting), $fields);
+		$event[$area.'_tournament_link'] = vsprintf(wrap_setting($setting), $fields);
 	}
 	
 	// Bedenkzeit?
@@ -486,7 +485,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	}
 
 	if ($event['spielerphotos']) {
-		$event['photouebersicht'] = $event['year'] >= wrap_get_setting('dem_spielerphotos_aus_mediendb') ? true : false;
+		$event['photouebersicht'] = $event['year'] >= wrap_setting('dem_spielerphotos_aus_mediendb') ? true : false;
 	}
 
 	$page['text'] = wrap_template('tournament', $event);

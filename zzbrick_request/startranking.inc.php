@@ -14,8 +14,6 @@
 
 
 function mod_tournaments_startranking($vars, $settings, $event) {
-	global $zz_setting;
-
 	if (empty($event)) return false;
 	
 	$sql = 'SELECT places.contact AS veranstaltungsort
@@ -31,7 +29,7 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 	$sql = sprintf($sql, $event['event_id']);
 	$event += wrap_db_fetch($sql);
 
-	$zz_setting['logfile_name'] = $event['identifier'];
+	wrap_setting('logfile_name', $event['identifier']);
 	$event[str_replace('-', '_', $event['turnierform'])] = true;
 
 	$page['dont_show_h1'] = true;

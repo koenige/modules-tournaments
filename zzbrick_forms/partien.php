@@ -78,12 +78,12 @@ if (count($brick['vars']) === 4) {
 
 $zz_conf['breadcrumbs'][] = [
 	'linktext' => 'Runden',
-	'url' => $zz_setting['events_internal_path'].'/'.$brick['data']['identifier'].'/runde/'
+	'url' => wrap_setting('events_internal_path').'/'.$brick['data']['identifier'].'/runde/'
 ];
 if (count($brick['vars']) === 4) {
 	$zz_conf['breadcrumbs'][] = [
 		'linktext' => $zz['where']['runde_no'],
-		'url' => $zz_setting['events_internal_path'].'/'.$brick['data']['identifier'].'/runde/'.$zz['where']['runde_no'].'/'
+		'url' => wrap_setting('events_internal_path').'/'.$brick['data']['identifier'].'/runde/'.$zz['where']['runde_no'].'/'
 	];
 	$zz_conf['breadcrumbs'][] = ['linktext' => 'Tisch '.$brick['vars'][3]];
 

@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014, 2017, 2019, 2021 Gustaf Mossakowski
+ * @copyright Copyright © 2014, 2017, 2019, 2021, 2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -22,14 +22,11 @@
  * @return array $page
  */
 function mod_tournaments_swtreader($params) {
-	global $zz_setting;
-	global $zz_conf;
-
 	ob_start();
-	$dir = $zz_setting['media_folder'].'/swt/'.$params[0].'/';
+	$dir = wrap_setting('media_folder').'/swt/'.$params[0].'/';
 	$filename = $params[1].'.swt';
 	$own = './';
-	require $zz_setting['lib'].'/swtparser/example.php';
+	require wrap_setting('lib').'/swtparser/example.php';
 	$page['text'] = ob_get_contents();
 	$page['query_strings'] = ['view'];
 	$page['dont_show_h1'] = true;

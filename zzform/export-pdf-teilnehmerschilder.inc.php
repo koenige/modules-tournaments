@@ -24,7 +24,6 @@
  * @param array $ops
  */
 function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
-	global $zz_setting;
 	wrap_include_files('pdf', 'tournaments');
 
 	$ids = [];
@@ -178,7 +177,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	}
 	$data = mf_tournaments_clubs_to_federations($data, 'club_contact_id');
 	
-	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
+	require_once wrap_setting('modules_dir').'/default/libraries/tfpdf.inc.php';
 
 	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
 	$pdf->setCompression(true);
@@ -219,7 +218,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				$logo['width_factor'] = 1.35;
 			} elseif (!empty($line['federation_abbr']) AND $event['event_category'] === 'mannschaft') {
 				// @todo better do this via parameters and not event_category
-				$logo['filename'] = sprintf('%s/flaggen/%s.png', $zz_setting['media_folder'], wrap_filename($line['federation_abbr']));
+				$logo['filename'] = sprintf('%s/flaggen/%s.png', wrap_setting('media_folder'), wrap_filename($line['federation_abbr']));
 				$logo['border'] = true;
 			}
 			mf_tournaments_pdf_logo($pdf, $logo, $card);
@@ -276,7 +275,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		}
 		$i++;
 	}
-	$folder = $zz_setting['tmp_dir'].'/schilder/'.$event['identifier'];
+	$folder = wrap_setting('tmp_dir').'/schilder/'.$event['identifier'];
 	wrap_mkdir($folder);
 	if (file_exists($folder.'/teilnehmerschilder.pdf')) {
 		unlink($folder.'/teilnehmerschilder.pdf');
@@ -294,10 +293,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
  * mf_tournaments_p_qrcode(https://r.schach.in/p/12345, 12345)
  */
 function mf_tournaments_p_qrcode($id) {
-	global $zz_setting;
-	global $zz_conf;
-	require_once $zz_setting['lib'].'/phpqrcode/lib/full/qrlib.php';
-	$folder = $zz_setting['tmp_dir'].'/tournaments/qr-codes';
+	require_once wrap_setting('lib').'/phpqrcode/lib/full/qrlib.php';
+	$folder = wrap_setting('tmp_dir').'/tournaments/qr-codes';
 	wrap_mkdir($folder);
 	$file = $folder.'/'.$id.'.png';
 	if (file_exists($file)) return $file;

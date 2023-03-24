@@ -6,7 +6,7 @@
 // Skript: Kontaktdaten einer Person eines Teams eines Turniers
 
 
-if (empty(wrap_get_setting('tournaments_request_address_data')))
+if (empty(wrap_setting('tournaments_request_address_data')))
 	wrap_quit(404, 'Für dieses Turnier werden keine Adressdaten erhoben.');
 if ($brick['data']['meldung'] === 'gesperrt')
 	wrap_quit(403, 'Dieses Team wurde gesperrt. Sie können keine Änderungen vornehmen.');
@@ -44,7 +44,7 @@ $sql = sprintf($sql
 );
 $contact_ids = wrap_db_fetch($sql, '_dummy_', 'single value');
 
-require_once $zz_setting['custom'].'/zzbrick_forms/persons.php';
+require_once wrap_setting('custom').'/zzbrick_forms/persons.php';
 
 if (empty($contact_ids)) {
 	$zz['sql'] .= ' AND contact_id = 0';

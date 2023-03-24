@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2021 Gustaf Mossakowski
+ * @copyright Copyright © 2021, 2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -54,8 +54,6 @@ function mf_tournaments_job_get_id($typ, $category, $event_id, $runde_no = false
  * @return bool
  */
 function mf_tournaments_job_create($category, $event_id, $runde_no = false, $prioritaet = 0) {
-	global $zz_setting;
-
 	$cronjob_id = mf_tournaments_job_get_id('todo', $category, $event_id, $runde_no);
 	if ($cronjob_id) return true;
 	
@@ -82,11 +80,9 @@ function mf_tournaments_job_create($category, $event_id, $runde_no = false, $pri
  * @return bool
  */
 function mf_tournaments_job_finish($category, $success, $event_id, $runde_no = false) {
-	global $zz_setting;
-	
 	$cronjob_id = mf_tournaments_job_get_id('laufend', $category, $event_id, $runde_no);
 	if (!$cronjob_id) return false;
-	require_once $zz_setting['core'].'/syndication.inc.php'; // wrap_lock()
+	require_once wrap_setting('core').'/syndication.inc.php'; // wrap_lock()
 
 	$sql = 'SELECT path, request
 		FROM cronjobs
@@ -118,8 +114,7 @@ function mf_tournaments_job_finish($category, $success, $event_id, $runde_no = f
  * @return void
  */
 function mf_tournaments_job_trigger() {
-	global $zz_setting;
-	wrap_trigger_protected_url('https://in.schach.in/_jobs/trigger/', $zz_setting['robot_username'], false);
+	wrap_trigger_protected_url('https://in.schach.in/_jobs/trigger/', wrap_setting('robot_username'), false);
 }
 
 /**

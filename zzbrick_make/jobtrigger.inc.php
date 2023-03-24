@@ -8,16 +8,14 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015-2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2015-2017, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
 function mod_tournaments_make_jobtrigger($params) {
-	global $zz_conf;
-	global $zz_setting;
-	$zz_setting['log_username'] = $zz_setting['robot_username'];
-	$zz_setting['log_trigger'] = 'cron';
+	wrap_setting('log_username', wrap_setting('robot_username'));
+	wrap_setting('log_trigger', 'cron');
 
 	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 		$data['show_form'] = true;
@@ -27,7 +25,7 @@ function mod_tournaments_make_jobtrigger($params) {
 
 	if (!brick_access_rights()) wrap_quit(403);
 
-	require_once $zz_setting['core'].'/syndication.inc.php'; // wrap_lock()
+	require_once wrap_setting('core').'/syndication.inc.php'; // wrap_lock()
 	
 	$sql = 'SELECT category_id, category
 			, SUBSTRING_INDEX(path, "/", -1) AS path

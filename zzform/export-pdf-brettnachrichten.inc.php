@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -19,8 +19,6 @@
  * @param array $ops
  */
 function mf_tournaments_export_pdf_brettnachrichten($ops) {
-	global $zz_setting;
-
 	foreach ($ops['output']['head'] as $index => $field) {
 		if (empty($field['field_name'])) continue;
 		if ($field['field_name'] !== 'nachricht_id') continue;
@@ -63,7 +61,7 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 	$sql = sprintf($sql, implode(',', $ids));
 	$data = wrap_db_fetch($sql, 'nachricht_id');
 	
-	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
+	require_once wrap_setting('modules_dir').'/default/libraries/tfpdf.inc.php';
 
 class colPDF extends TFPDF
 {
@@ -100,12 +98,11 @@ function AcceptPageBreak()
 }
 
 function SetHead() {
-	global $zz_setting;
 	$width = 18.7;
 	$height = 30;
 
 	$this->setY(15);
-	$this->image($zz_setting['media_folder'].'/chessy/70-Post.600.png', 148.5 * ($this->col + 1) + 15 - 30 - $width, 10, $width, $height);
+	$this->image(wrap_setting('media_folder').'/chessy/70-Post.600.png', 148.5 * ($this->col + 1) + 15 - 30 - $width, 10, $width, $height);
 	$board = $this->event.' Brett '.$this->board_no.' ('.$this->colour.')';
 	$this->setY(22.5);
 	$this->setFont('FiraSans-SemiBold', '', 11);
@@ -163,7 +160,7 @@ function Header()
 		$pdf->setFont('OpenSansEmoji', '', 11);
 		$pdf->MultiCell($half, 6, trim($line['nachricht']), 0, 'L');
 	}
-	$folder = $zz_setting['tmp_dir'].'/brettnachrichten/dem';
+	$folder = wrap_setting('tmp_dir').'/brettnachrichten/dem';
 	wrap_mkdir($folder);
 	if (file_exists($folder.'/runde-'.$round_no.'.pdf')) {
 		unlink($folder.'/runde-'.$round_no.'.pdf');

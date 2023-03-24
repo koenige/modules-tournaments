@@ -23,8 +23,7 @@
  * @return array
  */
 function mod_tournaments_livegames($vars) {
-	global $zz_setting;
-	require_once $zz_setting['modules_dir'].'/chess/chess/pgn.inc.php';
+	require_once wrap_setting('modules_dir').'/chess/chess/pgn.inc.php';
 
 	if (count($vars) !== 2) return false;
 
@@ -50,7 +49,7 @@ function mod_tournaments_livegames($vars) {
 		ORDER BY series.sequence';
 	$sql = sprintf($sql,
 		wrap_id('usergroups', 'spieler'),
-		wrap_get_setting('live_games_show_for_days'),
+		wrap_setting('live_games_show_for_days'),
 		wrap_db_escape($vars[1]), $vars[0]
 	);
 	$tournaments = wrap_db_fetch($sql, 'event_id');

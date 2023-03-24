@@ -74,7 +74,7 @@ function mod_tournaments_player($vars, $settings, $event) {
 	$data = mf_tournaments_clubs_to_federations($data);
 	$data['fidetitel_lang'] = mf_tournaments_fide_title($data['t_fidetitel']);
 
-	if ($data['year'] >= wrap_get_setting('dem_spielerphotos_aus_mediendb') AND $data['spielerphotos']) {
+	if ($data['year'] >= wrap_setting('dem_spielerphotos_aus_mediendb') AND $data['spielerphotos']) {
 		$data['bilder'] = mf_mediadblink_media(
 			[$data['year'], $data['main_series_path'], 'Website/Spieler'], [], 'person', $data['person_id']
 		);
@@ -152,7 +152,7 @@ function mod_tournaments_player($vars, $settings, $event) {
 	$page['text'] = wrap_template('player', $data);
 	$page['breadcrumbs'][] = '<a href="../">Startrangliste</a>';
 	$page['breadcrumbs'][] = $data['name'];
-	if (in_array('magnificpopup', wrap_get_setting('modules')))
+	if (in_array('magnificpopup', wrap_setting('modules')))
 		$page['extra']['magnific_popup'] = true;
 	return $page;
 }

@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2017, 2019-2021, 2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -24,7 +24,6 @@
  * @param array $ops
  */
 function mf_tournaments_export_pdf_ergebniszettel($ops) {
-	global $zz_setting;
 	global $zz_conf;
 
 	$event = $zz_conf['event'];
@@ -32,7 +31,7 @@ function mf_tournaments_export_pdf_ergebniszettel($ops) {
 	// Feld-IDs raussuchen
 	$nos = mf_tournaments_export_pdf_ergebniszettel_nos($ops['output']['head']);
 	
-	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
+	require_once wrap_setting('modules_dir').'/default/libraries/tfpdf.inc.php';
 
 	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
 	$pdf->setCompression(true);
@@ -111,7 +110,7 @@ function mf_tournaments_export_pdf_ergebniszettel($ops) {
 		$k++;
 		$i++;
 	}
-	$folder = $zz_setting['tmp_dir'].'/ergebniszettel/'.$event['identifier'];
+	$folder = wrap_setting('tmp_dir').'/ergebniszettel/'.$event['identifier'];
 	wrap_mkdir($folder);
 	if (file_exists($folder.'/runde-'.$runde_no.'.pdf')) {
 		unlink($folder.'/runde-'.$runde_no.'.pdf');

@@ -16,8 +16,6 @@
 
 
 function mod_tournaments_make_playerimages($params, $settings, $event) {
-	global $zz_setting;
-
 	$event_ids = mf_tournaments_series_events($event['event_id']);
 	$event_ids[] = $event['event_id'];
 
@@ -59,7 +57,7 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 		break;
 	}
 	$event['sender'] = 'Presseteam '.$event['series_short'].' '.$event['year'];
-	$event['sender_mail'] = $zz_setting['own_e_mail'];
+	$event['sender_mail'] = wrap_setting('own_e_mail');
 	$event['msg'] = file(wrap_template_file('playerimages-mail'));
 	$unset = true;
 	foreach ($event['msg'] as $index => $line) {

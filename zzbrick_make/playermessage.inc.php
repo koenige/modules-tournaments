@@ -10,7 +10,7 @@
  * @author Erik Kothe <kontakt@erikkothe.de>
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2018-2022 Erik Kothe
- * @copyright Copyright © 2022 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -22,9 +22,6 @@
  * @return array $page
  */
 function mod_tournaments_make_playermessage($vars, $settings) {
-	global $zz_conf;
-	global $zz_setting;
-	
 	$data = my_event($vars[0], $vars[1]);
 	if (!$data) return false;
 

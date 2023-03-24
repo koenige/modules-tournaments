@@ -26,7 +26,7 @@ $brick['page']['title'] .= 'Details';
 $brick['page']['breadcrumbs'][] = '<a href="../kontakt/">Kontaktdaten</a>';
 $brick['page']['breadcrumbs'][] = 'Details';
 
-require_once $zz_setting['custom'].'/zzbrick_forms/persons.php';
+require_once wrap_setting('custom').'/zzbrick_forms/persons.php';
 
 // Person-ID notwendig
 if (empty($_GET['where']['contact_id'])) wrap_quit(403);

@@ -22,8 +22,6 @@
  * @return array $page
  */
 function mod_tournaments_tournamentmap($vars, $settings, $event) {
-	global $zz_setting;
-
 	if (str_ends_with(end($vars), '.geojson'))
 		return mod_tournaments_tournamentmap_json($vars);
 	
@@ -38,7 +36,7 @@ function mod_tournaments_tournamentmap($vars, $settings, $event) {
 			AND mother_contact_id = %d';
 		$sql = sprintf($sql
 			, wrap_db_escape($federation)
-			, $zz_setting['contact_ids']['dsb']
+			, wrap_setting('contact_ids[dsb]')
 		);
 		$federation = wrap_db_fetch($sql);
 		if (!$federation) return false;

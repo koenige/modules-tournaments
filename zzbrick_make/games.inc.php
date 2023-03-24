@@ -23,9 +23,8 @@
  *  [3]: (optional) Brett oder Tisch.Brett (5, 5.6)
  */
 function mod_tournaments_make_games($vars) {
-	global $zz_setting;
 	global $zz_conf;
-	$zz_setting['cache'] = false;
+	wrap_setting('cache', false);
 	if (empty($vars)) return false;
 	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 
@@ -36,7 +35,7 @@ function mod_tournaments_make_games($vars) {
 
 	// Fehler in PGNs nur angeben, wenn direkt jemand vor Rechner sitzt
 	// nicht bei automatischem Sync
-	$robot_zugriff = $_SESSION['username'] === $zz_setting['robot_username'] ? true : false;
+	$robot_zugriff = $_SESSION['username'] === wrap_setting('robot_username') ? true : false;
 	
 	$tisch_no = false;
 	$brett_no = false;
@@ -135,7 +134,7 @@ function mod_tournaments_make_games($vars) {
 	$event += $parameter;
 
 	// PGN-Datei vorhanden?
-	$pgn_path = $zz_setting['media_folder'].'/pgn/'.$event['identifier'].'/%s.pgn';
+	$pgn_path = wrap_setting('media_folder').'/pgn/'.$event['identifier'].'/%s.pgn';
 	$pgn_filename = sprintf($pgn_path, $pgn_filename);
 	if (file_exists($pgn_filename)) {
 		$pgn = file($pgn_filename);
@@ -200,7 +199,7 @@ function mod_tournaments_make_games($vars) {
 	$partien = wrap_db_fetch($sql, 'partie_id');
 
 	// Datei Partie für Partie auswerten
-	require_once $zz_setting['modules_dir'].'/chess/chess/pgn.inc.php';
+	require_once wrap_setting('modules_dir').'/chess/chess/pgn.inc.php';
 	$games = mf_chess_pgn_parse($pgn, $pgn_filename);
 	if (!empty($event['pgn_preparation_function']))
 		$games = $event['pgn_preparation_function']($games, $event['event_id']);
@@ -214,8 +213,8 @@ function mod_tournaments_make_games($vars) {
 
 	require_once $zz_conf['dir'].'/functions.inc.php';
 
-	$old_error_handling = wrap_get_setting('error_handling');
-	$zz_setting['error_handling'] = 'output';
+	$old_error_handling = wrap_setting('error_handling');
+	wrap_setting('error_handling', 'output');
 
 	$event['db_errors'] = 0;
 	$event['updates'] = 0;
@@ -356,7 +355,7 @@ function mod_tournaments_make_games($vars) {
 	if ($runde_no) $event['runde_no'] = $runde_no;
 	if ($tisch_no) $event['tisch_no'] = $tisch_no;
 	if ($brett_no) $event['brett_no'] = $brett_no;
-	$zz_setting['error_handling'] = $old_error_handling;
+	wrap_setting('error_handling', $old_error_handling);
 	$page['text'] = wrap_template('games-update', $event);
 	mf_tournaments_job_finish('partien', 1, $event['event_id'], $runde_url);
 	return $page;

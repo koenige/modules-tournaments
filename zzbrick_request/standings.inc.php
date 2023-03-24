@@ -70,7 +70,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 			AND events_websites.website_id = %d
 		WHERE events.event_id = %d
 	';
-	$sql = sprintf($sql, $runde, $runde, $runde, wrap_get_setting('website_id'), $event['event_id']);
+	$sql = sprintf($sql, $runde, $runde, $runde, wrap_setting('website_id'), $event['event_id']);
 	$event = array_merge($event, wrap_db_fetch($sql));
 	if (!$event['runden']) return false;
 	$event['runde_no'] = $runde;

@@ -94,8 +94,6 @@ function mf_tournaments_pdf_event_accounts($event_id) {
  * @return array
  */
 function mf_tournaments_pdf_teams($event, $params) {
-	global $zz_setting;
-
 	// team_identifier is more specific
 	if (!empty($params['team_identifier'])) {
 		$where = sprintf('teams.identifier = "%s"', wrap_db_escape($params['team_identifier']));
@@ -161,7 +159,7 @@ function mf_tournaments_pdf_teams($event, $params) {
 		if (!empty($params['check_completion']))
 			$teams[$team_id]['komplett'] = mf_tournaments_team_application_complete($teams[$team_id]);
 		if (!empty($params['check_uploads'])) {
-			$filename = sprintf('%s/meldeboegen/%s%%s.pdf', $zz_setting['media_folder'], $teams[$team_id]['team_identifier']);
+			$filename = sprintf('%s/meldeboegen/%s%%s.pdf', wrap_setting('media_folder'), $teams[$team_id]['team_identifier']);
 			$filenames = [
 				sprintf($filename, ''),
 				sprintf($filename, '-ehrenkodex'),
@@ -187,8 +185,7 @@ function mf_tournaments_pdf_teams($event, $params) {
  * @return void
  */
 function mf_tournaments_pdf_prepare($event) {
-	global $zz_setting;
-	require_once $zz_setting['modules_dir'].'/default/libraries/tfpdf.inc.php';
+	require_once wrap_setting('modules_dir').'/default/libraries/tfpdf.inc.php';
 
 	$settings = [];
 	switch ($event['turnierform']) {
@@ -209,7 +206,7 @@ function mf_tournaments_pdf_prepare($event) {
 		break;
 	}
 
-	$settings['logo_filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
+	$settings['logo_filename'] = wrap_setting('media_folder').'/logos/DSJ Logo Text schwarz-gelb.png';
 	$settings['logo_width'] = 146;
 	$settings['logo_height'] = 50;
 
@@ -237,9 +234,7 @@ function mf_tournaments_pdf_prepare($event) {
  * @return void
  */
 function mf_tournaments_pdf_send($pdf, $event, $return = 'send') {
-	global $zz_setting;
-
-	$folder = $zz_setting['tmp_dir'].'/team-meldungen';
+	$folder = wrap_setting('tmp_dir').'/team-meldungen';
 	if (count($event['teams']) === 1) {
 		$team = reset($event['teams']);
 		$tournament_folder = dirname($folder.'/'.$team['team_identifier']);
@@ -285,8 +280,6 @@ function mf_tournaments_pdf_add_bg_color(&$pdf, $y_bottom, $width, $height) {
  * @param array $card
  */
 function mf_tournaments_pdf_logo($pdf, $logo, $card) {
-	global $zz_setting;
-
 	$logo['border'] = $logo['border'] ?? false;
 	$logo['filename'] = $logo['filename'] ?? false;
 	$logo['height_factor'] = $logo['height_factor'] ?? 1;
@@ -299,7 +292,7 @@ function mf_tournaments_pdf_logo($pdf, $logo, $card) {
 	}
 	if (!$logo['filename'])
 		// @todo = $settings['logo_filename']
-		$logo['filename'] = $zz_setting['media_folder'].'/logos/DSJ Logo Text schwarz-gelb.png';
+		$logo['filename'] = wrap_setting('media_folder').'/logos/DSJ Logo Text schwarz-gelb.png';
 
 	$logo['size'] = getimagesize($logo['filename']);
 	$logo['width'] = round($logo['size'][0] / $logo['size'][1] * $card['logo_height'] * $logo['width_factor']);
@@ -366,12 +359,10 @@ function mf_tournaments_pdf_agegroups($parameters, $age) {
  * @return array
  */
 function mf_tournaments_pdf_graphic($graphics, $card) {
-	global $zz_setting;
-
 	$filename = false;
 	foreach ($graphics as $graphic) {
 		if (!$graphic) continue;
-		$filename = sprintf('%s/gruppen/%s.png', $zz_setting['media_folder'], wrap_filename($graphic));
+		$filename = sprintf('%s/gruppen/%s.png', wrap_setting('media_folder'), wrap_filename($graphic));
 		if (file_exists($filename)) break;
 		$filename = false;
 	}

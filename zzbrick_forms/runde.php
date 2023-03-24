@@ -28,14 +28,14 @@ $zz['fields'][2]['conf_identifier']['concat'] = [
 	'/', '/runde/'
 ];
 
-if (wrap_get_setting('tournaments_upload_pgn')) {
+if (wrap_setting('tournaments_upload_pgn')) {
 	$zz['fields'][23]['title'] = 'PGN-Datei';
 	$zz['fields'][23]['field_name'] = 'pgn';
 	$zz['fields'][23]['dont_show_missing'] = true;
 	$zz['fields'][23]['type'] = 'upload_image';
 	$zz['fields'][23]['path'] = [
-		'root' => $zz_setting['media_folder'].'/pgn/',
-		'webroot' => $zz_setting['media_internal_path'].'/pgn/',
+		'root' => wrap_setting('media_folder').'/pgn/',
+		'webroot' => wrap_setting('media_internal_path').'/pgn/',
 		'field1' => 'main_event_identifier', 
 		'string2' => '/',
 		'field2' => 'runde_no',
@@ -43,7 +43,7 @@ if (wrap_get_setting('tournaments_upload_pgn')) {
 	];
 	$zz['fields'][23]['input_filetypes'] = ['pgn'];
 	$zz['fields'][23]['link'] = [
-		'string1' => $zz_setting['media_internal_path'].'/pgn/',
+		'string1' => wrap_setting('media_internal_path').'/pgn/',
 		'field1' => 'main_event_identifier',
 		'string2' => '/',
 		'field2' => 'runde_no',
@@ -115,7 +115,7 @@ if (wrap_access('tournaments_games', $brick['data']['event_rights']) OR wrap_acc
 		$zz['details'][0]['title'] = 'Paarungen';
 	$zz['details'][0]['link'] = [
 	// @todo use area
-		'string0' => $zz_setting['events_internal_path'].'/', 'field1' => 'identifier', 'string1' => '/'
+		'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'identifier', 'string1' => '/'
 	];
 }
 if (wrap_access('tournaments_standings', $brick['data']['event_rights'])) {
@@ -124,7 +124,7 @@ if (wrap_access('tournaments_standings', $brick['data']['event_rights'])) {
 	// @todo use area
 	//	'area' => 'tournaments_standings',
 	//	'fields' => ['main_event_identifier', 'runde_no']
-		'string0' => $zz_setting['events_internal_path'].'/', 'field1' => 'main_event_identifier',
+		'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'main_event_identifier',
 		'string1' => '/tabelle/', 'field2' => 'runde_no', 'string2' => '/'
 	];
 }

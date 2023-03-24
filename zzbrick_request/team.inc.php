@@ -39,7 +39,7 @@ function mod_tournaments_team($vars, $settings, $data) {
 		AND NOT ISNULL(events_websites.website_id)
 	';
 	$sql = sprintf($sql
-		, wrap_get_setting('website_id')
+		, wrap_setting('website_id')
 		, $data['team_id']
 	);
 	$data = array_merge($data, wrap_db_fetch($sql));

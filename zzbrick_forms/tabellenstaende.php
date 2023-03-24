@@ -81,7 +81,7 @@ if (!isset($_GET['filter']['typ'])) {
 // @todo we are below rounds, make this breadcrumb superfluous
 $zz_conf['breadcrumbs'][] = [
 	'linktext' => 'Runden',
-	'url' => $zz_setting['events_internal_path'].'/'.$brick['data']['identifier'].'/runde/'
+	'url' => wrap_setting('events_internal_path').'/'.$brick['data']['identifier'].'/runde/'
 ];
 $zz_conf['breadcrumbs'][] = ['linktext' => 'Tabelle '.$brick['vars'][2].'. Runde'];
 $zz_conf['dont_show_title_as_breadcrumb'] = true;

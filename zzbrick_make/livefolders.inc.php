@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016, 2020-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2016, 2020-2021, 2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -20,7 +20,6 @@
  * Alternativ: HTML-Formular mit Buttons
  */
 function mod_tournaments_make_livefolders() {
-	global $zz_setting;
 	$data = [];
 
 	// get folders which should exist
@@ -32,13 +31,13 @@ function mod_tournaments_make_livefolders() {
 		AND DATE_SUB(events.date_begin, INTERVAL %d DAY) <= CURDATE()
 		AND DATE_ADD(events.date_end, INTERVAL %d DAY) >= CURDATE()';
 	$sql = sprintf($sql,
-		wrap_get_setting('live_folders_days'), wrap_get_setting('live_folders_days')
+		wrap_setting('live_folders_days'), wrap_setting('live_folders_days')
 	);
 	$running = wrap_db_fetch($sql, '_dummy_', 'key/value');
 
 	// get all existing folders
-	$pgn_folders[] = $zz_setting['media_folder'].'/pgn-live';
-	$pgn_folders[] = $zz_setting['media_folder'].'/pgn-queue';
+	$pgn_folders[] = wrap_setting('media_folder').'/pgn-live';
+	$pgn_folders[] = wrap_setting('media_folder').'/pgn-queue';
 
 	foreach ($pgn_folders as $pgn_folder) {
 		$existing_folders = array_diff(scandir($pgn_folder), ['.', '..']);

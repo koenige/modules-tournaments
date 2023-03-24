@@ -10,14 +10,13 @@
  * @author Erik Kothe
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2008 Erik Kothe
- * @copyright Copyright © 2008, 2012, 2014, 2016-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2008, 2012, 2014, 2016-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
 function mod_tournaments_make_liveresults($params) {
-	global $zz_setting;
-	$zz_setting['cache'] = false;
+	wrap_setting('cache', false);
 	if (count($params) !== 2) return false;
 
 	$sql = 'SELECT event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year

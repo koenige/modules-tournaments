@@ -210,7 +210,7 @@ $zz['fields'][35]['list_prefix'] = ', ~&nbsp;';
 $zz['fields'][35]['list_suffix'] = '&nbsp;Uhr';
 $zz['fields'][35]['replace_values'] = ['--' => '', 'Uhr' => '', '-:-' => ''];
 
-if (wrap_get_setting('tournaments_team_league')) {
+if (wrap_setting('tournaments_team_league')) {
 	$zz['fields'][48]['field_name'] = 'spielbeginn';
 	$zz['fields'][48]['type'] = 'time';
 	$zz['fields'][48]['suffix'] = ' Uhr';
@@ -314,15 +314,15 @@ $zz['fields'][28]['field_name'] = 'meldebogen';
 $zz['fields'][28]['dont_show_missing'] = true;
 $zz['fields'][28]['type'] = 'upload_image';
 $zz['fields'][28]['path'] = [
-	'root' => $zz_setting['media_folder'].'/meldeboegen/',
-	'webroot' => $zz_setting['media_internal_path'].'/meldeboegen/',
+	'root' => wrap_setting('media_folder').'/meldeboegen/',
+	'webroot' => wrap_setting('media_internal_path').'/meldeboegen/',
 	'field1' => 'identifier',
 	'string1' => '.',
 	'extension' => 'pdf'
 ];
 $zz['fields'][28]['input_filetypes'] = ['pdf'];
 $zz['fields'][28]['link'] = [
-	'string1' => $zz_setting['media_internal_path'].'/meldeboegen/',
+	'string1' => wrap_setting('media_internal_path').'/meldeboegen/',
 	'field1' => 'identifier',
 	'string2' => '.',
 	'extension' => 'pdf'

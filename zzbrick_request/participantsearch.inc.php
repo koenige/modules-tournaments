@@ -20,8 +20,7 @@
  * @param array $settings
  */
 function mod_tournaments_participantsearch($params, $settings, $event) {
-	global $zz_setting;
-	if (!empty($_GET['q'])) $zz_setting['cache'] = false;
+	if (!empty($_GET['q'])) wrap_setting('cache', false);
 
 	$internal = !empty($settings['internal']) ? true : false;
 	if (count($params) === 3 AND $params[2] === 'suche') unset($params[2]);
@@ -48,7 +47,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 		WHERE (main_series.path = "reihen/%s" OR SUBSTRING_INDEX(series.path, "/", -1) = "%s")
 		AND IFNULL(event_year, YEAR(date_begin)) = %d
 	';
-	$sql = sprintf($sql, $zz_setting['website_id'], wrap_db_escape($params[1]), wrap_db_escape($params[1]), $params[0]);
+	$sql = sprintf($sql, wrap_setting('website_id'), wrap_db_escape($params[1]), wrap_db_escape($params[1]), $params[0]);
 	$events = wrap_db_fetch($sql, 'event_id');
 	if (!$events) return false;
 	$event = reset($events);
