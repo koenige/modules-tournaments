@@ -69,7 +69,7 @@ function mod_tournaments_make_swtwriter($vars, $settings, $event) {
     }
 
 	// SWT-Parser einbinden
-	require_once wrap_setting('lib').'/swtparser/swtparser.php';
+	wrap_lib('swtparser');
 	// @todo unterstütze Parameter für UTF-8-Codierung
 	$tournament = swtparser($filename, wrap_setting('character_set'));
 	$field_names = swtparser_get_field_names('de');

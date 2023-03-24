@@ -25,7 +25,7 @@
  */
 function mf_tournaments_export_pdf_tischkarten($ops) {
 	global $zz_conf;
-	require_once wrap_setting('modules_dir').'/default/libraries/tfpdf.inc.php';
+	wrap_lib('tfpdf');
 	wrap_include_files('pdf', 'tournaments');
 
 	// event information

@@ -185,7 +185,7 @@ function mf_tournaments_pdf_teams($event, $params) {
  * @return void
  */
 function mf_tournaments_pdf_prepare($event) {
-	require_once wrap_setting('modules_dir').'/default/libraries/tfpdf.inc.php';
+	wrap_lib('tfpdf');
 
 	$settings = [];
 	switch ($event['turnierform']) {

@@ -31,7 +31,7 @@ function mf_tournaments_export_pdf_ergebniszettel($ops) {
 	// Feld-IDs raussuchen
 	$nos = mf_tournaments_export_pdf_ergebniszettel_nos($ops['output']['head']);
 	
-	require_once wrap_setting('modules_dir').'/default/libraries/tfpdf.inc.php';
+	wrap_lib('tfpdf');
 
 	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
 	$pdf->setCompression(true);

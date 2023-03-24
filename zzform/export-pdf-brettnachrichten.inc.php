@@ -61,7 +61,7 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 	$sql = sprintf($sql, implode(',', $ids));
 	$data = wrap_db_fetch($sql, 'nachricht_id');
 	
-	require_once wrap_setting('modules_dir').'/default/libraries/tfpdf.inc.php';
+	wrap_lib('tfpdf');
 
 class colPDF extends TFPDF
 {

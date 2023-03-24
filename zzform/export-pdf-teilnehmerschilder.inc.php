@@ -177,7 +177,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	}
 	$data = mf_tournaments_clubs_to_federations($data, 'club_contact_id');
 	
-	require_once wrap_setting('modules_dir').'/default/libraries/tfpdf.inc.php';
+	wrap_lib('tfpdf');
 
 	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
 	$pdf->setCompression(true);
