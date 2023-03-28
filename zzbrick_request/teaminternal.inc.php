@@ -39,6 +39,7 @@ function mod_tournaments_teaminternal($vars, $settings, $data) {
 	';
 	$sql = sprintf($sql, $data['team_id']);
 	$data = array_merge($data, wrap_db_fetch($sql));
+	if (empty($data['turnierform'])) wrap_quit(403, wrap_text('Please create a tournament first.'));
 	$data[str_replace('-', '_', $data['turnierform'])] = true;
 	$data += mf_contacts_contactdetails($data['contact_id']);
 	$data = mf_tournaments_clubs_to_federations($data, 'contact_id');
