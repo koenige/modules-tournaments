@@ -31,3 +31,4 @@
 /* 2023-01-08-3 */	INSERT INTO eventtexts (event_id, eventtext, eventtext_category_id, published) SELECT event_id, hinweis_aufstellung, (SELECT category_id FROM categories WHERE path = 'event-texts/note-lineup' OR parameters LIKE '%&alias=event-texts/note-lineup%'), 'yes' FROM tournaments WHERE NOT ISNULL(hinweis_aufstellung);
 /* 2023-01-08-4 */	INSERT INTO eventtexts (event_id, eventtext, eventtext_category_id, published) SELECT event_id, hinweis_meldebogen, (SELECT category_id FROM categories WHERE path = 'event-texts/note-registration-form' OR parameters LIKE '%&alias=event-texts/note-registration-form%'), 'yes' FROM tournaments WHERE NOT ISNULL(hinweis_meldebogen);
 /* 2023-01-08-5 */	ALTER TABLE `tournaments` DROP `hinweis_aufstellung`, DROP `hinweis_meldebogen`;
+/* 2023-03-28-1 */	UPDATE webpages SET content = REPLACE(content, '%%% forms turniere ', '%%% forms tournaments ') WHERE content LIKE '%\%\%\% forms turniere %';
