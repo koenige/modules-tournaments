@@ -159,6 +159,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 					$spieler['first_name'] = $postdata['first_name'];
 					$spieler['last_name'] = $postdata['last_name'];
 					$spieler['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
+					$spieler['Geschlecht'] = strtoupper($postdata['geschlecht']);
 					$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler);
 					if ($ops) $changed = true;
 					// Spieler in eigener Personentabelle suchen
