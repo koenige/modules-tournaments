@@ -255,13 +255,13 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 				$y_bottom = $pdf->GetY();
 				$pdf->SetY($y_pos);
 				$pdf->SetX($x_pos + 201);
-				$pdf->Cell(79, 14, wrap_money_format($line['kosten_betrag']).' '.$line['betrag_waehrung'], 'T', 0, 'R');
+				$pdf->Cell(79, 14, wrap_money($line['kosten_betrag']).' '.$line['betrag_waehrung'], 'T', 0, 'R');
 				$pdf->Cell(30, 14, $line['anzahl_tage'], 'T', 0, 'R', 1);
 				mf_tournaments_pdf_add_bg_color($pdf, $y_bottom, 30, 14);
 				$pdf->Cell(20, 14, $line['anzahl_weiblich'], 'T', 0, 'R');
 				$pdf->Cell(20, 14, $line['anzahl_maennlich'], 'T', 0, 'R', 1);
 				mf_tournaments_pdf_add_bg_color($pdf, $y_bottom, 20, 14);
-				$pdf->Cell(80, 14, wrap_money_format($line['betrag']).' '.$line['betrag_waehrung'], 'T', 0, 'R');
+				$pdf->Cell(80, 14, wrap_money($line['betrag']).' '.$line['betrag_waehrung'], 'T', 0, 'R');
 				$pdf->SetY($y_bottom - 14);
 				$pdf->Ln();
 			}
@@ -273,7 +273,7 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 			$pdf->Cell(20, 14, '', 'T', 0, 'R');
 			$pdf->Cell(20, 14, '', 'T', 0, 'R', 1);
 			if (isset($team['betrag'])) {
-				$pdf->Cell(80, 14, wrap_money_format($team['betrag']).' '.$line['betrag_waehrung'], 'T', 0, 'R');
+				$pdf->Cell(80, 14, wrap_money($team['betrag']).' '.$line['betrag_waehrung'], 'T', 0, 'R');
 			} else {
 				$pdf->Cell(80, 14, '', 'T', 0, 'R');
 			}

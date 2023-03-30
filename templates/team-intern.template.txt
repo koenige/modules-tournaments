@@ -167,7 +167,7 @@ Noch nicht angegeben.
 </thead>
 <tfoot>
 <tr>
-<td colspan="6"></td><td class="number"><strong>%%% item betrag wrap_money_format %%%&nbsp;%%% item betrag_waehrung %%%</strong></td>
+<td colspan="6"></td><td class="number"><strong>%%% item betrag wrap_money %%%&nbsp;%%% item betrag_waehrung %%%</strong></td>
 <td></td>
 </tr>
 </tfoot>
@@ -176,11 +176,11 @@ Noch nicht angegeben.
 <tr class='%%% loopposition uneven "un" %%%even'>
 <td>%%% item gelöscht "<del>" %%%%%% item usergroup %%%%%% item gelöscht "</del>" %%%</td>
 <td>%%% item gelöscht "<del>" %%%%%% item kosten %%%%%% item gelöscht "</del>" %%%</td>
-<td class="number">%%% item gelöscht "<del>" %%%%%% item kosten_betrag wrap_money_format %%%&nbsp;%%% item kosten_waehrung %%%%%% item gelöscht "</del>" %%%</td>
+<td class="number">%%% item gelöscht "<del>" %%%%%% item kosten_betrag wrap_money %%%&nbsp;%%% item kosten_waehrung %%%%%% item gelöscht "</del>" %%%</td>
 <td class="number">%%% item gelöscht "<del>" %%%%%% item anzahl_tage %%%%%% item gelöscht "</del>" %%%</td>
 <td class="number">%%% item gelöscht "<del>" %%%%%% item anzahl_weiblich %%%%%% item gelöscht "</del>" %%%</td>
 <td class="number">%%% item gelöscht "<del>" %%%%%% item anzahl_maennlich %%%%%% item gelöscht "</del>" %%%</td>
-<td class="number">%%% item betrag wrap_money_format %%%&nbsp;%%% item betrag_waehrung %%%</td>
+<td class="number">%%% item betrag wrap_money %%%&nbsp;%%% item betrag_waehrung %%%</td>
 <td><span class="%%% item kosten_status %%%">&nbsp;</span></td>
 </tr>
 %%% condition if anmerkungen %%%
