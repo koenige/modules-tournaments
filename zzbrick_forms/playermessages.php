@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -26,7 +26,7 @@ $data = [];
 $data['current_time'] = date("Y-m-d H:i:s", time());
 
 if (!empty($_POST['sent_date'])) {
-	require_once $zz_conf['dir_inc'].'/validate.inc.php';
+	wrap_include_files('validate', 'zzform');
 
 	$sql = 'UPDATE spieler_nachrichten
 		SET processed = "%s"

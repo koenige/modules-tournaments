@@ -23,7 +23,6 @@
  *  [3]: (optional) Brett oder Tisch.Brett (5, 5.6)
  */
 function mod_tournaments_make_games($vars) {
-	global $zz_conf;
 	wrap_setting('cache', false);
 	if (empty($vars)) return false;
 	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
@@ -211,7 +210,7 @@ function mod_tournaments_make_games($vars) {
 		}
 	}
 
-	require_once $zz_conf['dir'].'/functions.inc.php';
+	wrap_include_files('functions', 'zzform');
 
 	$old_error_handling = wrap_setting('error_handling');
 	wrap_setting('error_handling', 'output');

@@ -415,11 +415,8 @@ function mf_tournaments_event_title_wrap($title) {
  *
  * @param int $tournament_id
  * @return string
- * @global array $zz_conf
  */
 function mf_tournaments_pgn_file_from_tournament($tournament_id) {
-	global $zz_conf;
-
 	$sql = 'SELECT urkunde_parameter
 		FROM tournaments
 		WHERE tournament_id = %d';
@@ -434,7 +431,7 @@ function mf_tournaments_pgn_file_from_tournament($tournament_id) {
 	foreach ($parameters['tournaments_pgn_paths'] as $path) {
 		if (in_array(substr($path, 0, 1), ['/', '.'])) {
 			// local path
-			$path = $zz_conf['root'].$path;
+			$path = wrap_setting('root_dir').$path;
 			if (!file_exists($path)) continue;
 		}
 		if ($content = file_get_contents($path)) {

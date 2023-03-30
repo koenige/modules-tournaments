@@ -23,8 +23,7 @@
  * @return array $page
  */
 function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
-	global $zz_conf;
-	require_once $zz_conf['dir_inc'].'/validate.inc.php';
+	wrap_include_files('validate', 'zzform');
 
 	if ($data['meldung'] !== 'offen') wrap_quit(403, 'Das Team wurde bereits abschließend gemeldet. Eine Änderung der Aufstellung ist nicht mehr möglich.');
 	
