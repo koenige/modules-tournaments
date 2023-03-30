@@ -112,7 +112,7 @@
 %%% condition if bedenkzeit %%%
 <dd>Bedenkzeit pro Spieler und Partie: 
 %%% loop bedenkzeit %%%
-%%% item bedenkzeit my_minuten_format %%% Minuten %%% item zuege " für %d Züge" %%%%%% loopposition last " für den Rest der Partie" %%%%%% item zeitbonus " (%d Sekunden Zeitbonus pro Zug)" 0 "" 1 " (1 Sekunde Zeitbonus pro Zug)" %%%%%% loopposition first|middle ", " %%%
+%%% item bedenkzeit minutes_format %%% Minuten %%% item zuege " für %d Züge" %%%%%% loopposition last " für den Rest der Partie" %%%%%% item zeitbonus " (%d Sekunden Zeitbonus pro Zug)" 0 "" 1 " (1 Sekunde Zeitbonus pro Zug)" %%%%%% loopposition first|middle ", " %%%
 %%% loop end %%%
 </dd>
 %%% condition endif %%%
