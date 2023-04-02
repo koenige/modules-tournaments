@@ -106,7 +106,6 @@ function mod_tournaments_make_standings_overview($vars) {
  * @return bool
  */
 function mod_tournaments_make_standings_round($vars) {
-	global $zz_conf;
 	$time = microtime(true);
 	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 
@@ -158,7 +157,7 @@ function mod_tournaments_make_standings_round($vars) {
 	}
 
 	$type = implode('/', $vars);
-	$zz_conf['user'] = 'Tabellenstand '.$type;
+	wrap_setting('log_username', 'Tabellenstand '.$type);
 	if ($event['turnierform'] === 'e') {
 		require_once __DIR__.'/standings-single.inc.php';
 		$tabelle = mod_tournaments_make_standings_calculate_single($event, $runde);

@@ -81,7 +81,7 @@ $zz['fields'][5]['title_tab'] = 'Adresse';
 unset($zz['fields'][5]['unless']['export_mode']['subselect']['field_suffix'][0]);
 $zz['fields'][5]['unless']['export_mode']['subselect']['field_suffix'][1] = '<br>';
 
-$zz_conf['show_list_while_edit'] = false;
+wrap_setting('zzform_show_list_while_edit', false);
 $zz_conf['delete'] = false;
 $zz_conf['merge'] = false;
 $zz_conf['add'] = false;

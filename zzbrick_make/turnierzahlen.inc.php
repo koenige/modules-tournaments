@@ -21,8 +21,6 @@
  * @return array $page
  */
 function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
-	global $zz_conf;
-
 	$sql = 'SELECT tournament_id
 			, IF(NOT ISNULL(events.date_end),
 				IF(events.date_end < CURDATE(), 1, NULL),
@@ -97,7 +95,7 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 		$ratings['FIDE'] = mod_tournaments_make_turnierzahlen_fide($contact_ids);
 	}
 
-	$zz_conf['user'] = 'Turnierzahlen '.implode('/', $vars);
+	wrap_setting('log_username', 'Turnierzahlen '.implode('/', $vars));
 
 	$updated = false;
 	foreach ($participations as $participation_id => $participation) {
