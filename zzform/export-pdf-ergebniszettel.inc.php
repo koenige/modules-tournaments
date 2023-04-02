@@ -14,7 +14,7 @@
 
 
 /**
- * Ausgabe von Teilnehmerschildern
+ * Ausgabe von Ergebniszetteln
  *
  * Deutsche Einzelmeisterschaft 2017 Willingen
  * Paarung in Runde: 9
@@ -24,9 +24,7 @@
  * @param array $ops
  */
 function mf_tournaments_export_pdf_ergebniszettel($ops) {
-	global $zz_conf;
-
-	$event = $zz_conf['event'];
+	$event = $ops['page']['event'];
 	
 	// Feld-IDs raussuchen
 	$nos = mf_tournaments_export_pdf_ergebniszettel_nos($ops['output']['head']);

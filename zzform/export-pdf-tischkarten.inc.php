@@ -24,12 +24,11 @@
  * @param array $ops
  */
 function mf_tournaments_export_pdf_tischkarten($ops) {
-	global $zz_conf;
 	wrap_lib('tfpdf');
 	wrap_include_files('pdf', 'tournaments');
 
 	// event information
-	$event = $zz_conf['event'];
+	$event = $ops['page']['event'];
 	$event_title = sprintf("%s \n%s %s"
 		, str_replace('-', '- ', $event['main_series_long'])
 		, $event['turnierort'], $event['year']

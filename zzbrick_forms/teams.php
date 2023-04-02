@@ -119,7 +119,7 @@ if (!empty($zz['filter'][1])) {
 $zz_conf['limit'] = 40;
 $zz_conf['export'][] = 'CSV Excel';
 $zz_conf['export'][] = 'PDF Tischkarten';
-$zz_conf['event'] = $brick['data'];
+$zz['page']['event'] = $brick['data'];
 
 $zz['filter'][2]['title'] = 'Status';
 $zz['filter'][2]['type'] = 'list';

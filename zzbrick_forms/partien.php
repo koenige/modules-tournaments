@@ -108,8 +108,7 @@ $zz_conf['footer_text'] = wrap_template('link-rel-nav');
 if (count($brick['vars']) === 3) {
 	// Einzelturnier
 	$zz_conf['export'][] = 'PDF Ergebniszettel';
-	// @todo anders übergeben
-	$zz_conf['event'] = $brick['data'];
+	$zz['page']['event'] = $brick['data'];
 }
 
 function mf_tournaments_get_paring_player($paarung, $farbe) {
