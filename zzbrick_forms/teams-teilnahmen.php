@@ -87,8 +87,9 @@ $zz['fields'][5]['if'][21]['value'] = false;
 
 $zz['fields'][34]['hide_in_form'] = true;
 $zz['fields'][35]['hide_in_form'] = true;
+$zz['fields'][36]['hide_in_form'] = true;
 
-$fields = [1, 2, 3, 4, 5, 6, 34, 35];
+$fields = [1, 2, 3, 4, 5, 6, 8, 34, 35, 36];
 foreach (array_keys($zz['fields']) as $no) {
 	if (!in_array($no, $fields)) unset($zz['fields'][$no]);
 }
@@ -131,7 +132,6 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 			$brick['data']['event_id'],
 			$brick['data']['contact_id']
 		);
-		$zz['fields'][2]['key_field_name'] = 'persons.person_id';
 	} else {
 		// Webmaster, Auswahlmannschaften, Schulen etc.
 		// erlaube auch die Auswahl von passiven Mitgliedern
@@ -148,7 +148,7 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 		);
 		$zz['fields'][2]['sql_ignore'][] = 'voller_name';
 	}
-	$zz['hooks']['before_insert'] = 'my_dwzdaten_person';
+	$zz['hooks']['before_insert'][] = 'my_dwzdaten_person';
 }
 
 $zz['fields'][24]['title'] = 'Geburt';
