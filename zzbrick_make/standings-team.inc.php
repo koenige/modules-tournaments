@@ -51,15 +51,15 @@ function mod_tournaments_make_standings_team($event) {
 
 	// Wertungen aus Datenbank auslesen
 	foreach ($turnierwertungen as $category_id => $turnierwertung) {
-		switch ($category_id) {
-		case wrap_category_id('turnierwertungen/mp'):
+		switch ($turnierwertung['path']) {
+		case 'mp':
 			$wertungen[$category_id] = mf_tournaments_make_team_mp($event['runde_no']); break;
-		case wrap_category_id('turnierwertungen/bp'):
+		case 'bp':
 			$wertungen[$category_id] = mf_tournaments_make_team_bp($event['runde_no']); break;
-		case wrap_category_id('turnierwertungen/bhz'):
+		case 'bhz':
 			$erste_wertung = reset($turnierwertungen);
-			if ($erste_wertung['category_id'] === wrap_category_id('turnierwertungen/bp')) {
-				if (mf_tournaments_make_fide_correction($event_id) === 'fide-2012') {
+			if ($erste_wertung['path'] === 'bp') {
+				if (mf_tournaments_make_fide_correction($event['event_id']) === 'fide-2012') {
 					$wertungen[$category_id] = mf_tournaments_make_team_buchholz_bp($event['runde_no']);
 				} else {
 					$wertungen[$category_id] = mf_tournaments_make_team_buchholz($event['runde_no']);
@@ -68,15 +68,15 @@ function mod_tournaments_make_standings_team($event) {
 				$wertungen[$category_id] = mf_tournaments_make_team_buchholz_mp($event['runde_no']);
 			}
 			break;
-		case wrap_category_id('turnierwertungen/sw'):
+		case 'sw':
 			$wertungen[$category_id] = mf_tournaments_make_team_sw($event['runde_no']); break;
-		case wrap_category_id('turnierwertungen/bw'):
+		case 'bw':
 			$wertungen[$category_id] = mf_tournaments_make_team_bw($event['runde_no']); break;
-		case wrap_category_id('turnierwertungen/dv'):
+		case 'dv':
 			// direkter Vergleich erst nach Auswertung der anderen Wertungen
 			$wertungen[$category_id] = 1;
 			break;
-		case wrap_category_id('turnierwertungen/rg'):
+		case 'rg':
 			$sql = 'SELECT team_id, setzliste_no
 				FROM teams
 				WHERE team_id IN (%s)
@@ -84,11 +84,13 @@ function mod_tournaments_make_standings_team($event) {
 			$sql = sprintf($sql, implode(',', array_keys($standings)));
 			$wertungen[$category_id] = wrap_db_fetch($sql, 'team_id', 'key/value');
 			break;
-		case wrap_category_id('turnierwertungen/sobo'):
+		case 'sobo':
 			$wertungen[$category_id] = mf_tournaments_make_team_sonneborn_berger(
 				$event['runde_no']
 			);
 			break;
+		default:
+			wrap_error(sprintf('Rating %s not implemented', $turnierwertung['path']), E_USER_WARNING);
 		}
 		if ($turnierwertung['anzeigen'] === 'immer') {
 			// Vor der 1. Runde kann es sein, dass Mannschafts- und Brettpunkte
@@ -463,9 +465,9 @@ function mf_tournaments_make_team_buchholz_bp($round_no) {
 			, SUM(gegners_paarungen.brettpunkte) AS buchholz
 		FROM paarungen_ergebnisse_view
 		LEFT JOIN tabellenstaende_termine_view USING (team_id)
+		LEFT JOIN teams USING (team_id)
 		LEFT JOIN paarungen_ergebnisse_view gegners_paarungen
 			ON gegners_paarungen.team_id = paarungen_ergebnisse_view.gegner_team_id
-		LEFT JOIN teams USING (team_id)
 		WHERE paarungen_ergebnisse_view.runde_no <= tabellenstaende_termine_view.runde_no
 		AND tabellenstaende_termine_view.runde_no = %d
 		AND team_status = "Teilnehmer"
