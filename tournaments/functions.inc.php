@@ -19,9 +19,13 @@ function mf_tournaments_current_round($identifier) {
 	$sql = 'SELECT MAX(tabellenstaende.runde_no)
 		FROM events
 		JOIN tabellenstaende USING (event_id)
-		WHERE events.identifier = "%s"
+		WHERE %s
 		GROUP BY events.event_id';
-	$sql = sprintf($sql, wrap_db_escape($identifier));
+	$sql = sprintf($sql
+		, is_numeric($identifier)
+			? sprintf('events.event_id = %d', $identifier)
+			: sprintf('events.identifier = "%s"', wrap_db_escape($identifier))
+	);
 	$round = wrap_db_fetch($sql, '', 'single value');
 	if (!$round) return 0;
 	return $round;
@@ -338,7 +342,7 @@ function mf_tournaments_cache($event) {
  * @return bool
  */
 function mf_tournaments_lineup($event) {
-	if ($event['runde_no'] != mf_tournaments_current_round($event['event_identifier']) + 1) return false;
+	if ($event['runde_no'] != mf_tournaments_current_round($event['event_id']) + 1) return false;
 
 	$sql = 'SELECT IF(DATE_ADD(NOW(), INTERVAL %d MINUTE) > CONCAT(date_begin, " ", time_begin), NULL, 1) AS lineup_open
 		FROM events

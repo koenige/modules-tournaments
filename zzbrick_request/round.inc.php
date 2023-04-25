@@ -169,7 +169,7 @@ function mod_tournaments_round($params, $vars, $event) {
 	}
 
 	$page['head'] = '';
-	if (mf_tournaments_current_round($event['identifier']) < $event['runde_no']) {
+	if (mf_tournaments_current_round($event['event_id']) < $event['runde_no']) {
 		// @todo ausgestellt, muß aber wieder an wenn keine Live–Übertragung
 //		$page['head'] .= sprintf(
 //			"\t<meta http-equiv='refresh' content='60; URL=%s%s/%s/'>\r", wrap_setting('host_base'), wrap_setting('events_path'), wrap_setting('brick_url_parameter')

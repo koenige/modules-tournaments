@@ -22,6 +22,8 @@
  *		string [1]: Terminkennung
  *		(string [2]: (optional) 'tabelle')
  *		int [2]: (optional) Runde
+ * @param array $settings
+ * @param array $event
  * @return array
  */
 function mod_tournaments_standings($vars, $settings, $event) {
@@ -35,14 +37,14 @@ function mod_tournaments_standings($vars, $settings, $event) {
 		$runde = array_pop($vars);
 		if (!is_numeric($runde)) {
 			$filter_kennung = $runde;
-			$runde = mf_tournaments_current_round($vars[0].'/'.$vars[1]);
+			$runde = mf_tournaments_current_round($event['event_id']);
 		} else {
 			if (sprintf('%d', $runde) !== $runde.'') return false;
 		}
 		$pfad = '../';
 	} elseif (count($vars) === 2) {
 		// Letzte Runde
-		$runde = mf_tournaments_current_round($vars[0].'/'.$vars[1]);
+		$runde = mf_tournaments_current_round($event['event_id']);
 		$pfad = '';
 	} else {
 		return false;

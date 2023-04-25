@@ -265,7 +265,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	$sql = sprintf($sql, $event['event_id']);
 	$event['links'] = wrap_db_fetch($sql, 'event_link_id');
 
-	$runde = mf_tournaments_current_round($event['identifier']);
+	$runde = mf_tournaments_current_round($event['event_id']);
 	if ($runde AND !$internal) $event['tabelle'] = true;
 
 	if ($event['turnierform'] === 'e') {
