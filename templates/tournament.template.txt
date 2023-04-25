@@ -217,7 +217,7 @@ Plätze frei sind oder eine Warteliste existiert.
 <p><a href="tabelle/">Ausführlicher Tabellenstand</a></p>
 <p><a href="startrangliste/">Startrangliste</a></p>
 %%% condition endif %%%
-%%% condition if dwz_schnitt %%%
+%%% condition if dwz_schnitt & bretter_min %%%
 <p>DWZ-Schnitt der ersten %%% item bretter_min %%% Bretter aller Teams: <strong>%%% item dwz_schnitt %%%</strong>
 %%% condition if pseudo_dwz %%%
  <br><em>(unter Berücksichtigung einer Pseudo-DWZ von %%% item pseudo_dwz %%% für Spieler ohne DWZ)</em>

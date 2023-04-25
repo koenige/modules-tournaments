@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2014, 2016, 2019-2022 Gustaf Mossakowski
+# @copyright Copyright © 2012-2014, 2016, 2019-2023 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 # event, duration, veranstaltungsort, address, postcode,
@@ -62,7 +62,7 @@
 </tbody>
 </table>
 </div>
-%%% condition if dwz_schnitt %%%
+%%% condition if dwz_schnitt & bretter_min %%%
 <p>DWZ-Schnitt der ersten %%% item bretter_min %%% Bretter aller Teams: <strong>%%% item dwz_schnitt %%%</strong>
 %%% condition if pseudo_dwz %%%
  <br><em>(unter Berücksichtigung einer Pseudo-DWZ von %%% item pseudo_dwz %%% für Spieler ohne DWZ)</em>

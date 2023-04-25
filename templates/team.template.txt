@@ -106,7 +106,7 @@
 %%% condition if platz_no %%%
 <p><a href="../tabelle/#%%% item team_identifier_short %%%">%%% item platz_no %%%. Tabellenplatz</a>%%% item endstand " (Endstand)" %%%</p>
 %%% condition endif %%%
-<p>%%% condition if dwz_schnitt %%%
+<p>%%% condition if dwz_schnitt & bretter_min %%%
 DWZ-Schnitt der ersten %%% item bretter_min %%% Bretter: <strong>%%% item dwz_schnitt %%%</strong>
 %%% condition if setzliste_no %%% – %%% condition endif %%%%%% condition endif %%%
 %%% condition if setzliste_no %%% Nr. %%% item setzliste_no %%% der <a href="../startrangliste/#%%% item team_identifier_short %%%">Startrangliste</a>%%% condition endif %%%
