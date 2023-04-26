@@ -36,3 +36,6 @@
 /* 2023-04-26-2 */	UPDATE `_relations` SET `detail_table` = '_jobqueue' WHERE `detail_table` = `cronjobs`;
 /* 2023-04-26-3 */	ALTER TABLE `_jobqueue` CHANGE `cronjob_id` `job_id` int unsigned NOT NULL AUTO_INCREMENT FIRST;
 /* 2023-04-26-4 */	UPDATE `_relations` SET `detail_id_field` = 'job_id' WHERE `detail_table` = `_jobqueue`;
+/* 2023-04-26-5 */	ALTER TABLE `_jobqueue` CHANGE `cronjob_category_id` `job_category_id` int unsigned NOT NULL AFTER `job_id`;
+/* 2023-04-26-6 */	ALTER TABLE `cronjobs` ADD UNIQUE `job_category_id` (`job_category_id`, `event_id`, `runde_no`, `start`), DROP INDEX `cronjob_category_id`;
+/* 2023-04-26-7 */	UPDATE `_relations` SET `detail_field` = 'job_category_id' WHERE `detail_field` = `cronjob_category_id`;

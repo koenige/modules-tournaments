@@ -31,10 +31,10 @@ function mod_tournaments_make_jobtrigger($params) {
 			, SUBSTRING_INDEX(path, "/", -1) AS path
 			, parameters,
 			(SELECT COUNT(*) FROM _jobqueue laufend
-				WHERE categories.category_id = laufend.cronjob_category_id
+				WHERE categories.category_id = laufend.job_category_id
 				AND NOT ISNULL(laufend.start) AND ISNULL(laufend.ende)) AS laufend,
 			(SELECT COUNT(*) FROM _jobqueue todo
-				WHERE categories.category_id = todo.cronjob_category_id
+				WHERE categories.category_id = todo.job_category_id
 				AND ISNULL(todo.start) AND ISNULL(todo.ende)) AS todo
 		FROM categories
 		WHERE main_category_id = %d
@@ -53,7 +53,7 @@ function mod_tournaments_make_jobtrigger($params) {
 				FROM _jobqueue
 				LEFT JOIN events USING (event_id)
 				WHERE ISNULL(_jobqueue.start) AND ISNULL(_jobqueue.ende)
-				AND cronjob_category_id = %d
+				AND job_category_id = %d
 				ORDER BY prioritaet
 				LIMIT 1';
 			$sql = sprintf($sql, $category['category_id']);
@@ -65,7 +65,7 @@ function mod_tournaments_make_jobtrigger($params) {
 			$sql = 'SELECT job_id, events.identifier AS event_identifier, _jobqueue.runde_no
 				FROM _jobqueue
 				LEFT JOIN events USING (event_id)
-				WHERE cronjob_category_id = %d
+				WHERE job_category_id = %d
 				AND NOT ISNULL(_jobqueue.start) AND ISNULL(_jobqueue.ende)
 				AND DATE_ADD(start, INTERVAL %d SECOND) > NOW()
 			';
@@ -77,7 +77,7 @@ function mod_tournaments_make_jobtrigger($params) {
 			$sql = 'SELECT job_id, events.identifier AS event_identifier, _jobqueue.runde_no
 				FROM _jobqueue
 				LEFT JOIN events USING (event_id)
-				WHERE cronjob_category_id = %d
+				WHERE job_category_id = %d
 				AND NOT ISNULL(_jobqueue.start) AND ISNULL(_jobqueue.ende)
 				AND DATE_ADD(start, INTERVAL %d SECOND) < NOW()
 			';

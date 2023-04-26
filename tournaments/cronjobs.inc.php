@@ -30,7 +30,7 @@ function mf_tournaments_job_get_id($typ, $category, $event_id, $runde_no = false
 
 	$sql = 'SELECT job_id
 		FROM _jobqueue
-		WHERE cronjob_category_id = %d
+		WHERE job_category_id = %d
 		AND event_id = %d
 		AND %s
 		%s
@@ -58,7 +58,7 @@ function mf_tournaments_job_create($category, $event_id, $runde_no = false, $pri
 	$job_id = mf_tournaments_job_get_id('todo', $category, $event_id, $runde_no);
 	if ($job_id) return true;
 	
-	$sql = 'INSERT INTO _jobqueue (cronjob_category_id, event_id, runde_no, prioritaet)
+	$sql = 'INSERT INTO _jobqueue (job_category_id, event_id, runde_no, prioritaet)
 		VALUES (%d, %d, %s, %d)';
 	$sql = sprintf($sql,
 		wrap_category_id('cronjobs/'.$category),
@@ -88,7 +88,7 @@ function mf_tournaments_job_finish($category, $success, $event_id, $runde_no = f
 	$sql = 'SELECT path, request
 		FROM _jobqueue
 		LEFT JOIN categories
-			ON _jobqueue.cronjob_category_id = categories.category_id
+			ON _jobqueue.job_category_id = categories.category_id
 		WHERE job_id = %d';
 	$sql = sprintf($sql, $job_id);
 	$cronjob = wrap_db_fetch($sql);

@@ -21,7 +21,7 @@ $zz['fields'][1]['field_name'] = 'job_id';
 $zz['fields'][1]['type'] = 'id';
 
 $zz['fields'][2]['title'] = 'Kategorie';
-$zz['fields'][2]['field_name'] = 'cronjob_category_id';
+$zz['fields'][2]['field_name'] = 'job_category_id';
 $zz['fields'][2]['type'] = 'write_once';
 $zz['fields'][2]['type_detail'] = 'select';
 $zz['fields'][2]['sql'] = 'SELECT category_id, category, main_category_id
@@ -66,17 +66,17 @@ $zz['sql'] = 'SELECT _jobqueue.*, categories.category
 	FROM _jobqueue
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories
-		ON categories.category_id = _jobqueue.cronjob_category_id
+		ON categories.category_id = _jobqueue.job_category_id
 ';
 $zz['sqlorder'] = ' ORDER BY category, IF(ISNULL(_jobqueue.start), 0, 1), IF(ISNULL(_jobqueue.ende), 0, 1), _jobqueue.start DESC, _jobqueue.ende DESC, prioritaet ASC, job_id';
 
 $zz['filter'][1]['title'] = 'Kategorie';
 $zz['filter'][1]['type'] = 'list';
-$zz['filter'][1]['where'] = 'cronjob_category_id';
+$zz['filter'][1]['where'] = 'job_category_id';
 $zz['filter'][1]['sql'] = 'SELECT DISTINCT category_id, category
 	FROM categories
 	JOIN _jobqueue
-		ON categories.category_id = _jobqueue.cronjob_category_id
+		ON categories.category_id = _jobqueue.job_category_id
 	ORDER BY category';
 
 wrap_setting('zzform_logging', false);
