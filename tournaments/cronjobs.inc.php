@@ -63,7 +63,7 @@ function mf_tournaments_job_create($category, $event_id, $runde_no = false, $pri
 	$values['POST']['job_category_id'] = wrap_category_id('cronjobs/'.$category);
 	$values['POST']['job_url'] = $job_url;
 	$values['POST']['priority'] = $priority;
-	$ops = zzform_multi('cronjobs', $values);
+	$ops = zzform_multi('jobqueue', $values);
 	if (!$ops['id']) return false;
 	return true;
 }
@@ -96,7 +96,7 @@ function mf_tournaments_job_finish($category, $success, $event_id, $runde_no = f
 	$values['POST']['job_id'] = $job_id;
 	$values['POST']['finished'] = date('Y-m-d H:i:s'); // NOW()
 	$values['POST']['job_status'] = $success ? 'successful' : 'failed';
-	$ops = zzform_multi('cronjobs', $values);
+	$ops = zzform_multi('jobqueue', $values);
 	if ($ops['result'] !== 'successful_update') wrap_error('Update Job fehlgeschlagen: '.$job_id);
 
 	$realm = sprintf('%s-%d', $cronjob['path'], $cronjob['job_category_no']);
