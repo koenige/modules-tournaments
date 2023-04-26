@@ -55,10 +55,10 @@ $zz['fields'][6]['type'] = 'datetime';
 $zz['fields'][7]['field_name'] = 'finished';
 $zz['fields'][7]['type'] = 'datetime';
 
-$zz['fields'][8]['field_name'] = 'erfolgreich';
+$zz['fields'][8]['field_name'] = 'job_status';
 $zz['fields'][8]['type'] = 'select';
-$zz['fields'][8]['enum'] = ['ja', 'nein'];
-$zz['fields'][8]['default'] = 'nein';
+$zz['fields'][8]['enum'] = ['not_started', 'running', 'successful', 'failed', 'abandoned'];
+$zz['fields'][8]['default'] = 'not_started';
 
 $zz['fields'][9]['field_name'] = 'job_category_no';
 $zz['fields'][9]['type'] = 'number';

@@ -94,10 +94,10 @@ function mf_tournaments_job_finish($category, $success, $event_id, $runde_no = f
 	$cronjob = wrap_db_fetch($sql);
 
 	$sql = 'UPDATE _jobqueue
-		SET finished = NOW(), erfolgreich = "%s"
+		SET finished = NOW(), job_status = "%s"
 		WHERE job_id = %d
 	';
-	$sql = sprintf($sql, $success ? 'ja' : 'nein', $job_id);
+	$sql = sprintf($sql, $success ? 'successful' : 'failed', $job_id);
 	$result = wrap_db_query($sql);
 	if (!$result) wrap_error('Update Job fehlgeschlagen: '.$sql);
 	$realm = sprintf('%s-%d', $cronjob['path'], $cronjob['job_category_no']);

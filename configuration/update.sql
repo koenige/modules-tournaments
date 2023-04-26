@@ -41,3 +41,6 @@
 /* 2023-04-26-7 */	UPDATE `_relations` SET `detail_field` = 'job_category_id' WHERE `detail_field` = 'cronjob_category_id';
 /* 2023-04-26-8 */	ALTER TABLE `_jobqueue` CHANGE `prioritaet` `priority` tinyint NOT NULL DEFAULT '0' AFTER `runde_no`, CHANGE `start` `started` datetime NULL AFTER `priority`, CHANGE `ende` `finished` datetime NULL AFTER `started`, CHANGE `request` `job_category_no` tinyint unsigned NOT NULL DEFAULT '1' AFTER `erfolgreich`;
 /* 2023-04-26-9 */	ALTER TABLE `_jobqueue` ADD INDEX `priority` (`priority`), DROP INDEX `prioritaet`;
+/* 2023-04-26-10 */	ALTER TABLE `_jobqueue` ADD `job_status` enum('not_started','running','successful','failed','abandoned') COLLATE 'latin1_general_ci' NULL DEFAULT 'not_started' AFTER `erfolgreich`;
+/* 2023-04-26-11 */	UPDATE _jobqueue SET job_status = 'successful' WHERE erfolgreich = 'ja';
+/* 2023-04-26-12 */	ALTER TABLE `_jobqueue` DROP `erfolgreich`;

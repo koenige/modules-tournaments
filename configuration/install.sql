@@ -40,10 +40,10 @@ CREATE TABLE `_jobqueue` (
   `priority` tinyint NOT NULL DEFAULT '0',
   `started` datetime DEFAULT NULL,
   `finished` datetime DEFAULT NULL,
-  `erfolgreich` enum('ja','nein') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'nein',
+  `job_status` enum('not_started','running','successful','failed','abandoned') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'not_started',
   `job_category_no` tinyint unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`job_id`),
-  UNIQUE KEY `job_category_id` (`job_category_id`,`event_id`,`runde_no`,`start`),
+  UNIQUE KEY `job_category_id` (`job_category_id`,`event_id`,`runde_no`,`started`),
   KEY `termin_id` (`event_id`),
   KEY `runde_no` (`runde_no`),
   KEY `priority` (`priority`)
