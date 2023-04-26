@@ -32,7 +32,7 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'persons', 'person_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'autor_person_id', 'no-delete');
 
 
-CREATE TABLE `cronjobs` (
+CREATE TABLE `_jobqueue` (
   `cronjob_id` int unsigned NOT NULL AUTO_INCREMENT,
   `cronjob_category_id` int unsigned NOT NULL,
   `event_id` int unsigned NOT NULL,
@@ -49,8 +49,8 @@ CREATE TABLE `cronjobs` (
   KEY `prioritaet` (`prioritaet`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'cronjobs', 'cronjob_id', 'cronjob_category_id', 'no-delete');
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'events', 'event_id', (SELECT DATABASE()), 'cronjobs', 'cronjob_id', 'event_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), '_jobqueue', 'cronjob_id', 'cronjob_category_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'events', 'event_id', (SELECT DATABASE()), '_jobqueue', 'cronjob_id', 'event_id', 'delete');
 
 INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `parameters`, `sequence`, `last_update`) VALUES ('Cronjobs', NULL, NULL, 'cronjobs', '&alias=cronjobs', NULL, NOW());
 

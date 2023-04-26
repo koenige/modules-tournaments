@@ -14,7 +14,7 @@
 
 
 $zz['title'] = 'Cron Jobs';
-$zz['table'] = 'cronjobs';
+$zz['table'] = '_jobqueue';
 
 $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'cronjob_id';
@@ -61,22 +61,22 @@ $zz['fields'][8]['enum'] = ['ja', 'nein'];
 $zz['fields'][8]['default'] = 'nein';
 
 
-$zz['sql'] = 'SELECT cronjobs.*, categories.category
+$zz['sql'] = 'SELECT _jobqueue.*, categories.category
 		, CONCAT(events.event, " ", IFNULL(event_year, YEAR(date_begin))) AS event
-	FROM cronjobs
+	FROM _jobqueue
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories
-		ON categories.category_id = cronjobs.cronjob_category_id
+		ON categories.category_id = _jobqueue.cronjob_category_id
 ';
-$zz['sqlorder'] = ' ORDER BY category, IF(ISNULL(cronjobs.start), 0, 1), IF(ISNULL(cronjobs.ende), 0, 1), cronjobs.start DESC, cronjobs.ende DESC, prioritaet ASC, cronjob_id';
+$zz['sqlorder'] = ' ORDER BY category, IF(ISNULL(_jobqueue.start), 0, 1), IF(ISNULL(_jobqueue.ende), 0, 1), _jobqueue.start DESC, _jobqueue.ende DESC, prioritaet ASC, cronjob_id';
 
 $zz['filter'][1]['title'] = 'Kategorie';
 $zz['filter'][1]['type'] = 'list';
 $zz['filter'][1]['where'] = 'cronjob_category_id';
 $zz['filter'][1]['sql'] = 'SELECT DISTINCT category_id, category
 	FROM categories
-	JOIN cronjobs
-		ON categories.category_id = cronjobs.cronjob_category_id
+	JOIN _jobqueue
+		ON categories.category_id = _jobqueue.cronjob_category_id
 	ORDER BY category';
 
 wrap_setting('zzform_logging', false);
