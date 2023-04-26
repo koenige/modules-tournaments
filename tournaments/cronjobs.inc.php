@@ -18,11 +18,10 @@
  *
  * @param string $type
  * @param string $category Kategorie des Jobs (Kennung)
- * @param int $event_id
- * @param int $runde_no Optional, einzelne Runde eines Termins
+ * @param string $job_url
  * @return int
  */
-function mf_tournaments_job_get_id($type, $category, $event_id, $runde_no = false) {
+function mf_tournaments_job_get_id($type, $category, $job_url) {
 	switch ($type) {
 		case 'planned': $status = ' AND ISNULL(started)'; break;
 		case 'running': $status = ' AND NOT ISNULL(started) AND ISNULL(finished)'; break;
@@ -32,15 +31,13 @@ function mf_tournaments_job_get_id($type, $category, $event_id, $runde_no = fals
 	$sql = 'SELECT job_id
 		FROM _jobqueue
 		WHERE job_category_id = %d
-		AND event_id = %d
-		AND %s
+		AND job_url = "%s"
 		%s
 		LIMIT 1';
-	$sql = sprintf($sql,
-		wrap_category_id('cronjobs/'.$category),
-		$event_id,
-		$runde_no ? 'runde_no = "'.$runde_no.'"' : 'ISNULL(runde_no)',
-		$status
+	$sql = sprintf($sql
+		, wrap_category_id('cronjobs/'.$category)
+		, $job_url
+		, $status
 	);
 	$job_id = wrap_db_fetch($sql, '', 'single value');
 	return $job_id;
@@ -57,16 +54,14 @@ function mf_tournaments_job_get_id($type, $category, $event_id, $runde_no = fals
  */
 function mf_tournaments_job_create($category, $event_id, $runde_no = false, $priority = 0) {
 	$job_url = mf_tournaments_job_url($category, $event_id, $runde_no);
-	$job_id = mf_tournaments_job_get_id('planned', $category, $event_id, $runde_no);
+	$job_id = mf_tournaments_job_get_id('planned', $category, $job_url);
 	if ($job_id) return true;
 	
 	$values = [];
 	$values['action'] = 'insert';
-	$values['ids'] = ['event_id'];
+	$values['ids'] = ['job_category_id'];
 	$values['POST']['job_category_id'] = wrap_category_id('cronjobs/'.$category);
 	$values['POST']['job_url'] = $job_url;
-	$values['POST']['event_id'] = $event_id;
-	$values['POST']['runde_no'] = $runde_no;
 	$values['POST']['priority'] = $priority;
 	$ops = zzform_multi('cronjobs', $values);
 	if (!$ops['id']) return false;
@@ -83,7 +78,8 @@ function mf_tournaments_job_create($category, $event_id, $runde_no = false, $pri
  * @return bool
  */
 function mf_tournaments_job_finish($category, $success, $event_id, $runde_no = false) {
-	$job_id = mf_tournaments_job_get_id('running', $category, $event_id, $runde_no);
+	$job_url = mf_tournaments_job_url($category, $event_id, $runde_no);
+	$job_id = mf_tournaments_job_get_id('running', $category, $job_url);
 	if (!$job_id) return false;
 	require_once wrap_setting('core').'/syndication.inc.php'; // wrap_lock()
 

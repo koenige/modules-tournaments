@@ -36,8 +36,6 @@ CREATE TABLE `_jobqueue` (
   `job_id` int unsigned NOT NULL AUTO_INCREMENT,
   `job_category_id` int unsigned NOT NULL,
   `job_url` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-  `event_id` int unsigned NOT NULL,
-  `runde_no` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `priority` tinyint NOT NULL DEFAULT '0',
   `created` datetime NOT NULL,
   `started` datetime DEFAULT NULL,
@@ -48,14 +46,11 @@ CREATE TABLE `_jobqueue` (
   `error_msg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `job_category_no` tinyint unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`job_id`),
-  UNIQUE KEY `job_category_id` (`job_category_id`,`event_id`,`runde_no`,`started`),
-  KEY `termin_id` (`event_id`),
-  KEY `runde_no` (`runde_no`),
+  UNIQUE KEY `job_category_id_job_url_started` (`job_category_id`,`job_url`,`started`),
   KEY `priority` (`priority`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), '_jobqueue', 'job_id', 'job_category_id', 'no-delete');
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'events', 'event_id', (SELECT DATABASE()), '_jobqueue', 'job_id', 'event_id', 'delete');
 
 INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `parameters`, `sequence`, `last_update`) VALUES ('Cronjobs', NULL, NULL, 'cronjobs', '&alias=cronjobs', NULL, NOW());
 

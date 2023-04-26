@@ -47,3 +47,8 @@
 /* 2023-04-26-13 */	ALTER TABLE `_jobqueue` ADD `job_url` varchar(255) COLLATE 'latin1_general_ci' NOT NULL AFTER `job_category_id`, ADD `created` datetime NULL AFTER `priority`, ADD `wait_until` datetime NULL AFTER `finished`, ADD `try_no` tinyint unsigned NOT NULL DEFAULT '0' AFTER `job_status`, ADD `error_msg` text COLLATE 'utf8mb4_unicode_ci' NULL AFTER `try_no`;
 /* 2023-04-26-14 */	UPDATE _jobqueue SET created = NOW() WHERE ISNULL(created);
 /* 2023-04-26-15 */	ALTER TABLE `_jobqueue` CHANGE `created` `created` datetime NOT NULL AFTER `priority`;
+/* 2023-04-26-16 */	UPDATE _jobqueue LEFT JOIN events USING (event_id) LEFT JOIN categories ON _jobqueue.job_category_id = categories.category_id SET job_url = CONCAT('/_', path, '/', identifier, '/', _jobqueue.runde_no, '/') WHERE NOT ISNULL(_jobqueue.runde_no);
+/* 2023-04-26-17 */	UPDATE _jobqueue LEFT JOIN events USING (event_id) LEFT JOIN categories ON _jobqueue.job_category_id = categories.category_id SET job_url = CONCAT('/_', path, '/', identifier, '/') WHERE ISNULL(_jobqueue.runde_no);
+/* 2023-04-26-18 */	ALTER TABLE `_jobqueue` ADD UNIQUE `job_category_id_job_url_started` (`job_category_id`, `job_url`, `started`), DROP INDEX `job_category_id`, DROP INDEX `termin_id`, DROP INDEX `runde_no`;
+/* 2023-04-26-19 */	ALTER TABLE `_jobqueue` DROP `event_id`, DROP `runde_no`;
+/* 2023-04-26-20 */	DELETE FROM _relations WHERE master_table = 'events' AND detail_table = '_jobqueue';

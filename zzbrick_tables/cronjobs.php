@@ -35,19 +35,6 @@ $zz['fields'][3]['title'] = 'Job URL';
 $zz['fields'][3]['field_name'] = 'job_url';
 $zz['fields'][3]['type'] = 'url';
 
-$zz['fields'][33]['field_name'] = 'event_id';
-$zz['fields'][33]['type'] = 'select';
-$zz['fields'][33]['sql'] = 'SELECT event_id
-		, CONCAT(event, ", ", DATE_FORMAT(date_begin, "%d.%m.%Y")) AS event
-	FROM events
-	WHERE ISNULL(main_event_id)
-';
-$zz['fields'][33]['display_field'] = 'event';
-$zz['fields'][33]['search'] = 'CONCAT(events.event, " ", IFNULL(event_year, YEAR(date_begin)))';
-
-$zz['fields'][34]['title'] = 'Runde';
-$zz['fields'][34]['field_name'] = 'runde_no';
-
 $zz['fields'][4]['title'] = 'Priorität';
 $zz['fields'][4]['field_name'] = 'priority';
 $zz['fields'][4]['type'] = 'number';
@@ -91,9 +78,7 @@ $zz['fields'][12]['default'] = 1;
 
 
 $zz['sql'] = 'SELECT _jobqueue.*, categories.category
-		, CONCAT(events.event, " ", IFNULL(event_year, YEAR(date_begin))) AS event
 	FROM _jobqueue
-	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories
 		ON categories.category_id = _jobqueue.job_category_id
 ';
