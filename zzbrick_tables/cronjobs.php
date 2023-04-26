@@ -2,7 +2,7 @@
 
 /**
  * tournaments module
- * table script: cron jobs
+ * table script: background job queue
  *
  * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
@@ -13,7 +13,7 @@
  */
 
 
-$zz['title'] = 'Cron Jobs';
+$zz['title'] = 'Background Job Queue';
 $zz['table'] = '_jobqueue';
 
 $zz['fields'][1]['title'] = 'ID';
@@ -31,23 +31,32 @@ $zz['fields'][2]['show_hierarchy'] = 'main_category_id';
 $zz['fields'][2]['show_hierarchy_subtree'] = wrap_category_id('cronjobs');
 $zz['fields'][2]['key_field_name'] = 'category_id';
 
-$zz['fields'][3]['field_name'] = 'event_id';
-$zz['fields'][3]['type'] = 'select';
-$zz['fields'][3]['sql'] = 'SELECT event_id
+$zz['fields'][3]['title'] = 'Job URL';
+$zz['fields'][3]['field_name'] = 'job_url';
+$zz['fields'][3]['type'] = 'url';
+
+$zz['fields'][33]['field_name'] = 'event_id';
+$zz['fields'][33]['type'] = 'select';
+$zz['fields'][33]['sql'] = 'SELECT event_id
 		, CONCAT(event, ", ", DATE_FORMAT(date_begin, "%d.%m.%Y")) AS event
 	FROM events
 	WHERE ISNULL(main_event_id)
 ';
-$zz['fields'][3]['display_field'] = 'event';
-$zz['fields'][3]['search'] = 'CONCAT(events.event, " ", IFNULL(event_year, YEAR(date_begin)))';
+$zz['fields'][33]['display_field'] = 'event';
+$zz['fields'][33]['search'] = 'CONCAT(events.event, " ", IFNULL(event_year, YEAR(date_begin)))';
 
-$zz['fields'][4]['title'] = 'Runde';
-$zz['fields'][4]['field_name'] = 'runde_no';
+$zz['fields'][34]['title'] = 'Runde';
+$zz['fields'][34]['field_name'] = 'runde_no';
 
-$zz['fields'][5]['title'] = 'Priorität';
-$zz['fields'][5]['field_name'] = 'priority';
-$zz['fields'][5]['type'] = 'number';
-$zz['fields'][5]['null'] = true;
+$zz['fields'][4]['title'] = 'Priorität';
+$zz['fields'][4]['field_name'] = 'priority';
+$zz['fields'][4]['type'] = 'number';
+$zz['fields'][4]['null'] = true;
+
+$zz['fields'][5]['field_name'] = 'created';
+$zz['fields'][5]['type'] = 'write_once';
+$zz['fields'][5]['type_detail'] = 'datetime';
+$zz['fields'][5]['default'] = date('Y-m-d H:i:s');
 
 $zz['fields'][6]['field_name'] = 'started';
 $zz['fields'][6]['type'] = 'datetime';
@@ -55,14 +64,30 @@ $zz['fields'][6]['type'] = 'datetime';
 $zz['fields'][7]['field_name'] = 'finished';
 $zz['fields'][7]['type'] = 'datetime';
 
-$zz['fields'][8]['field_name'] = 'job_status';
-$zz['fields'][8]['type'] = 'select';
-$zz['fields'][8]['enum'] = ['not_started', 'running', 'successful', 'failed', 'abandoned'];
-$zz['fields'][8]['default'] = 'not_started';
+$zz['fields'][8]['field_name'] = 'wait_until';
+$zz['fields'][8]['type'] = 'datetime';
 
-$zz['fields'][9]['field_name'] = 'job_category_no';
-$zz['fields'][9]['type'] = 'number';
-$zz['fields'][9]['hide_in_list'] = true;
+$zz['fields'][9]['field_name'] = 'job_status';
+$zz['fields'][9]['type'] = 'select';
+$zz['fields'][9]['enum'] = ['not_started', 'running', 'successful', 'failed', 'abandoned'];
+$zz['fields'][9]['default'] = 'not_started';
+
+$zz['fields'][10]['title'] = 'Try No.';
+$zz['fields'][10]['field_name'] = 'try_no';
+$zz['fields'][10]['type'] = 'number';
+$zz['fields'][10]['null'] = true;
+$zz['fields'][10]['default'] = 0;
+
+$zz['fields'][11]['title'] = 'Error Message';
+$zz['fields'][11]['field_name'] = 'error_msg';
+$zz['fields'][11]['type'] = 'memo';
+$zz['fields'][11]['hide_in_list'] = true;
+
+$zz['fields'][12]['title'] = 'Category No.';
+$zz['fields'][12]['field_name'] = 'job_category_no';
+$zz['fields'][12]['type'] = 'number';
+$zz['fields'][12]['hide_in_list'] = true;
+$zz['fields'][12]['default'] = 1;
 
 
 $zz['sql'] = 'SELECT _jobqueue.*, categories.category

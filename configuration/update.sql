@@ -44,3 +44,6 @@
 /* 2023-04-26-10 */	ALTER TABLE `_jobqueue` ADD `job_status` enum('not_started','running','successful','failed','abandoned') COLLATE 'latin1_general_ci' NULL DEFAULT 'not_started' AFTER `erfolgreich`;
 /* 2023-04-26-11 */	UPDATE _jobqueue SET job_status = 'successful' WHERE erfolgreich = 'ja';
 /* 2023-04-26-12 */	ALTER TABLE `_jobqueue` DROP `erfolgreich`;
+/* 2023-04-26-13 */	ALTER TABLE `_jobqueue` ADD `job_url` varchar(255) COLLATE 'latin1_general_ci' NOT NULL AFTER `job_category_id`, ADD `created` datetime NULL AFTER `priority`, ADD `wait_until` datetime NULL AFTER `finished`, ADD `try_no` tinyint unsigned NOT NULL DEFAULT '0' AFTER `job_status`, ADD `error_msg` text COLLATE 'utf8mb4_unicode_ci' NULL AFTER `try_no`;
+/* 2023-04-26-14 */	UPDATE _jobqueue SET created = NOW() WHERE ISNULL(created);
+/* 2023-04-26-15 */	ALTER TABLE `_jobqueue` CHANGE `created` `created` datetime NOT NULL AFTER `priority`;

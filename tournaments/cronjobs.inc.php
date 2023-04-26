@@ -16,15 +16,16 @@
 /**
  * Job-ID auslesen
  *
+ * @param string $type
  * @param string $category Kategorie des Jobs (Kennung)
  * @param int $event_id
  * @param int $runde_no Optional, einzelne Runde eines Termins
  * @return int
  */
-function mf_tournaments_job_get_id($typ, $category, $event_id, $runde_no = false) {
-	switch ($typ) {
-		case 'todo': $status = ' AND ISNULL(started)'; break;
-		case 'laufend': $status = ' AND NOT ISNULL(started) AND ISNULL(finished)'; break;
+function mf_tournaments_job_get_id($type, $category, $event_id, $runde_no = false) {
+	switch ($type) {
+		case 'planned': $status = ' AND ISNULL(started)'; break;
+		case 'running': $status = ' AND NOT ISNULL(started) AND ISNULL(finished)'; break;
 		default: $status = ''; break;
 	}
 
@@ -55,19 +56,20 @@ function mf_tournaments_job_get_id($typ, $category, $event_id, $runde_no = false
  * @return bool
  */
 function mf_tournaments_job_create($category, $event_id, $runde_no = false, $priority = 0) {
-	$job_id = mf_tournaments_job_get_id('todo', $category, $event_id, $runde_no);
+	$job_url = mf_tournaments_job_url($category, $event_id, $runde_no);
+	$job_id = mf_tournaments_job_get_id('planned', $category, $event_id, $runde_no);
 	if ($job_id) return true;
 	
-	$sql = 'INSERT INTO _jobqueue (job_category_id, event_id, runde_no, priority)
-		VALUES (%d, %d, %s, %d)';
-	$sql = sprintf($sql,
-		wrap_category_id('cronjobs/'.$category),
-		$event_id,
-		$runde_no ? '"'.$runde_no.'"' : 'NULL',
-		$priority
-	);
-	$success = wrap_db_query($sql);
-	if (!$success) return false;
+	$values = [];
+	$values['action'] = 'insert';
+	$values['ids'] = ['event_id'];
+	$values['POST']['job_category_id'] = wrap_category_id('cronjobs/'.$category);
+	$values['POST']['job_url'] = $job_url;
+	$values['POST']['event_id'] = $event_id;
+	$values['POST']['runde_no'] = $runde_no;
+	$values['POST']['priority'] = $priority;
+	$ops = zzform_multi('cronjobs', $values);
+	if (!$ops['id']) return false;
 	return true;
 }
 
@@ -81,7 +83,7 @@ function mf_tournaments_job_create($category, $event_id, $runde_no = false, $pri
  * @return bool
  */
 function mf_tournaments_job_finish($category, $success, $event_id, $runde_no = false) {
-	$job_id = mf_tournaments_job_get_id('laufend', $category, $event_id, $runde_no);
+	$job_id = mf_tournaments_job_get_id('running', $category, $event_id, $runde_no);
 	if (!$job_id) return false;
 	require_once wrap_setting('core').'/syndication.inc.php'; // wrap_lock()
 
@@ -93,13 +95,14 @@ function mf_tournaments_job_finish($category, $success, $event_id, $runde_no = f
 	$sql = sprintf($sql, $job_id);
 	$cronjob = wrap_db_fetch($sql);
 
-	$sql = 'UPDATE _jobqueue
-		SET finished = NOW(), job_status = "%s"
-		WHERE job_id = %d
-	';
-	$sql = sprintf($sql, $success ? 'successful' : 'failed', $job_id);
-	$result = wrap_db_query($sql);
-	if (!$result) wrap_error('Update Job fehlgeschlagen: '.$sql);
+	$values = [];
+	$values['action'] = 'update';
+	$values['POST']['job_id'] = $job_id;
+	$values['POST']['finished'] = date('Y-m-d H:i:s'); // NOW()
+	$values['POST']['job_status'] = $success ? 'successful' : 'failed';
+	$ops = zzform_multi('cronjobs', $values);
+	if ($ops['result'] !== 'successful_update') wrap_error('Update Job fehlgeschlagen: '.$job_id);
+
 	$realm = sprintf('%s-%d', $cronjob['path'], $cronjob['job_category_no']);
 	wrap_unlock($realm);
 	
@@ -127,4 +130,23 @@ function mf_tournaments_job_delete() {
 	$sql = 'DELETE FROM _jobqueue WHERE finished < DATE_SUB(NOW(), INTERVAL 7 DAY)';
 	$result = wrap_db_query($sql);
 	return $result;
+}
+
+/**
+ * create URL for a background job
+ *
+ * @param string $category_path
+ * @param int $event_id
+ * @param int $round_no (optional)
+ * @return string
+ */
+function mf_tournaments_job_url($category_path, $event_id, $round_no = false) {
+	$sql = 'SELECT identifier FROM events WHERE event_id = %d';
+	$sql = sprintf($sql, $event_id);
+	$event_identifier = wrap_db_fetch($sql, '', 'single value');
+
+	return sprintf('/_jobs/%s/%s/%s',
+		$category_path, $event_identifier,
+		$round_no ? $round_no.'/' : ''
+	);
 }
