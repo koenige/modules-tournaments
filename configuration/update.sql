@@ -34,3 +34,5 @@
 /* 2023-03-28-1 */	UPDATE webpages SET content = REPLACE(content, '%%% forms turniere ', '%%% forms tournaments ') WHERE content LIKE '%\%\%\% forms turniere %';
 /* 2023-04-26-1 */	ALTER TABLE `cronjobs` RENAME TO `_jobqueue`;
 /* 2023-04-26-2 */	UPDATE `_relations` SET `detail_table` = '_jobqueue' WHERE `detail_table` = `cronjobs`;
+/* 2023-04-26-3 */	ALTER TABLE `_jobqueue` CHANGE `cronjob_id` `job_id` int unsigned NOT NULL AUTO_INCREMENT FIRST;
+/* 2023-04-26-4 */	UPDATE `_relations` SET `detail_id_field` = 'job_id' WHERE `detail_table` = `_jobqueue`;

@@ -17,7 +17,7 @@ $zz['title'] = 'Cron Jobs';
 $zz['table'] = '_jobqueue';
 
 $zz['fields'][1]['title'] = 'ID';
-$zz['fields'][1]['field_name'] = 'cronjob_id';
+$zz['fields'][1]['field_name'] = 'job_id';
 $zz['fields'][1]['type'] = 'id';
 
 $zz['fields'][2]['title'] = 'Kategorie';
@@ -68,7 +68,7 @@ $zz['sql'] = 'SELECT _jobqueue.*, categories.category
 	LEFT JOIN categories
 		ON categories.category_id = _jobqueue.cronjob_category_id
 ';
-$zz['sqlorder'] = ' ORDER BY category, IF(ISNULL(_jobqueue.start), 0, 1), IF(ISNULL(_jobqueue.ende), 0, 1), _jobqueue.start DESC, _jobqueue.ende DESC, prioritaet ASC, cronjob_id';
+$zz['sqlorder'] = ' ORDER BY category, IF(ISNULL(_jobqueue.start), 0, 1), IF(ISNULL(_jobqueue.ende), 0, 1), _jobqueue.start DESC, _jobqueue.ende DESC, prioritaet ASC, job_id';
 
 $zz['filter'][1]['title'] = 'Kategorie';
 $zz['filter'][1]['type'] = 'list';

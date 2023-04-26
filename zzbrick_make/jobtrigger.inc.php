@@ -49,7 +49,7 @@ function mod_tournaments_make_jobtrigger($params) {
 		if (empty($parameter['max_time'])) $parameter['max_time'] = 30;
 		$cronjob = [];
 		if ($category['laufend'] < $parameter['max_requests']) {
-			$sql = 'SELECT cronjob_id, events.identifier AS event_identifier, _jobqueue.runde_no
+			$sql = 'SELECT job_id, events.identifier AS event_identifier, _jobqueue.runde_no
 				FROM _jobqueue
 				LEFT JOIN events USING (event_id)
 				WHERE ISNULL(_jobqueue.start) AND ISNULL(_jobqueue.ende)
@@ -62,7 +62,7 @@ function mod_tournaments_make_jobtrigger($params) {
 		}
 		if (!$cronjob) {
 			// Laufen gerade Jobs im Rahmen der vorgegebenen Zeit?
-			$sql = 'SELECT cronjob_id, events.identifier AS event_identifier, _jobqueue.runde_no
+			$sql = 'SELECT job_id, events.identifier AS event_identifier, _jobqueue.runde_no
 				FROM _jobqueue
 				LEFT JOIN events USING (event_id)
 				WHERE cronjob_category_id = %d
@@ -70,11 +70,11 @@ function mod_tournaments_make_jobtrigger($params) {
 				AND DATE_ADD(start, INTERVAL %d SECOND) > NOW()
 			';
 			$sql = sprintf($sql, $category['category_id'], $parameter['max_time']);
-			$laufend = wrap_db_fetch($sql, 'cronjob_id');
+			$laufend = wrap_db_fetch($sql, 'job_id');
 
 			if (count($laufend) >= $parameter['max_requests']) continue;
 			// abgestürzte Prozesse aus Job-Liste erneut aufrufen
-			$sql = 'SELECT cronjob_id, events.identifier AS event_identifier, _jobqueue.runde_no
+			$sql = 'SELECT job_id, events.identifier AS event_identifier, _jobqueue.runde_no
 				FROM _jobqueue
 				LEFT JOIN events USING (event_id)
 				WHERE cronjob_category_id = %d
@@ -82,7 +82,7 @@ function mod_tournaments_make_jobtrigger($params) {
 				AND DATE_ADD(start, INTERVAL %d SECOND) < NOW()
 			';
 			$sql = sprintf($sql, $category['category_id'], $parameter['max_time']);
-			$cronjobs = wrap_db_fetch($sql, 'cronjob_id');
+			$cronjobs = wrap_db_fetch($sql, 'job_id');
 			// nur soviele Jobs wie max_requests
 			$cronjob = array_shift($cronjobs);
 			// @todo nicht endlos probieren, sondern irgendwann auf inaktiv stellen!
@@ -92,8 +92,8 @@ function mod_tournaments_make_jobtrigger($params) {
 		$realm = sprintf('%s-%d', $category['path'], $request);
 		$locked = wrap_lock($realm, 'sequential', $parameter['max_time']);
 		if ($locked) continue;
-		$sql = 'UPDATE _jobqueue SET start = NOW(), request = %d WHERE cronjob_id = %d';
-		$sql = sprintf($sql, $request, $cronjob['cronjob_id']);
+		$sql = 'UPDATE _jobqueue SET start = NOW(), request = %d WHERE job_id = %d';
+		$sql = sprintf($sql, $request, $cronjob['job_id']);
 		$success = wrap_db_query($sql, E_USER_NOTICE);
 		if (!$success) continue;
 
