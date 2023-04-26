@@ -37,16 +37,16 @@ CREATE TABLE `_jobqueue` (
   `job_category_id` int unsigned NOT NULL,
   `event_id` int unsigned NOT NULL,
   `runde_no` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `prioritaet` tinyint NOT NULL DEFAULT '0',
-  `start` datetime DEFAULT NULL,
-  `ende` datetime DEFAULT NULL,
+  `priority` tinyint NOT NULL DEFAULT '0',
+  `started` datetime DEFAULT NULL,
+  `finished` datetime DEFAULT NULL,
   `erfolgreich` enum('ja','nein') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'nein',
-  `request` tinyint unsigned NOT NULL DEFAULT '1',
+  `job_category_no` tinyint unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`job_id`),
   UNIQUE KEY `job_category_id` (`job_category_id`,`event_id`,`runde_no`,`start`),
   KEY `termin_id` (`event_id`),
   KEY `runde_no` (`runde_no`),
-  KEY `prioritaet` (`prioritaet`)
+  KEY `priority` (`priority`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), '_jobqueue', 'job_id', 'job_category_id', 'no-delete');

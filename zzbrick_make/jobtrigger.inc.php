@@ -32,10 +32,10 @@ function mod_tournaments_make_jobtrigger($params) {
 			, parameters,
 			(SELECT COUNT(*) FROM _jobqueue laufend
 				WHERE categories.category_id = laufend.job_category_id
-				AND NOT ISNULL(laufend.start) AND ISNULL(laufend.ende)) AS laufend,
+				AND NOT ISNULL(laufend.started) AND ISNULL(laufend.finished)) AS laufend,
 			(SELECT COUNT(*) FROM _jobqueue todo
 				WHERE categories.category_id = todo.job_category_id
-				AND ISNULL(todo.start) AND ISNULL(todo.ende)) AS todo
+				AND ISNULL(todo.started) AND ISNULL(todo.finished)) AS todo
 		FROM categories
 		WHERE main_category_id = %d
 		GROUP BY category_id
@@ -52,9 +52,9 @@ function mod_tournaments_make_jobtrigger($params) {
 			$sql = 'SELECT job_id, events.identifier AS event_identifier, _jobqueue.runde_no
 				FROM _jobqueue
 				LEFT JOIN events USING (event_id)
-				WHERE ISNULL(_jobqueue.start) AND ISNULL(_jobqueue.ende)
+				WHERE ISNULL(_jobqueue.started) AND ISNULL(_jobqueue.finished)
 				AND job_category_id = %d
-				ORDER BY prioritaet
+				ORDER BY priority
 				LIMIT 1';
 			$sql = sprintf($sql, $category['category_id']);
 			$cronjob = wrap_db_fetch($sql);
@@ -66,8 +66,8 @@ function mod_tournaments_make_jobtrigger($params) {
 				FROM _jobqueue
 				LEFT JOIN events USING (event_id)
 				WHERE job_category_id = %d
-				AND NOT ISNULL(_jobqueue.start) AND ISNULL(_jobqueue.ende)
-				AND DATE_ADD(start, INTERVAL %d SECOND) > NOW()
+				AND NOT ISNULL(_jobqueue.started) AND ISNULL(_jobqueue.finished)
+				AND DATE_ADD(started, INTERVAL %d SECOND) > NOW()
 			';
 			$sql = sprintf($sql, $category['category_id'], $parameter['max_time']);
 			$laufend = wrap_db_fetch($sql, 'job_id');
@@ -78,8 +78,8 @@ function mod_tournaments_make_jobtrigger($params) {
 				FROM _jobqueue
 				LEFT JOIN events USING (event_id)
 				WHERE job_category_id = %d
-				AND NOT ISNULL(_jobqueue.start) AND ISNULL(_jobqueue.ende)
-				AND DATE_ADD(start, INTERVAL %d SECOND) < NOW()
+				AND NOT ISNULL(_jobqueue.started) AND ISNULL(_jobqueue.finished)
+				AND DATE_ADD(started, INTERVAL %d SECOND) < NOW()
 			';
 			$sql = sprintf($sql, $category['category_id'], $parameter['max_time']);
 			$cronjobs = wrap_db_fetch($sql, 'job_id');
@@ -92,7 +92,7 @@ function mod_tournaments_make_jobtrigger($params) {
 		$realm = sprintf('%s-%d', $category['path'], $request);
 		$locked = wrap_lock($realm, 'sequential', $parameter['max_time']);
 		if ($locked) continue;
-		$sql = 'UPDATE _jobqueue SET start = NOW(), request = %d WHERE job_id = %d';
+		$sql = 'UPDATE _jobqueue SET started = NOW(), job_category_no = %d WHERE job_id = %d';
 		$sql = sprintf($sql, $request, $cronjob['job_id']);
 		$success = wrap_db_query($sql, E_USER_NOTICE);
 		if (!$success) continue;

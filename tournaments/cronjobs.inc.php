@@ -23,8 +23,8 @@
  */
 function mf_tournaments_job_get_id($typ, $category, $event_id, $runde_no = false) {
 	switch ($typ) {
-		case 'todo': $status = ' AND ISNULL(start)'; break;
-		case 'laufend': $status = ' AND NOT ISNULL(start) AND ISNULL(ende)'; break;
+		case 'todo': $status = ' AND ISNULL(started)'; break;
+		case 'laufend': $status = ' AND NOT ISNULL(started) AND ISNULL(finished)'; break;
 		default: $status = ''; break;
 	}
 
@@ -51,20 +51,20 @@ function mf_tournaments_job_get_id($typ, $category, $event_id, $runde_no = false
  * @param string $category Kategorie des Jobs (Kennung)
  * @param int $event_id
  * @param string $runde_no Optional, einzelne Runde eines Termins, mit -live
- * @param int $prioritaet Optional, -20 besser als +20, Standard 0)
+ * @param int $priority Optional, -20 besser als +20, Standard 0)
  * @return bool
  */
-function mf_tournaments_job_create($category, $event_id, $runde_no = false, $prioritaet = 0) {
+function mf_tournaments_job_create($category, $event_id, $runde_no = false, $priority = 0) {
 	$job_id = mf_tournaments_job_get_id('todo', $category, $event_id, $runde_no);
 	if ($job_id) return true;
 	
-	$sql = 'INSERT INTO _jobqueue (job_category_id, event_id, runde_no, prioritaet)
+	$sql = 'INSERT INTO _jobqueue (job_category_id, event_id, runde_no, priority)
 		VALUES (%d, %d, %s, %d)';
 	$sql = sprintf($sql,
 		wrap_category_id('cronjobs/'.$category),
 		$event_id,
 		$runde_no ? '"'.$runde_no.'"' : 'NULL',
-		$prioritaet
+		$priority
 	);
 	$success = wrap_db_query($sql);
 	if (!$success) return false;
@@ -85,7 +85,7 @@ function mf_tournaments_job_finish($category, $success, $event_id, $runde_no = f
 	if (!$job_id) return false;
 	require_once wrap_setting('core').'/syndication.inc.php'; // wrap_lock()
 
-	$sql = 'SELECT path, request
+	$sql = 'SELECT path, job_category_no
 		FROM _jobqueue
 		LEFT JOIN categories
 			ON _jobqueue.job_category_id = categories.category_id
@@ -94,13 +94,13 @@ function mf_tournaments_job_finish($category, $success, $event_id, $runde_no = f
 	$cronjob = wrap_db_fetch($sql);
 
 	$sql = 'UPDATE _jobqueue
-		SET ende = NOW(), erfolgreich = "%s"
+		SET finished = NOW(), erfolgreich = "%s"
 		WHERE job_id = %d
 	';
 	$sql = sprintf($sql, $success ? 'ja' : 'nein', $job_id);
 	$result = wrap_db_query($sql);
 	if (!$result) wrap_error('Update Job fehlgeschlagen: '.$sql);
-	$realm = sprintf('%s-%d', $cronjob['path'], $cronjob['request']);
+	$realm = sprintf('%s-%d', $cronjob['path'], $cronjob['job_category_no']);
 	wrap_unlock($realm);
 	
 	// Nächsten Lauf anstoßen
@@ -124,7 +124,7 @@ function mf_tournaments_job_trigger() {
  * @return mixed
  */
 function mf_tournaments_job_delete() {
-	$sql = 'DELETE FROM _jobqueue WHERE ende < DATE_SUB(NOW(), INTERVAL 7 DAY)';
+	$sql = 'DELETE FROM _jobqueue WHERE finished < DATE_SUB(NOW(), INTERVAL 7 DAY)';
 	$result = wrap_db_query($sql);
 	return $result;
 }

@@ -45,20 +45,24 @@ $zz['fields'][4]['title'] = 'Runde';
 $zz['fields'][4]['field_name'] = 'runde_no';
 
 $zz['fields'][5]['title'] = 'Priorität';
-$zz['fields'][5]['field_name'] = 'prioritaet';
+$zz['fields'][5]['field_name'] = 'priority';
 $zz['fields'][5]['type'] = 'number';
 $zz['fields'][5]['null'] = true;
 
-$zz['fields'][6]['field_name'] = 'start';
+$zz['fields'][6]['field_name'] = 'started';
 $zz['fields'][6]['type'] = 'datetime';
 
-$zz['fields'][7]['field_name'] = 'ende';
+$zz['fields'][7]['field_name'] = 'finished';
 $zz['fields'][7]['type'] = 'datetime';
 
 $zz['fields'][8]['field_name'] = 'erfolgreich';
 $zz['fields'][8]['type'] = 'select';
 $zz['fields'][8]['enum'] = ['ja', 'nein'];
 $zz['fields'][8]['default'] = 'nein';
+
+$zz['fields'][9]['field_name'] = 'job_category_no';
+$zz['fields'][9]['type'] = 'number';
+$zz['fields'][9]['hide_in_list'] = true;
 
 
 $zz['sql'] = 'SELECT _jobqueue.*, categories.category
@@ -68,7 +72,7 @@ $zz['sql'] = 'SELECT _jobqueue.*, categories.category
 	LEFT JOIN categories
 		ON categories.category_id = _jobqueue.job_category_id
 ';
-$zz['sqlorder'] = ' ORDER BY category, IF(ISNULL(_jobqueue.start), 0, 1), IF(ISNULL(_jobqueue.ende), 0, 1), _jobqueue.start DESC, _jobqueue.ende DESC, prioritaet ASC, job_id';
+$zz['sqlorder'] = ' ORDER BY category, IF(ISNULL(_jobqueue.started), 0, 1), IF(ISNULL(_jobqueue.finished), 0, 1), _jobqueue.started DESC, _jobqueue.finished DESC, priority ASC, job_id';
 
 $zz['filter'][1]['title'] = 'Kategorie';
 $zz['filter'][1]['type'] = 'list';

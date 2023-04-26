@@ -29,7 +29,7 @@ function mf_tournaments_standings_update($ops) {
 	$tournament_ids = [];
 	$event_ids = [];
 	$runde_nos = [];
-	$prioritaet = 0;
+	$priority = 0;
 	foreach ($ops['return'] as $index => $table) {
 		if ($table['action'] === 'nothing') continue;
 		switch ($table['table']) {
@@ -77,7 +77,7 @@ function mf_tournaments_standings_update($ops) {
 			$update = true;
 			break;
 		case 'partien':
-			$prioritaet = 5;
+			$priority = 5;
 			foreach ($ops['record_diff'][$index] as $field => $action) {
 				if ($action === 'same') continue;
 				if (!in_array($field, [
@@ -123,11 +123,11 @@ function mf_tournaments_standings_update($ops) {
 		foreach ($events as $event_id => $event_identifier) {
 			if ($runde_nos) {
 				foreach ($runde_nos as $runde) {
-					mf_tournaments_job_create('tabelle', $event_id, $runde, $prioritaet);
+					mf_tournaments_job_create('tabelle', $event_id, $runde, $priority);
 				}
 			} else {
 				// Start in der 1. Runde
-				mf_tournaments_job_create('tabelle', $event_id, 1, $prioritaet);
+				mf_tournaments_job_create('tabelle', $event_id, 1, $priority);
 			}
 			mf_tournaments_job_trigger();
 		}
