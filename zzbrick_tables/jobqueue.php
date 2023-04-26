@@ -20,7 +20,7 @@ $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'job_id';
 $zz['fields'][1]['type'] = 'id';
 
-$zz['fields'][2]['title'] = 'Kategorie';
+$zz['fields'][2]['title'] = 'Category';
 $zz['fields'][2]['field_name'] = 'job_category_id';
 $zz['fields'][2]['type'] = 'write_once';
 $zz['fields'][2]['type_detail'] = 'select';
@@ -28,14 +28,13 @@ $zz['fields'][2]['sql'] = 'SELECT category_id, category, main_category_id
 	FROM categories';
 $zz['fields'][2]['display_field'] = 'category';
 $zz['fields'][2]['show_hierarchy'] = 'main_category_id';
-$zz['fields'][2]['show_hierarchy_subtree'] = wrap_category_id('cronjobs');
+$zz['fields'][2]['show_hierarchy_subtree'] = wrap_category_id('jobs');
 $zz['fields'][2]['key_field_name'] = 'category_id';
 
 $zz['fields'][3]['title'] = 'Job URL';
 $zz['fields'][3]['field_name'] = 'job_url';
 $zz['fields'][3]['type'] = 'url';
 
-$zz['fields'][4]['title'] = 'Priorität';
 $zz['fields'][4]['field_name'] = 'priority';
 $zz['fields'][4]['type'] = 'number';
 $zz['fields'][4]['null'] = true;
@@ -54,9 +53,11 @@ $zz['fields'][7]['type'] = 'datetime';
 $zz['fields'][8]['field_name'] = 'wait_until';
 $zz['fields'][8]['type'] = 'datetime';
 
+$zz['fields'][9]['title'] = 'Job Status';
 $zz['fields'][9]['field_name'] = 'job_status';
 $zz['fields'][9]['type'] = 'select';
 $zz['fields'][9]['enum'] = ['not_started', 'running', 'successful', 'failed', 'abandoned'];
+$zz['fields'][9]['enum_title'] = ['not started', 'running', 'successful', 'failed', 'abandoned'];
 $zz['fields'][9]['default'] = 'not_started';
 
 $zz['fields'][10]['title'] = 'Try No.';
@@ -84,7 +85,7 @@ $zz['sql'] = 'SELECT _jobqueue.*, categories.category
 ';
 $zz['sqlorder'] = ' ORDER BY category, IF(ISNULL(_jobqueue.started), 0, 1), IF(ISNULL(_jobqueue.finished), 0, 1), _jobqueue.started DESC, _jobqueue.finished DESC, priority ASC, job_id';
 
-$zz['filter'][1]['title'] = 'Kategorie';
+$zz['filter'][1]['title'] = 'Category';
 $zz['filter'][1]['type'] = 'list';
 $zz['filter'][1]['where'] = 'job_category_id';
 $zz['filter'][1]['sql'] = 'SELECT DISTINCT category_id, category

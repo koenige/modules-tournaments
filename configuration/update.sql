@@ -52,3 +52,6 @@
 /* 2023-04-26-18 */	ALTER TABLE `_jobqueue` ADD UNIQUE `job_category_id_job_url_started` (`job_category_id`, `job_url`, `started`), DROP INDEX `job_category_id`, DROP INDEX `termin_id`, DROP INDEX `runde_no`;
 /* 2023-04-26-19 */	ALTER TABLE `_jobqueue` DROP `event_id`, DROP `runde_no`;
 /* 2023-04-26-20 */	DELETE FROM _relations WHERE master_table = 'events' AND detail_table = '_jobqueue';
+/* 2023-04-26-21 */	UPDATE categories SET `category` = 'Jobs', `path` = 'jobs', `parameters` = '&alias=jobs' WHERE `path` = 'cronjobs';
+/* 2023-04-26-22 */	UPDATE categories SET `path` = REPLACE(path, 'cronjobs/', 'jobs/') WHERE `path` LIKE 'cronjobs/%';
+/* 2023-04-26-23 */	UPDATE categories SET `parameters` = REPLACE(parameters, 'alias=cronjobs', 'alias=jobs') WHERE `parameters` LIKE '%alias=cronjobs%';

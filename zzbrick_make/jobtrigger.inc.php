@@ -40,7 +40,7 @@ function mod_tournaments_make_jobtrigger($params) {
 		WHERE main_category_id = %d
 		GROUP BY category_id
 	';
-	$sql = sprintf($sql, wrap_category_id('cronjobs'));
+	$sql = sprintf($sql, wrap_category_id('jobs'));
 	$categories = wrap_db_fetch($sql, 'category_id');
 	
 	foreach ($categories as $category) {

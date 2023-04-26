@@ -35,7 +35,7 @@ function mf_tournaments_job_get_id($type, $category, $job_url) {
 		%s
 		LIMIT 1';
 	$sql = sprintf($sql
-		, wrap_category_id('cronjobs/'.$category)
+		, wrap_category_id('jobs/'.$category)
 		, $job_url
 		, $status
 	);
@@ -60,7 +60,7 @@ function mf_tournaments_job_create($category, $event_id, $runde_no = false, $pri
 	$values = [];
 	$values['action'] = 'insert';
 	$values['ids'] = ['job_category_id'];
-	$values['POST']['job_category_id'] = wrap_category_id('cronjobs/'.$category);
+	$values['POST']['job_category_id'] = wrap_category_id('jobs/'.$category);
 	$values['POST']['job_url'] = $job_url;
 	$values['POST']['priority'] = $priority;
 	$ops = zzform_multi('jobqueue', $values);
