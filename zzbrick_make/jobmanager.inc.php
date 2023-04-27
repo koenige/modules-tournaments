@@ -2,7 +2,7 @@
 
 /**
  * tournaments module
- * trigger a background job
+ * manage background jobs
  *
  * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
@@ -13,13 +13,13 @@
  */
 
 
-function mod_tournaments_make_jobtrigger($params) {
+function mod_tournaments_make_jobmanager($params) {
 	wrap_setting('log_username', wrap_setting('robot_username'));
 	wrap_setting('log_trigger', 'cron');
 
 	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 		$data['show_form'] = true;
-		$page['text'] = wrap_template('jobtrigger', $data);
+		$page['text'] = wrap_template('jobmanager', $data);
 		return $page;
 	}
 
