@@ -167,51 +167,9 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% condition endif %%%
 %%% condition endif %%%
 
-%%% condition if teams %%%
+%%% condition if teams_compact %%%
 <div class="results">
-<table>
-<thead>
-<tr>
-<th>%%% condition if tabelle %%%<abbr title="Platz">Pl.</abbr>%%% condition else %%%Nr.%%% condition endif %%%</th>
-<th>%%% condition if m-v %%%Verein%%% condition elseif m-s %%%Schule%%% condition else %%%Land%%% condition endif %%%</th>
-%%% condition if dwz_schnitt %%%<th class="number"><abbr title="Schnitt der Deutschen Wertungszahlen">Ø&nbsp;DWZ</abbr></th>%%% condition endif %%%
-%%% condition if m-v | m-s %%%
-<th>Land</th>
-%%% condition endif %%%
-%%% condition if tabelle %%%
-<th class="number"><abbr title="Punkte">Pkt.</abbr></th>
-%%% condition endif %%%
-</tr>
-</thead>
-<tbody>
-%%% loop teams %%%
-<tr class='%%% loopposition uneven "un" %%%even'>
-<td>%%% condition if platz_no %%%
-%%% item platz_no %%%
-%%% condition else %%%
-%%% item setzliste_no %%%
-%%% condition endif %%%</td>
-<td>%%% condition if aktiv %%%<a href="../../%%% item team_identifier %%%/">%%% condition endif %%%
-%%% item team %%% %%% item team_no %%%%%% item aktiv "</a>" %%%</td>
-%%% condition if dwz_schnitt %%%
-<td class="number">%%% item dwz_schnitt %%%</td>
-%%% condition endif %%%
-%%% condition if m-v | m-s %%%
-<td>%%% condition if main_series_path & federation_identifier %%%
-<a href="../%%% item main_series_path %%%/lv/%%% item federation_identifier %%%/">
-%%% condition endif %%%
-<abbr title="%%% item country %%%">%%% item federation_abbr %%%</abbr>
-%%% condition if main_series_path & federation_identifier %%%
-</a>
-%%% condition endif %%%</td>
-%%% condition endif %%%
-%%% condition if wertung %%%
-<td class="number">%%% item wertung result_format %%%</td>
-%%% condition endif %%%
-</tr>
-%%% loop end %%%
-</tbody>
-</table>
+%%% item teams_compact %%%
 </div>
 %%% condition if tabelle %%%
 <p><a href="tabelle/">Ausführlicher Tabellenstand</a></p>
@@ -237,40 +195,7 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% condition elseif einzelteilnehmerliste %%%
 %%% condition if tabelle %%%
 <div class="results">
-<table>
-<thead>
-<tr>
-<th><abbr title="Platz">Pl.</abbr></th>
-<th>Spieler</th>
-<th>Land</th>
-<th class="number"><abbr title="Punkte">Pkt.</abbr></th>
-</tr>
-</thead>
-<tbody>
-%%% loop spieler %%%
-<tr class='%%% loopposition uneven "un" %%%even'>
-<td>%%% item platz_no %%%</td>
-<td>
-%%% condition if setzliste_no %%%
-<a href="spieler/%%% item setzliste_no %%%/">
-%%% condition endif %%%
-%%% item spieler %%%
-%%% item setzliste_no </a> %%%</td>
-<td>%%% condition if main_series_path & federation_identifier %%%
-<a href="../%%% item main_series_path %%%/lv/%%% item federation_identifier %%%/">
-%%% condition endif %%%
-<abbr title="%%% item country %%%">%%% item federation_abbr %%%</abbr>
-%%% condition if main_series_path & federation_identifier %%%
-</a>
-%%% condition endif %%%</td>
-<td class="number">%%% item wertung result_format %%%</td>
-</tr>
-%%% loop end %%%
-%%% condition if mehr_spieler %%%
-<tr><td> </td><td colspan="4">… und weitere %%% item mehr_spieler %%% Spieler</td></tr>
-%%% condition endif %%%
-</tbody>
-</table>
+%%% item players_compact %%%
 </div>
 <p><a href="tabelle/">Ausführlicher Tabellenstand</a></p>
 <p><a href="spieler/">Startrangliste</a></p>

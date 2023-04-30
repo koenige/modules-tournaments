@@ -265,118 +265,66 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	$sql = sprintf($sql, $event['event_id']);
 	$event['links'] = wrap_db_fetch($sql, 'event_link_id');
 
+	// Organisers
+	$event = mod_tournaments_tournament_organisers($event, $internal);
+
 	$runde = mf_tournaments_current_round($event['event_id']);
 	if ($runde AND !$internal) $event['tabelle'] = true;
 
 	if ($event['turnierform'] === 'e') {
-		$sql = 'SELECT participation_id, platz_no
-				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
-				, setzliste_no
-				, tabellenstaende_wertungen.wertung
-				, participations.club_contact_id
-			FROM participations
-			LEFT JOIN persons USING (contact_id)
-			LEFT JOIN tabellenstaende
-				ON persons.person_id = tabellenstaende.person_id
-				AND tabellenstaende.event_id = participations.event_id
-				AND tabellenstaende.runde_no = %d
-			LEFT JOIN tabellenstaende_wertungen
-				ON tabellenstaende_wertungen.tabellenstand_id = tabellenstaende.tabellenstand_id
-				AND tabellenstaende_wertungen.wertung_category_id = %d
-			WHERE participations.event_id = %d
-			AND usergroup_id = %d
-			AND status_category_id = %d
-			AND NOT ISNULL(platz_no)
-			ORDER BY platz_no';
-		$sql = sprintf($sql
-			, $runde
-			, $event['haupt_wertung_category_id']
-			, $event['event_id']
-			, wrap_id('usergroups', 'spieler')
-			, wrap_category_id('participation-status/participant')
-		);
-		$event['spieler'] = wrap_db_fetch($sql, 'participation_id');
-		if ($event['spieler'])
-			$event['spieler'] = mf_tournaments_clubs_to_federations($event['spieler']);
-		if (count($event['spieler']) > 25) {
-			$event['mehr_spieler'] = count($event['spieler']) - 20;
-			$event['spieler'] = array_slice($event['spieler'], 0, 20);
-		}
+		$event['players_compact'] = mod_tournaments_tournament_players_compact($event);
 	} else {
-		$sql = 'SELECT teams.team_id
-				, team, team_no, teams.identifier AS team_identifier, team_status
-				, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
-				, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
-				, platz_no, tabellenstand_id
-				, teams.club_contact_id
-			FROM teams
-			LEFT JOIN contacts organisationen
-				ON teams.club_contact_id = organisationen.contact_id
-			LEFT JOIN contacts_contacts
-				ON contacts_contacts.contact_id = organisationen.contact_id
-				AND contacts_contacts.published = "yes"
-			LEFT JOIN contacts places
-				ON contacts_contacts.contact_id = places.contact_id
-			LEFT JOIN addresses
-				ON places.contact_id = addresses.contact_id
-			LEFT JOIN events USING (event_id)
-			LEFT JOIN categories series
-				ON events.series_category_id = series.category_id
-			LEFT JOIN categories main_series
-				ON series.main_category_id = main_series.category_id
-			LEFT JOIN tabellenstaende
-				ON teams.team_id = tabellenstaende.team_id
-				AND (tabellenstaende.runde_no = %d OR ISNULL(tabellenstaende.runde_no))
-			WHERE teams.event_id = %d
-			AND team_status IN ("Teilnehmer", "Teilnahmeberechtigt")
-			AND spielfrei = "nein"
-			ORDER BY platz_no, setzliste_no, place, team, team_no
-		';
-		$sql = sprintf($sql
-			, $runde
-			, $event['event_id']
-		);
-		// @todo Klären, was passiert wenn mehr als 1 Ort zu Verein in Datenbank! 
-		// (Reihenfolge-Feld einführen)
-		$event['teams'] = wrap_db_fetch($sql, 'team_id');
-		if ($event['teams'])
-			$event['teams'] = mf_tournaments_clubs_to_federations($event['teams']);
-		if ($runde AND $event['teams']) {
-			foreach ($event['teams'] as $team) {
-				if (empty($team['tabellenstand_id'])) continue;
-				$tabelle[$team['tabellenstand_id']] = $team['team_id'];
-			}
-			// format 0 points as 0.00 to get points displayed
-			$sql = 'SELECT tsw_id, tabellenstand_id, wertung_category_id
-					, IF(wertung = "0", "0.00", wertung) AS wertung
-				FROM tabellenstaende_wertungen
-				WHERE tabellenstand_id IN (%s)';
-			$sql = sprintf($sql, implode(',', array_keys($tabelle)));
-			$wertungen = wrap_db_fetch($sql, ['tabellenstand_id', 'wertung_category_id']);
+		$event['teams_compact'] = mod_tournaments_tournament_teams_compact($event);
+	}
 
-			$sql = 'SELECT DISTINCT category_id, category, category_short
-					, tw.reihenfolge, categories.sequence
-				FROM tabellenstaende_wertungen tsw
-				LEFT JOIN tabellenstaende USING (tabellenstand_id)
-				LEFT JOIN tournaments USING (event_id)
-				LEFT JOIN turniere_wertungen tw
-					ON tw.wertung_category_id = tsw.wertung_category_id
-					AND tw.tournament_id = tournaments.tournament_id
-				LEFT JOIN categories
-					ON tsw.wertung_category_id = categories.category_id
-				WHERE tabellenstand_id IN (%s)
-				ORDER BY tw.reihenfolge, categories.sequence
-				LIMIT 1';
-			$sql = sprintf($sql, implode(',', array_keys($tabelle)));
-			$wertungskategorie = wrap_db_fetch($sql);
-			foreach ($wertungen as $ts_id => $wertung) {
-				$event['teams'][$tabelle[$ts_id]]['wertung'] 
-					= $wertung[$wertungskategorie['category_id']]['wertung'];
-			}
+	$page['title'] = $event['event'].', '.wrap_date($event['duration']);
+	$page['breadcrumbs'][] = $event['event'];
+	$page['dont_show_h1'] = true;
+	if ($internal) {
+		$page['query_strings'][] = 'absage';
+		if (array_key_exists('absage', $_GET))
+			$event['team_abgesagt'] = true;
+	}
+
+	if (empty($event['einzel']) AND $event['latitude'] AND !$internal) {
+		$page['head'] = wrap_template('termin-map-head');
+		$event['map'] = my_teilnehmerkarte($event);
+	}
+
+	if (!empty($event['einzel'])) {
+		$sql = 'SELECT COUNT(*) FROM participations
+			WHERE usergroup_id = %d AND event_id = %d';
+		$sql = sprintf($sql, wrap_id('usergroups', 'spieler'), $event['event_id']);
+		$event['einzelteilnehmerliste'] = wrap_db_fetch($sql, '', 'single value');
+	}
+	if ($internal) $event['tabellenstaende'] = [];
+	if ($event['tabellenstaende']) {
+		$ts = explode(',', $event['tabellenstaende']);
+		$event['tabellenstaende'] = [];
+		foreach ($ts as $stand) {
+			$event['tabellenstaende'][] = [
+				'tabelle' => trim($stand)
+			];
 		}
 	}
 
-	// Organisatoren
+	if ($event['spielerphotos']) {
+		$event['photouebersicht'] = $event['year'] >= wrap_setting('dem_spielerphotos_aus_mediendb') ? true : false;
+	}
+
+	$page['text'] = wrap_template('tournament', $event);
+	return $page;
+}
+
+/**
+ * get organisers of tournament
+ *
+ * @param array $event
+ * @param bool $internal
+ * @return array
+ * @todo use contactdetails functions for internal view
+ */
+function mod_tournaments_tournament_organisers($event, $internal) {	
 	if ($internal) {
 		$sql_fields = sprintf('
 		, GROUP_CONCAT(category, ": ", identification SEPARATOR "<br>") AS telefon
@@ -416,9 +364,141 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		wrap_id('usergroups', 'turnierleitung')
 	);
 	$event = array_merge($event, wrap_db_fetch($sql, ['group_identifier', 'person_id']));
+	return $event;
+}
+
+/**
+ * show compact players list or standings, depending on the state of the tournament
+ *
+ * @param array $event
+ * @return string
+ */
+function mod_tournaments_tournament_players_compact($event) {
+	$round_no = mf_tournaments_current_round($event['event_id']);
+
+	$sql = 'SELECT participation_id, platz_no
+			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
+			, setzliste_no
+			, tabellenstaende_wertungen.wertung
+			, participations.club_contact_id
+		FROM participations
+		LEFT JOIN persons USING (contact_id)
+		LEFT JOIN tabellenstaende
+			ON persons.person_id = tabellenstaende.person_id
+			AND tabellenstaende.event_id = participations.event_id
+			AND tabellenstaende.runde_no = %d
+		LEFT JOIN tabellenstaende_wertungen
+			ON tabellenstaende_wertungen.tabellenstand_id = tabellenstaende.tabellenstand_id
+			AND tabellenstaende_wertungen.wertung_category_id = %d
+		WHERE participations.event_id = %d
+		AND usergroup_id = %d
+		AND status_category_id = %d
+		AND NOT ISNULL(platz_no)
+		ORDER BY platz_no';
+	$sql = sprintf($sql
+		, $round_no
+		, $event['haupt_wertung_category_id']
+		, $event['event_id']
+		, wrap_id('usergroups', 'spieler')
+		, wrap_category_id('participation-status/participant')
+	);
+	$event['spieler'] = wrap_db_fetch($sql, 'participation_id');
+	if ($event['spieler'])
+		$event['spieler'] = mf_tournaments_clubs_to_federations($event['spieler']);
+	if (count($event['spieler']) > 25) {
+		$event['mehr_spieler'] = count($event['spieler']) - 20;
+		$event['spieler'] = array_slice($event['spieler'], 0, 20);
+	}
+
+	return wrap_template('players-compact', $event);
+}
+
+/**
+ * show compact team list or standings, depending on the state of the tournament
+ *
+ * @param array $event
+ * @return string
+ */
+function mod_tournaments_tournament_teams_compact(&$event) {
+	$round_no = mf_tournaments_current_round($event['event_id']);
+
+	$sql = 'SELECT teams.team_id
+			, team, team_no, teams.identifier AS team_identifier, team_status
+			, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
+			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
+			, platz_no, tabellenstand_id
+			, teams.club_contact_id
+		FROM teams
+		LEFT JOIN contacts organisationen
+			ON teams.club_contact_id = organisationen.contact_id
+		LEFT JOIN contacts_contacts
+			ON contacts_contacts.contact_id = organisationen.contact_id
+			AND contacts_contacts.published = "yes"
+		LEFT JOIN contacts places
+			ON contacts_contacts.contact_id = places.contact_id
+		LEFT JOIN addresses
+			ON places.contact_id = addresses.contact_id
+		LEFT JOIN events USING (event_id)
+		LEFT JOIN categories series
+			ON events.series_category_id = series.category_id
+		LEFT JOIN categories main_series
+			ON series.main_category_id = main_series.category_id
+		LEFT JOIN tabellenstaende
+			ON teams.team_id = tabellenstaende.team_id
+			AND (tabellenstaende.runde_no = %d OR ISNULL(tabellenstaende.runde_no))
+		WHERE teams.event_id = %d
+		AND team_status IN ("Teilnehmer", "Teilnahmeberechtigt")
+		AND spielfrei = "nein"
+		ORDER BY platz_no, setzliste_no, place, team, team_no
+	';
+	$sql = sprintf($sql
+		, $round_no
+		, $event['event_id']
+	);
+	// @todo Klären, was passiert wenn mehr als 1 Ort zu Verein in Datenbank! 
+	// (Reihenfolge-Feld einführen)
+	$event['teams'] = wrap_db_fetch($sql, 'team_id');
+	if (!$event['teams']) return '';
+
+	$event['teams'] = mf_tournaments_clubs_to_federations($event['teams']);
+	if (!$round_no) return '';
+
+	foreach ($event['teams'] as $id => $team) {
+		if (!empty($event['turnierform']))
+			$event['teams'][$id][str_replace('-', '_', $event['turnierform'])] = true;
+		if (empty($team['tabellenstand_id'])) continue;
+		$tabelle[$team['tabellenstand_id']] = $team['team_id'];
+	}
+	// format 0 points as 0.00 to get points displayed
+	$sql = 'SELECT tsw_id, tabellenstand_id, wertung_category_id
+			, IF(wertung = "0", "0.00", wertung) AS wertung
+		FROM tabellenstaende_wertungen
+		WHERE tabellenstand_id IN (%s)';
+	$sql = sprintf($sql, implode(',', array_keys($tabelle)));
+	$wertungen = wrap_db_fetch($sql, ['tabellenstand_id', 'wertung_category_id']);
+
+	$sql = 'SELECT DISTINCT category_id, category, category_short
+			, tw.reihenfolge, categories.sequence
+		FROM tabellenstaende_wertungen tsw
+		LEFT JOIN tabellenstaende USING (tabellenstand_id)
+		LEFT JOIN tournaments USING (event_id)
+		LEFT JOIN turniere_wertungen tw
+			ON tw.wertung_category_id = tsw.wertung_category_id
+			AND tw.tournament_id = tournaments.tournament_id
+		LEFT JOIN categories
+			ON tsw.wertung_category_id = categories.category_id
+		WHERE tabellenstand_id IN (%s)
+		ORDER BY tw.reihenfolge, categories.sequence
+		LIMIT 1';
+	$sql = sprintf($sql, implode(',', array_keys($tabelle)));
+	$wertungskategorie = wrap_db_fetch($sql);
+	foreach ($wertungen as $ts_id => $wertung) {
+		$event['teams'][$tabelle[$ts_id]]['wertung'] 
+			= $wertung[$wertungskategorie['category_id']]['wertung'];
+	}
 
 	$dwz_sortierung = false;
-	if ($event['teilnehmerliste'] AND !empty($event['teams'])) {
+	if ($event['teilnehmerliste']) {
 		$dwz_sortierung = true;
 		$erstes_team = current($event['teams']);
 		if ($erstes_team['setzliste_no']) $dwz_sortierung = false;
@@ -426,8 +506,8 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		list($event['dwz_schnitt'], $event['teams']) 
 			= mf_tournaments_team_rating_average_dwz($event['event_id'], $event['teams'], $event['bretter_min'], $event['pseudo_dwz']);
 	}
-	if ($dwz_sortierung AND $event['teams'] AND !$runde) {
-		// Sortierung für Jacob nach DWZ-Schnitt
+	if ($dwz_sortierung AND !$round_no) {
+		// Sortierung nach DWZ-Schnitt
 		foreach ($event['teams'] AS $key => $row) {
 			$teamname[$key] = $row['place'];
 			$verband[$key] = $row['country'];
@@ -439,55 +519,14 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	}
 
 	// eigener Verein
-	if ($event['turnierform'] !== 'e') {
-		$eigene_teams = mf_tournaments_team_own();
-		foreach ($event['teams'] as $id => $team) {
-			if ($event['teilnehmerliste'] AND $team['team_status'] === 'Teilnehmer') $event['teams'][$id]['aktiv'] = 1;
-			elseif (in_array($id, $eigene_teams) AND $internal) $event['teams'][$id]['aktiv'] = 1;
-			elseif (brick_access_rights('Webmaster') AND $event['internal']) $event['teams'][$id]['aktiv'] = 1;
-			if (!empty($event['turnierform']))
-				$event['teams'][$id][str_replace('-', '_', $event['turnierform'])] = true;
-		}
+	$own_teams = mf_tournaments_team_own();
+	foreach ($event['teams'] as $id => $team) {
+		$active = false;
+		if ($event['teilnehmerliste'] AND $team['team_status'] === 'Teilnehmer') $active = true;
+		elseif (in_array($id, $own_teams) AND $internal) $active = true;
+		elseif (brick_access_rights('Webmaster') AND $event['internal']) $active = true;
+		if ($active) $event['teams'][$id]['aktiv'] = 1;
 	}
 
-	$page['title'] = $event['event'].', '.wrap_date($event['duration']);
-	$page['breadcrumbs'][] = $event['event'];
-	$page['dont_show_h1'] = true;
-	if ($internal) {
-		$page['query_strings'][] = 'absage';
-		if (array_key_exists('absage', $_GET)) {
-			$event['team_abgesagt'] = true;
-		}
-	}
-
-	if (empty($event['einzel'])) {
-		if ($event['latitude'] AND !$internal) {
-			$page['head'] = wrap_template('termin-map-head');
-			$event['map'] = my_teilnehmerkarte($event);
-		}
-	}
-
-	if (!empty($event['einzel'])) {
-		$sql = 'SELECT COUNT(*) FROM participations
-			WHERE usergroup_id = %d AND event_id = %d';
-		$sql = sprintf($sql, wrap_id('usergroups', 'spieler'), $event['event_id']);
-		$event['einzelteilnehmerliste'] = wrap_db_fetch($sql, '', 'single value');
-	}
-	if ($internal) $event['tabellenstaende'] = [];
-	if ($event['tabellenstaende']) {
-		$ts = explode(',', $event['tabellenstaende']);
-		$event['tabellenstaende'] = [];
-		foreach ($ts as $stand) {
-			$event['tabellenstaende'][] = [
-				'tabelle' => trim($stand)
-			];
-		}
-	}
-
-	if ($event['spielerphotos']) {
-		$event['photouebersicht'] = $event['year'] >= wrap_setting('dem_spielerphotos_aus_mediendb') ? true : false;
-	}
-
-	$page['text'] = wrap_template('tournament', $event);
-	return $page;
+	return wrap_template('teams-compact', $event);
 }
