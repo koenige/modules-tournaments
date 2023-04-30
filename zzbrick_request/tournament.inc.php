@@ -499,16 +499,16 @@ function mod_tournaments_tournament_teams_compact(&$event) {
 			= $wertung[$wertungskategorie['category_id']]['wertung'];
 	}
 
-	$dwz_sortierung = false;
+	$dwz_sort = false;
 	if ($event['teilnehmerliste']) {
-		$dwz_sortierung = true;
-		$erstes_team = current($event['teams']);
-		if ($erstes_team['setzliste_no']) $dwz_sortierung = false;
+		$dwz_sort = true;
+		$first_team = current($event['teams']);
+		if ($first_team['setzliste_no']) $dwz_sort = false;
 
 		list($event['dwz_schnitt'], $event['teams']) 
 			= mf_tournaments_team_rating_average_dwz($event['event_id'], $event['teams'], $event['bretter_min'], $event['pseudo_dwz']);
 	}
-	if ($dwz_sortierung AND !$event['round_no']) {
+	if ($dwz_sort AND !$event['round_no']) {
 		// Sortierung nach DWZ-Schnitt
 		foreach ($event['teams'] AS $key => $row) {
 			$teamname[$key] = $row['place'];
