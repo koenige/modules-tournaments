@@ -18,7 +18,7 @@
 </tr>
 </thead>
 <tbody>
-%%% loop spieler %%%
+%%% loop players %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
 <td>%%% item platz_no %%%</td>
 <td>
@@ -37,8 +37,8 @@
 <td class="number">%%% item wertung result_format %%%</td>
 </tr>
 %%% loop end %%%
-%%% condition if mehr_spieler %%%
-<tr><td> </td><td colspan="4">… und weitere %%% item mehr_spieler %%% Spieler</td></tr>
+%%% condition if more_players %%%
+<tr><td> </td><td colspan="4">… und weitere %%% item more_players %%% Spieler</td></tr>
 %%% condition endif %%%
 </tbody>
 </table>

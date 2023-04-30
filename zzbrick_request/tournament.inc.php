@@ -44,9 +44,6 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 				WHERE participations.event_id = events.event_id AND usergroup_id = %d AND NOT ISNULL(setzliste_no)), 1, NULL), NULL) AS spielerphotos
 			, registration
 			, livebretter
-			, (SELECT wertung_category_id FROM turniere_wertungen
-				WHERE turniere_wertungen.tournament_id = tournaments.tournament_id
-				AND turniere_wertungen.reihenfolge = 1) AS haupt_wertung_category_id
 			, website_org.contact_abbr
 			, (SELECT setting_value FROM _settings
 				WHERE setting_key = "canonical_hostname" AND _settings.website_id = events.website_id
@@ -268,8 +265,8 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	// Organisers
 	$event = mod_tournaments_tournament_organisers($event, $internal);
 
-	$runde = mf_tournaments_current_round($event['event_id']);
-	if ($runde AND !$internal) $event['tabelle'] = true;
+	$event['round_no'] = mf_tournaments_current_round($event['event_id']);
+	if ($event['round_no'] AND !$internal) $event['tabelle'] = true;
 
 	if ($event['turnierform'] === 'e') {
 		$event['players_compact'] = mod_tournaments_tournament_players_compact($event);
@@ -374,7 +371,12 @@ function mod_tournaments_tournament_organisers($event, $internal) {
  * @return string
  */
 function mod_tournaments_tournament_players_compact($event) {
-	$round_no = mf_tournaments_current_round($event['event_id']);
+	$sql = 'SELECT wertung_category_id
+		FROM turniere_wertungen
+		WHERE turniere_wertungen.tournament_id = %d
+		AND turniere_wertungen.reihenfolge = 1';
+	$sql = sprintf($sql, $event['tournament_id']);
+	$main_rating_category_id = wrap_db_fetch($sql, '', 'single value');
 
 	$sql = 'SELECT participation_id, platz_no
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
@@ -396,18 +398,20 @@ function mod_tournaments_tournament_players_compact($event) {
 		AND NOT ISNULL(platz_no)
 		ORDER BY platz_no';
 	$sql = sprintf($sql
-		, $round_no
-		, $event['haupt_wertung_category_id']
+		, $event['round_no']
+		, $main_rating_category_id
 		, $event['event_id']
 		, wrap_id('usergroups', 'spieler')
 		, wrap_category_id('participation-status/participant')
 	);
-	$event['spieler'] = wrap_db_fetch($sql, 'participation_id');
-	if ($event['spieler'])
-		$event['spieler'] = mf_tournaments_clubs_to_federations($event['spieler']);
-	if (count($event['spieler']) > 25) {
-		$event['mehr_spieler'] = count($event['spieler']) - 20;
-		$event['spieler'] = array_slice($event['spieler'], 0, 20);
+	$event['players'] = wrap_db_fetch($sql, 'participation_id');
+	if ($event['players'])
+		$event['players'] = mf_tournaments_clubs_to_federations($event['players']);
+	$max_players = wrap_setting('tournaments_players_compact_max');
+	$max_players_ceil = $max_players * wrap_setting('tournaments_players_compact_max_tolerance');
+	if (count($event['players']) > $max_players_ceil) {
+		$event['more_players'] = count($event['players']) - $max_players;
+		$event['players'] = array_slice($event['players'], 0, $max_players);
 	}
 
 	return wrap_template('players-compact', $event);
@@ -420,8 +424,6 @@ function mod_tournaments_tournament_players_compact($event) {
  * @return string
  */
 function mod_tournaments_tournament_teams_compact(&$event) {
-	$round_no = mf_tournaments_current_round($event['event_id']);
-
 	$sql = 'SELECT teams.team_id
 			, team, team_no, teams.identifier AS team_identifier, team_status
 			, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
@@ -452,7 +454,7 @@ function mod_tournaments_tournament_teams_compact(&$event) {
 		ORDER BY platz_no, setzliste_no, place, team, team_no
 	';
 	$sql = sprintf($sql
-		, $round_no
+		, $event['round_no']
 		, $event['event_id']
 	);
 	// @todo Klären, was passiert wenn mehr als 1 Ort zu Verein in Datenbank! 
@@ -461,7 +463,7 @@ function mod_tournaments_tournament_teams_compact(&$event) {
 	if (!$event['teams']) return '';
 
 	$event['teams'] = mf_tournaments_clubs_to_federations($event['teams']);
-	if (!$round_no) return '';
+	if (!$event['round_no']) return '';
 
 	foreach ($event['teams'] as $id => $team) {
 		if (!empty($event['turnierform']))
@@ -506,7 +508,7 @@ function mod_tournaments_tournament_teams_compact(&$event) {
 		list($event['dwz_schnitt'], $event['teams']) 
 			= mf_tournaments_team_rating_average_dwz($event['event_id'], $event['teams'], $event['bretter_min'], $event['pseudo_dwz']);
 	}
-	if ($dwz_sortierung AND !$round_no) {
+	if ($dwz_sortierung AND !$event['round_no']) {
 		// Sortierung nach DWZ-Schnitt
 		foreach ($event['teams'] AS $key => $row) {
 			$teamname[$key] = $row['place'];
