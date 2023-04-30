@@ -462,40 +462,42 @@ function mod_tournaments_tournament_teams_compact(&$event) {
 	if (!$event['teams']) return '';
 
 	$event['teams'] = mf_tournaments_clubs_to_federations($event['teams']);
-	if (!$event['round_no']) return '';
 
+	$standings = [];
 	foreach ($event['teams'] as $id => $team) {
 		if (!empty($event['turnierform']))
 			$event['teams'][$id][str_replace('-', '_', $event['turnierform'])] = true;
 		if (empty($team['tabellenstand_id'])) continue;
-		$tabelle[$team['tabellenstand_id']] = $team['team_id'];
+		$standings[$team['tabellenstand_id']] = $team['team_id'];
 	}
-	// format 0 points as 0.00 to get points displayed
-	$sql = 'SELECT tsw_id, tabellenstand_id, wertung_category_id
-			, IF(wertung = "0", "0.00", wertung) AS wertung
-		FROM tabellenstaende_wertungen
-		WHERE tabellenstand_id IN (%s)';
-	$sql = sprintf($sql, implode(',', array_keys($tabelle)));
-	$wertungen = wrap_db_fetch($sql, ['tabellenstand_id', 'wertung_category_id']);
+	if ($standings) {
+		// format 0 points as 0.00 to get points displayed
+		$sql = 'SELECT tsw_id, tabellenstand_id, wertung_category_id
+				, IF(wertung = "0", "0.00", wertung) AS wertung
+			FROM tabellenstaende_wertungen
+			WHERE tabellenstand_id IN (%s)';
+		$sql = sprintf($sql, implode(',', array_keys($standings)));
+		$wertungen = wrap_db_fetch($sql, ['tabellenstand_id', 'wertung_category_id']);
 
-	$sql = 'SELECT DISTINCT category_id, category, category_short
-			, tw.reihenfolge, categories.sequence
-		FROM tabellenstaende_wertungen tsw
-		LEFT JOIN tabellenstaende USING (tabellenstand_id)
-		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN turniere_wertungen tw
-			ON tw.wertung_category_id = tsw.wertung_category_id
-			AND tw.tournament_id = tournaments.tournament_id
-		LEFT JOIN categories
-			ON tsw.wertung_category_id = categories.category_id
-		WHERE tabellenstand_id IN (%s)
-		ORDER BY tw.reihenfolge, categories.sequence
-		LIMIT 1';
-	$sql = sprintf($sql, implode(',', array_keys($tabelle)));
-	$wertungskategorie = wrap_db_fetch($sql);
-	foreach ($wertungen as $ts_id => $wertung) {
-		$event['teams'][$tabelle[$ts_id]]['wertung'] 
-			= $wertung[$wertungskategorie['category_id']]['wertung'];
+		$sql = 'SELECT DISTINCT category_id, category, category_short
+				, tw.reihenfolge, categories.sequence
+			FROM tabellenstaende_wertungen tsw
+			LEFT JOIN tabellenstaende USING (tabellenstand_id)
+			LEFT JOIN tournaments USING (event_id)
+			LEFT JOIN turniere_wertungen tw
+				ON tw.wertung_category_id = tsw.wertung_category_id
+				AND tw.tournament_id = tournaments.tournament_id
+			LEFT JOIN categories
+				ON tsw.wertung_category_id = categories.category_id
+			WHERE tabellenstand_id IN (%s)
+			ORDER BY tw.reihenfolge, categories.sequence
+			LIMIT 1';
+		$sql = sprintf($sql, implode(',', array_keys($standings)));
+		$wertungskategorie = wrap_db_fetch($sql);
+		foreach ($wertungen as $ts_id => $wertung) {
+			$event['teams'][$standings[$ts_id]]['wertung'] 
+				= $wertung[$wertungskategorie['category_id']]['wertung'];
+		}
 	}
 
 	$dwz_sort = false;
@@ -512,7 +514,7 @@ function mod_tournaments_tournament_teams_compact(&$event) {
 		foreach ($event['teams'] AS $key => $row) {
 			$teamname[$key] = $row['place'];
 			$verband[$key] = $row['country'];
-			$schnitt[$key] = $row['dwz_schnitt'];
+			$schnitt[$key] = $row['dwz_schnitt'] ?? NULL;
 		}
 		
 		// Nach DWZ-Schnitt absteigend, danach nach Teamname aufsteigend sortieren
