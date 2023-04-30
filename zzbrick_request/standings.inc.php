@@ -201,7 +201,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	
 	$k_a = true;
 	foreach ($tabelle as $tabellenstand_id => $tabellenstand) {
-		if ($event['turnierform'] !== 'e' AND $team_ids[$tabellenstand['team_id']]['dwz_schnitt']) {
+		if ($event['turnierform'] !== 'e' AND !empty($team_ids[$tabellenstand['team_id']]['dwz_schnitt'])) {
 			$tabelle[$tabellenstand_id]['dwz_schnitt'] = $team_ids[$tabellenstand['team_id']]['dwz_schnitt'];
 			// Zeige DWZ-Schnitt in Überschrift abhängig von Werten in Spalte an
 			if ($tabelle[$tabellenstand_id]['dwz_schnitt'] !== 'k. A.') {
