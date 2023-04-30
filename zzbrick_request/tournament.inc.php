@@ -33,7 +33,6 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 				IF((SELECT COUNT(*) FROM teams WHERE teams.event_id = events.event_id) < tournaments.teams_max, 1, NULL)
 			) AS meldung_moeglich
 			, (SELECT COUNT(*) FROM forms WHERE forms.event_id = events.event_id AND forms.form_category_id = %d) AS freiplatz
-			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
 			, pseudo_dwz
 			, tournament_id
 			, tabellenstaende
@@ -500,7 +499,7 @@ function mod_tournaments_tournament_teams_compact(&$event) {
 	}
 
 	$dwz_sort = false;
-	if ($event['teilnehmerliste']) {
+	if ($event['participant_list']) {
 		$dwz_sort = true;
 		$first_team = current($event['teams']);
 		if ($first_team['setzliste_no']) $dwz_sort = false;
@@ -524,10 +523,10 @@ function mod_tournaments_tournament_teams_compact(&$event) {
 	$own_teams = mf_tournaments_team_own();
 	foreach ($event['teams'] as $id => $team) {
 		$active = false;
-		if ($event['teilnehmerliste'] AND $team['team_status'] === 'Teilnehmer') $active = true;
+		if ($event['participant_list'] AND $team['team_status'] === 'Teilnehmer') $active = true;
 		elseif (in_array($id, $own_teams) AND $internal) $active = true;
 		elseif (brick_access_rights('Webmaster') AND $event['internal']) $active = true;
-		if ($active) $event['teams'][$id]['aktiv'] = 1;
+		if ($active) $event['teams'][$id]['active'] = 1;
 	}
 
 	return wrap_template('teams-compact', $event);

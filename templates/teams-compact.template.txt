@@ -30,8 +30,8 @@
 %%% condition else %%%
 %%% item setzliste_no %%%
 %%% condition endif %%%</td>
-<td>%%% condition if aktiv %%%<a href="../../%%% item team_identifier %%%/">%%% condition endif %%%
-%%% item team %%% %%% item team_no %%%%%% item aktiv "</a>" %%%</td>
+<td>%%% condition if active %%%<a href="../../%%% item team_identifier %%%/">%%% condition endif %%%
+%%% item team %%% %%% item team_no %%%%%% item active "</a>" %%%</td>
 %%% condition if dwz_schnitt %%%
 <td class="number">%%% item dwz_schnitt %%%</td>
 %%% condition endif %%%

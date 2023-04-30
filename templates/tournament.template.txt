@@ -8,21 +8,6 @@
 # @copyright Copyright © 2012-2023 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
-# List of fields:
-# event_id, event, duration, year, veranstaltungsort, veranstaltungsort_link,
-# address, postcode, place, description, latitude, longitude,
-# telefon, telefax, e_mail, series_category_id, identifier, offen,
-# teilnehmerliste, turnierort, pseudo_dwz, bretter_min, turnierform,
-# event_category, tournament_id, tabellenstaende, series,
-# series_description, series_path, main_series_path, main_series, runden,
-# modus, spielerphotos, internal, einzel, fide_id, dwz_code,
-# bedenkzeit { tb_id, phase, bedenkzeit, zeitbonus, zuege }, organisations {
-# role, organisations { event_contact_id, contact, website, role } }, events {
-# event_id, event, duration, time_begin, time_end,
-# event_category_id, date_begin, date_end, runde_no, paarungen, partien, tabelle,
-# faellt_aus, pgn, internal }, partien, links, teams, einzelteilnehmerliste,
-# photouebersicht
-#
 <h1>%%% item event %%%<br>
 %%% item duration wrap_date %%% %%% item turnierort "<em>in %s</em>"%%%</h1>
 
@@ -182,7 +167,7 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% condition endif %%%
 </p>
 %%% condition endif %%%
-%%% condition if teilnehmerliste %%%
+%%% condition if participant_list %%%
 <h3>Suche nach Team oder Spieler</h3>
 <form method="GET" action="./suche/" id="suche" accept-charset="utf-8">
 <p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
