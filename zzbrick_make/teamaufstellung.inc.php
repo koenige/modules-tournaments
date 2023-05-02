@@ -289,7 +289,7 @@ function cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler) {
 		if ($gastspieler) $values['POST']['gastspieler'] = 'ja';
 		else $values['POST']['gastspieler'] = 'nein';
 	}
-	$ops = zzform_multi('teilnahmen', $values);
+	$ops = zzform_multi('participations', $values);
 	if (!$ops['id']) {
 		wrap_error(sprintf('Teilnahme für Kontakt mit ID %d konnte nicht hinzugefügt werden',
 			$contact_id), E_USER_ERROR);
@@ -318,7 +318,7 @@ function cms_team_spieler_update($id, $rangliste_no, $gastspieler, $data) {
 			$values['POST']['gastspieler'] = 'nein';
 		}
 	}
-	$ops = zzform_multi('teilnahmen', $values);
+	$ops = zzform_multi('participations', $values);
 	if (!$ops['id']) {
 		wrap_error(sprintf('Teilnahme für Person mit ID %d konnte nicht aktualisiert werden', $id), E_USER_ERROR);
 	}
@@ -335,7 +335,7 @@ function cms_team_spieler_delete($id) {
 	$values = [];
 	$values['action'] = 'delete';
 	$values['POST']['participation_id'] = $id;
-	$ops = zzform_multi('teilnahmen', $values);
+	$ops = zzform_multi('participations', $values);
 	if (!$ops['id']) {
 		wrap_error(sprintf('Teilnahme für Person mit ID %d konnte nicht gelöscht werden', $id), E_USER_ERROR);
 	}

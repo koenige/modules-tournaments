@@ -706,7 +706,7 @@ function mod_tournaments_make_swtimport_participations($event, $spielerliste, $i
 		$values['ids'] = [
 			'usergroup_id', 'event_id', 'team_id', 'contact_id', 'club_contact_id'
 		];
-		$ops = zzform_multi('teilnahmen', $values);
+		$ops = zzform_multi('participations', $values);
 		if (!$ops['id']) {
 			wrap_error(sprintf('Aufstellung %s konnte nicht hinzugefügt werden.', $s_key));
 		}

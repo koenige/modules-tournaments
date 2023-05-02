@@ -154,7 +154,7 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 		}
 		$values['action'] = 'update';
 		if (!$data['testlauf']) {
-			$ops = zzform_multi('teilnahmen', $values);
+			$ops = zzform_multi('participations', $values);
 			if (!$updated AND $ops['result'] === 'successful_update') $updated = true;
 		}
 	}

@@ -19,7 +19,7 @@ if ($brick['data']['meldung'] === 'gesperrt')
 if (!in_array($brick['data']['meldung'], ['offen', 'teiloffen']))
 	wrap_quit(403, 'Das Team wurde bereits abschließend gemeldet. Änderungen sind nicht mehr möglich.');
 
-$zz = zzform_include('teilnahmen');
+$zz = zzform_include('participations');
 
 $brick['page']['title'] .= 'Kontaktdaten';
 $brick['page']['breadcrumbs'][] = 'Kontaktdaten';
