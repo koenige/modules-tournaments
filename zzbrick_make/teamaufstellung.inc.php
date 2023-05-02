@@ -136,7 +136,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 						if ($ops) $changed = true;
 					}
 					continue;
-				} elseif (!empty($postdata['auswahl'])) {
+				} elseif (!empty($postdata['auswahl']) AND empty($postdata['abbruch'])) {
 					$zps = explode('-', $postdata['auswahl']);
 					$spieler = my_dwz_spielerdaten($zps[0], $zps[1]);
 					$data['neu_treffer_ohne_rang'] = true;
