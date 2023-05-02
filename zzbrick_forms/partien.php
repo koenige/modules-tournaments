@@ -34,7 +34,7 @@ if (count($brick['vars']) === 4) {
 		$paarung['auswaerts_team_id']);
 }
 
-$zz = zzform_include_table('partien', $values);
+$zz = zzform_include('partien', $values);
 $zz['where']['event_id'] = $brick['data']['event_id'];
 $zz['where']['runde_no'] = $runde_no;
 if (count($brick['vars']) === 4) {

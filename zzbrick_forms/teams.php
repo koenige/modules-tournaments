@@ -13,7 +13,7 @@
  */
 
 
-$zz = zzform_include_table('teams');
+$zz = zzform_include('teams');
 
 $zz['details'][0]['title'] = 'Spieler';
 $zz['details'][0]['link'] = [

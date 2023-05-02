@@ -14,7 +14,7 @@
 
 
 $values['where'] = sprintf('WHERE event_id = %d', $brick['data']['event_id']);
-$zz = zzform_include_table('paarungen', $values);
+$zz = zzform_include('paarungen', $values);
 $zz['where']['event_id'] = $brick['data']['event_id'];
 $zz['where']['runde_no'] = $brick['vars'][2];
 

@@ -75,7 +75,7 @@ $zz['fields'][4]['display_field'] = 'modus';
 $zz['fields'][4]['search'] = 'modus.category_short';
 $zz['fields'][4]['character_set'] = 'utf8';
 
-$zz['fields'][49] = zzform_include_table('turniere-bedenkzeiten');
+$zz['fields'][49] = zzform_include('turniere-bedenkzeiten');
 $zz['fields'][49]['title'] = 'Bedenkzeit';
 $zz['fields'][49]['type'] = 'subtable';
 $zz['fields'][49]['min_records'] = 1;
@@ -137,7 +137,7 @@ $zz['fields'][53]['type'] = 'date';
 $zz['fields'][53]['hide_in_list'] = true;
 $zz['fields'][53]['if']['add']['hide_in_form'] = true;
 
-$zz['fields'][21] = zzform_include_table('turniere-wertungen');
+$zz['fields'][21] = zzform_include('turniere-wertungen');
 $zz['fields'][21]['title'] = 'Wertungen';
 $zz['fields'][21]['type'] = 'subtable';
 $zz['fields'][21]['min_records'] = 3;
@@ -162,7 +162,7 @@ $zz['fields'][26]['field_name'] = 'turnierkennung';
 $zz['fields'][26]['explanation'] = 'Eigene Turnierkennung, wird z. B. für SWT-Dateiexport genutzt';
 $zz['fields'][26]['hide_in_list'] = true;
 
-$zz['fields'][28] = zzform_include_table('turniere-kennungen');
+$zz['fields'][28] = zzform_include('turniere-kennungen');
 $zz['fields'][28]['title'] = 'Kennungen';
 $zz['fields'][28]['class'] = 'kennungen';
 $zz['fields'][28]['type'] = 'subtable';
@@ -352,7 +352,7 @@ $zz['fields'][41]['hide_in_form'] = true;
 $zz['fields'][41]['hide_zeros'] = true;
 $zz['fields'][41]['exclude_from_search'] = true;
 
-$zz['fields'][43] = zzform_include_table('turniere-status');
+$zz['fields'][43] = zzform_include('turniere-status');
 $zz['fields'][43]['title'] = 'Status';
 $zz['fields'][43]['type'] = 'subtable';
 $zz['fields'][43]['min_records'] = 1;

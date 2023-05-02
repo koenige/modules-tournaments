@@ -13,7 +13,7 @@
  */
 
 
-$zz = zzform_include_table('turniere');
+$zz = zzform_include('turniere');
 
 $sql = 'SELECT tournament_id
 	FROM tournaments

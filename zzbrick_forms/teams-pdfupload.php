@@ -16,7 +16,7 @@
 $brick['page']['title'] .= 'PDF Upload';
 $brick['page']['breadcrumbs'][] = 'PDF Upload';
 
-$zz = zzform_include_table('teams');
+$zz = zzform_include('teams');
 
 $zz_conf['footer_text'] = wrap_template('team-pdfupload');
 $brick['data']['head'] = true;

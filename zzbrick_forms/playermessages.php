@@ -13,7 +13,7 @@
  */
 
 
-$zz = zzform_include_table('spielernachrichten');
+$zz = zzform_include('spielernachrichten');
 
 $event_ids = [];
 if (!empty($brick['data']['event_id'])) {

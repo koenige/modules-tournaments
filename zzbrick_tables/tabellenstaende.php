@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2015, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2015, 2019-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -94,7 +94,7 @@ $zz['fields'][9]['field_name'] = 'spiele_v';
 $zz['fields'][9]['type'] = 'number';
 $zz['fields'][9]['null'] = true;
 
-$zz['fields'][10] = zzform_include_table('tabellenstaende-wertungen');
+$zz['fields'][10] = zzform_include('tabellenstaende-wertungen');
 $zz['fields'][10]['title'] = 'Wertungen';
 $zz['fields'][10]['table_name'] = 'wertungen';
 $zz['fields'][10]['type'] = 'subtable';

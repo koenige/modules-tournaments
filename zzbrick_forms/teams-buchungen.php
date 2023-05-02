@@ -21,7 +21,7 @@ if (!in_array($brick['data']['meldung'], ['offen', 'teiloffen']))
 $brick['page']['title'] .= 'Buchungen';
 $brick['page']['breadcrumbs'][] = 'Buchungen';
 
-$zz = zzform_include_table('buchungen');
+$zz = zzform_include('buchungen');
 
 $zz_conf['footer_text'] = wrap_template('team-buchung');
 $brick['data']['head'] = true;

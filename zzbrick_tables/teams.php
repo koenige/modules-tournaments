@@ -219,7 +219,7 @@ if (wrap_setting('tournaments_team_league')) {
 	$zz['fields'][48]['explanation'] = 'Falls immer abweichend vom festgesetzten Spielbeginn';
 }
 
-$zz['fields'][21] = zzform_include_table('anmerkungen');
+$zz['fields'][21] = zzform_include('anmerkungen');
 $zz['fields'][21]['separator_before'] = 'text <div class="separator">Sonstiges</div>';
 $zz['fields'][21]['title_tab'] = 'Bemerkungen / Kontakt';
 $zz['fields'][21]['title'] = 'Anmerkungen';
