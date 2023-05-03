@@ -84,8 +84,8 @@ function mod_tournaments_startranking_single($event) {
 			, places.contact AS veranstaltungsort, place, latitude, longitude
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, status_category_id
-			, DATE_FORMAT(eintrag_datum, "%%d.%%m %%H:%%i") AS eintrag_datum
-			, eintrag_datum AS eintrag_datum_raw
+			, DATE_FORMAT(entry_date, "%%d.%%m %%H:%%i") AS entry_date
+			, entry_date AS entry_date_raw
 			, IF(SUBSTRING(qualification.event, 1, LENGTH(events.event)) = events.event
 				, SUBSTRING(qualification.event, LENGTH(events.event)+1), qualification.event
 			) AS qualification_event
