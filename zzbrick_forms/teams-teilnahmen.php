@@ -21,8 +21,8 @@ if (!in_array($brick['data']['meldung'], ['offen', 'teiloffen']))
 
 $zz = zzform_include('participations');
 
-$brick['page']['title'] .= 'Kontaktdaten';
-$brick['page']['breadcrumbs'][] = 'Kontaktdaten';
+$zz['page']['title'] = $brick['page']['title'].'Kontaktdaten';
+$zz['page']['breadcrumbs'][] = 'Kontaktdaten';
 
 $zz_conf['footer_text'] = wrap_template('team-kontakt', $brick['data']);
 $brick['data']['head'] = true;

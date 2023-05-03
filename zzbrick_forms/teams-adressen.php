@@ -44,7 +44,7 @@ $sql = sprintf($sql
 );
 $contact_ids = wrap_db_fetch($sql, '_dummy_', 'single value');
 
-require_once wrap_setting('custom').'/zzbrick_forms/persons.php';
+$zz = zzform_include('persons', [], 'forms');
 
 if (empty($contact_ids)) {
 	$zz['sql'] .= ' AND contact_id = 0';

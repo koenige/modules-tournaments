@@ -22,11 +22,11 @@ $data = $brick['data'];
 // Team + Vereinsbetreuer auslesen
 $data = array_merge($data, mf_tournaments_team_participants([$data['team_id'] => $data['contact_id']], $data, false));
 
-$brick['page']['title'] .= 'Details';
-$brick['page']['breadcrumbs'][] = '<a href="../kontakt/">Kontaktdaten</a>';
-$brick['page']['breadcrumbs'][] = 'Details';
+$zz = zzform_include('persons', [], 'forms');
 
-require_once wrap_setting('custom').'/zzbrick_forms/persons.php';
+$zz['page']['title'] = $brick['page']['title'].'Details';
+$zz['page']['breadcrumbs'][] = '<a href="../kontakt/">Kontaktdaten</a>';
+$zz['page']['breadcrumbs'][] = 'Details';
 
 // Person-ID notwendig
 if (empty($_GET['where']['contact_id'])) wrap_quit(403);
