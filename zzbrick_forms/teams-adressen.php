@@ -85,7 +85,7 @@ wrap_setting('zzform_show_list_while_edit', false);
 $zz_conf['delete'] = false;
 $zz_conf['merge'] = false;
 $zz_conf['add'] = false;
-$zz_conf['dont_show_title_as_breadcrumb'] = true;
+$zz['page']['dont_show_title_as_breadcrumb'] = true;
 
 $zz['page']['breadcrumbs'][] = sprintf('<a href="../">%s</a>', $organisation);
 $zz['page']['breadcrumbs'][] = 'Adressen';

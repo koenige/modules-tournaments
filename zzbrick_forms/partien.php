@@ -76,16 +76,16 @@ if (count($brick['vars']) === 4) {
 	}
 }
 
-$zz_conf['breadcrumbs'][] = [
-	'linktext' => 'Runden',
-	'url' => wrap_setting('events_internal_path').'/'.$brick['data']['identifier'].'/runde/'
+$zz['page']['breadcrumbs'][] = [
+	'title' => 'Runden',
+	'url_path' => wrap_setting('events_internal_path').'/'.$brick['data']['identifier'].'/runde/'
 ];
 if (count($brick['vars']) === 4) {
-	$zz_conf['breadcrumbs'][] = [
-		'linktext' => $zz['where']['runde_no'],
-		'url' => wrap_setting('events_internal_path').'/'.$brick['data']['identifier'].'/runde/'.$zz['where']['runde_no'].'/'
+	$zz['page']['breadcrumbs'][] = [
+		'title' => $zz['where']['runde_no'],
+		'url_path' => wrap_setting('events_internal_path').'/'.$brick['data']['identifier'].'/runde/'.$zz['where']['runde_no'].'/'
 	];
-	$zz_conf['breadcrumbs'][] = ['linktext' => 'Tisch '.$brick['vars'][3]];
+	$zz['page']['breadcrumbs'][] = ['title' => 'Tisch '.$brick['vars'][3]];
 
 	$sql = 'SELECT COUNT(*) FROM paarungen WHERE event_id = %d AND runde_no = %d';
 	$sql = sprintf($sql, $brick['data']['event_id'], $brick['vars'][2]);
@@ -100,9 +100,9 @@ if (count($brick['vars']) === 4) {
 		$zz['page']['link']['prev'][0]['title'] = 'Vorheriger Tisch';
 	}
 } else {
-	$zz_conf['breadcrumbs'][] = ['linktext' => 'Runde '.$brick['vars'][2]];
+	$zz['page']['breadcrumbs'][] = ['title' => 'Runde '.$brick['vars'][2]];
 }
-$zz_conf['dont_show_title_as_breadcrumb'] = true;
+$zz['page']['dont_show_title_as_breadcrumb'] = true;
 $zz_conf['footer_text'] = wrap_template('link-rel-nav');
 
 if (count($brick['vars']) === 3) {

@@ -18,12 +18,12 @@ $zz = zzform_include('paarungen', $values);
 $zz['where']['event_id'] = $brick['data']['event_id'];
 $zz['where']['runde_no'] = $brick['vars'][2];
 
-$zz_conf['breadcrumbs'][] = [
-	'linktext' => 'Runden',
-	'url' => wrap_setting('events_internal_path').'/'.$brick['data']['identifier'].'/runde/'
+$zz['page']['breadcrumbs'][] = [
+	'title' => 'Runden',
+	'url_path' => wrap_setting('events_internal_path').'/'.$brick['data']['identifier'].'/runde/'
 ];
-$zz_conf['breadcrumbs'][] = ['linktext' => $brick['vars'][2]];
-$zz_conf['dont_show_title_as_breadcrumb'] = true;
+$zz['page']['breadcrumbs'][] = ['title' => $brick['vars'][2]];
+$zz['page']['dont_show_title_as_breadcrumb'] = true;
 
 if ($brick['vars'][2] < $brick['data']['runden_max']) {
 	$zz['page']['link']['next'][0]['href'] = '../'.($brick['vars'][2] + 1).'/';	
