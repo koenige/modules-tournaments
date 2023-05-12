@@ -45,10 +45,11 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			parse_str($events[$line['event_id']]['series_parameter'], $events[$line['event_id']]['series_parameter']);
 		}
  	}
- 	if (array_key_exists($ops['page']['extra']['event_id'], $events)) {
-	 	$event = $events[$ops['page']['extra']['event_id']];
+ 	$page = wrap_static('page');
+ 	if (array_key_exists($page['extra']['event_id'], $events)) {
+	 	$event = $events[$page['extra']['event_id']];
 	 } else {
-	 	$event = my_event($ops['page']['extra']['event_id']);
+	 	$event = my_event($page['extra']['event_id']);
 		if ($event['series_parameter']) {
 			parse_str($event['series_parameter'], $event['series_parameter']);
 		}

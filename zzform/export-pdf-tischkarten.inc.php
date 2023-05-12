@@ -28,7 +28,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	wrap_include_files('pdf', 'tournaments');
 
 	// event information
-	$event = $ops['page']['event'];
+	$event = wrap_static('page', 'event');
 	$event_title = sprintf("%s \n%s %s"
 		, str_replace('-', '- ', $event['main_series_long'])
 		, $event['turnierort'], $event['year']

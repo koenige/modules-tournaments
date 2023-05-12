@@ -24,7 +24,7 @@
  * @param array $ops
  */
 function mf_tournaments_export_pdf_ergebniszettel($ops) {
-	$event = $ops['page']['event'];
+	$event = wrap_static('page', 'event');
 	
 	// Feld-IDs raussuchen
 	$nos = mf_tournaments_export_pdf_ergebniszettel_nos($ops['output']['head']);
