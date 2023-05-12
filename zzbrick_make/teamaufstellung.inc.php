@@ -246,8 +246,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
  * @return bool
  */
 function cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler) {
-	global $zz_conf;
-	require_once $zz_conf['dir_custom'].'/editing.inc.php';
+	wrap_include_files('zzform/editing', 'custom');
 	
 	// Test, ob Spieler noch hinzugefügt werden darf
 	if ($data['bretter_max']) {

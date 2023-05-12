@@ -446,9 +446,8 @@ function mod_tournaments_make_swtimport_delete($ids, $event_id, $type) {
  * @return array $ids
  */
 function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $import) {
-	global $zz_conf;
-	require_once $zz_conf['dir_custom'].'/editing.inc.php';
-	require_once wrap_setting('custom_wrap_dir').'/persons.inc.php';
+	wrap_include_files('zzform/editing', 'custom');
+	wrap_include_files('custom/persons', 'custom');
 	
 	$ids['person_spielfrei'] = [];
 	$ids['person'] = [];
