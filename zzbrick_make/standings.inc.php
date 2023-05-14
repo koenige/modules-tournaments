@@ -88,15 +88,18 @@ function mod_tournaments_make_standings_overview($vars) {
 	
 	if (!empty($_POST) AND is_array($_POST)) {
 		require_once __DIR__.'/../tournaments/cronjobs.inc.php';
-		$runde = key($_POST);
-		if (substr($runde, 0, 6) === 'runde_') {
-			$runde = substr($runde, 6);
-			mf_tournaments_job_create('tabelle', $event['event_id'], $runde);
-			mf_tournaments_job_trigger();
+		$round_no = key($_POST);
+		if (substr($round_no, 0, 6) === 'runde_') {
+			mod_tournaments_make_standings_trigger($event['identifier'].'/'.substr($round_no, 6));
 			wrap_redirect_change();
 		}
 	}
 	return $page;
+}
+
+function mod_tournaments_make_standings_trigger($identifier) {
+	$url = wrap_path('tournaments_job_standings', $identifier, false);
+	wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/tabelle')]);
 }
 
 /**
@@ -107,13 +110,9 @@ function mod_tournaments_make_standings_overview($vars) {
  */
 function mod_tournaments_make_standings_round($vars) {
 	$time = microtime(true);
-	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 
-	// Zugriffsberechtigt?
-	if (!brick_access_rights()) wrap_quit(403);
-
-	$runde = 1; // beginne bei Runde 1 oder bei angegebener Runde
-	if (count($vars) === 3 AND is_numeric($vars[2])) $runde = $vars[2];
+	$round_no = 1; // beginne bei Runde 1 oder bei angegebener Runde
+	if (count($vars) === 3 AND is_numeric($vars[2])) $round_no = $vars[2];
 	elseif (count($vars) !== 2) return false;
 
 	$sql = 'SELECT event_id, events.identifier
@@ -130,14 +129,14 @@ function mod_tournaments_make_standings_round($vars) {
 	if (!$event) return false;
 	wrap_setting('logfile_name', $event['identifier']);
 
-	if ($runde > $event['runden_gespielt']) {
-		mf_tournaments_job_finish('tabelle', 0, $event['event_id'], $runde);
-		wrap_quit(404);
-	}
-	if ($runde > $event['runden']) {
-		mf_tournaments_job_finish('tabelle', 0, $event['event_id'], $runde);
+	if ($round_no > $event['runden_gespielt'])
+		return false;
+	if ($round_no > $event['runden']) {
 		wrap_error(sprintf('Tabellenstand-Update: Runde %d/%d nicht möglich (Termin %d/%s)',
-			$runde, $event['runden'], $vars[0], $vars[1]), E_USER_ERROR);
+			$round_no, $event['runden'], $vars[0], $vars[1]), E_USER_WARNING);
+		$page['text'] = sprintf('<p>%s</p>', wrap_text('Attempted to update a round that is higher than the maximum number of rounds.'));
+		$page['status'] = 503;
+		return $page;		
 	}
 
 	// check if there were games played in this round
@@ -147,38 +146,31 @@ function mod_tournaments_make_standings_round($vars) {
 		AND partiestatus_category_id = %d';
 	$sql = sprintf($sql
 		, $event['event_id']
-		, $runde
+		, $round_no
 		, wrap_category_id('partiestatus/normal')
 	);
 	$games_played_in_round = wrap_db_fetch($sql, '', 'single value');
-	if (!$games_played_in_round) {
-		mf_tournaments_job_finish('tabelle', 0, $event['event_id'], $runde);
-		wrap_quit(404);
-	}
+	if (!$games_played_in_round)
+		return false;
 
 	$type = implode('/', $vars);
-	wrap_setting('log_username', 'Tabellenstand '.$type);
+	wrap_setting('log_username', wrap_setting('robot_username'));
 	if ($event['turnierform'] === 'e') {
 		require_once __DIR__.'/standings-single.inc.php';
-		$tabelle = mod_tournaments_make_standings_calculate_single($event, $runde);
-		if (!$tabelle) {
-			mf_tournaments_job_finish('tabelle', 0, $event['event_id'], $runde);
+		$tabelle = mod_tournaments_make_standings_calculate_single($event, $round_no);
+		if (!$tabelle)
 			return mod_tournaments_make_standings_return(false, $time, $type);
-		}
-		$success = mod_tournaments_make_standings_write_single($event['event_id'], $runde, $tabelle);
-		if (!$success) {
-			mf_tournaments_job_finish('tabelle', 0, $event['event_id'], $runde);
+		$success = mod_tournaments_make_standings_write_single($event['event_id'], $round_no, $tabelle);
+		if (!$success)
 			return mod_tournaments_make_standings_return(false, $time, $type);
-		}
 	} else {
-		$event['runde_no'] = $runde;
+		$event['runde_no'] = $round_no;
 		require_once __DIR__.'/standings-team.inc.php';
 		mod_tournaments_make_standings_team($event);
 	}
-	mf_tournaments_job_finish('tabelle', 1, $event['event_id'], $runde);
-	if ($runde < $event['runden_gespielt']) {
-		mf_tournaments_job_create('tabelle', $event['event_id'], $runde + 1);
-		mf_tournaments_job_trigger();
+	if ($round_no < $event['runden_gespielt']) {
+		wrap_error('trigger standings '.$event['identifier'].'/'.($round_no + 1));
+		mod_tournaments_make_standings_trigger($event['identifier'].'/'.($round_no + 1));
 	}
 	
 	// Aktuelle runde_no von Tabellenstand speichern
@@ -192,14 +184,16 @@ function mod_tournaments_make_standings_round($vars) {
 	$values['POST']['tabellenstand_runde_no'] = $max_runde_no;
 	$ops = zzform_multi('turniere', $values);
 
-	return mod_tournaments_make_standings_return(true, $time, $type);
+	$page['text'] = sprintf(wrap_text('Standings for tournament %s, round %d have been successfully updated.'), $event['identifier'], $round_no);
+	wrap_error('success standings '.$round_no);
+	return mod_tournaments_make_standings_return($page, $time, $type);
 }
 
-function mod_tournaments_make_standings_return($bool, $time, $type) {
+function mod_tournaments_make_standings_return($page, $time, $type) {
 	$time = microtime(true) - $time;
-	if ($time < 1) return $bool; // do not log if it's fast enough
+	if ($time < 1) return $page; // do not log if it's fast enough
 	wrap_log(sprintf('Tabellenstand %s in %s sec erstellt.', $type, $time));
-	return $bool;
+	return $page;
 }
 
 /**

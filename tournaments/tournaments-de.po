@@ -42,6 +42,18 @@ msgstr ""
 "Für Runden besteht die Möglichkeit, in der <a href=\"%s\">Rundenübersicht</"
 "a> eine PGN-Datei hochzuladen."
 
+#: zzbrick_make/standings.inc.php
+msgid ""
+"Attempted to update a round that is higher than the maximum number of rounds."
+msgstr ""
+"Es wurde versucht, eine Runde zu aktualisieren, die höher als die maximale "
+"Anzahl von Runden ist."
+
+#: zzbrick_make/standings.inc.php
+msgid "Standings for tournament %s, round %d have been successfully updated."
+msgstr ""
+"Der Tabellenstand für Turnier %s, Runde %d wurde erfolgreich aktualisiert."
+
 #: zzbrick_make/turnierzahlen.inc.php
 msgid "No ratings found when updating on %s."
 msgstr "Keine Wertungzahlen beim Update am %s gefunden."
