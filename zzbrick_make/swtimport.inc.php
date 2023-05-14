@@ -24,21 +24,35 @@
  * @todo Einzelturniere unterstützen
  */
 function mod_tournaments_make_swtimport($vars, $settings, $event) {
-	wrap_setting('cache', false);
-	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
-
-	ignore_user_abort(1);
-	ini_set('max_execution_time', 180);
-
+	// parameter count correct?
 	if (count($vars) !== 2) {
 		wrap_log(sprintf('SWT-Import: Falsche Zahl von Parametern: %s', implode('/', $vars)));
 		return false;
 	}
-	wrap_setting('logfile_name', implode('/', $vars));
+
+	// is there an event?
 	if (empty($event['event_id'])) {
 		wrap_log('SWT-Import: Kein Termin für diese Parameter in der Datenbank');
 		return false;
 	}
+
+	$page['breadcrumbs'][]['title'] = 'SWT-Import';
+	
+	// is there a file?
+	$swt = $event['identifier'].'.swt';
+	if (!file_exists(wrap_setting('media_folder').'/swt/'.$swt)) {
+		wrap_error(sprintf('Datei swt/%s existiert nicht', $swt));
+		wrap_setting('error_prefix', '');
+		$page['text'] = '<p class="error">Die SWT-Datei für dieses Turnier existiert (noch) nicht. Bitte lade erst eine hoch.</p>';
+		$page['error_keep_page'] = true;
+		$page['status'] = 404;
+		return $page;
+	}
+
+	ignore_user_abort(1);
+	ini_set('max_execution_time', 180);
+	wrap_setting('cache', false);
+	wrap_setting('logfile_name', implode('/', $vars));
 	
 	// @todo Einzel- oder Mannschaftsturnier aus Termine auslesen
 	// Datenherkunft aus Turniere
@@ -47,10 +61,11 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
 		WHERE tournaments.event_id = %d';
 	$sql = sprintf($sql, wrap_db_escape($event['event_id']));
 	$event['wertung_spielfrei'] = wrap_db_fetch($sql, '', 'single value');
-	parse_str($event['tournament_parameter'], $parameter);
-	if ($parameter) $event += $parameter;
-
-	$page['breadcrumbs'][] = 'SWT-Import';
+	if ($event['tournament_parameter']) {
+		// @todo use wrap_module_parameters() to register parameters as settings
+		parse_str($event['tournament_parameter'], $parameter);
+		if ($parameter) $event += $parameter;
+	}
 
 	$sql = 'SELECT category_id, categories.path
 		FROM turniere_wertungen
@@ -63,29 +78,13 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
 	$sql = sprintf($sql, $event['event_id']);
 	$wertungen = wrap_db_fetch($sql, 'tw_id', 'key/value');
 
-	// Direkt SWT-Datei auslesen
-	$swt = $event['identifier'].'.swt';
-	if (!file_exists(wrap_setting('media_folder').'/swt/'.$swt)) {
-		wrap_error(sprintf('Datei swt/%s existiert nicht', $swt));
-		wrap_setting('error_prefix', '');
-		$page['text'] = '<p class="error">Die SWT-Datei für dieses Turnier existiert (noch) nicht. Bitte lade erst eine hoch.</p>';
-		$page['status'] = 404;
-		if ($_SESSION['username'] === wrap_setting('robot_username'))
-			mf_tournaments_job_finish('swt', 0, $event['event_id']);
-		return $page;
-	}
-
 	// SWT-Parser einbinden
 	wrap_lib('swtparser');
 	// @todo unterstütze Parameter für UTF-8-Codierung
 	$tournament = swtparser(wrap_setting('media_folder').'/swt/'.$swt, wrap_setting('character_set'));
 	$field_names = swtparser_get_field_names('de');
 
-	if ($tournament['out'][35] === 1) {
-		$form = 'mannschaftsturnier';
-	} else {
-		$form = 'einzelturnier';
-	}
+	$form = $tournament['out'][35] === 1 ? 'mannschaftsturnier' :'einzelturnier';
 
 	// Check: richtiges Turnier?
 	mod_tournaments_make_swtimport_turniercheck($event, $form, $tournament['out']);
@@ -97,8 +96,6 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
 
 	$import['identifier'] = $event['identifier'];
 	$page['text'] = wrap_template('swtimport', $import);
-	if ($_SESSION['username'] === wrap_setting('robot_username'))
-		mf_tournaments_job_finish('swt', 1, $event['event_id']);
 	return $page;
 }
 
