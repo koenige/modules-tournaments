@@ -100,36 +100,35 @@ function mf_tournaments_standings_update($ops) {
 			break;
 		}
 	}
-	if ($update) {
-		require_once __DIR__.'/../tournaments/cronjobs.inc.php';
-		$where = [];
-		if ($tournament_ids) {
-			$tournament_ids = array_unique($tournament_ids);
-			$where[] = sprintf('tournament_id IN (%s)', implode(',', $tournament_ids));
-		}
-		if ($event_ids) {
-			$event_ids = array_unique($event_ids);
-			$where[] = sprintf('event_id IN (%s)', implode(',', $event_ids));
-		}
-		if (!$where) return [];
+	if (!$update) return [];
+	$where = [];
+	if ($tournament_ids) {
+		$tournament_ids = array_unique($tournament_ids);
+		$where[] = sprintf('tournament_id IN (%s)', implode(',', $tournament_ids));
+	}
+	if ($event_ids) {
 		$event_ids = array_unique($event_ids);
-		$sql = 'SELECT event_id, events.identifier
-			FROM tournaments
-			JOIN events USING (event_id)
-			WHERE %s';
-		$sql = sprintf($sql, implode(' OR ', $where));
-		$events = wrap_db_fetch($sql, '_dummy_', 'key/value');
-		$runde_nos = array_unique($runde_nos);
-		foreach ($events as $event_id => $event_identifier) {
-			if ($runde_nos) {
-				foreach ($runde_nos as $runde) {
-					mf_tournaments_job_create('tabelle', $event_id, $runde, $priority);
-				}
-			} else {
-				// Start in der 1. Runde
-				mf_tournaments_job_create('tabelle', $event_id, 1, $priority);
+		$where[] = sprintf('event_id IN (%s)', implode(',', $event_ids));
+	}
+	if (!$where) return [];
+	$event_ids = array_unique($event_ids);
+	$sql = 'SELECT event_id, events.identifier
+		FROM tournaments
+		JOIN events USING (event_id)
+		WHERE %s';
+	$sql = sprintf($sql, implode(' OR ', $where));
+	$events = wrap_db_fetch($sql, '_dummy_', 'key/value');
+	$runde_nos = array_unique($runde_nos);
+	foreach ($events as $event_id => $identifier) {
+		if ($runde_nos) {
+			foreach ($runde_nos as $runde) {
+				$url = wrap_path('tournaments_job_standings', $identifier.'/'.$runde, false);
+				wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/tabelle'), 'priority' => $priority]);
 			}
-			mf_tournaments_job_trigger();
+		} else {
+			// Start in der 1. Runde
+			$url = wrap_path('tournaments_job_standings', $identifier.'/1', false);
+			wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/tabelle'), 'priority' => $priority]);
 		}
 	}
 	return [];
