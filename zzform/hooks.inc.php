@@ -331,11 +331,11 @@ function mf_tournaments_round_event($ops) {
 }
 
 function mf_tournaments_swtimport($ops) {
-	if (empty($ops['record_new'][0]['event_id'])) return [];
-	
-	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
-	mf_tournaments_job_create('swt', $ops['record_new'][0]['event_id']);
-	mf_tournaments_job_trigger();
+	$event = wrap_static('page', 'data');
+	if (!$event) return [];
+	$url = wrap_path('tournaments_job_swt', $event['identifier'], true);
+	if (!$url) return [];
+	wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/swt')]);
 	return [];
 }
 
