@@ -184,7 +184,6 @@ function mod_tournaments_make_standings_round($vars) {
 	$ops = zzform_multi('turniere', $values);
 
 	$page['text'] = sprintf(wrap_text('Standings for tournament %s, round %d have been successfully updated.'), $event['identifier'], $round_no);
-	wrap_error('success standings '.$round_no);
 	return mod_tournaments_make_standings_return($page, $time, $type);
 }
 
