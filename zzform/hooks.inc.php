@@ -179,10 +179,11 @@ function mf_tournaments_games_update($ops) {
 	}
 	
 	if (!$event_id) return false;
-	// PGN-Import in Datenbank anstoßen
-	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
-	mf_tournaments_job_create('partien', $event_id, $runde_no);
-	mf_tournaments_job_trigger();
+	$sql = 'SELECT identifier FROM events WHERE event_id = %d';
+	$sql = sprintf($sql, $event_id);
+	$identifier = wrap_db_fetch($sql, '', 'single value');
+	$url = wrap_path('tournaments_job_games', $identifier.'/'.$runde_no, false);
+	wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien')]);
 }
 
 /**

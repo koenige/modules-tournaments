@@ -25,10 +25,7 @@
 function mod_tournaments_make_games($vars) {
 	wrap_setting('cache', false);
 	if (empty($vars)) return false;
-	require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 
-	// access only for admins and cron jobs
-	if (!brick_access_rights()) wrap_quit(403);
 	ignore_user_abort(1);
 	ini_set('max_execution_time', 60);
 
@@ -120,13 +117,6 @@ function mod_tournaments_make_games($vars) {
 			'PGN-Import: Keine Partien vorhanden (%s).', $error_msg
 		);
 		$page['status'] = 404;
-		$sql = 'SELECT event_id FROM events
-			WHERE events.identifier = "%d/%s"';
-		$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
-		$event = wrap_db_fetch($sql);
-		if ($event) {
-			mf_tournaments_job_finish('partien', 0, $event['event_id'], $runde_url);
-		}
 		return $page;
 	}
 	parse_str($event['parameter'], $parameter);
@@ -148,7 +138,6 @@ function mod_tournaments_make_games($vars) {
 			'PGN-Import: PGN-Datei nicht vorhanden (%s).', $error_msg
 		);
 		$page['status'] = 404;
-		mf_tournaments_job_finish('partien', 0, $event['event_id'], $runde_url);
 		return $page;
 	}
 
@@ -356,7 +345,6 @@ function mod_tournaments_make_games($vars) {
 	if ($brett_no) $event['brett_no'] = $brett_no;
 	wrap_setting('error_handling', $old_error_handling);
 	$page['text'] = wrap_template('games-update', $event);
-	mf_tournaments_job_finish('partien', 1, $event['event_id'], $runde_url);
 	return $page;
 }
 
@@ -455,6 +443,7 @@ function cms_partienupdate_normalize_name($name) {
 function cms_partienupdate_trigger() {
 	$sql = 'SELECT DISTINCT tournaments.event_id, runden.runde_no,
 			IF(runden.date_begin >= CURDATE() AND runden.time_begin > CURTIME(), NULL, 1) AS laufend
+			, events.identifier
 		FROM tournaments
 		JOIN events USING (event_id)
 		LEFT JOIN events runden
@@ -477,9 +466,10 @@ function cms_partienupdate_trigger() {
 	foreach ($tournaments as $event_id => $turnier) {
 		if (!$turnier['laufend']) continue;
 		// @todo maybe disable next two lines to reduce server load
-		mf_tournaments_job_create('partien', $turnier['event_id'], $turnier['runde_no']);
-		mf_tournaments_job_create('partien', $turnier['event_id'], $turnier['runde_no'].'-live', -5);
-		mf_tournaments_job_trigger();
+		$url = wrap_path('tournaments_job_games', $turnier['identifier'].'/'.$turnier['runde_no'], false);
+		wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien')]);
+		$url = wrap_path('tournaments_job_games', $turnier['identifier'].'/'.$turnier['runde_no'].'-live', false);
+		wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien'), 'priority' => -5]);
 	}
 	$page['text'] = 'Update in progress';
 	return $page;
