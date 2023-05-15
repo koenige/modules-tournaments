@@ -29,10 +29,6 @@ function mod_tournaments_make_games($vars) {
 	ignore_user_abort(1);
 	ini_set('max_execution_time', 60);
 
-	// Fehler in PGNs nur angeben, wenn direkt jemand vor Rechner sitzt
-	// nicht bei automatischem Sync
-	$robot_zugriff = $_SESSION['username'] === wrap_setting('robot_username') ? true : false;
-	
 	$tisch_no = false;
 	$brett_no = false;
 	$runde_no = false;
@@ -309,7 +305,9 @@ function mod_tournaments_make_games($vars) {
 			}
 		} else {
 			// - Falls nicht, PGN in Fehlerlog oder Fehler-PGN-Datei
-			if (!$robot_zugriff) {
+			if (!wrap_setting('background_job')) {
+				// Fehler in PGNs nur angeben, wenn direkt jemand vor Rechner sitzt
+				// nicht bei automatischem Sync
 				wrap_log(sprintf(
 					'PGN-Import: Partie %s-%s, %s %d, Runde %d nicht gefunden.',
 					$partie['White'], $partie['Black'], $event['event'], $event['year'], $partie['runde_no']
@@ -332,7 +330,7 @@ function mod_tournaments_make_games($vars) {
 	foreach ($games as $index => $game) {
 		$head = '';
 		foreach ($game['head'] as $index => $value) $head .= sprintf('[%s "%s"]', $index, $value)."\n";
-		if (!$robot_zugriff AND count($games) < 100) {
+		if (!wrap_setting('background_job') AND count($games) < 100) {
 			// Fehlerlog nur bei einzelnen Partien, sonst zuviele
 			// z. B. bei Upload einer einzelnen DEM-PGN für alle Meisterschaften
 			wrap_log('PGN-Import: Für diese PGN konnte keine Partie gefunden werden: '.$head);
