@@ -87,7 +87,6 @@ function mod_tournaments_make_standings_overview($vars) {
 	$page['text'] = wrap_template('standings-update', $event);
 	
 	if (!empty($_POST) AND is_array($_POST)) {
-		require_once __DIR__.'/../tournaments/cronjobs.inc.php';
 		$round_no = key($_POST);
 		if (substr($round_no, 0, 6) === 'runde_') {
 			mod_tournaments_make_standings_trigger($event['identifier'].'/'.substr($round_no, 6));
