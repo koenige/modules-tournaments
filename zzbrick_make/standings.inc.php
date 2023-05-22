@@ -168,7 +168,6 @@ function mod_tournaments_make_standings_round($vars) {
 		mod_tournaments_make_standings_team($event);
 	}
 	if ($round_no < $event['runden_gespielt']) {
-		wrap_error('trigger standings '.$event['identifier'].'/'.($round_no + 1));
 		mod_tournaments_make_standings_trigger($event['identifier'].'/'.($round_no + 1));
 	}
 	
