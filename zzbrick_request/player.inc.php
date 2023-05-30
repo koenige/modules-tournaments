@@ -113,7 +113,6 @@ function mod_tournaments_player($vars, $settings, $event) {
 				$log_round_error = false;
 		} else {
 			while ($round_no.'' !== $game['runde_no'].'') {
-				exit;
 				array_splice($data['games'], $index, 0, [
 					['runde_no' => $round_no, 'no_pairing' => 1]
 				]);
