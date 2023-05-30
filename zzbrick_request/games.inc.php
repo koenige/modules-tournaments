@@ -58,7 +58,7 @@ function mod_tournaments_games($vars, $settings = [], $event = []) {
 		AND (tournaments.notationspflicht = "ja" OR addresses.country_id = %d)
 	';
 	$sql = sprintf($sql
-		, wrap_setting('website_id')
+		, $event['website_id']
 		, $vars[0]
 		, wrap_db_escape($vars[1])
 		, wrap_id('countries', '--') // internet
@@ -84,7 +84,7 @@ function mod_tournaments_games($vars, $settings = [], $event = []) {
 	';
 	$sql = sprintf($sql,
 		wrap_id('usergroups', 'spieler'),
-		wrap_setting('website_id'),
+		$event['website_id'],
 		$event['event_id']
 	);
 	$event = array_merge($event, wrap_db_fetch($sql));
