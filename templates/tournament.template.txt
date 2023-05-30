@@ -169,11 +169,12 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% condition endif %%%
 %%% condition if participant_list %%%
 <h3>Suche nach Team oder Spieler</h3>
-<form method="GET" action="./suche/" id="suche" accept-charset="utf-8">
+
+<form method="GET" action=".%%% condition if main_series_path %%%./%%% item main_series_path %%%%%% condition endif %%%/suche/" id="suche" accept-charset="utf-8">
 <p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
 %%% condition else %%%
 <h3>Suche nach Team</h3>
-<form method="GET" action="./suche/" id="suche" accept-charset="utf-8">
+<form method="GET" action=".%%% condition if main_series_path %%%./%%% item main_series_path %%%%%% condition endif %%%/suche/" id="suche" accept-charset="utf-8">
 <p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
 %%% condition endif %%%
 
@@ -196,7 +197,7 @@ Plätze frei sind oder eine Warteliste existiert.
 
 %%% condition if main_series_path %%%
 <h3>Suche nach Spielerinnen und Spielern</h3>
-<form method="GET" action="./suche/" id="suche" accept-charset="utf-8">
+<form method="GET" action=".%%% condition if main_series_path %%%./%%% item main_series_path %%%%%% condition endif %%%/suche/" id="suche" accept-charset="utf-8">
 <p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
 %%% condition endif %%%
 %%% condition else %%%
