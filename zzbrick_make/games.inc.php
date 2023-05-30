@@ -138,8 +138,8 @@ function mod_tournaments_make_games($vars) {
 
 	// Partien aus Datenbank abfragen
 	$sql = 'SELECT partie_id
-			, CONCAT(weiss.t_nachname, ", ", weiss.t_vorname) AS White
-			, CONCAT(schwarz.t_nachname, ", ", schwarz.t_vorname) AS Black
+			, CONCAT(weiss.t_nachname, ", ", weiss.t_vorname, IFNULL(CONCAT(" ", weiss.t_namenszusatz), "")) AS White
+			, CONCAT(schwarz.t_nachname, ", ", schwarz.t_vorname, IFNULL(CONCAT(" ", schwarz.t_namenszusatz), "")) AS Black
 			, IF((ISNULL(weiss_ergebnis) OR ISNULL(schwarz_ergebnis)), "*",
 				CONCAT(
 					CASE weiss_ergebnis WHEN 0.0 THEN 0 WHEN 0.5 THEN "1/2" WHEN 1.0 THEN 1 END,
