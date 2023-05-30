@@ -80,7 +80,6 @@ function mod_tournaments_make_games($vars) {
 		if ($vars[0] === 'update') return cms_partienupdate_trigger();
 		return false;
 	}
-	$runde_url = $runde_no.($live ? '-live' : '');
 
 	$error_msg = sprintf('Termin %s/%s',
 		wrap_html_escape($vars[0]),
@@ -206,9 +205,8 @@ function mod_tournaments_make_games($vars) {
 	$event['not_found'] = 0;
 	$event['wrong_pgn'] = 0;
 
-	if (!empty($games_not_live)) {
+	if (!empty($games_not_live))
 		$games_not_live = cms_partienupdate_pgn_index($games_not_live);
-	}
 	$games = cms_partienupdate_pgn_index($games);
 
 	foreach ($partien as $partie_id => $partie) {
