@@ -23,6 +23,11 @@
  */
 function mod_tournaments_games($vars, $settings = [], $event = []) {
 	require_once wrap_setting('modules_dir').'/chess/chess/pgn.inc.php';
+
+	if (empty($event)) {
+		// direct access via filemove
+		$event = my_event($vars[0], $vars[1]);
+	}
 	
 	$qs = mod_tournaments_games_check_qs();
 	
