@@ -44,10 +44,25 @@ msgstr ""
 
 #: zzbrick_make/standings.inc.php
 msgid ""
+"Standings update for round %d impossible: So far only %d rounds have been "
+"played."
+msgstr ""
+"Tabellenaktualisierung für Runde %d unmöglich: Bisher wurden nur %d Runden "
+"gespielt."
+
+#: zzbrick_make/standings.inc.php
+msgid ""
 "Attempted to update a round that is higher than the maximum number of rounds."
 msgstr ""
 "Es wurde versucht, eine Runde zu aktualisieren, die höher als die maximale "
 "Anzahl von Runden ist."
+
+#: zzbrick_make/standings.inc.php
+msgid ""
+"Standings update for round %d impossible: No games were played in this round."
+msgstr ""
+"Tabellenaktualisierung für Runde %d unmöglich: In dieser Runde wurden keine "
+"Partien gespielt."
 
 #: zzbrick_make/standings.inc.php
 msgid "Standings for tournament %s, round %d have been successfully updated."

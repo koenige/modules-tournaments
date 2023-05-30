@@ -35,7 +35,15 @@ msgid "For rounds, there is a possibility to upload a PGN file in the <a href="%
 msgstr ""
 
 #: zzbrick_make/standings.inc.php
+msgid "Standings update for round %d impossible: So far only %d rounds have been played."
+msgstr ""
+
+#: zzbrick_make/standings.inc.php
 msgid "Attempted to update a round that is higher than the maximum number of rounds."
+msgstr ""
+
+#: zzbrick_make/standings.inc.php
+msgid "Standings update for round %d impossible: No games were played in this round."
 msgstr ""
 
 #: zzbrick_make/standings.inc.php

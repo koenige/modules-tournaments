@@ -117,7 +117,7 @@ function mod_tournaments_make_standings_round($vars) {
 	$sql = 'SELECT event_id, events.identifier
 			, runden, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform, bretter_min
 			, tournament_id
-			, (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id) AS runden_gespielt
+			, (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id) AS rounds_played
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN categories turnierformen
@@ -128,14 +128,20 @@ function mod_tournaments_make_standings_round($vars) {
 	if (!$event) return false;
 	wrap_setting('logfile_name', $event['identifier']);
 
-	if ($round_no > $event['runden_gespielt'])
-		return false;
 	if ($round_no > $event['runden']) {
 		wrap_error(sprintf('Tabellenstand-Update: Runde %d/%d nicht möglich (Termin %d/%s)',
 			$round_no, $event['runden'], $vars[0], $vars[1]), E_USER_WARNING);
 		$page['text'] = sprintf('<p>%s</p>', wrap_text('Attempted to update a round that is higher than the maximum number of rounds.'));
 		$page['status'] = 503;
-		return $page;		
+		return $page;
+	}
+	if ($round_no > $event['rounds_played']) {
+		$page['text'] = wrap_text(sprintf(
+			'Standings update for round %d impossible: So far only %d rounds have been played.'
+			, $round_no, $event['rounds_played']
+		));
+		$page['status'] = 404;
+		return $page;
 	}
 
 	// check if there were games played in this round
@@ -149,8 +155,14 @@ function mod_tournaments_make_standings_round($vars) {
 		, wrap_category_id('partiestatus/normal')
 	);
 	$games_played_in_round = wrap_db_fetch($sql, '', 'single value');
-	if (!$games_played_in_round)
-		return false;
+	if (!$games_played_in_round) {
+		$page['text'] = wrap_text(sprintf(
+			'Standings update for round %d impossible: No games were played in this round.'
+			, $round_no, $event['rounds_played']
+		));
+		$page['status'] = 404;
+		return $page;
+	}
 
 	$type = implode('/', $vars);
 	wrap_setting('log_username', wrap_setting('robot_username'));
@@ -167,9 +179,8 @@ function mod_tournaments_make_standings_round($vars) {
 		require_once __DIR__.'/standings-team.inc.php';
 		mod_tournaments_make_standings_team($event);
 	}
-	if ($round_no < $event['runden_gespielt']) {
+	if ($round_no < $event['rounds_played'])
 		mod_tournaments_make_standings_trigger($event['identifier'].'/'.($round_no + 1));
-	}
 	
 	// Aktuelle runde_no von Tabellenstand speichern
 	// aus Performancegründen
