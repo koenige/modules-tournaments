@@ -23,7 +23,7 @@
  * @return array
  */
 function mod_tournaments_livegames($vars) {
-	require_once wrap_setting('modules_dir').'/chess/chess/pgn.inc.php';
+	wrap_include_files('pgn', 'chess');
 
 	if (count($vars) !== 2) return false;
 

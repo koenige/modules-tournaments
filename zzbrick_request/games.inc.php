@@ -22,7 +22,7 @@
  *		string [2]: 1.pgn, gesamt.pgn, 1-2-4
  */
 function mod_tournaments_games($vars, $settings = [], $event = []) {
-	require_once wrap_setting('modules_dir').'/chess/chess/pgn.inc.php';
+	wrap_include_files('pgn', 'chess');
 
 	if (empty($event)) {
 		// direct access via filemove

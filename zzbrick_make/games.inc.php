@@ -182,7 +182,7 @@ function mod_tournaments_make_games($vars) {
 	$partien = wrap_db_fetch($sql, 'partie_id');
 
 	// Datei Partie für Partie auswerten
-	require_once wrap_setting('modules_dir').'/chess/chess/pgn.inc.php';
+	wrap_include_files('pgn', 'chess');
 	$games = mf_chess_pgn_parse($pgn, $pgn_filename);
 	if (!empty($event['pgn_preparation_function']))
 		$games = $event['pgn_preparation_function']($games, $event['event_id']);
