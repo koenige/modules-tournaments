@@ -29,7 +29,7 @@ function mod_tournaments_games($vars, $settings = [], $event = []) {
 	$settings['request'] = array_pop($vars);
 	$settings = mod_tournaments_games_settings($settings);
 	
-	if ($event['sub_series'])
+	if (!$settings['type'] AND $event['sub_series'])
 		return mod_tournaments_games_series($event, $settings);
 	if ($settings['type'] AND $settings['content_type'] === 'pgn')
 		return mod_tournaments_games_special($event, $settings);
@@ -82,6 +82,8 @@ function mod_tournaments_games($vars, $settings = [], $event = []) {
 		return mod_tournaments_games_json($event, $settings);
 	default:
 		wrap_include_files('pgn', 'chess');
+		if ($settings['type'])
+			return mod_tournaments_games_special_html($event, $settings);
 		return mod_tournaments_games_html($event, $settings);
 	}
 }
@@ -598,120 +600,99 @@ function mod_tournaments_games_cleanup($games) {
  * @return array
  */
 function mod_tournaments_games_html($event, $settings) {
-	if ($settings['type'] === 'pdt') {
-		$request = explode('-', $settings['request']);
-		if (count($request) !== 2) return false;
-		$partie = [];
-		$partie['tag'] = $request[0];
-		$partie['partie_no'] = $request[1];
-		$filename = wrap_setting('media_folder').'/pgn/'.$event['identifier'].'/'.$settings['type'].'-'.$request[0].'.pgn';
-		if (!file_exists($filename)) {
-			return false;
-		}
-		$pgn = mf_chess_pgn_parse(file($filename), $filename);
-		if (!array_key_exists(($partie['partie_no'] - 1), $pgn)) return false;
-		$pgn = $pgn[$partie['partie_no'] - 1];
-		$partie['weiss'] = $pgn['head']['White'];
-		$partie['schwarz'] = $pgn['head']['Black'];
-		$partie['Annotator'] = isset($pgn['head']['Annotator']) ? $pgn['head']['Annotator'] : '';
-		$partie['breadcrumbs'] = 'Partie des Tages';
-		$partie['breadcrumbs'] = 'Tag '.$partie['tag'].', Partie '.$request[1];
-		$db = false;
-	} elseif (preg_match('/^(\d+)-(\d+)$/', $settings['request'], $matches)) {
+	if (preg_match('/^(\d+)-(\d+)$/', $settings['request'], $matches)) {
 		// 1-2-4
 		$runde = $matches[1];
 		$tisch = 0;
 		$brett = $matches[2];
-		$db = true;
 	} elseif (preg_match('/^(\d+)-(\d+)-(\d+)$/', $settings['request'], $matches)) {
 		// 1-2-4
 		$runde = $matches[1];
 		$tisch = $matches[2];
 		$brett = $matches[3];
-		$db = true;
 	} else {
 		return false;
 	}
-	if ($db) {
-		$sql = 'SELECT partien.partie_id
-				, CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname) AS weiss
-				, CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname) AS schwarz
-				, weiss_ergebnis, schwarz_ergebnis
-				, partien.runde_no, tisch_no, partien.brett_no
-				, CONCAT(heim_teams.team, IFNULL(CONCAT(" ", heim_teams.team_no), "")) AS heim_team
-				, heim_teams.identifier AS heim_team_identifier
-				, CONCAT(auswaerts_teams.team, IFNULL(CONCAT(" ", auswaerts_teams.team_no), "")) AS auswaerts_team
-				, auswaerts_teams.identifier AS auswaerts_team_identifier
-				, weiss.t_dwz AS weiss_dwz
-				, weiss.t_elo AS weiss_elo
-				, schwarz.t_dwz AS schwarz_dwz
-				, schwarz.t_elo AS schwarz_elo
-				, pgn, eco
-				, IF(ISNULL(paarung_id), weiss.setzliste_no, NULL) AS weiss_teilnehmer_nr
-				, IF(ISNULL(paarung_id), schwarz.setzliste_no, NULL) AS schwarz_teilnehmer_nr
-				, partien.kommentar
-				, weiss_zeit AS WhiteClock, schwarz_zeit AS BlackClock
-				, DATE_FORMAT(partien.last_update, "%%H:%%i") AS last_update
-				, tournaments.livebretter
-				, IF(vertauschte_farben = "ja", 1, NULL) AS vertauschte_farben
-				, IF(partiestatus_category_id NOT IN (%d, %d), partiestatus.category, "") AS partiestatus
-				, url
-			FROM partien
-			LEFT JOIN categories partiestatus
-				ON partiestatus.category_id = partien.partiestatus_category_id
-			LEFT JOIN tournaments USING (event_id)
-			LEFT JOIN events USING (event_id)
-			LEFT JOIN categories series
-				ON events.series_category_id = series.category_id
-			LEFT JOIN paarungen USING (paarung_id)
-			LEFT JOIN teams heim_teams
-				ON paarungen.heim_team_id = heim_teams.team_id
-			LEFT JOIN teams auswaerts_teams
-				ON paarungen.auswaerts_team_id = auswaerts_teams.team_id
-			LEFT JOIN persons white_persons
-				ON partien.weiss_person_id = white_persons.person_id
-			LEFT JOIN persons black_persons
-				ON partien.schwarz_person_id = black_persons.person_id
-			LEFT JOIN participations weiss
-				ON white_persons.contact_id = weiss.contact_id AND weiss.usergroup_id = %d
-				AND (ISNULL(weiss.team_id) OR weiss.team_id = IF(heim_spieler_farbe = "schwarz", auswaerts_teams.team_id, heim_teams.team_id))
-				AND weiss.event_id = partien.event_id
-			LEFT JOIN participations schwarz
-				ON black_persons.contact_id = schwarz.contact_id AND schwarz.usergroup_id = %d
-				AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", heim_teams.team_id, auswaerts_teams.team_id))
-				AND schwarz.event_id = partien.event_id
-			WHERE partien.event_id = %d
-			AND partien.runde_no = %d
-			AND (tisch_no = %d OR ISNULL(tisch_no))
-			AND partien.brett_no = %d';
-		$sql = sprintf($sql,
-			wrap_category_id('partiestatus/normal'),
-			wrap_category_id('partiestatus/laufend'),
-			wrap_id('usergroups', 'spieler'),
-			wrap_id('usergroups', 'spieler'),
-			$event['event_id'], $runde, $tisch, $brett
-		);
-		$partie = wrap_db_fetch($sql);
-		$copy_fields = ['main_series_path', 'main_series', 'duration', 'turnierort'];
-		foreach ($copy_fields as $copy_field)
-			$partie[$copy_field] = $event[$copy_field];
-		if (!$partie) return false;
-		$pgn = ['moves' => $partie['pgn']];
-		if (!$partie['weiss_ergebnis'] AND !$partie['schwarz_ergebnis']) {
-			$partie['live'] = mf_tournaments_live_round($partie['livebretter'], $partie['brett_no'], $partie['tisch_no']);
-		}
-	} else {
-		// PGN from file, Latin 1
-		if (wrap_setting('character_set') === 'utf-8') {
-			if (!mb_detect_encoding($pgn['moves'], 'UTF-8', true))
-				$pgn['moves'] = mb_convert_encoding($pgn['moves'], 'UTF-8', 'ISO-8859-1');
-		}
-	}
-	$partie = array_merge($event, $partie);
+	$sql = 'SELECT partien.partie_id
+			, CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname) AS weiss
+			, CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname) AS schwarz
+			, weiss_ergebnis, schwarz_ergebnis
+			, partien.runde_no, tisch_no, partien.brett_no
+			, CONCAT(heim_teams.team, IFNULL(CONCAT(" ", heim_teams.team_no), "")) AS heim_team
+			, heim_teams.identifier AS heim_team_identifier
+			, CONCAT(auswaerts_teams.team, IFNULL(CONCAT(" ", auswaerts_teams.team_no), "")) AS auswaerts_team
+			, auswaerts_teams.identifier AS auswaerts_team_identifier
+			, weiss.t_dwz AS weiss_dwz
+			, weiss.t_elo AS weiss_elo
+			, schwarz.t_dwz AS schwarz_dwz
+			, schwarz.t_elo AS schwarz_elo
+			, pgn, eco
+			, IF(ISNULL(paarung_id), weiss.setzliste_no, NULL) AS weiss_teilnehmer_nr
+			, IF(ISNULL(paarung_id), schwarz.setzliste_no, NULL) AS schwarz_teilnehmer_nr
+			, partien.kommentar
+			, weiss_zeit AS WhiteClock, schwarz_zeit AS BlackClock
+			, DATE_FORMAT(partien.last_update, "%%H:%%i") AS last_update
+			, tournaments.livebretter
+			, IF(vertauschte_farben = "ja", 1, NULL) AS vertauschte_farben
+			, IF(partiestatus_category_id NOT IN (%d, %d), partiestatus.category, "") AS partiestatus
+			, url
+		FROM partien
+		LEFT JOIN categories partiestatus
+			ON partiestatus.category_id = partien.partiestatus_category_id
+		LEFT JOIN tournaments USING (event_id)
+		LEFT JOIN events USING (event_id)
+		LEFT JOIN categories series
+			ON events.series_category_id = series.category_id
+		LEFT JOIN paarungen USING (paarung_id)
+		LEFT JOIN teams heim_teams
+			ON paarungen.heim_team_id = heim_teams.team_id
+		LEFT JOIN teams auswaerts_teams
+			ON paarungen.auswaerts_team_id = auswaerts_teams.team_id
+		LEFT JOIN persons white_persons
+			ON partien.weiss_person_id = white_persons.person_id
+		LEFT JOIN persons black_persons
+			ON partien.schwarz_person_id = black_persons.person_id
+		LEFT JOIN participations weiss
+			ON white_persons.contact_id = weiss.contact_id AND weiss.usergroup_id = %d
+			AND (ISNULL(weiss.team_id) OR weiss.team_id = IF(heim_spieler_farbe = "schwarz", auswaerts_teams.team_id, heim_teams.team_id))
+			AND weiss.event_id = partien.event_id
+		LEFT JOIN participations schwarz
+			ON black_persons.contact_id = schwarz.contact_id AND schwarz.usergroup_id = %d
+			AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", heim_teams.team_id, auswaerts_teams.team_id))
+			AND schwarz.event_id = partien.event_id
+		WHERE partien.event_id = %d
+		AND partien.runde_no = %d
+		AND (tisch_no = %d OR ISNULL(tisch_no))
+		AND partien.brett_no = %d';
+	$sql = sprintf($sql,
+		wrap_category_id('partiestatus/normal'),
+		wrap_category_id('partiestatus/laufend'),
+		wrap_id('usergroups', 'spieler'),
+		wrap_id('usergroups', 'spieler'),
+		$event['event_id'], $runde, $tisch, $brett
+	);
+	$partie = wrap_db_fetch($sql);
+	$copy_fields = ['main_series_path', 'main_series', 'duration', 'turnierort'];
+	foreach ($copy_fields as $copy_field)
+		$partie[$copy_field] = $event[$copy_field];
+	if (!$partie) return false;
+	$pgn = ['moves' => $partie['pgn']];
+	if (!$partie['weiss_ergebnis'] AND !$partie['schwarz_ergebnis'])
+		$partie['live'] = mf_tournaments_live_round($partie['livebretter'], $partie['brett_no'], $partie['tisch_no']);
 
+	$partie = array_merge($event, $partie);
 	$partie = array_merge($partie, mf_chess_pgn_to_html($pgn));
+	return mod_tournaments_games_htmlout($partie);
+}
+
+/**
+ * output single game on HTML page
+ *
+ * @param array $partie
+ * @return array
+ */
+function mod_tournaments_games_htmlout($partie) {
 	if (!$partie['pgn']) $page['status'] = 404;
-	
 	$page['query_strings'][] = 'minimal';
 	if (isset($_GET['minimal'])) $page['template'] = 'dem-minimal';
 	$page['dont_show_h1'] = true;
@@ -720,7 +701,7 @@ function mod_tournaments_games_html($event, $settings) {
 		.(!empty($partie['tag']) ? ', Tag '.$partie['tag'].': ' : '')
 		.$partie['weiss'].'–'.$partie['schwarz'];
 	if (!empty($partie['breadcrumbs'])) {
-		$page['breadcrumbs'][] = $partie['breadcrumbs'];
+		$page['breadcrumbs'] = $partie['breadcrumbs'];
 	} else {
 		$page['breadcrumbs'][] = '<a href="../../runde/'.$partie['runde_no'].'/">'.$partie['runde_no'].'. Runde</a>';
 		if (!empty($partie['tisch_no'])) {
@@ -732,6 +713,40 @@ function mod_tournaments_games_html($event, $settings) {
 	$page['meta'][] = ['name' => 'robots', 'content' => 'noindex, follow, noarchive'];
 	$page['text'] = wrap_template('game', $partie);
 	return $page;
+}
+
+/**
+ * output special games
+ *
+ * @param array $event
+ * @param array $settings
+ * @return array
+ */
+function mod_tournaments_games_special_html($event, $settings) {
+	$request = explode('-', $settings['request']);
+	if (count($request) !== 2) return false;
+
+	$filename = sprintf($settings['pgn_path'], $event['identifier'], $settings['type'].'-'.$request[0]);
+	if (!file_exists($filename)) return false;
+	$pgn = mf_chess_pgn_parse(file($filename), $filename);
+	$partie_no = $request[1] - 1;
+	if (!array_key_exists($partie_no, $pgn)) return false;
+	$pgn = $pgn[$partie_no];
+	// PGN from file, Latin 1
+	if (wrap_setting('character_set') === 'utf-8') {
+		if (!mb_detect_encoding($pgn['moves'], 'UTF-8', true))
+			$pgn['moves'] = mb_convert_encoding($pgn['moves'], 'UTF-8', 'ISO-8859-1');
+	}
+
+	$event['tag'] = $request[0];
+	$event['weiss'] = $pgn['head']['White'];
+	$event['schwarz'] = $pgn['head']['Black'];
+	$event['Annotator'] = isset($pgn['head']['Annotator']) ? $pgn['head']['Annotator'] : '';
+	$event['breadcrumbs'][] = 'Partie des Tages';
+	$event['breadcrumbs'][]['title'] = 'Tag '.$event['tag'].', Partie '.$request[1];
+
+	$event += mf_chess_pgn_to_html($pgn);
+	return mod_tournaments_games_htmlout($event);
 }
 
 /**
