@@ -333,8 +333,10 @@ function mf_tournaments_round_event($ops) {
 function mf_tournaments_swtimport($ops) {
 	$event = wrap_static('page', 'data');
 	if (!$event) return [];
-	$url = wrap_path('tournaments_job_swt', $event['identifier'], true);
+	$url = wrap_path('tournaments_job_swt', $event['identifier'], false);
 	if (!$url) return [];
+	// there might be access restrictions on swtimport URL, therefore use robot username here
+	wrap_setting('log_username', wrap_setting('robot_username'));
 	wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/swt')]);
 	return [];
 }
