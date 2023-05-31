@@ -86,11 +86,11 @@ function mod_tournaments_make_filemove() {
 	wrap_setting('syndication_timeout_ms', 2500);
 
 	foreach ($tournaments as $tournament) {
-		parse_str($tournament['parameter'], $parameter);
+		parse_str($tournament['parameter'], $tournament['parameter']);
 
 		// move tournament info to other server already before tournament starts
-		if (!empty($parameter['ftp_other'])) {
-			mod_tournaments_make_filemove_ftp_other($tournament, $parameter['ftp_other']);
+		if (!empty($tournament['parameter']['ftp_other'])) {
+			mod_tournaments_make_filemove_ftp_other($tournament, $tournament['parameter']['ftp_other']);
 		}
 
 		if (empty($tournament['current_round'])) continue;
@@ -102,12 +102,12 @@ function mod_tournaments_make_filemove() {
 			$tournament['queue_dir'] = sprintf($pgn_queue, $tournament['path']);
 			if (!file_exists($tournament['queue_dir'])) wrap_mkdir($tournament['queue_dir']);
 		
-			mod_tournaments_make_filemove_queue($tournament, $parameter);
+			mod_tournaments_make_filemove_queue($tournament, $tournament['parameter']);
 			mod_tournaments_make_filemove_final_pgn($tournament);
 		}
 		mod_tournaments_make_filemove_bulletin_pgn($tournament);
-		if (!empty($parameter['ftp_pgn'])) {
-			mod_tournaments_make_filemove_ftp_pgn($tournament, $parameter['ftp_pgn']);
+		if (!empty($tournament['parameter']['ftp_pgn'])) {
+			mod_tournaments_make_filemove_ftp_pgn($tournament, $tournament['parameter']['ftp_pgn']);
 		}
 	}
 	$page['text'] = '<p>PGN-Dateien verschoben</p>';
@@ -233,29 +233,12 @@ function mod_tournaments_make_filemove_scandir($folder) {
  * @return void
  */
 function mod_tournaments_make_filemove_bulletin_pgn($tournament) {
+	if (empty($tournament['parameter']['pgn_bulletin_file_template'])) return;
 	$bulletin_dir = wrap_setting('media_folder').wrap_setting('pgn_bulletin_folder').'/'.$tournament['main_series'];
 	if (!file_exists($bulletin_dir)) return;
 
 	$params['log_destination'] = true;
-	$tournament_identifier = explode('/', $tournament['identifier']);
-	switch ($tournament_identifier[1]) {
-		case 'dem-u8':
-			$s_filename = $bulletin_dir.'/runde%d_U8.pgn';
-			break;
-		case 'dem-u10w': case 'dem-u10':
-			$s_filename = $bulletin_dir.'/runde%d_U10.pgn';
-			break;
-		case 'dem-u12w': case 'dem-u12': 
-		case 'dem-u14w': case 'dem-u14': case 'dem-u16w': case 'dem-u16': 
-		case 'dem-u18w': case 'dem-u18': case 'odjm-a': case 'odjm-b': 
-		case 'odjm-c': 
-			$s_filename = $bulletin_dir.'/runde%d_U25-U12.pgn';
-			break;
-		default:
-			$s_filename = false;
-			break;
-	}
-	if (!$s_filename) return;
+	$s_filename = sprintf('%s/%s.pgn', $bulletin_dir, $tournament['parameter']['pgn_bulletin_file_template']);
 	for ($i = 1; $i <= $tournament['current_round']['runde_no']; $i++) {
 		$source = sprintf($s_filename, $i);
 		$dest = $tournament['final_dir'].'/'.$i.'.pgn';
@@ -265,8 +248,8 @@ function mod_tournaments_make_filemove_bulletin_pgn($tournament) {
 				, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
 				, $source, $dest
 			), E_USER_NOTICE, 'cron');
-			$games_url = sprintf('/_jobs/partien/%s/%s/', $tournament['identifier'], $i);
-			wrap_trigger_protected_url($games_url);
+			$url = wrap_path('tournaments_job_games', $tournament['identifier'].'/'.$i, false);
+			wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien')]);
 		}
 	}
 }
