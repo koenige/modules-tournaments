@@ -39,6 +39,7 @@ SELECT event_id, identifier
 	WHERE usergroup_id = /*_ID usergroups bewerber _*/
 	AND main_p_events.event_id = events.event_id
 ) AS applicants
+, (SELECT COUNT(*) FROM teams WHERE teams.event_id = events.event_id) AS teams
 FROM events
 LEFT JOIN tournaments USING (event_id)
 LEFT JOIN categories series
@@ -69,6 +70,7 @@ SELECT event_id, identifier
 	WHERE participations.event_id = events.event_id
 	AND usergroup_id = /*_ID usergroups bewerber _*/
 ) AS applicants
+, (SELECT COUNT(*) FROM teams WHERE teams.event_id = events.event_id) AS teams
 FROM events
 LEFT JOIN tournaments USING (event_id)
 LEFT JOIN categories series
