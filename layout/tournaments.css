@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016-2018, 2020-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2016-2018, 2020-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -461,4 +461,12 @@ p.fuss			{ clear: both; padding: 1.5em 0; text-align: center;
 /* team.template.txt */
 @media screen and (max-width: 640px) {
 	p.teamphoto	{ padding: 0; }
+}
+
+/* round-single.template.txt */
+@media screen and (max-width: 400px) {
+	.hidden400		{ display: none; }
+}
+@media screen and (min-width: 401px) {
+	.show400		{ display: none; }
 }

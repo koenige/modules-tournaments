@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2014, 2016-2017, 2020-2021 Gustaf Mossakowski
+# @copyright Copyright © 2012-2014, 2016-2017, 2020-2021, 2023 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>
@@ -32,7 +32,7 @@ Stand: %%% item livedatum %%%</p>
 	<th class="tz"><span class="longer">Brett</span> <span class="shorter"><abbr title="Brett">B.</abbr></span></th>
 %%% condition endif %%%
 %%% condition if show_dwz %%%
-	<th class="th"><abbr title="Deutsche Wertungszahl">DWZ</abbr></th>
+	<th class="th hidden400"><abbr title="Deutsche Wertungszahl">DWZ</abbr></th>
 %%% condition elseif show_elo %%%
 	<th class="th"><abbr title="FIDE-Wertungszahl">Elo</abbr></th>
 %%% condition endif %%%
@@ -42,7 +42,7 @@ Stand: %%% item livedatum %%%</p>
 	<th class="ta">Schwarz</th>
 	<th class="th"><span class="longer"><abbr title="Punkte vor der Runde">Pkt.</abbr></span><span class="shorter"><abbr title="Punkte vor der Runde">P.</abbr></span></th>
 %%% condition if show_dwz %%%
-	<th class="th"><abbr title="Deutsche Wertungszahl">DWZ</abbr></th>
+	<th class="th hidden400"><abbr title="Deutsche Wertungszahl">DWZ</abbr></th>
 %%% condition elseif show_elo %%%
 	<th class="th"><abbr title="FIDE-Wertungszahl">Elo</abbr></th>
 %%% condition endif %%%
@@ -54,26 +54,26 @@ Stand: %%% item livedatum %%%</p>
 	<td class="tz">%%% item brett_no %%%</td>
 %%% condition endif %%%
 %%% condition if show_dwz %%%
-	<td class="tu">%%% item heim_dwz %%%</td>
+	<td class="tu hidden400">%%% item heim_dwz %%%</td>
 %%% condition elseif show_elo %%%
 	<td class="tu">%%% item heim_elo %%%</td>
 %%% condition endif %%%
 	<td class="tu">%%% item weiss_punkte result_format  %%%</td>
-	<td class="th">%%% item heim_setzliste_no "<a href='../../spieler/%d/'>" %%%%%% item heim_spieler %%%%%% item heim_setzliste_no "</a>" %%%</td>
+	<td class="th">%%% item heim_setzliste_no "<a href='../../spieler/%d/'>" %%%%%% item heim_spieler %%%%%% item heim_setzliste_no "</a>" %%%<span class="show400"> (%%% item heim_dwz %%%)</span></td>
 	<td class="tm">%%% condition if partie %%%<a href="../../partien/%%% item runde_no %%%-%%% item brett_no %%%/">%%% condition endif %%%
 	%%% condition if heim_ergebnis | auswaerts_ergebnis %%%
-	%%% item heim_ergebnis result_format %%% : %%% item auswaerts_ergebnis result_format %%%
+	%%% item heim_ergebnis result_format %%%&nbsp;:&nbsp;%%% item auswaerts_ergebnis result_format %%%
 	%%% condition elseif live %%%
 	LIVE
 	%%% condition else %%%
-	%%% item heim_ergebnis result_format %%% : %%% item auswaerts_ergebnis result_format %%%
+	%%% item heim_ergebnis result_format %%%&nbsp;:&nbsp;%%% item auswaerts_ergebnis result_format %%%
 	%%% condition endif %%%
 	%%% item haengepartie "(<abbr title="Hängepartie">H</abbr>)" %%%%%% item partie "</a>" %%%
 	</td>
-	<td class="ta">%%% item auswaerts_setzliste_no "<a href='../../spieler/%d/'>" %%%%%% item auswaerts_spieler %%%%%% item auswaerts_setzliste_no "</a>" %%%</td>
+	<td class="ta">%%% item auswaerts_setzliste_no "<a href='../../spieler/%d/'>" %%%%%% item auswaerts_spieler %%%%%% item auswaerts_setzliste_no "</a>" %%%<span class="show400"> (%%% item auswaerts_dwz %%%)</span></td>
 	<td class="tu">%%% item schwarz_punkte result_format %%%</td>
 %%% condition if show_dwz %%%
-	<td class="tu">%%% item auswaerts_dwz %%%</td>
+	<td class="tu hidden400">%%% item auswaerts_dwz %%%</td>
 %%% condition elseif show_elo %%%
 	<td class="tu">%%% item auswaerts_elo %%%</td>
 %%% condition endif %%%
