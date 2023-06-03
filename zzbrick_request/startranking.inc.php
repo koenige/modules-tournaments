@@ -56,12 +56,11 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 	}
 	if ($meldeliste) {
 		$page['title'] = $event['event'].' '.$event['year'].': Meldeliste';
-		$page['breadcrumbs'][] = 'Meldeliste';
+		$page['breadcrumbs'][]['title'] = 'Meldeliste';
 		$event['meldeliste'] = true;
 		$event['meldungen'] = !empty($event['spieler']) ? count($event['spieler']) : count($event['teams']);
 	} else {
 		$page['title'] = $event['event'].' '.$event['year'].': Startrangliste';
-		$page['breadcrumbs'][] = 'Startrangliste';
 	}
 
 	if ($event['turnierform'] === 'e') {

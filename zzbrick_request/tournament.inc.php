@@ -277,7 +277,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	}
 
 	$page['title'] = $event['event'].', '.wrap_date($event['duration']);
-	$page['breadcrumbs'][] = $event['event'];
+	$page['breadcrumbs'][]['title'] = $event['event'];
 	$page['dont_show_h1'] = true;
 	if ($internal) {
 		$page['query_strings'][] = 'absage';
