@@ -91,6 +91,7 @@ function mod_tournaments_player($vars, $settings, $event) {
 	$round_no = 1;
 	$index = 0;
 	$log_round_error = true;
+	$empty_round_added = 0; // if several rounds are empty, add this value to index
 	foreach ($data['games'] as $index => $game) {
 		if (mf_tournaments_live_round($data['livebretter'], $game['brett_no'])) {
 			$data['games'][$index]['live'] = true;
@@ -113,11 +114,12 @@ function mod_tournaments_player($vars, $settings, $event) {
 				$log_round_error = false;
 		} else {
 			while ($round_no.'' !== $game['runde_no'].'') {
-				array_splice($data['games'], $index, 0, [
+				array_splice($data['games'], $index + $empty_round_added, 0, [
 					['runde_no' => $round_no, 'no_pairing' => 1]
 				]);
 				$index++;
 				$round_no++;
+				$empty_round_added++;
 			}
 		}
 		$index++;
@@ -149,8 +151,7 @@ function mod_tournaments_player($vars, $settings, $event) {
 	$page['dont_show_h1'] = true;
 	$page['title'] = $data['t_vorname'].' '.$data['t_namenszusatz'].' '.$data['t_nachname'].' – '.$data['event'].' '.$data['year'];
 	$page['text'] = wrap_template('player', $data);
-	$page['breadcrumbs'][] = '<a href="../">Startrangliste</a>';
-	$page['breadcrumbs'][] = $data['name'];
+	$page['breadcrumbs'][]['title'] = $data['name'];
 	if (in_array('magnificpopup', wrap_setting('modules')))
 		$page['extra']['magnific_popup'] = true;
 	return $page;
