@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2023 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -52,7 +52,9 @@ $zz['fields'][7]['display_field'] = 'contact';
 $zz['fields'][7]['search'] = 'contacts.contact';
 
 $zz['fields'][10]['field_name'] = 'hash';
-$zz['fields'][10]['type'] = 'write_once';
+$zz['fields'][10]['type'] = 'identifier';
+$zz['fields'][10]['fields'] = ['hash'];
+$zz['fields'][10]['conf_identifier']['random_hash'] = 20;
 $zz['fields'][10]['hide_in_list'] = true;
 
 $zz['fields'][11]['title'] = 'Bestätigt';
