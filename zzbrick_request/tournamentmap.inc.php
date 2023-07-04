@@ -86,10 +86,10 @@ function mod_tournaments_tournamentmap($vars, $settings, $event) {
 	$page['text'] = wrap_template('tournamentmap', $event);
 	$page['dont_show_h1'] = true;
 	if (!$federation) {
-		$page['breadcrumbs'][] = 'Herkunftsorte';
+		$page['breadcrumbs'][]['title'] = 'Herkunftsorte';
 	} else {
 		$page['breadcrumbs'][] = '<a href="../">Herkunftsorte</a>';
-		$page['breadcrumbs'][] = $federation['contact'];
+		$page['breadcrumbs'][]['title'] = $federation['contact'];
 	}
 	return $page;
 }

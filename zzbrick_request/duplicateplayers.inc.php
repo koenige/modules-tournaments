@@ -81,7 +81,7 @@ function mod_tournaments_duplicateplayers($vars) {
 	
 	$turnier = reset($turniere);
 	
-	$page['breadcrumbs'][] = 'Doppelt gemeldete Spieler';
+	$page['breadcrumbs'][]['title'] = 'Doppelt gemeldete Spieler';
 	$page['title'] = $turnier['series'].' '.$turnier['year'].':<br> Doppelt gemeldete Spieler';
 	$page['text'] = wrap_template('duplicateplayers', $data);
 	return $page;

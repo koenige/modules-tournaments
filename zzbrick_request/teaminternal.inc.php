@@ -138,7 +138,7 @@ function mod_tournaments_teaminternal($vars, $settings, $data) {
 	if ($data['meldung'] === 'komplett') $data['pdfupload'] = true;
 
 	$page['query_strings'][] = 'spaeter';
-	$page['breadcrumbs'][] = $data['team'].' '.$data['team_no'];
+	$page['breadcrumbs'][]['title'] = $data['team'].' '.$data['team_no'];
 	$page['text'] = wrap_template('team-intern', $data);
 	return $page;
 }

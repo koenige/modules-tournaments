@@ -39,7 +39,7 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 	$data['testlauf'] = true;
 	if (!empty($_POST['update'])) $data['testlauf'] = false;
 
-	$page['breadcrumbs'][] = 'Turnierzahlen';
+	$page['breadcrumbs'][]['title'] = 'Turnierzahlen';
 	$page['title'] = sprintf('Aktualisierung der Wertungszahlen für %s %s', $event['event'], $event['year']);
 	$page['dont_show_h1'] = true;
 

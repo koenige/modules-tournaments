@@ -14,7 +14,7 @@
 
 
 $brick['page']['title'] .= 'PDF Upload';
-$brick['page']['breadcrumbs'][] = 'PDF Upload';
+$brick['page']['breadcrumbs'][]['title'] = 'PDF Upload';
 
 $zz = zzform_include('teams');
 

@@ -349,13 +349,13 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	if (!empty($filter['untertitel'])) {
 		$page['title'] .= ' ('.$filter['untertitel'].')';
 		$page['breadcrumbs'][] = '<a href="../">'.sprintf('Tabelle %s. Runde', $event['runde_no']).'</a>';
-		$page['breadcrumbs'][] = $filter['untertitel'];
+		$page['breadcrumbs'][]['title'] = $filter['untertitel'];
 		$tabelle['untertitel'] = $filter['untertitel'];
 		$tabelle['filter'] = $filter_kennung;
 		if (!in_array($filter_kennung, ['w']))
 			$page['meta'][] = ['name' => 'robots', 'content' => 'noindex'];
 	} else {
-		$page['breadcrumbs'][] = sprintf('Tabelle %s. Runde', $event['runde_no']);
+		$page['breadcrumbs'][]['title'] = sprintf('Tabelle %s. Runde', $event['runde_no']);
 	}
 	if ($event['turnierform'] !== 'e') {
 		$page['text'] = wrap_template('standings-team', $tabelle);

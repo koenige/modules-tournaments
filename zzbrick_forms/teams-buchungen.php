@@ -19,7 +19,7 @@ if (!in_array($brick['data']['meldung'], ['offen', 'teiloffen']))
 // @todo show data in read-only mode instead?
 
 $brick['page']['title'] .= 'Buchungen';
-$brick['page']['breadcrumbs'][] = 'Buchungen';
+$brick['page']['breadcrumbs'][]['title'] = 'Buchungen';
 
 $zz = zzform_include('buchungen');
 

@@ -21,7 +21,7 @@ if (!in_array($brick['data']['meldung'], ['offen', 'teiloffen']))
 $zz = zzform_include('teams');
 
 $brick['page']['title'] .= 'Reisedaten';
-$brick['page']['breadcrumbs'][] = 'Reisedaten';
+$brick['page']['breadcrumbs'][]['title'] = 'Reisedaten';
 
 $zz_conf['footer_text'] = wrap_template('team-reisedaten', $brick['data']);
 $brick['data']['head'] = true;

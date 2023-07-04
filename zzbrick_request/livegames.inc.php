@@ -92,7 +92,7 @@ function mod_tournaments_livegames_turnier($turnier) {
 	$turnier = mod_tournaments_livegames_bretter($turnier);
 	$turnier['last_update'] = substr($turnier['last_update'], 11, 5);
 	
-	$page['breadcrumbs'][] = 'Livepartien';
+	$page['breadcrumbs'][]['title'] = 'Livepartien';
 	$page['title'] = 'Livepartien '.$turnier['event'].' '.$turnier['year'];
 	$page['head'] = wrap_template('livegames-head');
 	$page['text'] = wrap_template('livegames-tournament', $turnier);
@@ -128,7 +128,7 @@ function mod_tournaments_livegames_series($tournaments) {
 			$tournaments['last_update'] = $tournaments[$event_id]['last_update'];
 	}
 	$tournaments['last_update'] = substr($tournaments['last_update'], 11, 5);
-	$page['breadcrumbs'][] = 'Livepartien';
+	$page['breadcrumbs'][]['title'] = 'Livepartien';
 	$page['title'] = 'Livepartien '.$series['main_series'].' '.$series['year'];
 	$page['text'] = wrap_template('livegames-series', $tournaments);
 	return $page;

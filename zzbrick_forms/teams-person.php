@@ -26,7 +26,7 @@ $zz = zzform_include('persons', [], 'forms');
 
 $zz['page']['title'] = $brick['page']['title'].'Details';
 $zz['page']['breadcrumbs'][] = '<a href="../kontakt/">Kontaktdaten</a>';
-$zz['page']['breadcrumbs'][] = 'Details';
+$zz['page']['breadcrumbs'][]['title'] = 'Details';
 
 // Person-ID notwendig
 if (empty($_GET['where']['contact_id'])) wrap_quit(403);

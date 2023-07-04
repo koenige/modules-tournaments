@@ -123,7 +123,7 @@ function mod_tournaments_make_swtwriter($vars, $settings, $event) {
 	}
 
 	$page['query_strings'] = ['delete'];
-	$page['breadcrumbs'][] = 'SWT-Writer';
+	$page['breadcrumbs'][]['title'] = 'SWT-Writer';
 	$page['text'] = wrap_template('swtwriter', $writer);
 	return $page;
 }

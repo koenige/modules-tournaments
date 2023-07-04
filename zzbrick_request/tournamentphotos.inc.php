@@ -43,7 +43,7 @@ function mod_tournaments_tournamentphotos($vars, $settings, $event) {
 	}
 
 	$page['title'] = 'Teilnehmerphotos '.$event['event'].' '.$event['year'];
-	$page['breadcrumbs'][] = 'Photos der Teilnehmer';
+	$page['breadcrumbs'][]['title'] = 'Photos der Teilnehmer';
 	$page['dont_show_h1'] = true;
 	$page['text'] = wrap_template('tournamentphotos', $event);
 	return $page;

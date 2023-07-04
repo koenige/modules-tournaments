@@ -182,7 +182,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 	$page['query_strings'] = ['q'];
 	$page['breadcrumbs'][] = '<a href="../../">'.$event['year'].'</a>';
 	$page['breadcrumbs'][] = '<a href="../">'.$event['main_series'].'</a>';
-	$page['breadcrumbs'][] = 'Suche';
+	$page['breadcrumbs'][]['title'] = 'Suche';
 	$page['dont_show_h1'] = true;
 	$page['title'] = $event['main_series_short'].' '.$event['year'].', Suche nach Spielerinnen, Spielern oder Teams';
 	$page['text'] = wrap_template('participantsearch', $event);

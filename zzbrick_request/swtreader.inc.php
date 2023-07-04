@@ -33,7 +33,7 @@ function mod_tournaments_swtreader($params) {
 	$page['title'] = sprintf('SWT-Ansicht für %s %d', $params[1], $params[0]);
 	$page['breadcrumbs'][] = sprintf('<a href="../../">%d</a>', $params[0]);
 	$page['breadcrumbs'][] = sprintf('<a href="../">%s</a>', $params[1]);
-	$page['breadcrumbs'][] = 'SWT-Ansicht';
+	$page['breadcrumbs'][]['title'] = 'SWT-Ansicht';
 	ob_end_clean();
 	return $page;
 }

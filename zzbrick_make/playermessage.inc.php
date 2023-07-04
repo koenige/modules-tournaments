@@ -70,7 +70,7 @@ function mod_tournaments_make_playermessage($vars, $settings) {
 	$page['breadcrumbs'][] = '<a href="../../../">'.$data['event'].'</a>';
 	$page['breadcrumbs'][] = '<a href="../../">Startrangliste</a>';
 	$page['breadcrumbs'][] = '<a href="../">'.$data['contact'].'</a>';
-	$page['breadcrumbs'][] = 'Brett-Nachricht';
+	$page['breadcrumbs'][]['title'] = 'Brett-Nachricht';
 	$page['meta'][] = ['name' => 'robots', 'content' => 'noindex'];
 	return $page;
 }

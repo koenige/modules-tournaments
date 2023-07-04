@@ -88,7 +88,7 @@ $zz_conf['add'] = false;
 $zz['page']['dont_show_title_as_breadcrumb'] = true;
 
 $zz['page']['breadcrumbs'][] = sprintf('<a href="../">%s</a>', $organisation);
-$zz['page']['breadcrumbs'][] = 'Adressen';
+$zz['page']['breadcrumbs'][]['title'] = 'Adressen';
 
 $zz['title'] = '<a href="../">'.$type.' '.$organisation.'</a>: Adressen
 	<br><a href="../../">'.$brick['data']['event'].' '.wrap_date($brick['data']['duration']).'</a> <em>in '.$brick['data']['turnierort'].'</em>';

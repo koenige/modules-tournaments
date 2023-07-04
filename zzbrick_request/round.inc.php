@@ -188,7 +188,7 @@ function mod_tournaments_round($params, $vars, $event) {
 	else
 		$page['title'] = $event['event'].' '.$event['year'].', Ergebnisse '.$event['round_event'];
 	$page['dont_show_h1'] = true;
-	$page['breadcrumbs'][] = $event['round_event'];
+	$page['breadcrumbs'][]['title'] = $event['round_event'];
 	if (!empty($event['next'])) {
 		$page['link']['next'][0]['href'] = '../'.$event['next'].'/';
 		$page['link']['next'][0]['title'] = $event['next'].'. Runde';

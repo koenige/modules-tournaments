@@ -230,7 +230,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 
 	$page['title'] = $data['event'].' '.$data['year'].': '.$data['team'].' '.$data['team_no'];
 	$page['title'] .= ' – Aufstellung';
-	$page['breadcrumbs'][] = 'Aufstellung';
+	$page['breadcrumbs'][]['title'] = 'Aufstellung';
 
 	$page['text'] = wrap_template('team-aufstellung', $data);
 	return $page;

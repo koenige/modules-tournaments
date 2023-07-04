@@ -222,7 +222,7 @@ function mod_tournaments_tournamentstats($vars) {
 	$page['text'] = wrap_template('tournamentstats', $data);
 	$page['breadcrumbs'][] = '<a href="../../">'.$data['year'].'</a>';
 	$page['breadcrumbs'][] = '<a href="../">'.$data['series_short'].'</a>';
-	$page['breadcrumbs'][] = 'Turnierstatistik';
+	$page['breadcrumbs'][]['title'] = 'Turnierstatistik';
 	$page['dont_show_h1'] = true;
 	$page['title'] = 'Turnierstatistik '.$data['series_short'].' '.$data['year'];
 	return $page;

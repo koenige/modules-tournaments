@@ -109,7 +109,7 @@ function mod_tournaments_team($vars, $settings, $data) {
 	$teams = wrap_db_fetch($sql, 'team_id');
 	$data = array_merge($data, wrap_get_prevnext_flat($teams, $data['team_id'], true));
 
-	$page['breadcrumbs'][] = $data['team'].' '.$data['team_no'];
+	$page['breadcrumbs'][]['title'] = $data['team'].' '.$data['team_no'];
 	$page['link']['next'][0]['href'] = '../../../'.$data['_next_identifier'].'/';	
 	$page['link']['next'][0]['title'] = 'Nächste/r in Setzliste';
 	$page['link']['prev'][0]['href'] = '../../../'.$data['_prev_identifier'].'/';	

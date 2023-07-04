@@ -138,7 +138,7 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 	// Suche
 	
 	$page['title'] = $event['event'].' '.$event['year'];
-	$page['breadcrumbs'][] = $event['event'];
+	$page['breadcrumbs'][]['title'] = $event['event'];
 	$page['dont_show_h1'] = true;
 	$page['text'] = wrap_template('tournamentseries', $event);
 	return $page;

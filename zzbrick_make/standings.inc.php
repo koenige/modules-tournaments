@@ -82,7 +82,7 @@ function mod_tournaments_make_standings_overview($vars) {
 	$event['runden'] = wrap_db_fetch($sql, 'event_id');
 	
 	$page['dont_show_h1'] = true;
-	$page['breadcrumbs'][] = 'Tabellenstandupdate';
+	$page['breadcrumbs'][]['title'] = 'Tabellenstandupdate';
 	$page['title'] = 'Tabellenstandupdates '.$event['event'].' '.$event['year'];
 	$page['text'] = wrap_template('standings-update', $event);
 	
