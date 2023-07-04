@@ -95,8 +95,8 @@ if (!brick_access_rights('Gremien') AND brick_access_rights(['Technik', 'Organis
 	unset($zz['details'][3]); // Links
 
 	unset($zz['fields'][4]['link']);
-	$zz_conf['delete'] = false;
-	$zz_conf['add'] = false;
+	$zz['record']['delete'] = false;
+	$zz['record']['add'] = false;
 	$zz['fields'][4]['type'] = 'display';
 	$zz['fields'][5]['type'] = 'display';
 	$hide_in_form = [2, 3, 6, 11, 10, 7, 8, 9, 13, 32, 33, 40, 17]; // , 12
@@ -116,9 +116,9 @@ if (!empty($zz['filter'][1])) {
 		GROUP BY meldung
 		ORDER BY meldung', $brick['data']['event_id']);
 }
-$zz_conf['limit'] = 40;
-$zz_conf['export'][] = 'CSV Excel';
-$zz_conf['export'][] = 'PDF Tischkarten';
+wrap_setting('zzform_limit', 40);
+$zz['export'][] = 'CSV Excel';
+$zz['export'][] = 'PDF Tischkarten';
 $zz['page']['event'] = $brick['data'];
 
 $zz['filter'][2]['title'] = 'Status';

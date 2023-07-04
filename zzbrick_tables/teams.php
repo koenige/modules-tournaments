@@ -405,7 +405,7 @@ $zz['filter'][1]['sql'] = 'SELECT DISTINCT meldung, meldung AS titel
 	FROM teams
 	ORDER BY meldung';
 
-if (!empty($zz_conf['multi'])) $zz_conf['delete'] = true;
+$zz['if']['multi']['record']['delete'] = true;
 
 $zz['hooks']['after_update'] = 'mf_tournaments_standings_update';
 

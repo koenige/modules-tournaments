@@ -23,14 +23,14 @@ $brick['page']['breadcrumbs'][]['title'] = 'Buchungen';
 
 $zz = zzform_include('buchungen');
 
-$zz_conf['footer_text'] = wrap_template('team-buchung');
+$zz['footer']['text'] = wrap_template('team-buchung');
 $brick['data']['head'] = true;
 $zz['explanation'] = wrap_template('team-buchung', $brick['data']);
 $zz['where']['team_id'] = $brick['data']['team_id'];
 $zz['title'] = '';
 
-$zz_conf['delete'] = true;
-$zz_conf['add'] = true; // nur eine Kategorie hinzufügbar
+$zz['record']['delete'] = true;
+$zz['record']['add'] = true; // nur eine Kategorie hinzufügbar
 
 $zz['fields'][2]['class'] = 'hidden';
 unset($zz['fields'][2]['link']);
@@ -74,10 +74,10 @@ $zz['if'][2]['access'] = 'none';
 
 if (!brick_access_rights('Organisator', $brick['data']['event_rights'])
 	AND !brick_access_rights('Veranstalter', $brick['data']['event_rights'])) {
-	$zz_conf['if'][5]['delete'] = false;
-	$zz_conf['if'][5]['edit'] = false;
-	$zz_conf['if'][2]['delete'] = false;
-	$zz_conf['if'][2]['edit'] = false;
+	$zz['if'][5]['record']['delete'] = false;
+	$zz['if'][5]['record']['edit'] = false;
+	$zz['if'][2]['record']['delete'] = false;
+	$zz['if'][2]['record']['edit'] = false;
 }
 
 unset($zz['subtitle']);

@@ -82,9 +82,9 @@ unset($zz['fields'][5]['unless']['export_mode']['subselect']['field_suffix'][0])
 $zz['fields'][5]['unless']['export_mode']['subselect']['field_suffix'][1] = '<br>';
 
 wrap_setting('zzform_show_list_while_edit', false);
-$zz_conf['delete'] = false;
+$zz['record']['delete'] = false;
 $zz_conf['merge'] = false;
-$zz_conf['add'] = false;
+$zz['record']['add'] = false;
 $zz['page']['dont_show_title_as_breadcrumb'] = true;
 
 $zz['page']['breadcrumbs'][] = sprintf('<a href="../">%s</a>', $organisation);
@@ -93,4 +93,4 @@ $zz['page']['breadcrumbs'][]['title'] = 'Adressen';
 $zz['title'] = '<a href="../">'.$type.' '.$organisation.'</a>: Adressen
 	<br><a href="../../">'.$brick['data']['event'].' '.wrap_date($brick['data']['duration']).'</a> <em>in '.$brick['data']['turnierort'].'</em>';
 
-$zz_conf['referer'] = '../';
+$zz['page']['referer'] = '../';

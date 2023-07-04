@@ -23,7 +23,7 @@ $zz = zzform_include('teams');
 $brick['page']['title'] .= 'Reisedaten';
 $brick['page']['breadcrumbs'][]['title'] = 'Reisedaten';
 
-$zz_conf['footer_text'] = wrap_template('team-reisedaten', $brick['data']);
+$zz['footer']['text'] = wrap_template('team-reisedaten', $brick['data']);
 $brick['data']['head'] = true;
 $zz['explanation'] = wrap_template('team-reisedaten', $brick['data']);
 $zz['title'] = '';
@@ -38,7 +38,7 @@ unset($zz['fields'][35]['separator']);
 $zz['fields'][20]['class'] = 'hidden';
 
 $zz['access'] = 'edit_only';
-$zz_conf['no_ok'] = true;
+$zz['record']['no_ok'] = true;
 
 // keine Tabellenaktualisierung
 unset($zz['hooks']['after_update']);

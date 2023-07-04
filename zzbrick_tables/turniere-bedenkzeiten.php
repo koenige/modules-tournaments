@@ -36,9 +36,7 @@ $zz['fields'][3]['def_val_ignore'] = true;
 $zz['fields'][4]['title'] = 'Zeit';
 $zz['fields'][4]['field_name'] = 'bedenkzeit_sec';
 $zz['fields'][4]['type'] = 'number';
-if (empty($zz_conf['multi'])) {
-	$zz['fields'][4]['factor'] = 60;
-}
+$zz['fields'][4]['unless']['multi']['factor'] = 60;
 
 $zz['fields'][5]['title'] = 'Bonus';
 $zz['fields'][5]['field_name'] = 'zeitbonus_sec';

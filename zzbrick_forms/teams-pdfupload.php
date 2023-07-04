@@ -18,7 +18,7 @@ $brick['page']['breadcrumbs'][]['title'] = 'PDF Upload';
 
 $zz = zzform_include('teams');
 
-$zz_conf['footer_text'] = wrap_template('team-pdfupload');
+$zz['footer']['text'] = wrap_template('team-pdfupload');
 $brick['data']['head'] = true;
 $zz['explanation'] = wrap_template('team-pdfupload', $brick['data']);
 $zz['title'] = '';
@@ -34,7 +34,7 @@ $zz['fields'][20]['class'] = 'hidden';
 $zz['fields'][28]['dont_show_missing'] = false;
 
 $zz['access'] = 'edit_only';
-$zz_conf['no_ok'] = true;
+$zz['record']['no_ok'] = true;
 
 // keine Tabellenaktualisierung
 unset($zz['hooks']['after_update']);

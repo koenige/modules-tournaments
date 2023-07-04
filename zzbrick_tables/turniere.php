@@ -481,7 +481,7 @@ $zz['conditions'][2]['where'] = sprintf(
 	'events.event_category_id = %d', wrap_category_id('termine/einzel')
 );
 
-$zz_conf['copy'] = true;
+$zz['record']['copy'] = true;
 
 $zz['hooks']['after_update'][] = 'mf_tournaments_standings_update';
 $zz['hooks']['after_upload'][] = 'mf_tournaments_games_update';

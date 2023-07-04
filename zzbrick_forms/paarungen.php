@@ -33,4 +33,4 @@ if ($brick['vars'][2] > 1) {
 	$zz['page']['link']['prev'][0]['href'] = '../'.($brick['vars'][2] - 1).'/';	
 	$zz['page']['link']['prev'][0]['title'] = 'Vorherige Runde';
 }
-$zz_conf['footer_text'] = wrap_template('link-rel-nav');
+$zz['footer']['text'] = wrap_template('link-rel-nav');

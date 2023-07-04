@@ -24,7 +24,7 @@ $zz = zzform_include('participations');
 $zz['page']['title'] = $brick['page']['title'].'Kontaktdaten';
 $zz['page']['breadcrumbs'][]['title'] = 'Kontaktdaten';
 
-$zz_conf['footer_text'] = wrap_template('team-kontakt', $brick['data']);
+$zz['footer']['text'] = wrap_template('team-kontakt', $brick['data']);
 $brick['data']['head'] = true;
 $zz['explanation'] = wrap_template('team-kontakt', $brick['data']);
 
@@ -199,10 +199,10 @@ $zz['fields'][22]['subselect']['sql'] = 'SELECT contact_id, identification, CONC
 $zz['title'] = '';
 $zz['access'] = 'add+delete';
 
-$zz_conf['copy'] = false;
+$zz['record']['copy'] = false;
 if (!brick_access_rights('Webmaster'))
-	$zz_conf['if'][22]['delete'] = false; // User darf sich nicht selbst löschen!
-$zz_conf['max_select'] = 200;
+	$zz['if'][22]['record']['delete'] = false; // User darf sich nicht selbst löschen!
+wrap_setting('zzform_max_select', 200);
 
 $zz['details'][0]['title'] = 'Kontaktdaten';
 $zz['details'][0]['link'] = [

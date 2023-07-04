@@ -22,7 +22,7 @@ $zz['title'] = 'SWT-Upload';
 $zz['where']['event_id'] = $brick['data']['event_id'];
 $zz['access'] = 'add_then_edit';
 
-$zz_conf['referer'] = '../';
+$zz['page']['referer'] = '../';
 
 unset($zz['fields'][25]);
 unset($zz['fields'][26]);
@@ -40,12 +40,12 @@ foreach (array_keys($zz['fields']) as $no) {
 $zz['page']['data'] = $brick['data'];
 $zz['hooks']['after_upload'] = 'mf_tournaments_swtimport';
 
-$zz_conf['text']['de']['Edit a record'] = '';
-$zz_conf['text']['de']['Record was not updated (no changes were made)'] = 'Datei wurde hochgeladen';
-$zz_conf['text']['de']['edit'] = 'Erneut hochladen';
-$zz_conf['text']['de']['Update record'] = 'Datei hochladen';
+wrap_text_set('Edit a record', '');
+wrap_text_set('Record was not updated (no changes were made)', 'Datei wurde hochgeladen');
+wrap_text_set('edit', 'Erneut hochladen');
+wrap_text_set('Update record', 'Datei hochladen');
 
-$zz_conf['footer_text'] = '<p><strong>Achtung:</strong> Nach Hinzufügen, Löschen oder dem Ändern von Spielern ist es bei Turnieren, bei denen nicht
+$zz['footer']['text'] = '<p><strong>Achtung:</strong> Nach Hinzufügen, Löschen oder dem Ändern von Spielern ist es bei Turnieren, bei denen nicht
 jede Spielerin und jeder Spieler entweder eine ZPS-Nummer, eine FIDE-ID oder eine DSB-Personenkennziffer hat, sinnvoll, die
 Personen-IDs aus der Datenbank als Identifikation in die SWT-Datei zurückzuschreiben (Feld Info4). Das geht automatisch über:</p>
 

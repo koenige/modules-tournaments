@@ -72,7 +72,7 @@ if (count($brick['vars']) === 4) {
 	$zz['fields'][10]['if']['insert']['default'] = mf_tournaments_get_paring_player($paarung, 'farbe');
 	if ($paarung['partien'] + 1 < $brick['data']['bretter_min']) {
 		$url_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-		$zz_conf['redirect']['successful_insert'] = $url_path.'?add';
+		$zz['page']['redirect']['successful_insert'] = $url_path.'?add';
 	}
 }
 
@@ -103,11 +103,11 @@ if (count($brick['vars']) === 4) {
 	$zz['page']['breadcrumbs'][] = ['title' => 'Runde '.$brick['vars'][2]];
 }
 $zz['page']['dont_show_title_as_breadcrumb'] = true;
-$zz_conf['footer_text'] = wrap_template('link-rel-nav');
+$zz['footer']['text'] = wrap_template('link-rel-nav');
 
 if (count($brick['vars']) === 3) {
 	// Einzelturnier
-	$zz_conf['export'][] = 'PDF Ergebniszettel';
+	$zz['export'][] = 'PDF Ergebniszettel';
 	$zz['page']['event'] = $brick['data'];
 }
 

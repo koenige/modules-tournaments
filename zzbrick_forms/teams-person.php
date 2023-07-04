@@ -43,7 +43,7 @@ foreach ($bearbeitbar as $usergroup) {
 }
 if (!$id_found) wrap_quit(403);
 
-$zz_conf['footer_text'] = wrap_template('team-kontaktdetails');
+$zz['footer']['text'] = wrap_template('team-kontaktdetails');
 $data['head'] = true;
 $zz['explanation'] = wrap_template('team-kontaktdetails', $data);
 
@@ -81,4 +81,4 @@ $zz['fields'][65]['hide_in_form'] = true; // contacts_identifiers
 
 $zz['title'] = '';
 $zz['access'] = 'edit_only';
-$zz_conf['no_ok'] = true;
+$zz['record']['no_ok'] = true;

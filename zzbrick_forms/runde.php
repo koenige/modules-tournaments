@@ -92,7 +92,7 @@ $zz['hooks']['before_insert'][] = 'mf_tournaments_round_event';
 $zz['hooks']['before_update'][] = 'mf_tournaments_round_event';
 $zz['hooks']['after_upload'][] = 'mf_tournaments_games_update';
 
-$zz_conf['referer'] = '../';
+$zz['page']['referer'] = '../';
 
 if (wrap_access('tournaments_games', $brick['data']['event_rights']) AND !wrap_access('tournaments_pairings', $brick['data']['event_rights'])) {
 	// just allow to upload PGN files
@@ -105,8 +105,8 @@ if (wrap_access('tournaments_games', $brick['data']['event_rights']) AND !wrap_a
 	$zz['fields'][2]['hide_in_form'] = true; // identifier
 	$zz['fields'][6]['hide_in_form'] = true; // event
 	unset($zz['fields'][5]['display_field']); // date_end
-	$zz_conf['delete'] = false;
-	$zz_conf['add'] = false;
+	$zz['record']['delete'] = false;
+	$zz['record']['add'] = false;
 }
 if (wrap_access('tournaments_games', $brick['data']['event_rights']) OR wrap_access('tournaments_pairings', $brick['data']['event_rights'])) {
 	if ($brick['data']['turnierform'] === 'e')

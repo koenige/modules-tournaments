@@ -70,4 +70,4 @@ $zz['filter'][2]['identifier'] = 'federation';
 $zz['filter'][2]['type'] = 'list';
 $zz['filter'][2]['where'] = 'federations.contact_id';
 
-$zz_conf['export'][] = 'PDF Brettnachrichten';
+$zz['export'][] = 'PDF Brettnachrichten';
