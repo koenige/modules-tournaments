@@ -83,7 +83,7 @@ $zz['fields'][5]['unless']['export_mode']['subselect']['field_suffix'][1] = '<br
 
 wrap_setting('zzform_show_list_while_edit', false);
 $zz['record']['delete'] = false;
-$zz_conf['merge'] = false;
+$zz['list']['merge'] = false;
 $zz['record']['add'] = false;
 $zz['page']['dont_show_title_as_breadcrumb'] = true;
 
