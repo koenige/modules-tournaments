@@ -185,7 +185,7 @@ function mod_tournaments_startranking_team($event) {
 		// Meldelistestatus nur bei Terminen, die noch nicht zuende sind
 		if (empty($event['teams'][$team_id]['setzliste_no']) AND $event['date_end'] > date('Y-m-d')) $event['meldeliste'] = true;
 		$event['teams'][$team_id][str_replace('-', '_', $event['turnierform'])] = true;
-		if ($event['teams'][$team_id]['country']) $event['country'] = true;
+		if (!empty($event['teams'][$team_id]['country'])) $event['country'] = true;
 	}
 
 	$dwz_sortierung = false;
