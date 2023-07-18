@@ -204,7 +204,7 @@ function mod_tournaments_startranking_team($event) {
 		if ($event['meldeliste']) $event['teams'][$key]['meldeliste'] = true;
 		if ($dwz_sortierung) {
 			$teamname[$key] = $row['place'];
-			$verband[$key] = $row['country'];
+			$verband[$key] = $row['country'] ?? '';
 			$schnitt[$key] = $row['dwz_schnitt'] ?? NULL;
 			if ($schnitt[$key]) $event['dwz_schnitt'] = true;
 		}
