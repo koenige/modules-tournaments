@@ -37,6 +37,7 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 	$meldeliste = false;
 	if ($event['turnierform'] === 'e') {
 		$event = mod_tournaments_startranking_single($event);
+		if (!$event['spieler']) return false;
 		foreach ($event['spieler'] as $spieler) {
 			if ($spieler['status_category_id'].'' !== wrap_category_id('participation-status/verified').'') continue;
 			$meldeliste = true;
@@ -123,6 +124,7 @@ function mod_tournaments_startranking_single($event) {
 		, wrap_category_id('participation-status/blocked')
 	);
 	$event['spieler'] = wrap_db_fetch($sql, 'person_id');
+	if (!$event['spieler']) return $event;
 	$event['spieler'] = mf_tournaments_clubs_to_federations($event['spieler'], 'club_contact_id');
 	$event['spieler'] = mf_tournaments_person_identifiers($event['spieler'], ['fide-id', 'zps']);
 	$event['zeige_dwz'] = false;

@@ -292,8 +292,17 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 
 	if (!empty($event['einzel'])) {
 		$sql = 'SELECT COUNT(*) FROM participations
-			WHERE usergroup_id = %d AND event_id = %d';
-		$sql = sprintf($sql, wrap_id('usergroups', 'spieler'), $event['event_id']);
+			WHERE event_id = %d
+			AND usergroup_id = %d
+			AND status_category_id IN (%s%d, %d, %d)';
+		$sql = sprintf($sql
+			, $event['event_id']
+			, wrap_id('usergroups', 'spieler')
+			, ($event['date_end'] >= date('Y-m-d')) ? sprintf('%d, ', wrap_category_id('participation-status/verified')) : ''
+			, wrap_category_id('participation-status/participant')
+			, wrap_category_id('participation-status/disqualified')
+			, wrap_category_id('participation-status/blocked')
+		);
 		$event['einzelteilnehmerliste'] = wrap_db_fetch($sql, '', 'single value');
 	}
 	if ($internal) $event['tabellenstaende'] = [];
