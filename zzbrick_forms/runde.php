@@ -72,7 +72,7 @@ unset($zz['fields'][8]); // Anreisser
 unset($zz['fields'][14]); // Beschreibung
 unset($zz['fields'][33]); // Anmerkungen
 unset($zz['fields'][34]); // Offen?
-unset($zz['fields'][10]); // Termine/Organisationen
+unset($zz['fields'][7]); // Termine/Organisationen
 unset($zz['fields'][64]); // Termine/Links
 unset($zz['fields'][65]); // Termine/Teilnehmerzahlen
 unset($zz['fields'][61]); // participations
