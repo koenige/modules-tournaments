@@ -13,27 +13,28 @@
  */
 
 
-$zz = zzform_include('events');
-
+$zz = zzform_include('events/events');
 $zz['title'] = 'Runden';
+
 $zz['where']['main_event_id'] = $brick['data']['event_id'];
 $zz['where']['event_category_id'] = wrap_category_id('zeitplan/runde');
 
-$zz['fields'][4]['default'] = $brick['data']['zeitplan_max'];
+// overwrite event_year with round_no
+$zz['fields'][53] = [];
+$zz['fields'][53]['title'] = 'Runde';
+$zz['fields'][53]['field_name'] = 'runde_no';
+$zz['fields'][53]['type'] = 'number';
+$zz['fields'][53]['required'] = true;
+$zz['fields'][53]['hide_in_list'] = true;
+$zz['fields'][53]['auto_value'] = 'increment';
 
-$zz['fields'][2]['fields'] = [
-	'main_event_id[identifier]', 'runde_no', 'identifier'
-];
-$zz['fields'][2]['conf_identifier']['concat'] = [
-	'/', '/runde/'
-];
-
-if (wrap_setting('tournaments_upload_pgn')) {
-	$zz['fields'][23]['title'] = 'PGN-Datei';
-	$zz['fields'][23]['field_name'] = 'pgn';
-	$zz['fields'][23]['dont_show_missing'] = true;
-	$zz['fields'][23]['type'] = 'upload_image';
-	$zz['fields'][23]['path'] = [
+if (wrap_setting('tournaments_upload_pgn')) { // 11 = author
+	$zz['fields'][11] = [];
+	$zz['fields'][11]['title'] = 'PGN-Datei';
+	$zz['fields'][11]['field_name'] = 'pgn';
+	$zz['fields'][11]['dont_show_missing'] = true;
+	$zz['fields'][11]['type'] = 'upload_image';
+	$zz['fields'][11]['path'] = [
 		'root' => wrap_setting('media_folder').'/pgn/',
 		'webroot' => wrap_setting('media_internal_path').'/pgn/',
 		'field1' => 'main_event_identifier', 
@@ -41,52 +42,83 @@ if (wrap_setting('tournaments_upload_pgn')) {
 		'field2' => 'runde_no',
 		'string3' => '.pgn'
 	];
-	$zz['fields'][23]['input_filetypes'] = ['pgn'];
-	$zz['fields'][23]['link'] = [
+	$zz['fields'][11]['input_filetypes'] = ['pgn'];
+	$zz['fields'][11]['link'] = [
 		'string1' => wrap_setting('media_internal_path').'/pgn/',
 		'field1' => 'main_event_identifier',
 		'string2' => '/',
 		'field2' => 'runde_no',
 		'string3' => '.pgn'
 	];
-	$zz['fields'][23]['optional_image'] = true;
-	$zz['fields'][23]['image'][0]['title'] = 'gro&szlig;';
-	$zz['fields'][23]['image'][0]['field_name'] = 'gross';
-	$zz['fields'][23]['image'][0]['path'] = $zz['fields'][23]['path'];
-	$zz['fields'][23]['unless']['export_mode']['list_prefix'] = '<br>';
+	$zz['fields'][11]['optional_image'] = true;
+	$zz['fields'][11]['image'][0]['title'] = 'gro&szlig;';
+	$zz['fields'][11]['image'][0]['field_name'] = 'gross';
+	$zz['fields'][11]['image'][0]['path'] = $zz['fields'][23]['path'];
+	$zz['fields'][11]['unless']['export_mode']['list_prefix'] = '<br>';
 }
 
-$zz['fields'][26]['hide_in_list'] = true;
-$zz['fields'][26]['hide_in_form'] = true;
+$keep_fields = [
+	'event_id', 'date_begin', 'date_end', 'time_begin', 'time_end', 'timezone',
+	'event', 'event_category_id', 'takes_place', 'published', 'main_event_id',
+	'identifier', 'created', 'website_id', 'last_update', 'runde_no', 'pgn'
+];
 
-$zz['fields'][35]['type'] = 'hidden';
-$zz['fields'][35]['hide_in_form'] = true;
-$zz['fields'][35]['value'] = $brick['data']['website_id'];
+foreach ($zz['fields'] as $no => $field) {
+	if (empty($field['field_name']) OR !in_array($field['field_name'], $keep_fields)) {
+		unset($zz['fields'][$no]);
+		continue;
+	}
+	switch ($field['field_name']) {
+	case 'event':
+		$zz['fields'][$no]['explanation'] = 'Kann freigelassen werden, wird automatisch ergänzt';
+		$zz['fields'][$no]['required'] = false;
+		unset($zz['fields'][$no]['link']);
+		break;
 
-unset($zz['fields'][15]); // Reihe
-unset($zz['fields'][24]); // Termine/Kategorien
-unset($zz['fields'][31]); // Termine/Websites
-unset($zz['fields'][12]); // Ort
-unset($zz['fields'][13]); // Ort, frei
-unset($zz['fields'][8]); // Anreisser
-unset($zz['fields'][14]); // Beschreibung
-unset($zz['fields'][33]); // Anmerkungen
-unset($zz['fields'][34]); // Offen?
-unset($zz['fields'][7]); // Termine/Organisationen
-unset($zz['fields'][64]); // Termine/Links
-unset($zz['fields'][65]); // Termine/Teilnehmerzahlen
-unset($zz['fields'][61]); // participations
-unset($zz['fields'][68]); // Termine/Bankkonten
-unset($zz['fields'][17]); // Anmeldeinfo
+	case 'date_begin':
+		$zz['fields'][$no]['default'] = $brick['data']['zeitplan_max'];
+		break;
 
-unset($zz['fields'][16]); // direct link
-unset($zz['fields'][39]); // Berechtigung
-unset($zz['fields'][40]); // Berechtigung
-unset($zz['fields'][41]); // Berechtigung
-unset($zz['fields'][56]); // Veranstaltungsjahr
+	case 'identifier':
+		$zz['fields'][$no]['fields'] = [
+			'main_event_id[identifier]', 'runde_no', 'identifier'
+		];
+		$zz['fields'][$no]['conf_identifier']['concat'] = [
+			'/', '/runde/'
+		];
+		break;
 
-// Bedingung für Runde immer wahr
-$zz['conditions'][1]['where'] = '';
+	case 'published':
+		// published? makes no sense to unpublish rounds
+		$zz['fields'][$no]['type'] = 'hidden';
+		$zz['fields'][$no]['value'] = 'yes';
+		$zz['fields'][$no]['hide_in_form'] = true;
+		break;
+
+	case 'website_id':
+		$zz['fields'][$no]['type'] = 'hidden';
+		$zz['fields'][$no]['value'] = $brick['data']['website_id'];
+		$zz['fields'][$no]['hide_in_form'] = true;
+		$zz['fields'][$no]['hide_in_list'] = true;
+		break;
+
+	case 'main_event_id':
+		$zz['fields'][$no]['hide_in_form'] = true;
+		break;
+
+	case 'created':
+		$zz['fields'][$no]['hide_in_form'] = true;
+		break;
+	}
+}
+
+$zz['sql'] = wrap_edit_sql($zz['sql'], 'SELECT', 'main_events.identifier AS main_event_identifier');
+$zz['sql'] = wrap_edit_sql($zz['sql'], 'JOIN', 'LEFT JOIN events main_events
+		ON events.main_event_id = main_events.event_id');
+
+unset($zz['filter']);
+
+$zz['record']['copy'] = false;
 
 $zz['hooks']['before_insert'][] = 'mf_tournaments_round_event';
 $zz['hooks']['before_update'][] = 'mf_tournaments_round_event';
@@ -96,15 +128,26 @@ $zz['page']['referer'] = '../';
 
 if (wrap_access('tournaments_games', $brick['data']['event_rights']) AND !wrap_access('tournaments_pairings', $brick['data']['event_rights'])) {
 	// just allow to upload PGN files
-	$fields = [4, 5, 54, 55, 22, 20];
-	foreach ($fields as $no) {
-		$zz['fields'][$no]['type_detail'] = $zz['fields'][$no]['type'];
-		$zz['fields'][$no]['type'] = 'display';
-		unset($zz['fields'][$no]['explanation']);
+	foreach ($zz['fields'] as $no => $field) {
+		switch ($field['field_name']) {
+		case 'identifier':
+			$zz['fields'][$no]['hide_in_form'] = true;
+			break;
+
+		case 'date_end':
+			unset($zz['fields'][$no]['display_field']);
+		case 'date_begin':
+		case 'time_begin':
+		case 'time_end':
+		case 'runde_no':
+		case 'takes_place':
+		case 'event':
+			$zz['fields'][$no]['type_detail'] = $zz['fields'][$no]['type'];
+			$zz['fields'][$no]['type'] = 'display';
+			unset($zz['fields'][$no]['explanation']);
+			break;
+		}
 	}
-	$zz['fields'][2]['hide_in_form'] = true; // identifier
-	$zz['fields'][6]['hide_in_form'] = true; // event
-	unset($zz['fields'][5]['display_field']); // date_end
 	$zz['record']['delete'] = false;
 	$zz['record']['add'] = false;
 }
