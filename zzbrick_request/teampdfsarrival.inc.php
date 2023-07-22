@@ -34,22 +34,38 @@ function mod_tournaments_teampdfsarrival($params, $settings, $event) {
 	$event['event_identifier'] = $event['identifier'];
 
 	// teams
-	$params = [
-		'team_identifier' => count($params) === 3 ? implode('/', $params) : '',
-		'participants_order_by' => 't_dwz DESC, last_name, first_name'
-	];
-	$event['teams'] = mf_tournaments_pdf_teams($event, $params);
+	$sql = 'SELECT team_id, team, team_no, club_contact_id
+			, teams.identifier AS team_identifier
+		FROM teams
+		WHERE %s
+		AND spielfrei = "nein"
+		AND team_status = "Teilnehmer"
+		ORDER BY teams.identifier
+	';
+	$sql = sprintf($sql
+		, count($params) === 3
+			? sprintf('identifier = "%s"', wrap_db_escape(implode('/', $params)))
+			: sprintf('event_id = %d', $event['event_id'])
+	);
+	$event['teams'] = wrap_db_fetch($sql, 'team_id');
+	if (!$event['teams']) return [];
+	$event['teams'] = mf_tournaments_clubs_to_federations($event['teams']);
 
-	return mod_tournaments_teampdfsarrival_pdf($event);
-}
+	// players
+	$team_contact_ids = [];
+	foreach ($event['teams'] as $team_id => $team)
+		$team_contact_ids[$team_id] = $team['club_contact_id'];
+	$participants = mf_tournaments_team_participants($team_contact_ids, $event, true, 't_dwz DESC, last_name, first_name');
+	if (count($params) === 3) {
+		// single team
+		$team_id = key($event['teams']);
+		$event['teams'][$team_id] += $participants;
+	} else {
+		foreach (array_keys($participants) as $team_id)
+			$event['teams'][$team_id] += $participants[$team_id];
+	}
 
-/**
- * Ausgabe der Meldung zum Anreisetag als PDF
- *
- * @param array $daten
- * @return void
- */
-function mod_tournaments_teampdfsarrival_pdf($event) {
+	// pdf
 	list($pdf, $settings) = mf_tournaments_pdf_prepare($event);
 
 	$margin_top_bottom = 45;
