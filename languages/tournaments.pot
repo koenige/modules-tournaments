@@ -22,6 +22,34 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.12\n"
 
+#: zzbrick_forms/rounds.inc.php
+msgid "Rounds"
+msgstr ""
+
+#: zzbrick_forms/rounds.inc.php
+msgid "Round"
+msgstr ""
+
+#: zzbrick_forms/rounds.inc.php
+msgid "PGN file"
+msgstr ""
+
+#: zzbrick_forms/rounds.inc.php
+msgid "Can be left blank, will be added automatically"
+msgstr ""
+
+#: zzbrick_forms/rounds.inc.php
+msgid "Games"
+msgstr ""
+
+#: zzbrick_forms/rounds.inc.php
+msgid "Pairings"
+msgstr ""
+
+#: zzbrick_forms/rounds.inc.php
+msgid "Standings"
+msgstr ""
+
 #: zzbrick_forms/tournaments.inc.php
 msgid "Instead of input: Transfer of the settings from the last tournament in this series"
 msgstr ""

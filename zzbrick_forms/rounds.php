@@ -14,14 +14,14 @@
 
 
 $zz = zzform_include('events/events');
-$zz['title'] = 'Runden';
+$zz['title'] = 'Rounds';
 
 $zz['where']['main_event_id'] = $brick['data']['event_id'];
-$zz['where']['event_category_id'] = wrap_category_id('zeitplan/runde');
+$zz['where']['event_category_id'] = wrap_category_id('event/round');
 
 // overwrite event_year with round_no
 $zz['fields'][53] = [];
-$zz['fields'][53]['title'] = 'Runde';
+$zz['fields'][53]['title'] = 'Round';
 $zz['fields'][53]['field_name'] = 'runde_no';
 $zz['fields'][53]['type'] = 'number';
 $zz['fields'][53]['required'] = true;
@@ -30,7 +30,7 @@ $zz['fields'][53]['auto_value'] = 'increment';
 
 if (wrap_setting('tournaments_upload_pgn')) { // 11 = author
 	$zz['fields'][11] = [];
-	$zz['fields'][11]['title'] = 'PGN-Datei';
+	$zz['fields'][11]['title'] = 'PGN file';
 	$zz['fields'][11]['field_name'] = 'pgn';
 	$zz['fields'][11]['dont_show_missing'] = true;
 	$zz['fields'][11]['type'] = 'upload_image';
@@ -51,8 +51,8 @@ if (wrap_setting('tournaments_upload_pgn')) { // 11 = author
 		'string3' => '.pgn'
 	];
 	$zz['fields'][11]['optional_image'] = true;
-	$zz['fields'][11]['image'][0]['title'] = 'gro&szlig;';
-	$zz['fields'][11]['image'][0]['field_name'] = 'gross';
+	$zz['fields'][11]['image'][0]['title'] = 'main';
+	$zz['fields'][11]['image'][0]['field_name'] = 'main';
 	$zz['fields'][11]['image'][0]['path'] = $zz['fields'][23]['path'];
 	$zz['fields'][11]['unless']['export_mode']['list_prefix'] = '<br>';
 }
@@ -70,7 +70,7 @@ foreach ($zz['fields'] as $no => $field) {
 	}
 	switch ($field['field_name']) {
 	case 'event':
-		$zz['fields'][$no]['explanation'] = 'Kann freigelassen werden, wird automatisch ergänzt';
+		$zz['fields'][$no]['explanation'] = 'Can be left blank, will be added automatically';
 		$zz['fields'][$no]['required'] = false;
 		unset($zz['fields'][$no]['link']);
 		break;
@@ -153,16 +153,16 @@ if (wrap_access('tournaments_games', $brick['data']['event_rights']) AND !wrap_a
 }
 if (wrap_access('tournaments_games', $brick['data']['event_rights']) OR wrap_access('tournaments_pairings', $brick['data']['event_rights'])) {
 	if ($brick['data']['turnierform'] === 'e')
-		$zz['details'][0]['title'] = 'Partien';
+		$zz['details'][0]['title'] = 'Games';
 	else
-		$zz['details'][0]['title'] = 'Paarungen';
+		$zz['details'][0]['title'] = 'Pairings';
 	$zz['details'][0]['link'] = [
 	// @todo use area
 		'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'identifier', 'string1' => '/'
 	];
 }
 if (wrap_access('tournaments_standings', $brick['data']['event_rights'])) {
-	$zz['details'][1]['title'] = 'Tabellenstand';
+	$zz['details'][1]['title'] = 'Standings';
 	$zz['details'][1]['link'] = [
 	// @todo use area
 	//	'area' => 'tournaments_standings',
