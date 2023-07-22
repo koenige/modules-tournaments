@@ -17,26 +17,25 @@
  * Meldebögen zur Anreise, Check welche gemeldete Personen vor Ort sind,
  * Abfrage der Brettreihenfolge
  *
- * @param array $vars
+ * @param array $params
  * @return void
  */
-function mod_tournaments_teampdfsarrival($vars) {
-	wrap_include_files('pdf', 'tournaments');
-
-	if (count($vars) === 3) {
-		$team_identifier = implode('/', $vars);
-		array_pop($vars);
-	} elseif (count($vars) === 2) {
-		$team_identifier = false;
-	} else {
-		return false;
-	}
-
-	$event = mf_tournaments_pdf_event($vars);
+function mod_tournaments_teampdfsarrival($params, $settings, $event) {
 	if (!$event) return false;
+	wrap_include_files('pdf', 'tournaments');
 	
+	// event: additional event info needed
+	$sql = 'SELECT pseudo_dwz, ratings_updated, bretter_max
+	    FROM tournaments
+	    WHERE event_id = %d';
+	$sql = sprintf($sql, $event['event_id']);
+	$event += wrap_db_fetch($sql);
+	// @todo always use event_identifier for clarity of code
+	$event['event_identifier'] = $event['identifier'];
+
+	// teams
 	$params = [
-		'team_identifier' => $team_identifier,
+		'team_identifier' => count($params) === 3 ? implode('/', $params) : '',
 		'participants_order_by' => 't_dwz DESC, last_name, first_name'
 	];
 	$event['teams'] = mf_tournaments_pdf_teams($event, $params);
@@ -48,17 +47,6 @@ function mod_tournaments_teampdfsarrival($vars) {
  * Ausgabe der Meldung zum Anreisetag als PDF
  *
  * @param array $daten
- * # event, duration, teams {team, team_no, country, regionalgruppe,
- * # komplett, spieler {rang_no, person, geschlecht, t_dwz, geburtsjahr},
- * # betreuer {usergroup, person_id, e_mail, telefon, person, geburtsjahr},
- * # verein-vorsitz { … }, verein-jugend { … }, team-organisator { … }, gast { …
- * # }, datum_anreise, uhrzeit_anreise, datum_abreise, uhrzeit_abreise, kosten
- * # {buchungskategorie, betrag, usergroup, kosten, anmerkungen, kosten_betrag,
- * # betrag_waehrung, anzahl_tage, anzahl_weiblich, anzahl_maennlich, betrag},
- * # betrag, meldung_datum, team_identifier }, event_identifier,
- * # dateiname, konten_veranstalter {inhaber, iban, bic, institut},
- * # konten_ausrichter {inhaber, iban, bic, institut}, bretter_min,
- * # gastspieler_status, dauer_tage
  * @return void
  */
 function mod_tournaments_teampdfsarrival_pdf($event) {

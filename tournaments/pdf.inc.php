@@ -17,9 +17,9 @@
  * get event for PDF
  *
  * fields just used by some functions:
- * - teampdfs: hinweis_meldebogen, dateiname, pseudo_dwz
+ * - teampdfs: hinweis_meldebogen, event_idf, pseudo_dwz
  * - teampdf: hinweis_meldebogen
- * - teampdfsarrival: date_begin, ratings_updated, dateiname, pseudo_dwz
+ * - teampdfsarrival: date_begin, ratings_updated, event_idf, pseudo_dwz
  * @param array $event_params
  * @return array
  */
@@ -32,7 +32,7 @@ function mf_tournaments_pdf_event($event_params) {
 			, bretter_min, bretter_max
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, IF(tournaments.zimmerbuchung = "ja", 1, NULL) AS zimmerbuchung
-			, SUBSTRING_INDEX(events.identifier, "/", -1) AS dateiname
+			, SUBSTRING_INDEX(events.identifier, "/", -1) AS event_idf
 			, pseudo_dwz
 			, date_begin
 			, ratings_updated
@@ -242,7 +242,7 @@ function mf_tournaments_pdf_send($pdf, $event, $return = 'send') {
 		$file['send_as'] = $event['send_as_singular'].' '.$event['event'].' '.$team['team'].'.pdf';
 	} else {
 		$tournament_folder = dirname($folder.'/'.$event['event_identifier']);
-		$file['name'] = $tournament_folder.'/'.$event['dateiname'].'/'.$event['filename_suffix'].'.pdf';
+		$file['name'] = $tournament_folder.'/'.$event['event_idf'].'/'.$event['filename_suffix'].'.pdf';
 		$file['send_as'] = $event['send_as_plural'].' '.$event['event'].'.pdf';
 	}
 	wrap_mkdir(dirname($file['name']));

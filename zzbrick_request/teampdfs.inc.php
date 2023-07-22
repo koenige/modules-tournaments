@@ -51,7 +51,7 @@ function mod_tournaments_teampdfs($vars, $settings) {
 	}
 	$folder = wrap_setting('tmp_dir').'/team-meldungen';
 	$turnier_folder = dirname($folder.'/'.$event['event_identifier']);
-	$file['name'] = $folder.'/'.$event['dateiname'].'-meldebogen.pdf';
+	$file['name'] = $folder.'/'.$event['event_idf'].'-meldebogen.pdf';
 	$file['send_as'] = 'Meldebögen '.$event['event'].'.pdf';
 	$command = 'gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -sOutputFile="%s" "%s"';
 	$command = sprintf($command, $file['name'], implode('" "', $pdfs));
@@ -66,17 +66,6 @@ function mod_tournaments_teampdfs($vars, $settings) {
  * Ausgabe der Meldung als PDF
  *
  * @param array $daten
- * # event, duration, teams {team, team_no, country, regionalgruppe,
- * # komplett, spieler {rang_no, person, geschlecht, t_dwz, geburtsjahr},
- * # betreuer {usergroup, person_id, e_mail, telefon, person, geburtsjahr},
- * # verein-vorsitz { … }, verein-jugend { … }, team-organisator { … }, gast { …
- * # }, datum_anreise, uhrzeit_anreise, datum_abreise, uhrzeit_abreise, kosten
- * # {buchungskategorie, betrag, usergroup, kosten, anmerkungen, kosten_betrag,
- * # betrag_waehrung, anzahl_tage, anzahl_weiblich, anzahl_maennlich, betrag},
- * # betrag, meldung_datum, team_identifier }, hinweis_meldebogen, event_identifier,
- * # dateiname, konten_veranstalter {inhaber, iban, bic, institut},
- * # konten_ausrichter {inhaber, iban, bic, institut}, bretter_min,
- * # gastspieler_status, dauer_tage
  * @param string $return 'send' => send PDF to browser, 'filename' => return filename
  * @return void
  */
