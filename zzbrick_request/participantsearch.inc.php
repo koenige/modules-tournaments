@@ -88,7 +88,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 			AND team LIKE "%%%s%%"';
 		$sql = sprintf($sql, implode(',', array_keys($events)), wrap_db_escape($_GET['q']));
 		$event['teams'] = wrap_db_fetch($sql, 'team_id');
-		if ($internal AND brick_access_rights('AK Spielbetrieb')) {
+		if ($internal AND wrap_access('tournaments_teams')) {
 			foreach ($event['teams'] as $team_id => $team) {
 				$event['teams'][$team_id]['teilnehmerliste'] = true;
 				$event['teams'][$team_id]['intern'] = true;
