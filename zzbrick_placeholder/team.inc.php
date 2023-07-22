@@ -25,9 +25,11 @@ function mod_tournaments_placeholder_team($brick) {
 
 	$sql = 'SELECT team_id, team, team_no, meldung
 			, event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year
+			, SUBSTRING_INDEX(events.identifier, "/", -1) AS event_idf
 			, IFNULL(place, places.contact) AS turnierort
 			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
 			, DATEDIFF(date_end, date_begin) AS dauer_tage
+			, date_begin
 			, events.identifier AS event_identifier
 			, series_category_id
 			, main_series.category_short AS main_series
