@@ -13,25 +13,36 @@
  */
 
 
-function mod_tournaments_teampdfs($vars, $settings) {
+
+function mod_tournaments_teampdfs($params, $settings, $event) {
+	if (!$event) return false;
+	if (count($params) < 2) return false;
+	if (count($params) > 3) return false;
 	wrap_include_files('pdf', 'tournaments');
 	
-	if (count($vars) === 3) {
-		$team_identifier = implode('/', $vars);
-		array_pop($vars);
-	} elseif (count($vars) === 2) {
-		$team_identifier = false;
-	} else {
-		return false;
-	}
-
-	$event = mf_tournaments_pdf_event($vars);
-	if (!$event) return false;
-
+	// $data can be from team or event placeholder
+	if (empty($event['event_identifier']))
+		$event['event_identifier'] = $event['identifier'];
+	
+	$sql = 'SELECT bretter_min, bretter_max
+			, pseudo_dwz, ratings_updated
+			, IF(zimmerbuchung = "ja", 1, NULL) AS zimmerbuchung
+			, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
+			, (SELECT eventtext FROM eventtexts
+				WHERE eventtexts.event_id = tournaments.event_id
+				AND eventtexts.eventtext_category_id = %d
+			) AS hinweis_meldebogen
+	    FROM tournaments
+	    WHERE event_id = %d';
+	$sql = sprintf($sql
+		, wrap_category_id('event-texts/note-registration-form')
+		, $event['event_id']
+	);
+	$event += wrap_db_fetch($sql);
+	$event += mf_tournaments_pdf_event_accounts($event['event_id']);
+	
 	$params = [
-		'team_identifier' => $team_identifier,
-		'bookings' => true,
-		'check_completion' => true,
+		'team_identifier' => count($params) === 3 ? implode('/', $params) : false,
 		'check_uploads' => !empty($settings['no_uploads']) ? false : true
 	];
 	$event['teams'] = mf_tournaments_pdf_teams($event, $params);
@@ -334,50 +345,6 @@ function mod_tournaments_teampdfs_draft(&$pdf, $daten) {
 }
 
 /**
- * get event for PDF
- *
- * fields just used by some functions:
- * - teampdfs: hinweis_meldebogen, event_idf, pseudo_dwz
- * - teampdf: hinweis_meldebogen
- * - teampdfsarrival: date_begin, ratings_updated, event_idf, pseudo_dwz
- * @param array $event_params
- * @return array
- */
-function mf_tournaments_pdf_event($event_params) {
-	$sql = 'SELECT event_id, event
-			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
-			, events.identifier AS event_identifier
-			, DATEDIFF(date_end, date_begin) AS dauer_tage
-			, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
-			, bretter_min, bretter_max
-			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
-			, IF(tournaments.zimmerbuchung = "ja", 1, NULL) AS zimmerbuchung
-			, SUBSTRING_INDEX(events.identifier, "/", -1) AS event_idf
-			, pseudo_dwz
-			, date_begin
-			, ratings_updated
-			, (SELECT eventtext FROM eventtexts
-				WHERE eventtexts.event_id = events.event_id
-				AND eventtexts.eventtext_category_id = %d
-			) AS hinweis_meldebogen
-		FROM events
-		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN categories turnierformen
-			ON tournaments.turnierform_category_id = turnierformen.category_id
-		WHERE events.identifier = "%d/%s"';
-	$sql = sprintf($sql
-		, wrap_category_id('event-texts/note-registration-form')
-		, $event_params[0]
-		, wrap_db_escape($event_params[1])
-	);
-	$event = wrap_db_fetch($sql);
-	if (!$event) return false;
-
-	$event = array_merge($event, mf_tournaments_pdf_event_accounts($event['event_id']));
-	return $event;
-}
-
-/**
  * Liest Konten zu Termin aus
  *
  * @param int $event_id
@@ -415,17 +382,10 @@ function mf_tournaments_pdf_event_accounts($event_id) {
  */
 function mf_tournaments_pdf_teams($event, $params) {
 	// team_identifier is more specific
-	if (!empty($params['team_identifier'])) {
+	if (!empty($params['team_identifier']))
 		$where = sprintf('teams.identifier = "%s"', wrap_db_escape($params['team_identifier']));
-	} else {
-		$event_rights = 'event_id:'.$event['event_id'];
-		if (!brick_access_rights(['Webmaster', 'Vorstand', 'AK Spielbetrieb', 'Geschäftsstelle'])
-			AND !brick_access_rights(['Schiedsrichter', 'Organisator', 'Turnierleitung'], $event_rights)
-		) {
-			wrap_quit(403);
-		}
+	else
 		$where = sprintf('event_id = %d', $event['event_id']);
-	}
 
 	$sql = 'SELECT team_id, team, team_no, club_contact_id
 			, teams.identifier AS team_identifier
@@ -448,20 +408,14 @@ function mf_tournaments_pdf_teams($event, $params) {
 
 	// get participants
 	$team_contact_ids = [];
-	foreach ($teams as $team_id => $team) {
+	foreach ($teams as $team_id => $team)
 		$team_contact_ids[$team_id] = $team['club_contact_id'];
-	}
-	if (!empty($params['participants_order_by']))
-		$participants = mf_tournaments_team_participants($team_contact_ids, $event, true, $params['participants_order_by']);
-	else
-		$participants = mf_tournaments_team_participants($team_contact_ids, $event);
+	$participants = mf_tournaments_team_participants($team_contact_ids, $event);
+	// single team?
 	if (!is_numeric(key($participants))) $participants = [$team_id => $participants];
 
 	// get bookings
-	if (!empty($params['bookings']))
-		$bookings = mf_tournaments_team_bookings(array_keys($teams), $event);
-	else
-		$bookings = [];
+	$bookings = mf_tournaments_team_bookings(array_keys($teams), $event);
 
 	// move separate data to teams array
 	$pdf_uploads = false;
@@ -476,8 +430,7 @@ function mf_tournaments_pdf_teams($event, $params) {
 		} else {
 			$teams[$team_id]['kosten'] = [];
 		}
-		if (!empty($params['check_completion']))
-			$teams[$team_id]['komplett'] = mf_tournaments_team_application_complete($teams[$team_id]);
+		$teams[$team_id]['komplett'] = mf_tournaments_team_application_complete($teams[$team_id]);
 		if (!empty($params['check_uploads'])) {
 			$filename = sprintf('%s/meldeboegen/%s%%s.pdf', wrap_setting('media_folder'), $teams[$team_id]['team_identifier']);
 			$filenames = [
