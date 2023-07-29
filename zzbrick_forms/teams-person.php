@@ -53,23 +53,31 @@ $zz['fields'][2]['type'] = 'display';
 $zz['fields'][2]['hide_in_form'] = false;
 $zz['fields'][2]['field_sequence'] = 1;
 
-// parts of name have to appear for hook script
-$zz['fields'][9]['fields'][2]['type'] = 'display';
-$zz['fields'][9]['fields'][2]['class'] = 'hidden';
+foreach ($zz['fields'][9]['fields'] as $no => $field) {
+	if (empty($field['field_name'])) continue;
+	switch ($field['field_name']) {
+	case 'first_name':
+	case 'name_particle':
+	case 'last_name':
+		// parts of name have to appear for hook script
+		$zz['fields'][9]['fields'][$no]['type'] = 'display';
+		$zz['fields'][9]['fields'][$no]['class'] = 'hidden';
+		break;
+	case 'birth_name':
+	case 'title_prefix':
+	case 'title_suffix':
+		$zz['fields'][9]['fields'][$no]['hide_in_form'] = true;
+		$zz['fields'][9]['fields'][$no]['hide_in_form'] = true;
+		break;
+	case 'date_of_birth':
+		$zz['fields'][9]['fields'][$no]['explanation'] = '(Es reicht auch Geburtsjahr)';
+		break;
+	case 't_shirt':
+		$zz['fields'][9]['fields'][$no]['hide_in_form'] = true;
+		break;
+	}
+}
 
-$zz['fields'][9]['fields'][3]['type'] = 'display';
-$zz['fields'][9]['fields'][3]['class'] = 'hidden';
-
-$zz['fields'][9]['fields'][4]['type'] = 'display';
-$zz['fields'][9]['fields'][4]['class'] = 'hidden';
-
-$zz['fields'][9]['fields'][5]['hide_in_form'] = true; // birth_name
-$zz['fields'][9]['fields'][6]['hide_in_form'] = true; // title_prefix
-
-$zz['fields'][9]['fields'][8]['explanation'] = '(Es reicht auch Geburtsjahr)';
-
-if (!empty($zz['fields'][9]['fields'][33]))
-	$zz['fields'][9]['fields'][33]['hide_in_form'] = true; // t_shirt
 unset($zz['fields'][35]['separator']);
 
 $zz['fields'][3]['hide_in_form'] = true; // identifier
