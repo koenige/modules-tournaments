@@ -53,20 +53,33 @@ if (empty($contact_ids)) {
 	$zz['sql'] .= sprintf(' AND contact_id IN (%s)', implode(',', $contact_ids));
 }
 
-$keep_fields = [1, 2, 3, 4, 6, 8, 9, 7, 20, 25];
-foreach (array_keys($zz['fields'][9]['fields']) as $no) {
-	if (!in_array($no, $keep_fields)) unset($zz['fields'][9]['fields'][$no]);
+foreach ($zz['fields'][9]['fields'] as $no => $field) {
+	if (empty($field['field_name'])) continue;
+	switch ($field['field_name']) {
+	case 'person_id':
+	case 'contact_id':
+	case 'title_prefix':
+	case 'date_of_birth':
+	case 'sex':
+		break;
+	case 'first_name':
+		// change of name not possible here
+		$zz['fields'][9]['fields'][$no]['type'] = 'display';
+		$zz['fields'][9]['fields'][$no]['list_append_next'] = false;
+		$zz['fields'][9]['if']['record_mode']['fields'][$no]['display_field'] = 'first_name';
+		break;
+	case 'name_particle':
+		// change of name not possible here
+		$zz['fields'][9]['fields'][$no]['type'] = 'display';
+		$zz['fields'][9]['fields'][$no]['explanation'] = false;
+		break;
+	case 'last_name':
+		// change of name not possible here
+		$zz['fields'][9]['fields'][$no]['type'] = 'display';
+	default:
+		unset($zz['fields'][9]['fields'][$no]);
+	}
 }
-
-// Namen nicht veränderbar
-$zz['fields'][9]['fields'][2]['type'] = 'display';
-$zz['fields'][9]['if']['record_mode']['fields'][2]['display_field'] = 'first_name';
-$zz['fields'][9]['fields'][3]['type'] = 'display';
-$zz['fields'][9]['fields'][3]['explanation'] = false;
-$zz['fields'][9]['fields'][4]['type'] = 'display';
-$zz['fields'][9]['fields'][2]['list_append_next'] = false;
-
-//$zz['fields'][9]['list_append_next'] = true;
 
 unset($zz['fields'][2]);	// contact
 $zz['fields'][3]['hide_in_form'] = true; // identifier
