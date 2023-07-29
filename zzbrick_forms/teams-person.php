@@ -85,7 +85,7 @@ $zz['fields'][13]['hide_in_form'] = true; // remarks
 $zz['fields'][97]['hide_in_form'] = true; // created
 if (!empty($zz['fields'][27]))
 	$zz['fields'][27]['hide_in_form'] = true; // change identifier
-$zz['fields'][65]['hide_in_form'] = true; // contacts_identifiers
+$zz['fields'][19]['hide_in_form'] = true; // contacts_identifiers
 
 $zz['title'] = '';
 $zz['access'] = 'edit_only';

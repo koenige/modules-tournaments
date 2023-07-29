@@ -85,7 +85,7 @@ unset($zz['fields'][2]);	// contact
 $zz['fields'][3]['hide_in_form'] = true; // identifier
 unset($zz['fields'][3]['read_options']);
 unset($zz['fields'][17]); 	// change identifier
-unset($zz['fields'][65]);	// contacts_identifiers
+unset($zz['fields'][19]);	// contacts_identifiers
 
 $zz['fields'][32]['hide_in_list'] = false;
 
