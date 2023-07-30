@@ -13,8 +13,6 @@
  */
 
 
-$brick['page']['title'] .= 'PDF Upload';
-$brick['page']['breadcrumbs'][]['title'] = 'PDF Upload';
 
 $zz = zzform_include('teams');
 
@@ -22,6 +20,7 @@ $zz['footer']['text'] = wrap_template('team-pdfupload');
 $brick['data']['head'] = true;
 $zz['explanation'] = wrap_template('team-pdfupload', $brick['data']);
 $zz['title'] = '';
+//$zz['title'] = 'PDF Upload';
 $zz['where']['team_id'] = $brick['data']['team_id'];
 
 $fields = [1, 28, 29, 20];
@@ -38,3 +37,5 @@ $zz['record']['no_ok'] = true;
 
 // keine Tabellenaktualisierung
 unset($zz['hooks']['after_update']);
+
+$zz['page']['breadcrumbs'][]['title'] = 'PDF Upload';
