@@ -318,14 +318,14 @@ $zz['fields'][28]['path'] = [
 	'webroot' => wrap_setting('media_internal_path').'/meldeboegen/',
 	'field1' => 'identifier',
 	'string1' => '.',
-	'extension' => 'pdf'
+	'string2' => 'pdf'
 ];
 $zz['fields'][28]['input_filetypes'] = ['pdf'];
 $zz['fields'][28]['link'] = [
 	'string1' => wrap_setting('media_internal_path').'/meldeboegen/',
 	'field1' => 'identifier',
 	'string2' => '.',
-	'extension' => 'pdf'
+	'string3' => 'pdf'
 ];
 $zz['fields'][28]['optional_image'] = true;
 $zz['fields'][28]['explanation'] = 'Hochladen des ausgefüllten, gescannten Meldebogens';
