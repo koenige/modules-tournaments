@@ -84,8 +84,11 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 	list($pdf, $settings) = mf_tournaments_pdf_prepare($event);
 
 	$settings['margin_top_bottom'] = 45;
+	$settings['font_size'] = 10;
+	$settings['font_size_remarks'] = 8;
 	
 	$pdf->setMargins(45, $settings['margin_top_bottom']);
+	$pdf->SetAutoPageBreak(true, $settings['margin_top_bottom']);
 	
 	foreach ($event['teams'] AS $team) {
 		$pdf->AddPage();
@@ -103,7 +106,7 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->Ln();
 		$pdf->Ln();
 		$pdf->write(19, $team['team'].' '.$team['team_no']);
-		$pdf->setFont('DejaVu', '', 10);
+		$pdf->setFont('DejaVu', '', $settings['font_size']);
 		if ($settings['show_federation']) {
 			$pdf->write(19, ' ('
 				.$team['country']
@@ -113,17 +116,17 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->Ln();
 
 		$y_pos = $pdf->getY();
-		$pdf->setFont('DejaVu', 'B', 10);
+		$pdf->setFont('DejaVu', 'B', $settings['font_size']);
 		$pdf->write(18, '1. Aufstellung');
 		$pdf->Ln();
-		$pdf->setFont('DejaVu', 'I', 10);
+		$pdf->setFont('DejaVu', 'I', $settings['font_size']);
 		$pdf->Cell(30, 14, 'Rang', '', 0, 'R');
 		$pdf->Cell(105, 14, 'Name', '', 0, 'L', 1);
 		$pdf->Cell(35, 14, 'W/M', '', 0, 'R');
 		$pdf->Cell(35, 14, 'DWZ', '', 0, 'R', 1);
 		$pdf->Cell(35, 14, 'Geburt', '', 0, 'R');
 		$pdf->Ln();
-		$pdf->setFont('DejaVu', '', 10);
+		$pdf->setFont('DejaVu', '', $settings['font_size']);
 		foreach ($team['spieler'] as $line) {
 			if (empty($line['rang_no'])) $line['rang_no'] = '';
 			if (empty($line['geschlecht'])) $line['geschlecht'] = '';
@@ -148,9 +151,9 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->setY($y_pos);
 		$pdf->setX(310);
 
-		$pdf->setFont('DejaVu', 'B', 10);
+		$pdf->setFont('DejaVu', 'B', $settings['font_size']);
 		$pdf->write(18, '2. Kontaktdaten');
-		$pdf->setFont('DejaVu', 'I', 10);
+		$pdf->setFont('DejaVu', 'I', $settings['font_size']);
 		$pdf->Ln();
 		$pdf->setX(310);
 		$usergroups = [
@@ -161,7 +164,7 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->Cell(35, 14, 'Geburt', '', 0, 'R');
 		$pdf->Ln();
 		$pdf->setX(310);
-		$pdf->setFont('DejaVu', '', 10);
+		$pdf->setFont('DejaVu', '', $settings['font_size']);
 		$i = 0;
 		$y_diff = 0;
 		$person_ids = [];
@@ -170,9 +173,9 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 			$gruppentitel = reset($team[$usergroup]);
 			if (empty($gruppentitel['usergroup'])) continue;
 			$pdf->Cell(30, 14, '', 'T');
-			$pdf->setFont('DejaVu', 'B', 10);
+			$pdf->setFont('DejaVu', 'B', $settings['font_size']);
 			$pdf->Cell(175, 14, $gruppentitel['usergroup'], 'T', 0, 'L', 1);
-			$pdf->setFont('DejaVu', '', 10);
+			$pdf->setFont('DejaVu', '', $settings['font_size']);
 			$pdf->Cell(35, 14, '', 'T');
 			$pdf->Ln();
 			$pdf->SetX(310);
@@ -204,9 +207,9 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		if ($bottom_y > $bottom_y_2) $pdf->setY($bottom_y);
 		else $pdf->setY($bottom_y_2);
 
-		$pdf->setFont('DejaVu', 'B', 10);
+		$pdf->setFont('DejaVu', 'B', $settings['font_size']);
 		$pdf->write(18, '3. An- und Abreise');
-		$pdf->setFont('DejaVu', '', 10);
+		$pdf->setFont('DejaVu', '', $settings['font_size']);
 		$pdf->Ln();
 		$pdf->write(14, 'Anreise am '.wrap_date($team['datum_anreise']).' um '.$team['uhrzeit_anreise'].' Uhr');
 		$pdf->Ln();
@@ -219,9 +222,9 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		if ($pdf->getY() > 650) {
 			$pdf->AddPage();
 			mod_tournaments_teampdfs_draft($pdf, $team);
-			$pdf->setFont('DejaVu', '', 8);
+			$pdf->setFont('DejaVu', '', $settings['font_size_remarks']);
 			$pdf->Cell(0, 14, 'Seite 2 zum Meldebogen '.$event['event'].', '.$team['team'].' '.$team['team_no']);
-			$pdf->setFont('DejaVu', '', 10);
+			$pdf->setFont('DejaVu', '', $settings['font_size']);
 			$pdf->Ln();
 			$pdf->Ln();
 		}
@@ -229,7 +232,7 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->MultiCell(0, 14, 'Unsere Angaben sind vollständig und korrekt. Die '
 			.'Ausschreibung zu dem Turnier ist uns bekannt und wird von uns inhaltlich '
 			.'akzeptiert.');
-		$pdf->setFont('DejaVu', '', 8);
+		$pdf->setFont('DejaVu', '', $settings['font_size_remarks']);
 		$pdf->Ln();
 		$pdf->Ln();
 		$pdf->Ln();
@@ -395,9 +398,9 @@ function mf_tournaments_pdf_teams($event, $params) {
  * @param array $settings
  */
 function mod_tournaments_teampdfs_bookings(&$pdf, $team, $settings) {
-	$pdf->setFont('DejaVu', 'B', 10);
+	$pdf->setFont('DejaVu', 'B', $settings['font_size']);
 	$pdf->write(18, '4. Zimmerbuchung');
-	$pdf->setFont('DejaVu', 'I', 10);
+	$pdf->setFont('DejaVu', 'I', $settings['font_size']);
 	$pdf->Ln();
 	$pdf->Cell(75, 14, 'Gruppe', '', 0, 'L');
 	$pdf->Cell(201, 14, 'Buchung', '', 0, 'L', 1);	
@@ -407,18 +410,28 @@ function mod_tournaments_teampdfs_bookings(&$pdf, $team, $settings) {
 	$pdf->Cell(20, 14, 'M', '', 0, 'R', 1);
 	$pdf->Cell(80, 14, 'Summe', '', 0, 'R');
 	$pdf->Ln();
-	$pdf->setFont('DejaVu', '', 10);
-	if (!empty($team['kosten'])) foreach ($team['kosten'] as $line) {
+	$pdf->setFont('DejaVu', '', $settings['font_size']);
+	if (empty($team['kosten'])) $team['kosten'] = [];
+	foreach ($team['kosten'] as $line) {
 		if (in_array($line['buchungskategorie'], ['buchungen/zahlung-startgeld-unterkunft', 'buchungen/zahlung-reuegeld'])) {
 			// Zahlungen wieder herausnehmen und Betrag von Summe abziehen!
 			$team['betrag'] -= $line['betrag'];
 			continue;
 		}
 		if ($line['anmerkungen']) {
+			// remarks need extra space, might need another page
 			$line['anmerkungen'] = str_replace("\n", " ", $line['anmerkungen']);
+			
+			// get no. of rows we need for remarks, in correct font size
+			$pdf->setFont('DejaVu', '', $settings['font_size_remarks']);
 			$rows = ceil($pdf->GetStringWidth($line['anmerkungen']) / 201);
-			$y_pos = $pdf->GetY();
-			if ($y_pos + (12 * $rows) >= $settings['page_height'] - $settings['margin_top_bottom']) {
+			$pdf->setFont('DejaVu', '', $settings['font_size']);
+
+			// get Y pos below remarks
+			// current pos + height of normal cell  + height of remarks cell times rows
+			$y_pos_bottom = $pdf->GetY() + 14 + 10 * $rows;
+			if ($y_pos_bottom >= $settings['page_height'] - $settings['margin_top_bottom']) {
+				wrap_error('ADD PAGE');
 				$pdf->AddPage();
 			} 			
 		}
@@ -428,9 +441,9 @@ function mod_tournaments_teampdfs_bookings(&$pdf, $team, $settings) {
 		$pdf->MultiCell(201, 14, $line['kosten'], 'T', 'L', 1);
 		if ($line['anmerkungen']) {
 			$pdf->setX($x_pos);
-			$pdf->setFont('DejaVu', '', 8);
+			$pdf->setFont('DejaVu', '', $settings['font_size_remarks']);
 			$pdf->MultiCell(201, 10, $line['anmerkungen'], '', 'L', 1);
-			$pdf->setFont('DejaVu', '', 10);
+			$pdf->setFont('DejaVu', '', $settings['font_size']);
 		}
 		$y_bottom = $pdf->GetY();
 		$pdf->SetY($y_pos);
@@ -452,7 +465,7 @@ function mod_tournaments_teampdfs_bookings(&$pdf, $team, $settings) {
 	$pdf->Cell(20, 14, '', 'T', 0, 'R');
 	$pdf->Cell(20, 14, '', 'T', 0, 'R', 1);
 	if (isset($team['betrag'])) {
-		$pdf->Cell(80, 14, wrap_money($team['betrag']).' '.$line['betrag_waehrung'], 'T', 0, 'R');
+		$pdf->Cell(80, 14, wrap_money($team['betrag']).' '.($line['betrag_waehrung'] ?? ''), 'T', 0, 'R');
 	} else {
 		$pdf->Cell(80, 14, '', 'T', 0, 'R');
 	}
