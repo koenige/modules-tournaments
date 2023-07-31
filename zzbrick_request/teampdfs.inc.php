@@ -83,15 +83,15 @@ function mod_tournaments_teampdfs($params, $settings, $event) {
 function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 	list($pdf, $settings) = mf_tournaments_pdf_prepare($event);
 
-	$margin_top_bottom = 45;
+	$settings['margin_top_bottom'] = 45;
 	
-	$pdf->setMargins(45, $margin_top_bottom);
+	$pdf->setMargins(45, $settings['margin_top_bottom']);
 	
 	foreach ($event['teams'] AS $team) {
 		$pdf->AddPage();
 		mod_tournaments_teampdfs_draft($pdf, $team);
 
-		$pdf->Image($settings['logo_filename'], 595 - $margin_top_bottom - $settings['logo_width'], $margin_top_bottom, $settings['logo_width'], $settings['logo_height'], 'PNG');
+		$pdf->Image($settings['logo_filename'], 595 - $settings['margin_top_bottom'] - $settings['logo_width'], $settings['margin_top_bottom'], $settings['logo_width'], $settings['logo_height'], 'PNG');
 		$pdf->setFont('DejaVu', '', 14);
 		$pdf->write(19, 'Meldebogen');
 		$pdf->Ln();
@@ -214,71 +214,8 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->Ln();
 		$pdf->Ln();
 
-		if ($event['zimmerbuchung']) {
-			$pdf->setFont('DejaVu', 'B', 10);
-			$pdf->write(18, '4. Zimmerbuchung');
-			$pdf->setFont('DejaVu', 'I', 10);
-			$pdf->Ln();
-			$pdf->Cell(75, 14, 'Gruppe', '', 0, 'L');
-			$pdf->Cell(201, 14, 'Buchung', '', 0, 'L', 1);	
-			$pdf->Cell(79, 14, 'Kosten', '', 0, 'R');
-			$pdf->Cell(30, 14, 'Tage', '', 0, 'R', 1);
-			$pdf->Cell(20, 14, 'W', '', 0, 'R');
-			$pdf->Cell(20, 14, 'M', '', 0, 'R', 1);
-			$pdf->Cell(80, 14, 'Summe', '', 0, 'R');
-			$pdf->Ln();
-			$pdf->setFont('DejaVu', '', 10);
-			if (!empty($team['kosten'])) foreach ($team['kosten'] as $line) {
-				if (in_array($line['buchungskategorie'], ['buchungen/zahlung-startgeld-unterkunft', 'buchungen/zahlung-reuegeld'])) {
-					// Zahlungen wieder herausnehmen und Betrag von Summe abziehen!
-					$team['betrag'] -= $line['betrag'];
-					continue;
-				}
-				if ($line['anmerkungen']) {
-					$line['anmerkungen'] = str_replace("\n", " ", $line['anmerkungen']);
-					$rows = ceil($pdf->GetStringWidth($line['anmerkungen']) / 201);
-					$y_pos = $pdf->GetY();
-					if ($y_pos + (12 * $rows) >= $settings['page_height'] - $margin_top_bottom) {
-						$pdf->AddPage();
-					} 			
-				}
-				$pdf->Cell(75, 14, $line['gruppe'], 'T', 0, 'L');
-				$y_pos = $pdf->GetY();
-				$x_pos = $pdf->GetX();
-				$pdf->MultiCell(201, 14, $line['kosten'], 'T', 'L', 1);
-				if ($line['anmerkungen']) {
-					$pdf->setX($x_pos);
-					$pdf->setFont('DejaVu', '', 8);
-					$pdf->MultiCell(201, 10, $line['anmerkungen'], '', 'L', 1);
-					$pdf->setFont('DejaVu', '', 10);
-				}
-				$y_bottom = $pdf->GetY();
-				$pdf->SetY($y_pos);
-				$pdf->SetX($x_pos + 201);
-				$pdf->Cell(79, 14, wrap_money($line['kosten_betrag']).' '.$line['betrag_waehrung'], 'T', 0, 'R');
-				$pdf->Cell(30, 14, $line['anzahl_tage'], 'T', 0, 'R', 1);
-				mf_tournaments_pdf_add_bg_color($pdf, $y_bottom, 30, 14);
-				$pdf->Cell(20, 14, $line['anzahl_weiblich'], 'T', 0, 'R');
-				$pdf->Cell(20, 14, $line['anzahl_maennlich'], 'T', 0, 'R', 1);
-				mf_tournaments_pdf_add_bg_color($pdf, $y_bottom, 20, 14);
-				$pdf->Cell(80, 14, wrap_money($line['betrag']).' '.$line['betrag_waehrung'], 'T', 0, 'R');
-				$pdf->SetY($y_bottom - 14);
-				$pdf->Ln();
-			}
-			if (!isset($line['kosten_waehrung'])) $line['kosten_waehrung'] = '';
-			$pdf->Cell(75, 14, '', 'T', 0, 'L');
-			$pdf->Cell(201, 14, 'Gesamtsumme', 'T', 0, 'L', 1);	
-			$pdf->Cell(79, 14, '', 'T', 0, 'R');
-			$pdf->Cell(30, 14, '', 'T', 0, 'R', 1);
-			$pdf->Cell(20, 14, '', 'T', 0, 'R');
-			$pdf->Cell(20, 14, '', 'T', 0, 'R', 1);
-			if (isset($team['betrag'])) {
-				$pdf->Cell(80, 14, wrap_money($team['betrag']).' '.$line['betrag_waehrung'], 'T', 0, 'R');
-			} else {
-				$pdf->Cell(80, 14, '', 'T', 0, 'R');
-			}
-			$pdf->Ln();
-		}
+		if ($event['zimmerbuchung'])
+			mod_tournaments_teampdfs_bookings($pdf, $team, $settings);
 		if ($pdf->getY() > 650) {
 			$pdf->AddPage();
 			mod_tournaments_teampdfs_draft($pdf, $team);
@@ -448,4 +385,76 @@ function mf_tournaments_pdf_teams($event, $params) {
 	if ($pdf_uploads) $teams['pdf_uploads'] = true;
 
 	return $teams;
+}
+
+/**
+ * show bookings per team
+ *
+ * @param object $pdf
+ * @param array $team
+ * @param array $settings
+ */
+function mod_tournaments_teampdfs_bookings(&$pdf, $team, $settings) {
+	$pdf->setFont('DejaVu', 'B', 10);
+	$pdf->write(18, '4. Zimmerbuchung');
+	$pdf->setFont('DejaVu', 'I', 10);
+	$pdf->Ln();
+	$pdf->Cell(75, 14, 'Gruppe', '', 0, 'L');
+	$pdf->Cell(201, 14, 'Buchung', '', 0, 'L', 1);	
+	$pdf->Cell(79, 14, 'Kosten', '', 0, 'R');
+	$pdf->Cell(30, 14, 'Tage', '', 0, 'R', 1);
+	$pdf->Cell(20, 14, 'W', '', 0, 'R');
+	$pdf->Cell(20, 14, 'M', '', 0, 'R', 1);
+	$pdf->Cell(80, 14, 'Summe', '', 0, 'R');
+	$pdf->Ln();
+	$pdf->setFont('DejaVu', '', 10);
+	if (!empty($team['kosten'])) foreach ($team['kosten'] as $line) {
+		if (in_array($line['buchungskategorie'], ['buchungen/zahlung-startgeld-unterkunft', 'buchungen/zahlung-reuegeld'])) {
+			// Zahlungen wieder herausnehmen und Betrag von Summe abziehen!
+			$team['betrag'] -= $line['betrag'];
+			continue;
+		}
+		if ($line['anmerkungen']) {
+			$line['anmerkungen'] = str_replace("\n", " ", $line['anmerkungen']);
+			$rows = ceil($pdf->GetStringWidth($line['anmerkungen']) / 201);
+			$y_pos = $pdf->GetY();
+			if ($y_pos + (12 * $rows) >= $settings['page_height'] - $settings['margin_top_bottom']) {
+				$pdf->AddPage();
+			} 			
+		}
+		$pdf->Cell(75, 14, $line['gruppe'], 'T', 0, 'L');
+		$y_pos = $pdf->GetY();
+		$x_pos = $pdf->GetX();
+		$pdf->MultiCell(201, 14, $line['kosten'], 'T', 'L', 1);
+		if ($line['anmerkungen']) {
+			$pdf->setX($x_pos);
+			$pdf->setFont('DejaVu', '', 8);
+			$pdf->MultiCell(201, 10, $line['anmerkungen'], '', 'L', 1);
+			$pdf->setFont('DejaVu', '', 10);
+		}
+		$y_bottom = $pdf->GetY();
+		$pdf->SetY($y_pos);
+		$pdf->SetX($x_pos + 201);
+		$pdf->Cell(79, 14, wrap_money($line['kosten_betrag']).' '.$line['betrag_waehrung'], 'T', 0, 'R');
+		$pdf->Cell(30, 14, $line['anzahl_tage'], 'T', 0, 'R', 1);
+		mf_tournaments_pdf_add_bg_color($pdf, $y_bottom, 30, 14);
+		$pdf->Cell(20, 14, $line['anzahl_weiblich'], 'T', 0, 'R');
+		$pdf->Cell(20, 14, $line['anzahl_maennlich'], 'T', 0, 'R', 1);
+		mf_tournaments_pdf_add_bg_color($pdf, $y_bottom, 20, 14);
+		$pdf->Cell(80, 14, wrap_money($line['betrag']).' '.$line['betrag_waehrung'], 'T', 0, 'R');
+		$pdf->SetY($y_bottom - 14);
+		$pdf->Ln();
+	}
+	$pdf->Cell(75, 14, '', 'T', 0, 'L');
+	$pdf->Cell(201, 14, 'Gesamtsumme', 'T', 0, 'L', 1);	
+	$pdf->Cell(79, 14, '', 'T', 0, 'R');
+	$pdf->Cell(30, 14, '', 'T', 0, 'R', 1);
+	$pdf->Cell(20, 14, '', 'T', 0, 'R');
+	$pdf->Cell(20, 14, '', 'T', 0, 'R', 1);
+	if (isset($team['betrag'])) {
+		$pdf->Cell(80, 14, wrap_money($team['betrag']).' '.$line['betrag_waehrung'], 'T', 0, 'R');
+	} else {
+		$pdf->Cell(80, 14, '', 'T', 0, 'R');
+	}
+	$pdf->Ln();
 }
