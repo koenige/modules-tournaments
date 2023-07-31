@@ -24,7 +24,10 @@ $zz['title'] = '';
 $zz['where']['team_id'] = $brick['data']['team_id'];
 
 foreach ($zz['fields'] as $no => $field) {
-	if (empty($field['field_name'])) continue;
+	if (empty($field['field_name'])) {
+		unset($zz['fields'][$no]);
+		continue;
+	}
 	switch ($field['field_name']) {
 	case 'team_id':
 	case 'ehrenkodex':
@@ -36,7 +39,7 @@ foreach ($zz['fields'] as $no => $field) {
 		$zz['fields'][$no]['class'] = 'hidden';
 		break;
 	case 'gastspielgenehmigung':
-		if (!$brick['data']['gastspieler']) break;
+		if ($brick['data']['gastspieler']) break;
 	default:
 		unset($zz['fields'][$no]);
 		break;
