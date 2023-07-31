@@ -23,14 +23,25 @@ $zz['title'] = '';
 //$zz['title'] = 'PDF Upload';
 $zz['where']['team_id'] = $brick['data']['team_id'];
 
-$fields = [1, 28, 29, 20];
-if ($brick['data']['gastspieler']) $fields[] = 30;
-foreach (array_keys($zz['fields']) as $no) {
-	if (!in_array($no, $fields)) unset($zz['fields'][$no]);
+foreach ($zz['fields'] as $no => $field) {
+	if (empty($field['field_name'])) continue;
+	switch ($field['field_name']) {
+	case 'team_id':
+	case 'ehrenkodex':
+		break;
+	case 'meldebogen':
+		$zz['fields'][$no]['dont_show_missing'] = false;
+		break;
+	case 'last_update':
+		$zz['fields'][$no]['class'] = 'hidden';
+		break;
+	case 'gastspielgenehmigung':
+		if (!$brick['data']['gastspieler']) break;
+	default:
+		unset($zz['fields'][$no]);
+		break;
+	}
 }
-
-$zz['fields'][20]['class'] = 'hidden';
-$zz['fields'][28]['dont_show_missing'] = false;
 
 $zz['access'] = 'edit_only';
 $zz['record']['no_ok'] = true;
