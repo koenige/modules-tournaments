@@ -152,14 +152,16 @@ if (wrap_access('tournaments_games', $brick['data']['event_rights']) AND !wrap_a
 	$zz['record']['add'] = false;
 }
 if (wrap_access('tournaments_games', $brick['data']['event_rights']) OR wrap_access('tournaments_pairings', $brick['data']['event_rights'])) {
-	if ($brick['data']['turnierform'] === 'e')
-		$zz['details'][0]['title'] = 'Games';
-	else
-		$zz['details'][0]['title'] = 'Pairings';
-	$zz['details'][0]['link'] = [
-	// @todo use area
-		'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'identifier', 'string1' => '/'
-	];
+	if (!empty($brick['data']['turnierform'])) {
+		if ($brick['data']['turnierform'] === 'e')
+			$zz['details'][0]['title'] = 'Games';
+		else
+			$zz['details'][0]['title'] = 'Pairings';
+		$zz['details'][0]['link'] = [
+		// @todo use area
+			'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'identifier', 'string1' => '/'
+		];
+	}
 }
 if (wrap_access('tournaments_standings', $brick['data']['event_rights'])) {
 	$zz['details'][1]['title'] = 'Standings';
