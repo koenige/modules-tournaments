@@ -97,7 +97,10 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 		, $event['year']
 	);
 	$event['tournaments'] = wrap_db_fetch($sql, 'event_id');
-	parse_str($event['series_parameter'], $parameter);
+	if ($event['series_parameter'])
+		parse_str($event['series_parameter'], $parameter);
+	else
+		$parameter = [];
 
 	foreach ($event['tournaments'] AS $turnier) {
 		if ($turnier['partien']) $event['pgn'] = true;
