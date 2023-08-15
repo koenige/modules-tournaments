@@ -299,11 +299,11 @@ function mod_tournaments_team($vars, $settings, $data) {
 		}
 	}
 
-	$sql = 'SELECT event_link_id, link, link_text
-		FROM events_links
+	$sql = 'SELECT eventdetail_id, identifier, label
+		FROM eventdetails
 		WHERE team_id = %d';
 	$sql = sprintf($sql, $data['team_id']);
-	$data['links'] = wrap_db_fetch($sql, 'event_link_id');
+	$data['links'] = wrap_db_fetch($sql, 'eventdetail_id');
 
 	$page['text'] = wrap_template('team', $data);
 	return $page;

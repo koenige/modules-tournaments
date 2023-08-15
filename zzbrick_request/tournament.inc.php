@@ -254,13 +254,13 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	}
 	array_multisort($dates, SORT_ASC, $event['events']);
 	
-	$sql = 'SELECT event_link_id, link, link_text
-		FROM events_links
+	$sql = 'SELECT eventdetail_id, identifier, label
+		FROM eventdetails
 		WHERE event_id = %d
 		AND ISNULL(team_id)
 	';
 	$sql = sprintf($sql, $event['event_id']);
-	$event['links'] = wrap_db_fetch($sql, 'event_link_id');
+	$event['links'] = wrap_db_fetch($sql, 'eventdetail_id');
 
 	// Organisers
 	$event = mod_tournaments_tournament_organisers($event, $internal);

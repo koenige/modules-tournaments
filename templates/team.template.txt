@@ -202,7 +202,7 @@ nicht abschließend geprüft.)</em></p>
 
 <ul>
 %%% loop links %%%
-<li><a href="%%% item link htmlspecialchars %%%">%%% item link_text htmlspecialchars %%%</a></li>
+<li><a href="%%% item identifier htmlspecialchars %%%">%%% item label htmlspecialchars %%%</a></li>
 %%% loop end %%%
 </ul>
 %%% condition endif %%%
