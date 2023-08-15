@@ -299,7 +299,7 @@ function mod_tournaments_team($vars, $settings, $data) {
 		}
 	}
 
-	$sql = 'SELECT eventdetail_id, identifier, label
+	$sql = 'SELECT eventdetail_id, identification, label
 		FROM eventdetails
 		WHERE team_id = %d';
 	$sql = sprintf($sql, $data['team_id']);

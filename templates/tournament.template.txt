@@ -108,7 +108,7 @@
 %%% condition endif %%%
 %%% condition if links %%%
 %%% loop links %%%
-<dd><a href="%%% item identifier %%%">%%% item label %%%</a></dd>
+<dd><a href="%%% item identification %%%">%%% item label %%%</a></dd>
 %%% loop end %%%
 
 %%% condition endif %%%

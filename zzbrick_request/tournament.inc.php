@@ -254,7 +254,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	}
 	array_multisort($dates, SORT_ASC, $event['events']);
 	
-	$sql = 'SELECT eventdetail_id, identifier, label
+	$sql = 'SELECT eventdetail_id, identification, label
 		FROM eventdetails
 		WHERE event_id = %d
 		AND ISNULL(team_id)
