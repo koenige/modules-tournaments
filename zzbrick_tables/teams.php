@@ -89,7 +89,7 @@ $zz['fields'][10]['if']['add']['hide_in_form'] = true;
 $zz['fields'][6]['field_name'] = 'identifier';
 $zz['fields'][6]['type'] = 'identifier';
 $zz['fields'][6]['fields'] = ['event_id[identifier]', 'team', 'team_no'];
-$zz['fields'][6]['conf_identifier']['concat'] = ['/', '/', '-'];
+$zz['fields'][6]['identifier']['concat'] = ['/', '/', '-'];
 $zz['fields'][6]['hide_in_list'] = true;
 
 $zz['fields'][6]['separator'] = 'text <div class="separator">Vor dem Turnier</div>';
@@ -145,7 +145,7 @@ $zz['fields'][33]['title'] = 'Hash';
 $zz['fields'][33]['field_name'] = 'meldung_hash';
 $zz['fields'][33]['type'] = 'identifier';
 $zz['fields'][33]['hide_in_list'] = true;
-$zz['fields'][33]['conf_identifier']['random_hash'] = 16;
+$zz['fields'][33]['identifier']['random_hash'] = 16;
 $zz['fields'][33]['fields'] = ['meldung_hash'];
 
 if (wrap_access('tournaments_teams_foreign_key')) {

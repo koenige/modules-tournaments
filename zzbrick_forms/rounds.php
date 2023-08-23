@@ -83,7 +83,7 @@ foreach ($zz['fields'] as $no => $field) {
 		$zz['fields'][$no]['fields'] = [
 			'main_event_id[identifier]', 'runde_no'
 		];
-		$zz['fields'][$no]['conf_identifier']['concat'] = [
+		$zz['fields'][$no]['identifier']['concat'] = [
 			'/', '/runde/'
 		];
 		break;

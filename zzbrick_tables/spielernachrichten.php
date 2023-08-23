@@ -54,7 +54,7 @@ $zz['fields'][7]['search'] = 'contacts.contact';
 $zz['fields'][10]['field_name'] = 'hash';
 $zz['fields'][10]['type'] = 'identifier';
 $zz['fields'][10]['fields'] = ['hash'];
-$zz['fields'][10]['conf_identifier']['random_hash'] = 20;
+$zz['fields'][10]['identifier']['random_hash'] = 20;
 $zz['fields'][10]['hide_in_list'] = true;
 
 $zz['fields'][11]['title'] = 'Bestätigt';
