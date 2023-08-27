@@ -1,11 +1,11 @@
 # tournaments module
-# Translations template
+# Translations to German
 #
 # Part of »Zugzwang Project«
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2020-2023 Gustaf Mossakowski
+# @copyright Copyright © 2020-2022 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 msgid ""
@@ -15,7 +15,7 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: Gustaf Mossakowski <gustaf@koenige.org>\n"
 "Language-Team: \n"
-"Language: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -51,46 +51,55 @@ msgid "Standings"
 msgstr ""
 
 #: zzbrick_forms/tournaments.inc.php
-msgid "Instead of input: Transfer of the settings from the last tournament in this series"
+msgid ""
+"Instead of input: Transfer of the settings from the last tournament in this "
+"series"
 msgstr ""
 
 #: zzbrick_forms/tournaments.inc.php
 msgid "Please only upload files for the entire tournament here."
-msgstr ""
+msgstr "Bitte lade hier nur Dateien für das gesamte Turnier hoch."
 
 #: zzbrick_forms/tournaments.inc.php
-msgid "For rounds, there is a possibility to upload a PGN file in the <a href="%s">round overview</a>."
+msgid ""
+"For rounds, there is a possibility to upload a PGN file in the <a href=\"%s"
+"\">round overview</a>."
 msgstr ""
 
 #: zzbrick_make/standings.inc.php
-msgid "Standings update for round %d impossible: So far only %d rounds have been played."
+msgid ""
+"Standings update for round %d impossible: So far only %d rounds have been "
+"played."
 msgstr ""
 
 #: zzbrick_make/standings.inc.php
-msgid "Attempted to update a round that is higher than the maximum number of rounds."
+msgid ""
+"Attempted to update a round that is higher than the maximum number of rounds."
 msgstr ""
 
 #: zzbrick_make/standings.inc.php
-msgid "Standings update for round %d impossible: No games were played in this round."
+msgid ""
+"Standings update for round %d impossible: No games were played in this round."
 msgstr ""
 
 #: zzbrick_make/standings.inc.php
 msgid "Standings for tournament %s, round %d have been successfully updated."
 msgstr ""
 
-#: zzbrick_make/swtwriter.inc.php
-#: zzbrick_request/swtreader.inc.php
+#: zzbrick_make/swtwriter.inc.php zzbrick_request/swtreader.inc.php
 msgid "SWT file `%s` does not exist. Please upload a file first."
-msgstr ""
+msgstr "SWT-Datei `%s` existiert nicht. Bitte lade zuerst eine Datei hoch."
 
 #: zzbrick_make/turnierzahlen.inc.php
 msgid "No ratings found when updating on %s."
 msgstr ""
 
 #: zzbrick_request/livegames.inc.php
-msgid "The tournament is over. All live games are integrated into the <a href="../">tournament pages</a>."
+msgid ""
+"The tournament is over. All live games are integrated into the <a href=\"../"
+"\">tournament pages</a>."
 msgstr ""
 
 #: zzbrick_request/teaminternal.inc.php
 msgid "Please create a tournament first."
-msgstr ""
+msgstr "Bitte lege zuerst ein Turnier an."

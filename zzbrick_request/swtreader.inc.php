@@ -25,6 +25,9 @@ function mod_tournaments_swtreader($params) {
 	ob_start();
 	$dir = wrap_setting('media_folder').'/swt/'.$params[0].'/';
 	$filename = $params[1].'.swt';
+	if (!file_exists($filename))
+		wrap_quit(404, wrap_text('SWT file `%s` does not exist. Please upload a file first.', ['values' => [$dir.$filename]]));
+
 	$own = './';
 	require wrap_setting('lib').'/swtparser/example.php';
 	$page['text'] = ob_get_contents();

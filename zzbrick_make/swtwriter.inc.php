@@ -40,11 +40,8 @@ function mod_tournaments_make_swtwriter($vars, $settings, $event) {
 	// Variante 1: Direkt SWT-Datei auslesen
 	$swt = $event['identifier'].'.swt';
 	$filename = wrap_setting('media_folder').'/swt/'.$swt;
-	if (!file_exists($filename)) {
-		wrap_log(sprintf('Datei swt/%s existiert nicht', $swt));
-		wrap_setting('error_prefix', '');
-		return false;
-	}
+	if (!file_exists($filename))
+		wrap_quit(404, wrap_text('SWT file `%s` does not exist. Please upload a file first.', ['values' => [$filename]]));
 	
 	// Ein paar Sekunden warten, bevor nach Upload die Datei geschrieben
 	// werden kann (kann sonst zu schnell sein, neue IDs noch nicht in DB)
