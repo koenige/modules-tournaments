@@ -53,7 +53,7 @@ if (wrap_setting('tournaments_upload_pgn')) { // 11 = author
 	$zz['fields'][11]['optional_image'] = true;
 	$zz['fields'][11]['image'][0]['title'] = 'main';
 	$zz['fields'][11]['image'][0]['field_name'] = 'main';
-	$zz['fields'][11]['image'][0]['path'] = $zz['fields'][23]['path'];
+	$zz['fields'][11]['image'][0]['path'] = $zz['fields'][11]['path'];
 	$zz['fields'][11]['unless']['export_mode']['list_prefix'] = '<br>';
 }
 
