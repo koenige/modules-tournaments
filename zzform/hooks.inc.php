@@ -193,13 +193,13 @@ function mf_tournaments_games_update($ops) {
  * @return array
  */
 function mf_tournaments_team_points($ops) {
-	static $settings;
-	if (empty($settings)) {
+	static $settings = [];
+	if (!$settings) {
 		// @todo solve via tournament settings object
 		$sql = 'SELECT urkunde_parameter AS parameter FROM tournaments WHERE event_id = %d';
 		$sql = sprintf($sql, $ops['record_new'][0]['event_id']);
 		$parameter = wrap_db_fetch($sql, '', 'single value');
-		parse_str($parameter, $settings);
+		if ($parameter) parse_str($parameter, $settings);
 	}
 	
 	// set colour for first board
