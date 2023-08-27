@@ -16,8 +16,6 @@
 $zz['title'] = 'Partien';
 $zz['table'] = 'partien';
 
-if (!isset($values['where_teams'])) $values['where_teams'] = '';
-
 $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'partie_id';
 $zz['fields'][1]['type'] = 'id';
@@ -29,8 +27,9 @@ $zz['fields'][2]['sql'] = 'SELECT paarung_id
 	FROM paarungen';
 $zz['fields'][2]['if']['where']['hide_in_list'] = true;
 $zz['fields'][2]['if']['where']['hide_in_form'] = true;
+$zz['fields'][2]['hide_in_list_if_empty'] = true;
+$zz['fields'][2]['if'][2]['hide_in_form'] = true;
 
-$zz['fields'][3]['title'] = 'Termin';
 $zz['fields'][3]['field_name'] = 'event_id';
 $zz['fields'][3]['type'] = 'write_once';
 $zz['fields'][3]['type_detail'] = 'select';
@@ -60,16 +59,12 @@ $zz['fields'][6]['title'] = 'Weiß';
 $zz['fields'][6]['field_name'] = 'weiss_person_id';
 $zz['fields'][6]['display_field'] = 'weiss';
 $zz['fields'][6]['type'] = 'select';
-$zz['fields'][6]['sql'] = sprintf('SELECT person_id, brett_no
-	, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
-	, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
+$zz['fields'][6]['sql'] = sprintf('SELECT person_id
+		, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 	FROM participations
 	LEFT JOIN persons USING (contact_id)
-	LEFT JOIN teams USING (team_id)
-	WHERE usergroup_id = %d AND NOT ISNULL(brett_no)
-	'.$values['where_teams'].'
-	ORDER BY team, brett_no, t_nachname, t_vorname', wrap_id('usergroups', 'spieler'));
-$zz['fields'][6]['group'] = 'team';
+	WHERE usergroup_id = %d
+	ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'));
 $zz['fields'][6]['search'] = 'CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname)';
 
 $zz['fields'][7]['title_tab'] = 'Ergebnis';
@@ -89,22 +84,20 @@ $zz['fields'][8]['title'] = 'Schwarz';
 $zz['fields'][8]['field_name'] = 'schwarz_person_id';
 $zz['fields'][8]['display_field'] = 'schwarz';
 $zz['fields'][8]['type'] = 'select';
-$zz['fields'][8]['sql'] = sprintf('SELECT person_id, brett_no
-	, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
-	, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
+$zz['fields'][8]['sql'] = sprintf('SELECT person_id
+		, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 	FROM participations
 	LEFT JOIN persons USING (contact_id)
-	LEFT JOIN teams USING (team_id)
-	WHERE usergroup_id = %d AND NOT ISNULL(brett_no)
-	'.$values['where_teams'].'
-	ORDER BY team, brett_no, t_nachname, t_vorname', wrap_id('usergroups', 'spieler'));
-$zz['fields'][8]['group'] = 'team';
+	WHERE usergroup_id = %d
+	ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'));
 $zz['fields'][8]['search'] = 'CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname)';
 
 $zz['fields'][10]['title'] = 'Farbe Heimspieler';
 $zz['fields'][10]['field_name'] = 'heim_spieler_farbe';
 $zz['fields'][10]['type'] = 'select';
 $zz['fields'][10]['enum'] = ['weiß','schwarz'];
+$zz['fields'][10]['hide_in_list_if_empty'] = true;
+$zz['fields'][10]['if'][2]['hide_in_form'] = true;
 
 $zz['fields'][11]['title_tab'] = 'Erg. Team';
 $zz['fields'][11]['title'] = 'Teamwertung Heim';
@@ -113,11 +106,15 @@ $zz['fields'][11]['type'] = 'number';
 $zz['fields'][11]['null'] = true;
 $zz['fields'][11]['list_append_next'] = true;
 $zz['fields'][11]['list_suffix'] = ' : ';
+$zz['fields'][11]['hide_in_list_if_empty'] = true;
+$zz['fields'][11]['if'][2]['hide_in_form'] = true;
 
 $zz['fields'][12]['title'] = 'Teamwertung Auswärts';
 $zz['fields'][12]['field_name'] = 'auswaerts_wertung';
 $zz['fields'][12]['type'] = 'number';
 $zz['fields'][12]['null'] = true;
+$zz['fields'][12]['hide_in_list_if_empty'] = true;
+$zz['fields'][12]['if'][2]['hide_in_form'] = true;
 
 $zz['fields'][13]['title'] = 'Status';
 $zz['fields'][13]['field_name'] = 'partiestatus_category_id';
@@ -261,9 +258,12 @@ $zz['sql'] = sprintf('SELECT partien.*
 		, event, events.identifier AS event_identifier, paarungen.tisch_no
 		, CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname) AS weiss
 		, CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname) AS schwarz
-		, category
+		, categories.category
 	FROM partien
 	LEFT JOIN events USING (event_id)
+	LEFT JOIN tournaments USING (event_id)
+	LEFT JOIN categories tournament_forms
+		ON tournaments.turnierform_category_id = tournament_forms.category_id
 	LEFT JOIN paarungen USING (paarung_id)
 	LEFT JOIN categories
 		ON categories.category_id = partien.partiestatus_category_id
@@ -317,3 +317,6 @@ $zz['hooks']['before_insert'][] = 'mf_tournaments_team_points';
 
 $zz['conditions'][1]['scope'] = 'record';
 $zz['conditions'][1]['where'] = 'ISNULL(tisch_no)';
+
+$zz['conditions'][2]['scope'] = 'record';
+$zz['conditions'][2]['where'] = 'tournament_forms.parameters LIKE "%&single=1%"';

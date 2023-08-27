@@ -20,7 +20,6 @@ $sql = sprintf($sql, $brick['data']['event_id'], $brick['vars'][2]);
 $runde_no = wrap_db_fetch($sql, '', 'single value');
 if (!$runde_no) wrap_quit(404);
 
-$values = [];
 if (count($brick['vars']) === 4) {
 	$sql = 'SELECT paarung_id, heim_team_id, auswaerts_team_id
 			, (SELECT COUNT(*) FROM partien WHERE partien.paarung_id = paarungen.paarung_id) AS partien
@@ -29,50 +28,58 @@ if (count($brick['vars']) === 4) {
 	$sql = sprintf($sql, $brick['data']['event_id'], $brick['vars'][2], $brick['vars'][3]);
 	$paarung = wrap_db_fetch($sql);
 	if (!$paarung) wrap_quit(404);
-
-	$values['where_teams'] = sprintf('AND team_id IN(%d, %d)', $paarung['heim_team_id'],
-		$paarung['auswaerts_team_id']);
-}
-
-$zz = zzform_include('partien', $values);
-$zz['where']['event_id'] = $brick['data']['event_id'];
-$zz['where']['runde_no'] = $runde_no;
-if (count($brick['vars']) === 4) {
-	$zz['where']['paarung_id'] = $paarung['paarung_id'];
-}
-
-$zz['fields'][13]['default'] = wrap_category_id('partiestatus/normal');
-
-if (count($brick['vars']) === 3) {
-	// Einzelturnier
-	unset($zz['fields'][2]); // Paarung
-
-	unset($zz['fields'][10]); // Farbe Heimspieler
-	unset($zz['fields'][11]); // Teamwertung Heim
-	unset($zz['fields'][12]); // Teamwertung Auswärts
-
-	$zz['fields'][5]['auto_value'] = 'increment';
-
-	$zz['fields'][6]['sql'] =
-	$zz['fields'][8]['sql'] = sprintf('SELECT person_id
-		, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
-		FROM participations
-		LEFT JOIN persons USING (contact_id)
-		WHERE usergroup_id = %d
-		AND event_id = %d
-		ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'), $brick['data']['event_id']);
- 	// Gruppierung nach Team entfernen
- 	unset($zz['fields'][6]['group']);
-	unset($zz['fields'][8]['group']);
-}
-
-if (count($brick['vars']) === 4) {
-	$zz['fields'][6]['if']['insert']['default'] = mf_tournaments_get_paring_player($paarung, 'weiss');
-	$zz['fields'][8]['if']['insert']['default'] = mf_tournaments_get_paring_player($paarung, 'schwarz');
-	$zz['fields'][10]['if']['insert']['default'] = mf_tournaments_get_paring_player($paarung, 'farbe');
 	if ($paarung['partien'] + 1 < $brick['data']['bretter_min']) {
 		$url_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 		$zz['page']['redirect']['successful_insert'] = $url_path.'?add';
+	}
+}
+
+$zz = zzform_include('partien');
+
+$zz['where']['event_id'] = $brick['data']['event_id'];
+$zz['where']['runde_no'] = $runde_no;
+if (count($brick['vars']) === 4)
+	$zz['where']['paarung_id'] = $paarung['paarung_id'];
+
+foreach ($zz['fields'] as $no => $field) {
+	if (empty($field['field_name'])) continue;
+	switch ($field['field_name']) {
+
+	case 'partiestatus_category_id':
+		$zz['fields'][$no]['default'] = wrap_category_id('partiestatus/normal');
+		break;
+
+	case 'weiss_person_id':
+	case 'schwarz_person_id':
+		if (count($brick['vars']) === 4) {
+			$zz['fields'][$no]['sql'] = 'SELECT person_id, brett_no
+					, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
+					, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
+				FROM participations
+				LEFT JOIN persons USING (contact_id)
+				LEFT JOIN teams USING (team_id)
+				WHERE usergroup_id = %d AND NOT ISNULL(brett_no)
+				AND team_id IN(%d, %d)
+				ORDER BY team, brett_no, t_nachname, t_vorname';
+			$zz['fields'][$no]['sql'] = sprintf($zz['fields'][$no]['sql']
+				, wrap_id('usergroups', 'spieler')
+				, $paarung['heim_team_id']
+				, $paarung['auswaerts_team_id']
+			);
+			$zz['fields'][$no]['if']['insert']['default'] = mf_tournaments_get_paring_player(
+				$paarung, $field['field_name'] === 'weiss_person_id' ? 'weiss' : 'schwarz'
+			);
+			$zz['fields'][$no]['group'] = 'team';
+		}
+		$zz['fields'][$no]['sql'] = wrap_edit_sql($zz['fields'][$no]['sql'],
+			'WHERE', sprintf('participations.event_id = %d', $brick['data']['event_id'])
+		);
+		break;
+	
+	case 'heim_spieler_farbe':
+		if (count($brick['vars']) === 4)
+			$zz['fields'][$no]['if']['insert']['default'] = mf_tournaments_get_paring_player($paarung, 'farbe');
+		break;
 	}
 }
 
