@@ -70,6 +70,13 @@ foreach ($zz['fields'] as $no => $field) {
 				$paarung, $field['field_name'] === 'weiss_person_id' ? 'weiss' : 'schwarz'
 			);
 			$zz['fields'][$no]['group'] = 'team';
+		} else {
+			$zz['fields'][$no]['sql'] = sprintf('SELECT person_id
+					, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
+				FROM participations
+				LEFT JOIN persons USING (contact_id)
+				WHERE usergroup_id = %d
+				ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'));
 		}
 		$zz['fields'][$no]['sql'] = wrap_edit_sql($zz['fields'][$no]['sql'],
 			'WHERE', sprintf('participations.event_id = %d', $brick['data']['event_id'])

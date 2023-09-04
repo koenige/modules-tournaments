@@ -59,12 +59,10 @@ $zz['fields'][6]['title'] = 'Weiß';
 $zz['fields'][6]['field_name'] = 'weiss_person_id';
 $zz['fields'][6]['display_field'] = 'weiss';
 $zz['fields'][6]['type'] = 'select';
-$zz['fields'][6]['sql'] = sprintf('SELECT person_id
-		, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
-	FROM participations
+$zz['fields'][6]['sql'] = 'SELECT person_id, contact
+	FROM contacts
 	LEFT JOIN persons USING (contact_id)
-	WHERE usergroup_id = %d
-	ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'));
+	ORDER BY identifier';
 $zz['fields'][6]['search'] = 'CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname)';
 
 $zz['fields'][7]['title_tab'] = 'Ergebnis';
@@ -84,12 +82,10 @@ $zz['fields'][8]['title'] = 'Schwarz';
 $zz['fields'][8]['field_name'] = 'schwarz_person_id';
 $zz['fields'][8]['display_field'] = 'schwarz';
 $zz['fields'][8]['type'] = 'select';
-$zz['fields'][8]['sql'] = sprintf('SELECT person_id
-		, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
-	FROM participations
+$zz['fields'][8]['sql'] = 'SELECT person_id, contact
+	FROM contacts
 	LEFT JOIN persons USING (contact_id)
-	WHERE usergroup_id = %d
-	ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'));
+	ORDER BY identifier';
 $zz['fields'][8]['search'] = 'CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname)';
 
 $zz['fields'][10]['title'] = 'Farbe Heimspieler';
