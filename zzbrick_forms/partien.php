@@ -45,6 +45,10 @@ foreach ($zz['fields'] as $no => $field) {
 	if (empty($field['field_name'])) continue;
 	switch ($field['field_name']) {
 
+	case 'brett_no':
+		$zz['fields'][$no]['auto_value'] = 'increment';
+		break;
+
 	case 'partiestatus_category_id':
 		$zz['fields'][$no]['default'] = wrap_category_id('partiestatus/normal');
 		break;

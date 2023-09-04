@@ -53,7 +53,6 @@ $zz['fields'][4]['if']['where']['hide_in_form'] = true;
 $zz['fields'][5]['title'] = 'Brett';
 $zz['fields'][5]['field_name'] = 'brett_no';
 $zz['fields'][5]['type'] = 'number';
-$zz['fields'][5]['auto_value'] = 'increment';
 
 $zz['fields'][6]['title'] = 'Weiß';
 $zz['fields'][6]['field_name'] = 'weiss_person_id';
