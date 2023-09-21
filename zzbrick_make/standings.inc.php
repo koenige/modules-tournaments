@@ -327,8 +327,7 @@ function mod_tournaments_make_standings_sort($standings) {
  *			für Turniere nach 2012-07-01
  */
 function mf_tournaments_make_fide_correction($event_id) {
-	static $correction;
-	if (empty($correction)) $correction = [];
+	static $correction = [];
 	if (array_key_exists($event_id, $correction)) return $correction[$event_id];
 	$sql = 'SELECT
 			IF(date_begin >= "2012-07-01", "fide-2012",

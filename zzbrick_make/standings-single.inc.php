@@ -238,8 +238,8 @@ class mod_tournaments_make_standings_single {
 	}
 	
 	function getRoundResults($person_id, $round_no = false) {
-		static $round_results;
-		if (empty($round_results)) {
+		static $round_results = [];
+		if (!$round_results) {
 			$sql = 'SELECT person_id, runde_no, partiestatus_category_id, gegner_id
 					, (CASE ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE 0 END) AS ergebnis
 				FROM partien_einzelergebnisse
@@ -301,7 +301,7 @@ class mod_tournaments_make_standings_single {
 	 * @return array
 	 */
 	function getBuchholzGegnerPunkte($event_id, $this_person_id) {
-		static $opponent_scores;
+		static $opponent_scores = [];
 		// Punkte pro Runde auslesen
 		// Liste, bspw. [2005-1] => [1 => 0.5, 2 => 0.0 ...], [2909-2] => ()
 		$correction = mf_tournaments_make_fide_correction($event_id);

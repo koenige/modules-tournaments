@@ -380,7 +380,7 @@ function mf_tournaments_colors_hex2dec($color) {
  * @return string
  */
 function mf_tournaments_fide_title($title) {
-	static $titles;
+	static $titles = [];
 	if (!$titles) {
 		$sql = 'SELECT category, category_short, description
 			FROM categories

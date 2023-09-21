@@ -130,8 +130,8 @@ if (count($brick['vars']) === 3) {
 }
 
 function mf_tournaments_get_paring_player($paarung, $farbe) {
-	static $aufstellungen;
-	static $partien;
+	static $aufstellungen = [];
+	static $partien = [];
 	if (!$aufstellungen) {
 		$sql = 'SELECT brett_no, weiss_person_id, schwarz_person_id
 			FROM partien WHERE paarung_id = %d

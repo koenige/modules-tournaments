@@ -63,7 +63,7 @@ function mod_tournaments_make_lineup($params) {
  * @return array
  */
 function mod_tournaments_make_lineup_active($params) {
-	static $teamdata;
+	static $teamdata = [];
 	$team_identifier = implode('/', $params);
 	if (!empty($teamdata[$team_identifier])) {
 		$page['text'] = $teamdata[$team_identifier];
