@@ -82,7 +82,7 @@ function mod_tournaments_tournamentmap($vars, $settings, $event) {
 
 	$page['title'] = 'Herkunftsorte der Spieler: '.$event['event'].' '.$event['year'];
 	if ($federation) $page['title'] .= ' – '.$federation['contact'];
-	$page['extra']['body_attributes'] = 'id="map"';
+	$page['extra']['id'] = 'map';
 	$page['text'] = wrap_template('tournamentmap', $event);
 	$page['dont_show_h1'] = true;
 	if (!$federation) {
