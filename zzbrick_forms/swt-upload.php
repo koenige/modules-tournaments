@@ -37,7 +37,7 @@ foreach (array_keys($zz['fields']) as $no) {
 	if (!in_array($no, $fields)) $zz['fields'][$no]['hide_in_form'] = true;
 }
 
-$zz['page']['data'] = $brick['data'];
+$zz['vars']['event'] = $brick['data'];
 $zz['hooks']['after_upload'] = 'mf_tournaments_swtimport';
 
 wrap_text_set('Edit a record', '');

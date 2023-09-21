@@ -331,7 +331,7 @@ function mf_tournaments_round_event($ops) {
 }
 
 function mf_tournaments_swtimport($ops) {
-	$event = wrap_static('page', 'data');
+	$event = wrap_static('zzform', 'event');
 	if (!$event) return [];
 	$url = wrap_path('tournaments_job_swt', $event['identifier'], false);
 	if (!$url) return [];

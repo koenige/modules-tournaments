@@ -119,7 +119,7 @@ if (!empty($zz['filter'][1])) {
 wrap_setting('zzform_limit', 40);
 $zz['export'][] = 'CSV Excel';
 $zz['export'][] = 'PDF Tischkarten';
-$zz['page']['event'] = $brick['data'];
+$zz['vars']['event'] = $brick['data'];
 
 $zz['filter'][2]['title'] = 'Status';
 $zz['filter'][2]['type'] = 'list';

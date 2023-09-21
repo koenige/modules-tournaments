@@ -45,16 +45,9 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			parse_str($events[$line['event_id']]['series_parameter'], $events[$line['event_id']]['series_parameter']);
 		}
  	}
- 	$page = wrap_static('page');
- 	if (array_key_exists($page['extra']['event_id'], $events)) {
-	 	$event = $events[$page['extra']['event_id']];
-	 } else {
-	 	$event = my_event($page['extra']['event_id']);
-		if ($event['series_parameter']) {
-			parse_str($event['series_parameter'], $event['series_parameter']);
-		}
-	 }
+ 	$event = wrap_static('zzform', 'event');
 	if ($event['series_parameter']) {
+		parse_str($event['series_parameter'], $event['series_parameter']);
 		$event += $event['series_parameter'];
 	}
 	
