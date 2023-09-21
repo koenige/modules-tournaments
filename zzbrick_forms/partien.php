@@ -30,7 +30,7 @@ if (count($brick['vars']) === 4) {
 	if (!$paarung) wrap_quit(404);
 	if ($paarung['partien'] + 1 < $brick['data']['bretter_min']) {
 		$url_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-		$zz['page']['redirect']['successful_insert'] = $url_path.'?add';
+		$zz['record']['redirect']['successful_insert'] = $url_path.'?add';
 	}
 }
 
