@@ -224,12 +224,14 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 	
 	$data['videoSources'] = [];
 	$sql = 'SELECT "de" AS language, "" AS autoPlay
-			, direct_link AS event
+			, identification AS event
 			, SUBSTRING_INDEX(description, ": ", -1) AS commentators
 		FROM events
+		LEFT JOIN eventdetails USING (event_id)
 		WHERE (events.event = "ChessyTV" OR events.event LIKE "Live-Kommentierung%%")
 		AND main_event_id = %d
-		AND NOT ISNULL(direct_link)
+		AND NOT ISNULL(eventdetails.eventdetail_id)
+		AND eventdetails.active = "yes"
 		AND DATE_SUB(CONCAT(events.date_begin, " ", events.time_begin), INTERVAL 2 HOUR) <= NOW()
 		ORDER BY events.date_begin DESC, events.time_begin DESC
 		LIMIT 1';
