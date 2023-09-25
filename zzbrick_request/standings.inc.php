@@ -162,7 +162,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 		}
 		$tabelle[$tabellenstand_id]['pfad'] = $pfad;
 		$tabelle[$tabellenstand_id][str_replace('-', '_', $event['turnierform'])] = true;
-		$tabelle[$tabellenstand_id]['main_series_path'] = $event['main_series_path'];
+		$tabelle[$tabellenstand_id]['main_event_path'] = $event['main_event_path'];
 		if ($filter_kennung) {
 			$tabelle[$tabellenstand_id]['no'] = $i;
 			$i++;

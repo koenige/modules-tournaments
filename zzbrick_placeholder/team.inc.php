@@ -34,6 +34,7 @@ function mod_tournaments_placeholder_team($brick) {
 			, series_category_id
 			, main_series.category_short AS main_series
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
+			, IF(LENGTH(main_series.path) > 7, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "/", SUBSTRING_INDEX(main_series.path, "/", -1)), NULL) AS main_event_path
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, club_contact_id AS contact_id, clubs.contact
 			, clubs.identifier AS contact_identifier

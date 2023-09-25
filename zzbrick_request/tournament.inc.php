@@ -424,6 +424,9 @@ function mod_tournaments_tournament_players_compact($event) {
 		$event['more_players'] = count($event['players']) - $max_players;
 		$event['players'] = array_slice($event['players'], 0, $max_players);
 	}
+	if ($event['main_event_path'])
+		foreach (array_keys($event['players']) as $participation_id)
+			$event['players'][$participation_id]['main_event_path'] = $event['main_event_path'];
 
 	return wrap_template('players-compact', $event);
 }
@@ -438,7 +441,7 @@ function mod_tournaments_tournament_teams_compact(&$event) {
 	$sql = 'SELECT teams.team_id
 			, team, team_no, teams.identifier AS team_identifier, team_status
 			, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
+			, IF(LENGTH(main_series.path) > 7, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "/", SUBSTRING_INDEX(main_series.path, "/", -1)), NULL) AS main_series_path
 			, platz_no, tabellenstand_id
 			, teams.club_contact_id
 		FROM teams

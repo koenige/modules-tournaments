@@ -37,7 +37,7 @@
 %%% condition endif %%%
 %%% condition if m-v | m-s %%%
 <td>%%% condition if main_series_path & federation_identifier %%%
-<a href="../%%% item main_series_path %%%/lv/%%% item federation_identifier %%%/">
+<a href="%%% path tournaments_federation main_series_path federation_identifier %%%">
 %%% condition endif %%%
 <abbr title="%%% item country %%%">%%% item federation_abbr %%%</abbr>
 %%% condition if main_series_path & federation_identifier %%%

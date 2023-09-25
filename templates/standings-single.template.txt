@@ -54,12 +54,12 @@
 %%% condition endif %%%
 		<td class="verein">%%% item t_verein %%%</td>
 %%% condition if country %%%
-		<td>%%% condition if main_series_path & federation_identifier %%%
-<a href="../../%%% item pfad %%%%%% item main_series_path %%%/lv/%%% item federation_identifier %%%/">
+		<td>%%% condition if main_event_path & federation_identifier %%%
+<a href="%%% path tournaments_federation main_event_path federation_identifier %%%">
 %%% condition endif %%%
 <span class="short"><abbr title="%%% item country %%%">%%% item federation_abbr %%%</abbr></span>
 <span class="long">%%% item country %%%</span>
-%%% condition if main_series_path & federation_identifier %%%
+%%% condition if main_event_path & federation_identifier %%%
 </a>
 %%% condition endif %%%</td>
 %%% condition endif %%%

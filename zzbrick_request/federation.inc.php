@@ -44,9 +44,8 @@ function mod_tournaments_federation($vars, $settings, $event) {
 	$lv = wrap_db_fetch($sql);
 	if (!$lv) return false;
 	if ($vars[2] === $lv['zps_code']) {
-		return brick_format('%%%'.sprintf('redirect /%d/%s/lv/%s/',
-			$vars[0], wrap_db_escape($vars[1]), $lv['identifier']).'%%%'
-		);
+		$path = wrap_path('tournaments_federation', [$vars[0].'/'.$vars[1], $lv['identifier']]);
+		return wrap_redirect($path, 303);
 	}
 	$lv['year'] = intval($vars[0]);
 
@@ -54,7 +53,7 @@ function mod_tournaments_federation($vars, $settings, $event) {
 			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
 			, main_series.category AS main_series, date_end
 			, main_series.category_short AS main_series_short
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
+			, IF(LENGTH(main_series.path) > 7, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "/", SUBSTRING_INDEX(main_series.path, "/", -1)), NULL) AS main_event_path
 			, IF((SELECT COUNT(*) FROM participations
 				WHERE event_id = events.event_id AND usergroup_id = %d), NULL, 1
 			) AS keine_daten
@@ -98,7 +97,7 @@ function mod_tournaments_federation($vars, $settings, $event) {
 	if (!$lv['events']) return false;
 	$main_series = reset($lv['events']);
 	$lv['main_series_short'] = $main_series['main_series_short'];
-	$lv['main_series_path'] = $main_series['main_series_path'];
+	$lv['main_event_path'] = $main_series['main_event_path'];
 	$lv['main_series'] = $main_series['main_series'];
 	$lv['turnierform'] = $main_series['turnierform'];
 
@@ -221,7 +220,7 @@ function mod_tournaments_federation($vars, $settings, $event) {
 		}
 
 		if ($lv['year'] >= wrap_setting('dem_spielerphotos_aus_mediendb') AND $spielerphotos) {
-			$photos = mf_mediadblink_media([$lv['year'], $lv['main_series_path'], 'Website/Spieler'], [], 'person', $player_ids);
+			$photos = mf_mediadblink_media([$lv['main_event_path'], 'Website/Spieler'], [], 'person', $player_ids);
 			foreach ($spieler as $event_id => $event_players) {
 				foreach ($event_players as $participation_id => $player) {
 					if (!array_key_exists($player['person_id'], $photos)) continue;
@@ -243,7 +242,7 @@ function mod_tournaments_federation($vars, $settings, $event) {
 		if ($sub_orgs) $lv['karte'] = true;
 	}
 
-	$bilder = mf_mediadblink_media([$lv['year'], $lv['main_series_path'], 'Website/Delegation']);
+	$bilder = mf_mediadblink_media([$lv['main_event_path'], 'Website/Delegation']);
 	// @todo add Landesverband below Organisations
 	$lv_filename = strtolower(wrap_filename($lv['contact_abbr']));
 	foreach ($bilder as $bild) {

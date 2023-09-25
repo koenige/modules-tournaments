@@ -27,11 +27,11 @@
 %%% condition endif %%%
 %%% item spieler %%%
 %%% item setzliste_no </a> %%%</td>
-<td>%%% condition if main_series_path & federation_identifier %%%
-<a href="../%%% item main_series_path %%%/lv/%%% item federation_identifier %%%/">
+<td>%%% condition if main_event_path & federation_identifier %%%
+<a href="%%% path tournaments_federation main_event_path federation_identifier %%%">
 %%% condition endif %%%
 <abbr title="%%% item country %%%">%%% item federation_abbr %%%</abbr>
-%%% condition if main_series_path & federation_identifier %%%
+%%% condition if main_event_path & federation_identifier %%%
 </a>
 %%% condition endif %%%</td>
 <td class="number">%%% item wertung result_format %%%</td>

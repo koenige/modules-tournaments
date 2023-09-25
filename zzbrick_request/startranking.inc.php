@@ -82,7 +82,6 @@ function mod_tournaments_startranking_single($event) {
 			, t_dwz, t_elo, t_fidetitel
 			, setzliste_no
 			, places.contact AS veranstaltungsort, place, latitude, longitude
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, status_category_id
 			, DATE_FORMAT(entry_date, "%%d.%%m %%H:%%i") AS entry_date
 			, entry_date AS entry_date_raw
@@ -131,6 +130,7 @@ function mod_tournaments_startranking_single($event) {
 	$event['zeige_elo'] = false;
 	$event['zeige_titel'] = false;
 	foreach ($event['spieler'] as $person_id => $spieler) {
+		$event['spieler'][$person_id]['main_event_path'] = $event['main_event_path'];
 		if ($spieler['qualification_event']) $event['qualification_col'] = true;
 		if ($spieler['t_fidetitel']) $event['zeige_titel'] = true;
 		if ($spieler['t_elo']) $event['zeige_elo'] = true;
@@ -153,7 +153,6 @@ function mod_tournaments_startranking_team($event) {
 			, IF(NOT ISNULL(teams.setzliste_no), teams.identifier, "") AS team_identifier, team_status
 			, SUBSTRING_INDEX(teams.identifier, "/", -1) AS team_identifier_short
 			, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, eintrag_datum
 			, teams.club_contact_id
 		FROM teams
@@ -184,6 +183,7 @@ function mod_tournaments_startranking_team($event) {
 	$event['teams'] = mf_tournaments_clubs_to_federations($event['teams'], 'club_contact_id');
 	$event['meldeliste'] = false;
 	foreach (array_keys($event['teams']) AS $team_id) {
+		$event['teams'][$team_id]['main_event_path'] = $event['main_event_path'];
 		// Meldelistestatus nur bei Terminen, die noch nicht zuende sind
 		if (empty($event['teams'][$team_id]['setzliste_no']) AND $event['date_end'] > date('Y-m-d')) $event['meldeliste'] = true;
 		$event['teams'][$team_id][str_replace('-', '_', $event['turnierform'])] = true;
