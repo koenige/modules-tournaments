@@ -56,3 +56,5 @@
 /* 2023-04-26-22 */	UPDATE categories SET `path` = REPLACE(path, 'cronjobs/', 'jobs/') WHERE `path` LIKE 'cronjobs/%';
 /* 2023-04-26-23 */	UPDATE categories SET `parameters` = REPLACE(parameters, 'alias=cronjobs', 'alias=jobs') WHERE `parameters` LIKE '%alias=cronjobs%';
 /* 2023-07-22-1 */	UPDATE webpages SET content = REPLACE(content, '%%% forms runde *', '%%% forms rounds *') WHERE content LIKE '%\%\%\% forms runde *%';
+/* 2023-09-25-1 */	UPDATE webpages SET content = REPLACE(content, '%%% request landesverband', '%%% request federation') WHERE content LIKE '%\%\%\% request landesverband%';
+/* 2023-09-25-2 */	UPDATE webpages SET content = REPLACE(content, '%%% request landesverbaende', '%%% request federations') WHERE content LIKE '%\%\%\% request landesverbaende%';
