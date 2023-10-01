@@ -478,8 +478,8 @@ function mod_tournaments_games_pgn($event_id, $round_no = false, $brett_no = fal
 			, countries.ioc_code AS EventCountry
 			, partien.runde_no AS Round
 			, partien.brett_no AS Board
-			, CONCAT(weiss.t_nachname, ", ", weiss.t_vorname, IFNULL(CONCAT(" ", weiss.t_namenszusatz), "")) AS White
-			, CONCAT(schwarz.t_nachname, ", ", schwarz.t_vorname, IFNULL(CONCAT(" ", schwarz.t_namenszusatz), "")) AS Black
+			, CONCAT(IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname, ", ", weiss.t_vorname) AS White
+			, CONCAT(IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname, ", ", schwarz.t_vorname) AS Black
 			, weiss_zeit AS WhiteClock
 			, schwarz_zeit AS BlackClock
 			, IFNULL(weiss.t_elo, weiss.t_dwz) AS WhiteElo
