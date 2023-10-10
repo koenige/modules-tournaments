@@ -77,14 +77,19 @@ function mf_tournaments_final_standings($event_ids) {
 				WHERE status_category_id = %d
 				AND usergroup_id = %d
 				AND sex = "male"
-				AND participations.event_id = events.event_id) AS spieler
+				AND participations.event_id = events.event_id
+				AND (NOT ISNULL(brett_no) OR tournaments.turnierform_category_id = %d)
+			) AS spieler
 			, (SELECT COUNT(*) FROM participations
 				LEFT JOIN persons USING (contact_id)
 				WHERE status_category_id = %d
 				AND usergroup_id = %d
 				AND sex = "female"
-				AND participations.event_id = events.event_id) AS spielerinnen
+				AND participations.event_id = events.event_id
+				AND (NOT ISNULL(brett_no) OR tournaments.turnierform_category_id = %d)
+			) AS spielerinnen
 			, tournaments.tabellenstaende
+			, tournaments.*
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
 		WHERE event_id IN (%s)
@@ -92,8 +97,10 @@ function mf_tournaments_final_standings($event_ids) {
 	$sql = sprintf($sql
 		, wrap_category_id('participation-status/participant')
 		, wrap_id('usergroups', 'spieler')
+		, wrap_category_id('turnierformen/e')
 		, wrap_category_id('participation-status/participant')
 		, wrap_id('usergroups', 'spieler')
+		, wrap_category_id('turnierformen/e')
 		, implode(',', $event_ids)
 	);
 	$turniere = wrap_db_fetch($sql, 'event_id');
