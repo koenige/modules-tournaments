@@ -272,7 +272,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		if ($event['turnierform'] === 'e') {
 			$event['players_compact'] = mod_tournaments_tournament_players_compact($event);
 		} else {
-			$event['teams_compact'] = mod_tournaments_tournament_teams_compact($event);
+			$event['teams_compact'] = mod_tournaments_tournament_teams_compact($event, $internal);
 		}
 	}
 
@@ -437,7 +437,7 @@ function mod_tournaments_tournament_players_compact($event) {
  * @param array $event
  * @return string
  */
-function mod_tournaments_tournament_teams_compact(&$event) {
+function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 	$sql = 'SELECT teams.team_id
 			, team, team_no, teams.identifier AS team_identifier, team_status
 			, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
