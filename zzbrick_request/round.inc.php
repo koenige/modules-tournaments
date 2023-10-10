@@ -60,7 +60,9 @@ function mod_tournaments_round($params, $vars, $event) {
 		AND events.runde_no = %d
 	';
 	$sql = sprintf($sql, wrap_setting('website_id'), $event['event_id'], $public, $params[2]);
-	$event = array_merge($event, wrap_db_fetch($sql));
+	$round = wrap_db_fetch($sql);
+	if (!$round) return false;
+	$event = array_merge($event, $round);
 	if ($event['tournament_parameter']) {
 		parse_str($event['tournament_parameter'], $parameters);
 		$event += $parameters;
