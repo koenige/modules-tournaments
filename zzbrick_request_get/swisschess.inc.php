@@ -23,7 +23,7 @@ function mod_tournaments_get_swisschess($vars) {
 	wrap_db_query('SET NAMES latin1');
 	// Abfrage Spalte 2, 3: erste Zeile für MM, zweite für EM
 	$sql = 'SELECT
-			SUBSTRING(CONCAT(t_nachname, ",", t_vorname), 1, 32) AS name
+			SUBSTRING(CONCAT(IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname, ",", t_vorname), 1, 32) AS name
 			, IFNULL(
 				CONCAT(SUBSTRING(teams.team, 1, 29), IFNULL(CONCAT(" ", teams.team_no), SUBSTRING(teams.team, 30, 3))),
 				t_verein				
