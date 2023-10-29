@@ -94,7 +94,7 @@ $zz['fields'][5]['title_tab'] = 'Adresse';
 unset($zz['fields'][5]['unless']['export_mode']['subselect']['field_suffix'][0]);
 $zz['fields'][5]['unless']['export_mode']['subselect']['field_suffix'][1] = '<br>';
 
-wrap_setting('zzform_show_list_while_edit', false);
+$zz['setting']['zzform_show_list_while_edit'] = false;
 $zz['record']['delete'] = false;
 $zz['list']['merge'] = false;
 $zz['record']['add'] = false;

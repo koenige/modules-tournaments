@@ -202,7 +202,7 @@ $zz['access'] = 'add+delete';
 $zz['record']['copy'] = false;
 if (!brick_access_rights('Webmaster'))
 	$zz['if'][22]['record']['delete'] = false; // User darf sich nicht selbst löschen!
-wrap_setting('zzform_max_select', 200);
+$zz['setting']['zzform_max_select'] = 200;
 
 $zz['details'][0]['title'] = 'Kontaktdaten';
 $zz['details'][0]['link'] = [

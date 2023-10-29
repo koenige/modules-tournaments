@@ -116,7 +116,7 @@ if (!empty($zz['filter'][1])) {
 		GROUP BY meldung
 		ORDER BY meldung', $brick['data']['event_id']);
 }
-wrap_setting('zzform_limit', 40);
+$zz['setting']['zzform_limit'] = 40;
 $zz['export'][] = 'CSV Excel';
 $zz['export'][] = 'PDF Tischkarten';
 $zz['vars']['event'] = $brick['data'];
