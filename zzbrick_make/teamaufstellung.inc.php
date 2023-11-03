@@ -215,10 +215,9 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 			}
 		}
 	}
-	if ($changed AND $data['redirect']) {
-		global $zz_page;
-		wrap_redirect(wrap_glue_url($zz_page['url']['full']));
-	}
+	if ($changed AND $data['redirect'])
+		return wrap_redirect_change();
+
 	// Daten m/w? Nur ein Geschlecht, dann keine Auswahl nötig
 	if (count($data['geschlecht']) === 1) {
 		if ($data['geschlecht'][0] === 'W') {
