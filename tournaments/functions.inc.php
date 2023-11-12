@@ -664,9 +664,9 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 			LEFT JOIN usergroups USING (usergroup_id)
 			LEFT JOIN categories
 				ON categories.category_id = contactdetails.provider_category_id
+				AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&type=phone%%")
 			WHERE club_contact_id IN (%s)
 			AND usergroup_id IN (%d, %d)
-			AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&type=phone%%")
 			GROUP BY participation_id';
 		$sql = sprintf($sql
 			, wrap_category_id('provider/e-mail')
@@ -755,7 +755,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 			$i++;
 			$participations[$id]['spieler'][$spieler_id]['pflicht'] = ($i <= $event['bretter_min']) ? true : false;
 			$participations[$id]['spieler'][$spieler_id]['position'] = $i;
-			if ($event['gastspieler_status'])
+			if (!empty($event['gastspieler_status']))
 				$participations[$id]['spieler'][$spieler_id]['gastspieler_status'] = 1;
 			if (!empty($participations[$id]['spieler'][$spieler_id]['zps_code']))
 				$participations[$id]['zps_codes'][] = $participations[$id]['spieler'][$spieler_id]['zps_code'];
