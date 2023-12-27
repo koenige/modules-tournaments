@@ -21,7 +21,7 @@
  *		int [1]: Turnierkennung
  * @return array $page
  */
-function mod_tournaments_swtreader($params) {
+function mod_tournaments_swtreader($params, $settings, $event) {
 	ob_start();
 	$dir = wrap_setting('media_folder').'/swt/'.$params[0].'/';
 	$filename = $params[1].'.swt';
@@ -33,9 +33,7 @@ function mod_tournaments_swtreader($params) {
 	$page['text'] = ob_get_contents();
 	$page['query_strings'] = ['view'];
 	$page['dont_show_h1'] = true;
-	$page['title'] = sprintf('SWT-Ansicht für %s %d', $params[1], $params[0]);
-	$page['breadcrumbs'][] = sprintf('<a href="../../">%d</a>', $params[0]);
-	$page['breadcrumbs'][] = sprintf('<a href="../">%s</a>', $params[1]);
+	$page['title'] = sprintf('SWT-Ansicht für %s %d', $event['event'], $event['year']);
 	$page['breadcrumbs'][]['title'] = 'SWT-Ansicht';
 	ob_end_clean();
 	return $page;
