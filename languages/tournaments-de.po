@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2020-2022 Gustaf Mossakowski
+# @copyright Copyright © 2020-2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 msgid ""
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.12\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: zzbrick_forms/rounds.inc.php
 msgid "Rounds"
@@ -64,19 +64,25 @@ msgstr "Bitte laden Sie hier nur Dateien für das gesamte Turnier hoch."
 
 #: zzbrick_forms/tournaments.inc.php
 msgid ""
-"For rounds, there is a possibility to upload a PGN file in the <a href=\"%s"
-"\">round overview</a>."
+"For rounds, there is a possibility to upload a PGN file in the <a "
+"href=\"%s\">round overview</a>."
 msgstr ""
 "Für Runden besteht die Möglichkeit, in der <a href=\"%s\">Rundenübersicht</"
 "a> eine PGN-Datei hochzuladen."
 
 #: zzbrick_make/standings.inc.php
 msgid ""
+"Standings update for round %d impossible: So far only %d round has been "
+"played."
+msgid_plural ""
 "Standings update for round %d impossible: So far only %d rounds have been "
 "played."
-msgstr ""
-"Tabellenaktualisierung für Runde %d unmöglich: Bisher wurden nur %d Runden "
-"gespielt."
+msgstr[0] ""
+"Aktualisierung der Rangliste für Runde %d unmöglich: Bislang wurde nur %d "
+"Runde gespielt."
+msgstr[1] ""
+"Aktualisierung der Rangliste für Runde %d unmöglich: Bislang wurde nur %d "
+"Runden gespielt."
 
 #: zzbrick_make/standings.inc.php
 msgid ""

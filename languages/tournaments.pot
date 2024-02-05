@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2020-2023 Gustaf Mossakowski
+# @copyright Copyright © 2020-2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 msgid ""
@@ -63,8 +63,10 @@ msgid "For rounds, there is a possibility to upload a PGN file in the <a href="%
 msgstr ""
 
 #: zzbrick_make/standings.inc.php
-msgid "Standings update for round %d impossible: So far only %d rounds have been played."
-msgstr ""
+msgid "Standings update for round %d impossible: So far only %d round has been played."
+msgid_plural "Standings update for round %d impossible: So far only %d rounds have been played."
+msgstr[] ""
+msgstr[] ""
 
 #: zzbrick_make/standings.inc.php
 msgid "Attempted to update a round that is higher than the maximum number of rounds."
