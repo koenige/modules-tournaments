@@ -9,7 +9,7 @@
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
- * @copyright Copyright © 2012-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2024 Gustaf Mossakowski
  * @copyright Copyright © 2014 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
@@ -52,10 +52,6 @@ function mod_tournaments_make_standings_team($event) {
 	// Wertungen aus Datenbank auslesen
 	foreach ($turnierwertungen as $category_id => $turnierwertung) {
 		switch ($turnierwertung['path']) {
-		case 'mp':
-			$wertungen[$category_id] = mf_tournaments_make_team_mp($event['runde_no']); break;
-		case 'bp':
-			$wertungen[$category_id] = mf_tournaments_make_team_bp($event['runde_no']); break;
 		case 'bhz':
 			$erste_wertung = reset($turnierwertungen);
 			if ($erste_wertung['path'] === 'bp') {
@@ -68,10 +64,6 @@ function mod_tournaments_make_standings_team($event) {
 				$wertungen[$category_id] = mf_tournaments_make_team_buchholz_mp($event['runde_no']);
 			}
 			break;
-		case 'sw':
-			$wertungen[$category_id] = mf_tournaments_make_team_sw($event['runde_no']); break;
-		case 'bw':
-			$wertungen[$category_id] = mf_tournaments_make_team_bw($event['runde_no']); break;
 		case 'dv':
 			// direkter Vergleich erst nach Auswertung der anderen Wertungen
 			$wertungen[$category_id] = 1;
@@ -85,10 +77,15 @@ function mod_tournaments_make_standings_team($event) {
 			$wertungen[$category_id] = wrap_db_fetch($sql, 'team_id', 'key/value');
 			break;
 		case 'sobo':
-			$wertungen[$category_id] = mf_tournaments_make_team_sonneborn_berger(
-				$event['runde_no']
-			);
-			break;
+			$wertungen[$category_id] = mf_tournaments_make_team_sobo($event['runde_no']); break;
+		case 'mp':
+			$wertungen[$category_id] = mf_tournaments_make_team_mp($event['runde_no']); break;
+		case 'bp':
+			$wertungen[$category_id] = mf_tournaments_make_team_bp($event['runde_no']); break;
+		case 'sw':
+			$wertungen[$category_id] = mf_tournaments_make_team_sw($event['runde_no']); break;
+		case 'bw':
+			$wertungen[$category_id] = mf_tournaments_make_team_bw($event['runde_no']); break;
 		default:
 			wrap_error(sprintf('Rating %s not implemented', $turnierwertung['path']), E_USER_WARNING);
 		}
@@ -357,7 +354,7 @@ function mf_tournaments_make_team_bp($round_no) {
  * @param int $round_no
  * @return array Liste team_id => value
  */
-function mf_tournaments_make_team_sonneborn_berger($round_no) {
+function mf_tournaments_make_team_sobo($round_no) {
 	// @deprecated, second query does not work in old MySQL/MariaDB databases
 	// because of GROUP BY
 	$deprecated = true;
@@ -518,7 +515,6 @@ function mf_tournaments_make_team_bw($round_no) {
 		GROUP BY team_id
 		ORDER BY rating DESC, team_id';
 	$sql = sprintf($sql, $round_no);
-	$data = wrap_db_fetch($sql, 'team_id', 'key/value');
 	return wrap_db_fetch($sql, 'team_id', 'key/value');
 }
 
