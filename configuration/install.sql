@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2020-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2020-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -340,8 +340,3 @@ CREATE OR REPLACE VIEW `buchholz_mit_kampflosen_view` AS
 		AND `paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`
 		AND `paarungen_ergebnisse_view`.`runde_no` = 1
 		AND `paarungen_ergebnisse_view`.`kampflos` = 1;
-
-CREATE OR REPLACE VIEW `buchholz_view` AS
-	SELECT `buchholz_mit_kampflosen_view`.`event_id`, `buchholz_mit_kampflosen_view`.`team_id`, `buchholz_mit_kampflosen_view`.`runde_no`, IFNULL(SUM(`buchholz_mit_kampflosen_view`.`buchholz_mit_korrektur`),0) AS `buchholz_mit_korrektur`, IFNULL(SUM(`buchholz_mit_kampflosen_view`.`buchholz`),0) AS `buchholz`
-	FROM `buchholz_mit_kampflosen_view`
-	GROUP BY `event_id`, `team_id`, `runde_no`;

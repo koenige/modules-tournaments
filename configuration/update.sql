@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2021-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2021-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -58,3 +58,4 @@
 /* 2023-07-22-1 */	UPDATE webpages SET content = REPLACE(content, '%%% forms runde *', '%%% forms rounds *') WHERE content LIKE '%\%\%\% forms runde *%';
 /* 2023-09-25-1 */	UPDATE webpages SET content = REPLACE(content, '%%% request landesverband', '%%% request federation') WHERE content LIKE '%\%\%\% request landesverband%';
 /* 2023-09-25-2 */	UPDATE webpages SET content = REPLACE(content, '%%% request landesverbaende', '%%% request federations') WHERE content LIKE '%\%\%\% request landesverbaende%';
+/* 2024-02-05-1 */	DROP VIEW `buchholz_view`;
