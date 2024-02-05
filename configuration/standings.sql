@@ -35,19 +35,25 @@ ORDER BY rating DESC, team_id;
 
 -- tournaments_scores_team_bhz_mp --
 /* calculate buchholz points based on match points for team tournaments, no correction */
-SELECT team_id, IFNULL(SUM(buchholz), 0) AS buchholz
-FROM buchholz_mit_kampflosen_view
+SELECT results.team_id, SUM(results_opponents.mannschaftspunkte) AS buchholz
+FROM paarungen_ergebnisse_view results
 LEFT JOIN teams USING (team_id)
-WHERE runde_no = %d
+LEFT JOIN tabellenstaende_termine_view
+	ON results.team_id = tabellenstaende_termine_view.team_id
+	AND results.runde_no <= tabellenstaende_termine_view.runde_no
+LEFT JOIN paarungen_ergebnisse_view results_opponents
+	ON results_opponents.team_id = results.gegner_team_id
+	AND results_opponents.runde_no <= tabellenstaende_termine_view.runde_no
+WHERE tabellenstaende_termine_view.runde_no = %d
 AND team_status = "Teilnehmer"
 AND spielfrei = "nein"
-GROUP BY team_id
+GROUP BY results.team_id, tabellenstaende_termine_view.runde_no
 ORDER BY buchholz DESC, team_id;
 
 -- tournaments_scores_team_bhz_mp_fide2012 --
 /* calculate buchholz points based on match points for team tournaments, correction 2012 */
 SELECT team_id, IFNULL(SUM(buchholz_mit_korrektur), 0) AS buchholz_mit_korrektur
-FROM buchholz_view
+FROM buchholz_mit_kampflosen_view
 LEFT JOIN teams USING (team_id)
 WHERE runde_no = %d
 AND team_status = "Teilnehmer"
