@@ -1,12 +1,12 @@
 /**
- * events module
+ * tournaments module
  * SQL queries
  *
  * Part of »Zugzwang Project«
- * https://www.zugzwang.org/modules/events
+ * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2023 Gustaf Mossakowski
+ * @copyright Copyright © 2023-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
