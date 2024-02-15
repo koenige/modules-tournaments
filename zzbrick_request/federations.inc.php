@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -58,11 +58,18 @@ function mod_tournaments_federations($vars) {
 			, countries.identifier, country_id
 		FROM contacts
 		JOIN contacts_identifiers ok USING (contact_id)
+		LEFT JOIN contacts_contacts USING (contact_id)
 		JOIN countries USING (country_id)
-		WHERE mother_contact_id = %d AND contact_category_id = %d
+		WHERE contact_category_id = %d
 		AND ok.current = "yes"
+		AND contacts_contacts.main_contact_id = %d
+		AND contacts_contacts.relation_category_id = %d
 		ORDER BY country';
-	$sql = sprintf($sql, wrap_setting('contact_ids[dsb]'), wrap_category_id('contact/federation'));
+	$sql = sprintf($sql
+		, wrap_category_id('contact/federation')
+		, wrap_setting('contact_ids[dsb]')
+		, wrap_category_id('relation/member')
+	);
 	$lv = wrap_db_fetch($sql, 'country_id');
 	if (!$lv) return false;
 	$lv['year'] = intval($vars[0]);

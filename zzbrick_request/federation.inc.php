@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -32,22 +32,25 @@ function mod_tournaments_federation($vars, $settings, $event) {
 			, contact_abbr
 		FROM contacts
 		LEFT JOIN contacts_identifiers ok USING (contact_id)
+		LEFT JOIN contacts_contacts USING (contact_id)
 		LEFT JOIN countries USING (country_id)
 		WHERE (contacts.identifier = "%s" OR ok.identifier = "%s00")
 		AND ok.current = "yes"
-		AND mother_contact_id = %d';
+		AND contacts_contacts.relation_category_id = %d
+		AND contacts_contacts.main_contact_id = %d';
 	$sql = sprintf($sql
 		, wrap_db_escape($vars[2])
 		, wrap_db_escape($vars[2])
+		, wrap_category_id('relation/member')
 		, wrap_setting('contact_ids[dsb]')
 	);
-	$lv = wrap_db_fetch($sql);
-	if (!$lv) return false;
-	if ($vars[2] === $lv['zps_code']) {
-		$path = wrap_path('tournaments_federation', [$vars[0].'/'.$vars[1], $lv['identifier']]);
+	$data = wrap_db_fetch($sql);
+	if (!$data) return false;
+	if ($vars[2] === $data['zps_code']) {
+		$path = wrap_path('tournaments_federation', [$vars[0].'/'.$vars[1], $data['identifier']]);
 		return wrap_redirect($path, 303);
 	}
-	$lv['year'] = intval($vars[0]);
+	$data['year'] = intval($vars[0]);
 
 	$sql = 'SELECT events.event_id, event, events.identifier AS event_identifier
 			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
@@ -93,17 +96,17 @@ function mod_tournaments_federation($vars, $settings, $event) {
 		wrap_setting('website_id'),
 		wrap_db_escape($vars[1]), $vars[0]
 	);
-	$lv['events'] = wrap_db_fetch($sql, 'event_id');
-	if (!$lv['events']) return false;
-	$main_series = reset($lv['events']);
-	$lv['main_series_short'] = $main_series['main_series_short'];
-	$lv['main_event_path'] = $main_series['main_event_path'];
-	$lv['main_series'] = $main_series['main_series'];
-	$lv['turnierform'] = $main_series['turnierform'];
+	$data['events'] = wrap_db_fetch($sql, 'event_id');
+	if (!$data['events']) return false;
+	$main_series = reset($data['events']);
+	$data['main_series_short'] = $main_series['main_series_short'];
+	$data['main_event_path'] = $main_series['main_event_path'];
+	$data['main_series'] = $main_series['main_series'];
+	$data['turnierform'] = $main_series['turnierform'];
 
-	$lv['map'] = false;
-	if ($lv['turnierform'] !== 'e') {
-		$lv['anzahl_teams'] = 0;
+	$data['map'] = false;
+	if ($data['turnierform'] !== 'e') {
+		$data['anzahl_teams'] = 0;
 		$sql = 'SELECT teams.team_id, teams.identifier AS team_identifier
 				, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
 				, teams.event_id, IF(platz_no, platz_no, setzliste_no) AS no
@@ -134,14 +137,14 @@ function mod_tournaments_federation($vars, $settings, $event) {
 			ORDER BY platz_no, setzliste_no, teams.identifier';
 		$sql = sprintf($sql
 			, wrap_category_id('turnierwertungen/bp')
-			, implode(',', array_keys($lv['events']))
-			, $lv['zps_code']
-			, $lv['country_id']
+			, implode(',', array_keys($data['events']))
+			, $data['zps_code']
+			, $data['country_id']
 		);
 		$teams = wrap_db_fetch($sql, ['event_id', 'team_id']);
 		foreach ($teams as $event_id => $event_teams) {
-			$lv['events'][$event_id]['teams'] = $event_teams;
-			$lv['anzahl_teams'] += count($event_teams);
+			$data['events'][$event_id]['teams'] = $event_teams;
+			$data['anzahl_teams'] += count($event_teams);
 		}
 		// Karte nur bei gemeldeten Spielern
 		$sql = 'SELECT COUNT(*)
@@ -157,22 +160,22 @@ function mod_tournaments_federation($vars, $settings, $event) {
 			AND (IF(NOT ISNULL(vereine.identifier), SUBSTRING(vereine.identifier, 1, 1) = "%s", contacts.country_id = %d))
 			AND usergroup_id = %d';
 		$sql = sprintf($sql,
-			implode(',', array_keys($lv['events']))
-			, $lv['zps_code']
-			, $lv['country_id']
+			implode(',', array_keys($data['events']))
+			, $data['zps_code']
+			, $data['country_id']
 			, wrap_id('usergroups', 'spieler')
 		);
-		$lv['karte'] = wrap_db_fetch($sql, '', 'single value');
+		$data['karte'] = wrap_db_fetch($sql, '', 'single value');
 		// keine LV-Teams: keine Karte.
-		if (empty($lv['anzahl_teams'])) $lv['karte'] = '';
+		if (empty($data['anzahl_teams'])) $data['karte'] = '';
 	} else {
-		$lv['anzahl_spieler'] = 0;
+		$data['anzahl_spieler'] = 0;
 		$spielerphotos = false;
 		$event_date_end = false;
-		foreach ($lv['events'] as $event_id => $event) {
+		foreach ($data['events'] as $event_id => $event) {
 			if (!$event_date_end) $event_date_end = $event['date_end'];
 			elseif ($event_date_end < $event['date_end']) $event_date_end = $event['date_end'];
-			$lv['events'][$event_id]['e'] = true;
+			$data['events'][$event_id]['e'] = true;
 			if ($event['spielerphotos']) $spielerphotos = true;
 		}
 		$sql = 'SELECT participation_id, setzliste_no, persons.person_id
@@ -204,9 +207,9 @@ function mod_tournaments_federation($vars, $settings, $event) {
 		';
 		$sql = sprintf($sql
 			, wrap_category_id('turnierwertungen/pkt')
-			, implode(',', array_keys($lv['events']))
-			, $lv['zps_code']
-			, $lv['country_id']
+			, implode(',', array_keys($data['events']))
+			, $data['zps_code']
+			, $data['country_id']
 			, wrap_id('usergroups', 'spieler')
 			, $event_date_end > date('Y-m-d') ? sprintf('%d, ', wrap_category_id('participation-status/verified')) : ''
 			, wrap_category_id('participation-status/participant')
@@ -219,42 +222,48 @@ function mod_tournaments_federation($vars, $settings, $event) {
 			}
 		}
 
-		if ($lv['year'] >= wrap_setting('dem_spielerphotos_aus_mediendb') AND $spielerphotos) {
-			$photos = mf_mediadblink_media([$lv['main_event_path'], 'Website/Spieler'], [], 'person', $player_ids);
+		if ($data['year'] >= wrap_setting('dem_spielerphotos_aus_mediendb') AND $spielerphotos) {
+			$photos = mf_mediadblink_media([$data['main_event_path'], 'Website/Spieler'], [], 'person', $player_ids);
 			foreach ($spieler as $event_id => $event_players) {
 				foreach ($event_players as $participation_id => $player) {
 					if (!array_key_exists($player['person_id'], $photos)) continue;
 					$spieler[$event_id][$participation_id]['bilder'][] = $photos[$player['person_id']];
-					$lv['turnierphotos'] = true;
+					$data['turnierphotos'] = true;
 				}
 			}
 		}
 
 		foreach ($spieler as $event_id => $event_players) {
-			if (!empty($lv['turnierphotos'])) $lv['events'][$event_id]['turnierphotos'] = true;
-			$lv['events'][$event_id]['spieler'] = $event_players;
-			$lv['anzahl_spieler'] += count($event_players);
+			if (!empty($data['turnierphotos'])) $data['events'][$event_id]['turnierphotos'] = true;
+			$data['events'][$event_id]['spieler'] = $event_players;
+			$data['anzahl_spieler'] += count($event_players);
 		}
 		// has organisation member organisations? then show map
-		$sql = 'SELECT COUNT(*) FROM contacts WHERE mother_contact_id = %d';
-		$sql = sprintf($sql, $lv['contact_id']);
+		$sql = 'SELECT COUNT(*)
+			FROM contacts_contacts
+			WHERE main_contact_id = %d
+			AND relation_category_id = %d';
+		$sql = sprintf($sql
+			, $data['contact_id']
+			, wrap_category_id('relation/member')
+		);
 		$sub_orgs = wrap_db_fetch($sql, '', 'single value');
-		if ($sub_orgs) $lv['karte'] = true;
+		if ($sub_orgs) $data['karte'] = true;
 	}
 
-	$bilder = mf_mediadblink_media([$lv['main_event_path'], 'Website/Delegation']);
+	$bilder = mf_mediadblink_media([$data['main_event_path'], 'Website/Delegation']);
 	// @todo add Landesverband below Organisations
-	$lv_filename = strtolower(wrap_filename($lv['contact_abbr']));
+	$data_filename = strtolower(wrap_filename($data['contact_abbr']));
 	foreach ($bilder as $bild) {
 		// @todo change nextline after real linking of LV images
-		if (substr(strtolower($bild['identifier']), -strlen($lv_filename)) !== $lv_filename) continue;
-		$lv['teambild'][$bild['object_id']] = $bild;
+		if (substr(strtolower($bild['identifier']), -strlen($data_filename)) !== $data_filename) continue;
+		$data['teambild'][$bild['object_id']] = $bild;
 	}
 
-	$page['breadcrumbs'][] = ['title' => $lv['country']];
+	$page['breadcrumbs'][] = ['title' => $data['country']];
 	$page['dont_show_h1'] = true;
-	$page['title'] = $lv['main_series_short'].' '.$lv['year'].', Teilnehmer aus '.$lv['country'];
-	$page['text'] = wrap_template('federation', $lv);
+	$page['title'] = $data['main_series_short'].' '.$data['year'].', Teilnehmer aus '.$data['country'];
+	$page['text'] = wrap_template('federation', $data);
 	if (in_array('magnificpopup', wrap_setting('modules')))
 		$page['extra']['magnific_popup'] = true;
 	return $page;

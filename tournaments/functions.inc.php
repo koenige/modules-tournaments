@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -507,49 +507,75 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 			$data = reset($data);
 		return $data;
 	}
-
-	$sql = sprintf('SELECT organisationen.contact_id
-			, countries.country
-			, IFNULL(landesverbaende.identifier, landesverbaende_rueckwaerts.identifier) AS federation_identifier
-			, IFNULL(landesverbaende.contact_abbr, landesverbaende_rueckwaerts.contact_abbr) AS federation_abbr
-			, v_ok.identifier AS zps_code
+	
+	// get federations
+	$sql = 'SELECT contacts.contact_id AS federation_contact_id
+			, SUBSTRING(contacts_identifiers.identifier, 1, 1) AS federation_code
+			, contacts.identifier AS federation_identifier
+			, contact_abbr AS federation_abbr
+			, country_id, country
 			, regionalgruppe
-		FROM contacts organisationen
-		LEFT JOIN contacts_identifiers v_ok
-			ON v_ok.contact_id = organisationen.contact_id
-			AND v_ok.current = "yes"
-		LEFT JOIN contacts_identifiers lv_ok
-			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
-			AND lv_ok.current = "yes"
-		LEFT JOIN contacts landesverbaende
-			ON lv_ok.contact_id = landesverbaende.contact_id
-			AND landesverbaende.mother_contact_id = %d
-		LEFT JOIN countries
-			ON IFNULL(landesverbaende.country_id, organisationen.country_id) 
-				= countries.country_id
-		LEFT JOIN contacts landesverbaende_rueckwaerts
-			ON countries.country_id = landesverbaende_rueckwaerts.country_id
-			AND landesverbaende_rueckwaerts.contact_category_id = %d
-			AND landesverbaende_rueckwaerts.mother_contact_id = %d
+	    FROM contacts
+	    LEFT JOIN contacts_contacts USING (contact_id)
+	    LEFT JOIN countries USING (country_id)
 		LEFT JOIN regionalgruppen
-			ON regionalgruppen.federation_contact_id = landesverbaende.contact_id
-		WHERE organisationen.contact_id IN (%s)
-	', wrap_setting('contact_ids[dsb]')
-		, wrap_category_id('contact/federation')
+			ON regionalgruppen.federation_contact_id = contacts.contact_id
+		LEFT JOIN contacts_identifiers
+			ON contacts_identifiers.contact_id = contacts.contact_id
+			AND contacts_identifiers.current = "yes"
+	    WHERE contacts_contacts.main_contact_id = %d
+	    AND contacts_contacts.relation_category_id = %d
+	    AND contacts.contact_category_id = %d';
+	$sql = sprintf($sql
 		, wrap_setting('contact_ids[dsb]')
+		, wrap_category_id('relation/member')
+		, wrap_category_id('contact/federation')
+	);
+	$federations = wrap_db_fetch($sql, 'federation_contact_id');
+	$federations_by_zps = [];
+	$federations_by_country = [];
+	foreach ($federations as $federation) {
+		$federations_by_zps[$federation['federation_code']] = $federation;
+		$federations_by_country[$federation['country_id']] = $federation;
+	}
+
+	// get country and federation per contact
+	$sql = 'SELECT contacts.contact_id
+			, country_id
+			, contacts_identifiers.identifier AS zps_code
+	    FROM contacts
+		LEFT JOIN contacts_identifiers
+			ON contacts_identifiers.contact_id = contacts.contact_id
+			AND contacts_identifiers.current = "yes"
+	    WHERE contacts.contact_id IN (%s)';
+	$sql = sprintf($sql
 		, implode(', ', $clubs)
 	);
-	$clubdata = wrap_db_fetch($sql, 'contact_id');
+	$contacts = wrap_db_fetch($sql, 'contact_id');
+
+	// merge contacts and federations
+	foreach ($contacts as $contact_id => $contact) {
+		$fed_code = $contact['zps_code'] ? substr($contact['zps_code'], 0, 1) : '';
+		if ($fed_code AND array_key_exists($fed_code, $federations_by_zps)) {
+			$contacts[$contact_id] = array_merge($contact, $federations_by_zps[$fed_code]);
+		} elseif ($contact['country_id'] AND array_key_exists($contact['country_id'], $federations_by_country)) {
+			$contacts[$contact_id] = array_merge($contact, $federations_by_country[$contact['country_id']]);
+		} else {
+			wrap_error(wrap_text('Unable to get federation for contact ID %d', ['values' => $contact_id]));
+		}
+		unset($contacts[$contact_id]['contact_id']);
+	}
+
+	// merge with $data
 	foreach ($clubs as $id => $contact_id) {
-		unset($clubdata[$contact_id]['contact_id']);
 		if ($mode === 'multi') {
 			$id = explode('-', $id);
-			$data[$id[0]][$id[1]] += $clubdata[$contact_id];
+			$data[$id[0]][$id[1]] += $contacts[$contact_id];
 		} else {
-			foreach (array_keys($clubdata[$contact_id]) as $field) {
+			foreach (array_keys($contacts[$contact_id]) as $field) {
 				if (empty($data[$id][$field])) unset($data[$id][$field]);
 			}
-			$data[$id] += $clubdata[$contact_id];
+			$data[$id] += $contacts[$contact_id];
 		}
 	}
 	if ($mode === 'single')

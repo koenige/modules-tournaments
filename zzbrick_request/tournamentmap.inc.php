@@ -24,33 +24,16 @@
 function mod_tournaments_tournamentmap($vars, $settings, $event) {
 	if (str_ends_with(end($vars), '.geojson'))
 		return mod_tournaments_tournamentmap_json($vars);
-	
-	$federation = count($vars) === 3 ? array_pop($vars) : '';
 
+	$federation = count($vars) === 3 ? array_pop($vars) : '';
 	if ($federation) {
-		$sql = 'SELECT contact_id
-				, contact, identifier AS federation_identifier, contact_short
-				, country_id
-			FROM contacts
-			WHERE identifier = "%s"
-			AND mother_contact_id = %d';
-		$sql = sprintf($sql
-			, wrap_db_escape($federation)
-			, wrap_setting('contact_ids[dsb]')
-		);
-		$federation = wrap_db_fetch($sql);
-		if (!$federation) return false;
-		$contact_ids[] = $federation['contact_id'];
-		$sql = 'SELECT contact_id
-			FROM contacts
-			WHERE mother_contact_id IN (%s)
-		';
-		$contact_ids = wrap_db_children($contact_ids, $sql);
+		$contact_ids = mod_tournaments_tournamentmap_federation($federation);
 		// no member organisations?
 		if (count($contact_ids) === 1) return false;
+		$event = array_merge($event, reset($contact_ids));
 	}
 
-	// gibt es Teilnehmer?
+	// do we have players?
 	$sql = 'SELECT COUNT(*)
 		FROM participations
 		LEFT JOIN events USING (event_id)
@@ -70,18 +53,15 @@ function mod_tournaments_tournamentmap($vars, $settings, $event) {
 		wrap_id('usergroups', 'spieler'),
 		($federation ? sprintf(
 			'AND (contacts.contact_id IN (%s) OR country_id = %d)',
-			implode(',', $contact_ids), $federation['country_id']) : '')
+			implode(',', array_keys($contact_ids)), $event['country_id']) : '')
 	);
-	$tn = wrap_db_fetch($sql, '', 'single value');
-	if (!$tn) return false;
+	$players = wrap_db_fetch($sql, '', 'single value');
+	if (!$players) return false;
 	
-	if ($federation)
-		$event = array_merge($event, $federation);
-
 	$page['head'] = wrap_template('clubs-map-head');
 
 	$page['title'] = 'Herkunftsorte der Spieler: '.$event['event'].' '.$event['year'];
-	if ($federation) $page['title'] .= ' – '.$federation['contact'];
+	if ($federation) $page['title'] .= ' – '.$event['contact'];
 	$page['extra']['id'] = 'map';
 	$page['text'] = wrap_template('tournamentmap', $event);
 	$page['dont_show_h1'] = true;
@@ -89,40 +69,31 @@ function mod_tournaments_tournamentmap($vars, $settings, $event) {
 		$page['breadcrumbs'][]['title'] = 'Herkunftsorte';
 	} else {
 		$page['breadcrumbs'][] = '<a href="../">Herkunftsorte</a>';
-		$page['breadcrumbs'][]['title'] = $federation['contact'];
+		$page['breadcrumbs'][]['title'] = $event['contact'];
 	}
 	return $page;
 }
 
 function mod_tournaments_tournamentmap_json($params) {
-	$federation = count($params) === 3 ? substr(array_pop($params), 0, -8) : '';
+	$last_param = array_pop($params);
+	if (str_ends_with($last_param, '.geojson')) $last_param = substr($last_param, 0, -8);
+	$params[] = $last_param;
+	$federation = count($params) === 3 ? array_pop($params) : '';
 	if (count($params) !== 2) return false;
-
+	
 	if ($federation) {
-		$sql = 'SELECT contact_id
-			FROM contacts
-			WHERE identifier = "%s"';
-		$sql = sprintf($sql, wrap_db_escape($federation));
-		$contact_ids = wrap_db_fetch($sql);
-		$sql = 'SELECT contact_id
-			FROM contacts
-			WHERE mother_contact_id IN (%s)
-		';
-		$contact_ids = wrap_db_children($contact_ids, $sql);
+		$contact_ids = mod_tournaments_tournamentmap_federation($federation);
 		if (!$contact_ids) return false;
-		
-		$sql = 'SELECT contact_id FROM contacts
-			WHERE contact_id IN (%s)';
-		$sql = sprintf($sql, implode(',', $contact_ids));
-		$contact_ids = wrap_db_fetch($sql, 'contact_id', 'single value');
 	}
 
+	// @todo fix query, some schools might have more than one address, won’t be shown here
 	$sql = 'SELECT contacts.contact_id
 			, contacts.contact, longitude, latitude
 			, ok.identifier AS zps_code, contacts.identifier
 			, (SELECT identification FROM contactdetails
 				WHERE contactdetails.contact_id = contacts.contact_id
-				AND provider_category_id = %d) AS website
+				AND provider_category_id = %d
+				LIMIT 1) AS website
 		FROM contacts
 		LEFT JOIN contacts_contacts
 			ON contacts_contacts.main_contact_id = contacts.contact_id
@@ -131,16 +102,19 @@ function mod_tournaments_tournamentmap_json($params) {
 		LEFT JOIN contacts places
 			ON contacts_contacts.contact_id = places.contact_id
 		LEFT JOIN addresses
-			ON places.contact_id = addresses.contact_id
+			ON IFNULL(places.contact_id, contacts.contact_id) = addresses.contact_id
 		LEFT JOIN contacts_identifiers ok
 			ON ok.contact_id = contacts.contact_id AND current = "yes"
 			AND identifier_category_id = %d
+		LEFT JOIN categories
+			ON contacts.contact_category_id = categories.category_id
 		WHERE NOT ISNULL(contacts.contact)
+		AND categories.parameters LIKE "%%&organisation=1%%"
 		ORDER BY ok.identifier
 	';
 	$sql = sprintf($sql
-		, wrap_category_id('relation/venue')
 		, wrap_category_id('provider/website')
+		, wrap_category_id('relation/venue')
 		, wrap_category_id('identifiers/zps')
 	);
 	$organisationen = wrap_db_fetch($sql, 'contact_id');
@@ -185,7 +159,11 @@ function mod_tournaments_tournamentmap_json($params) {
 		wrap_category_id('identifiers/fide-id'),
 		wrap_db_escape($params[1]), $params[0],
 		wrap_id('usergroups', 'spieler'),
-		$federation ? sprintf(' AND (participations.club_contact_id IN (%s) OR teams.club_contact_id IN (%s)) ', implode(',', $contact_ids), implode(',', $contact_ids)) : ''
+		$federation ? sprintf(
+			' AND (participations.club_contact_id IN (%s) OR teams.club_contact_id IN (%s)) '
+			, implode(',', array_keys($contact_ids))
+			, implode(',', array_keys($contact_ids))
+		) : ''
 	);
 	$spieler = wrap_db_fetch($sql, 'tt_id');
 
@@ -237,4 +215,36 @@ function mod_tournaments_tournamentmap_json($params) {
 	$page['text'] = wrap_template('tournamentmap-json', $data);
 	$page['content_type'] = 'js';
 	return $page;
+}
+
+/**
+ * get contact IDs for a federation
+ *
+ * @param string $federation
+ * @return array
+ */
+function mod_tournaments_tournamentmap_federation($federation) {
+	$sql = 'SELECT contact_id
+			, contact, identifier AS federation_identifier, contact_short
+			, country_id
+		FROM contacts
+		LEFT JOIN contacts_contacts USING (contact_id)
+		WHERE identifier = "%s"
+		AND contacts_contacts.relation_category_id = %d
+		AND contacts_contacts.main_contact_id = %d';
+	$sql = sprintf($sql
+		, wrap_db_escape($federation)
+		, wrap_category_id('relation/member')
+		, wrap_setting('contact_ids[dsb]')
+	);
+	$federation = wrap_db_fetch($sql);
+	if (!$federation) return [];
+
+	$sql = 'SELECT contact_id
+		FROM contacts_contacts
+		WHERE main_contact_id IN (%s)
+	';
+	$contact_ids = wrap_db_children([$federation['contact_id'] => $federation['contact_id']], $sql);
+	$contact_ids[$federation['contact_id']] = $federation;
+	return $contact_ids;
 }
