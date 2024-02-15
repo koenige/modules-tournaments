@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2008, 2012, 2014-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2008, 2012, 2014-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -126,6 +126,8 @@ function mod_tournaments_tournamentmap_json($params) {
 		FROM contacts
 		LEFT JOIN contacts_contacts
 			ON contacts_contacts.main_contact_id = contacts.contact_id
+			AND contacts_contacts.relation_category_id = %d
+			AND contacts_contacts.published = "yes"
 		LEFT JOIN contacts places
 			ON contacts_contacts.contact_id = places.contact_id
 		LEFT JOIN addresses
@@ -134,10 +136,10 @@ function mod_tournaments_tournamentmap_json($params) {
 			ON ok.contact_id = contacts.contact_id AND current = "yes"
 			AND identifier_category_id = %d
 		WHERE NOT ISNULL(contacts.contact)
-		AND contacts_contacts.published = "yes"
 		ORDER BY ok.identifier
 	';
 	$sql = sprintf($sql
+		, wrap_category_id('relation/venue')
 		, wrap_category_id('provider/website')
 		, wrap_category_id('identifiers/zps')
 	);

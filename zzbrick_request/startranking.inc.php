@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -98,6 +98,7 @@ function mod_tournaments_startranking_single($event) {
 			ON participations.club_contact_id = organisationen.contact_id
 		LEFT JOIN contacts_contacts
 			ON contacts_contacts.main_contact_id = organisationen.contact_id
+			AND contacts_contacts.relation_category_id = %d
 			AND contacts_contacts.published = "yes"
 		LEFT JOIN contacts places
 			ON contacts_contacts.contact_id = places.contact_id
@@ -115,6 +116,7 @@ function mod_tournaments_startranking_single($event) {
 		AND status_category_id IN (%s%d, %d, %d)
 		ORDER BY setzliste_no, IFNULL(t_dwz, t_elo) DESC, t_elo DESC, t_nachname, t_vorname';
 	$sql = sprintf($sql
+		, wrap_category_id('relation/venue')
 		, $event['event_id']
 		, wrap_id('usergroups', 'spieler')
 		, ($event['date_end'] >= date('Y-m-d')) ? sprintf('%d, ', wrap_category_id('participation-status/verified')) : ''
@@ -160,6 +162,7 @@ function mod_tournaments_startranking_team($event) {
 			ON teams.club_contact_id = organisationen.contact_id
 		LEFT JOIN contacts_contacts
 			ON contacts_contacts.main_contact_id = organisationen.contact_id
+			AND contacts_contacts.relation_category_id = %d
 			AND contacts_contacts.published = "yes"
 		LEFT JOIN contacts places
 			ON contacts_contacts.contact_id = places.contact_id
@@ -175,6 +178,7 @@ function mod_tournaments_startranking_team($event) {
 		AND spielfrei = "nein"
 		ORDER BY setzliste_no, place, team';
 	$sql = sprintf($sql
+		, wrap_category_id('relation/venue')
 		, $event['event_id']
 	);
 	// @todo Klären, was passiert wenn mehr als 1 Ort zu Verein in Datenbank! (Reihenfolge-Feld einführen)

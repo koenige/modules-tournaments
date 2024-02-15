@@ -451,6 +451,7 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 			ON teams.club_contact_id = organisationen.contact_id
 		LEFT JOIN contacts_contacts
 			ON contacts_contacts.contact_id = organisationen.contact_id
+			AND contacts_contacts.relation_category_id = %d
 			AND contacts_contacts.published = "yes"
 		LEFT JOIN contacts places
 			ON contacts_contacts.contact_id = places.contact_id
@@ -470,6 +471,7 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 		ORDER BY platz_no, setzliste_no, place, team, team_no
 	';
 	$sql = sprintf($sql
+		, wrap_category_id('relation/venue')
 		, $event['round_no']
 		, $event['event_id']
 	);

@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -88,12 +88,15 @@ function mod_tournaments_team($vars, $settings, $data) {
 			, place, address, postcode
 		FROM contacts
 		LEFT JOIN addresses USING (contact_id)
-		LEFT JOIN contacts_contacts
-			ON contacts_contacts.contact_id = contacts.contact_id
+		LEFT JOIN contacts_contacts USING (contact_id)
 		WHERE contacts_contacts.main_contact_id = %d
 		AND contacts_contacts.published = "yes"
+		AND contacts_contacts.relation_category_id = %d
 		ORDER BY contacts.contact_id LIMIT 1';
-	$sql = sprintf($sql, $data['contact_id']);
+	$sql = sprintf($sql
+		, $data['contact_id']
+		, wrap_category_id('relation/venue')
+	);
 	$data = array_merge($data, wrap_db_fetch($sql));
 
 	$data['bilder'] = mf_mediadblink_media([$data['event_identifier'], 'Website'], [], 'group', $data['team_id']);
