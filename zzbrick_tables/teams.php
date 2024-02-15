@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -49,7 +49,7 @@ $zz['fields'][3]['search'] = 'vereine.contact';
 $zz['fields'][3]['character_set'] = 'utf8';
 $zz['fields'][3]['sql_fieldnames_ignore'] = ['contacts.contact_id'];
 $zz['fields'][3]['hide_in_list'] = true;
-$zz['fields'][3]['add_details'] = '/intern/db/organisationen';
+$zz['fields'][3]['add_details'] = ['area' => 'contacts_general'];
 
 $zz['fields'][4]['field_name'] = 'team';
 $zz['fields'][4]['append_next'] = true;
