@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2016-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -86,7 +86,8 @@ function mod_tournaments_make_filemove() {
 	wrap_setting('syndication_timeout_ms', 2500);
 
 	foreach ($tournaments as $tournament) {
-		parse_str($tournament['parameter'], $tournament['parameter']);
+		if ($tournament['parameter'])
+			parse_str($tournament['parameter'], $tournament['parameter']);
 
 		// move tournament info to other server already before tournament starts
 		if (!empty($tournament['parameter']['ftp_other'])) {
