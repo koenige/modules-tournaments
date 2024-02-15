@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -211,4 +211,29 @@ function mf_tournaments_series_events($event_id) {
 	$sql = sprintf($sql, $event_id);
 	$event_ids = wrap_db_fetch($sql, '_dummy_', 'single value');
 	return $event_ids;
+}
+
+/**
+ * get all federations
+ *
+ * @return array
+ */
+function mf_tournaments_federations() {
+	$sql = 'SELECT contact_id, contact, country
+			, countries.identifier, country_id
+		FROM contacts
+		JOIN contacts_identifiers ok USING (contact_id)
+		LEFT JOIN contacts_contacts USING (contact_id)
+		JOIN countries USING (country_id)
+		WHERE contact_category_id = %d
+		AND ok.current = "yes"
+		AND contacts_contacts.main_contact_id = %d
+		AND contacts_contacts.relation_category_id = %d
+		ORDER BY country';
+	$sql = sprintf($sql
+		, wrap_category_id('contact/federation')
+		, wrap_setting('contact_ids[dsb]')
+		, wrap_category_id('relation/member')
+	);
+	return wrap_db_fetch($sql, 'country_id');
 }

@@ -207,28 +207,3 @@ function mod_tournaments_federations($vars) {
 	$page['text'] = wrap_template('federations', $lv);
 	return $page;
 }
-
-/**
- * get all federations
- *
- * @return array
- */
-function mf_tournaments_federations() {
-	$sql = 'SELECT contact_id, contact, country
-			, countries.identifier, country_id
-		FROM contacts
-		JOIN contacts_identifiers ok USING (contact_id)
-		LEFT JOIN contacts_contacts USING (contact_id)
-		JOIN countries USING (country_id)
-		WHERE contact_category_id = %d
-		AND ok.current = "yes"
-		AND contacts_contacts.main_contact_id = %d
-		AND contacts_contacts.relation_category_id = %d
-		ORDER BY country';
-	$sql = sprintf($sql
-		, wrap_category_id('contact/federation')
-		, wrap_setting('contact_ids[dsb]')
-		, wrap_category_id('relation/member')
-	);
-	return wrap_db_fetch($sql, 'country_id');
-}
