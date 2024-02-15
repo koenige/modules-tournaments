@@ -216,17 +216,19 @@ function mf_tournaments_series_events($event_id) {
 /**
  * get all federations
  *
+ * @string $id_field_name (optional)
  * @return array
  */
-function mf_tournaments_federations() {
-	$sql = 'SELECT contact_id, contact, country
-			, countries.identifier, country_id
+function mf_tournaments_federations($id_field_name = 'country_id') {
+	$sql = 'SELECT contact_id, contact, contact_abbr
+			, country_id, country, countries.identifier
+			, SUBSTRING(contacts_identifiers.identifier, 1, 1) AS code
 		FROM contacts
-		JOIN contacts_identifiers ok USING (contact_id)
+		JOIN contacts_identifiers USING (contact_id)
 		LEFT JOIN contacts_contacts USING (contact_id)
 		JOIN countries USING (country_id)
 		WHERE contact_category_id = %d
-		AND ok.current = "yes"
+		AND contacts_identifiers.current = "yes"
 		AND contacts_contacts.main_contact_id = %d
 		AND contacts_contacts.relation_category_id = %d
 		ORDER BY country';
@@ -235,5 +237,5 @@ function mf_tournaments_federations() {
 		, wrap_setting('contact_ids[dsb]')
 		, wrap_category_id('relation/member')
 	);
-	return wrap_db_fetch($sql, 'country_id');
+	return wrap_db_fetch($sql, $id_field_name);
 }
