@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2014, 2016-2017, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2014, 2016-2017, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -72,10 +72,9 @@ function mod_tournaments_get_swisschess($vars) {
 			AND v_ok.current = "yes"
 		LEFT JOIN contacts_identifiers lv_ok
 			ON CONCAT(SUBSTRING(v_ok.identifier, 1, 1), "00") = lv_ok.identifier
+			AND lv_ok.current = "yes"
 		LEFT JOIN contacts landesverbaende
 			ON lv_ok.contact_id = landesverbaende.contact_id
-			AND lv_ok.current = "yes"
-			AND landesverbaende.mother_contact_id = %d
 		WHERE events.identifier = "%d/%s"
 		AND usergroup_id = %d
 		AND %s
@@ -85,7 +84,6 @@ function mod_tournaments_get_swisschess($vars) {
 		, wrap_category_id('identifiers/zps')
 		, wrap_category_id('identifiers/fide-id')
 		, wrap_category_id('identifiers/pkz')
-		, wrap_setting('contact_ids[dsb]')
 		, $vars[0], wrap_db_escape($vars[1])
 		, wrap_id('usergroups', 'spieler')
 		, $where
