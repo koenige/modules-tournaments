@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -36,6 +36,7 @@ function mod_tournaments_placeholder_team($brick) {
 			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 			, IF(LENGTH(main_series.path) > 7, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "/", SUBSTRING_INDEX(main_series.path, "/", -1)), NULL) AS main_event_path
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
+			, turnierformen.parameters AS tournament_form_parameters
 			, club_contact_id AS contact_id, clubs.contact
 			, clubs.identifier AS contact_identifier
 			, IF(tournaments.zimmerbuchung = "ja", 1, NULL) AS zimmerbuchung
@@ -75,6 +76,8 @@ function mod_tournaments_placeholder_team($brick) {
 		parse_str($team['parameters'], $parameters);
 		$team += $parameters;
 	}
+	if ($team['tournament_form_parameters'])
+		parse_str($team['tournament_form_parameters'], $team['tournament_form_parameters']);
 
 	if (!empty($brick['local_settings']['internal']) AND empty($brick['local_settings']['no_team_breadcrumbs'])) {
 		$bc_template = '<a href="'.wrap_setting('events_internal_path').'/%s/">%s</a>';

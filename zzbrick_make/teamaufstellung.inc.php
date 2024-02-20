@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016-2017, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2016-2017, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -34,22 +34,18 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 				WHERE eventtexts.event_id = tournaments.event_id
 				AND eventtexts.eventtext_category_id = %d
 			) AS hinweis_aufstellung
-			, turnierformen.parameters AS turnierform_parameter
 		FROM teams
 		LEFT JOIN contacts organisationen
 			ON teams.club_contact_id = organisationen.contact_id
 		LEFT JOIN contacts_identifiers v_ok
 			ON v_ok.contact_id = organisationen.contact_id AND v_ok.current = "yes"
 		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN categories turnierformen
-			ON tournaments.turnierform_category_id = turnierformen.category_id
 		WHERE teams.team_id = %d';
 	$sql = sprintf($sql
 		, wrap_category_id('event-texts/note-lineup')
 		, $data['team_id']
 	);
 	$data = array_merge($data, wrap_db_fetch($sql));
-	parse_str($data['turnierform_parameter'], $data['turnierform_parameter']);
 
 	$data['geschlecht'] = explode(',', strtoupper($data['geschlecht']));
 
@@ -178,7 +174,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 						elseif ($postdata['geschlecht'] === 'w')
 							$data['post_geschlecht_w'] = true;
 						// Keinen Spieler gefunden
-						if (!empty($data['turnierform_parameter']['mitglied'])) {
+						if (!empty($data['tournament_form_parameters']['mitglied'])) {
 							// DSB-Mitgliedschaft erforderlich
 							$data['neu_spieler_nicht_gefunden'] = true;
 						} elseif (!empty($postdata['date_of_birth']) AND !zz_check_date($postdata['date_of_birth'])) {

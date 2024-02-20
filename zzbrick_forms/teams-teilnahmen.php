@@ -9,7 +9,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -98,15 +98,7 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 	AND empty($_GET['insert']) AND empty($_GET['update']) AND empty($_GET['noupdate'])
 	AND (empty($_GET['add']['frei']))) {
 
-	// Test, um welche Organisationsform es sich handelt
-	$sql = 'SELECT categories.path
-		FROM contacts
-		LEFT JOIN categories
-			ON contacts.contact_category_id = categories.category_id
-		WHERE contact_id = %d';
-	$sql = sprintf($sql, $brick['data']['contact_id']);
-	$org = wrap_db_fetch($sql);
-	if (!brick_access_rights('Webmaster') AND $org['path'] === 'verein') {
+	if (!brick_access_rights('Webmaster') AND !empty($data['tournament_form_parameters']['mitglied'])) {
 		// Vereine haben Mitglieder, beschränke auf diese Mitglieder
 		// Erlaube keine doppelten Einträge bei demselben Termin aus derselben Gruppe!
 		$zz['fields'][2]['if']['insert']['sql'] = sprintf('SELECT CONCAT(ZPS, "-", Mgl_Nr), Spielername
