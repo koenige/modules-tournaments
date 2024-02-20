@@ -290,10 +290,13 @@ $zz['fields'][25]['unless']['export_mode']['subselect']['concat_fields'] = ' ';
 $zz['fields'][25]['if']['export_mode']['subselect']['concat_fields'] = ', ';
 $zz['fields'][25]['unless']['export_mode']['subselect']['concat_rows'] = '<br>'; 
 $zz['fields'][25]['if']['export_mode']['subselect']['concat_rows'] = '; '; 
-$zz['fields'][25]['unless']['export_mode']['subselect']['field_prefix'][0] = '<a href="/intern/personen/'; 
-$zz['fields'][25]['unless']['export_mode']['subselect']['field_suffix'][0] = '/">';
-$zz['fields'][25]['unless']['export_mode']['subselect']['field_suffix'][1] = '</a>, <br>';
+$zz['fields'][25]['unless']['export_mode']['subselect']['field_link'][0] = [
+	'area' => 'contacts_profile[person]',
+	'fields' => ['identifier']
+];
+$zz['fields'][25]['unless']['export_mode']['subselect']['field_suffix'][1] = '<br>';
 $zz['fields'][25]['unless']['export_mode']['subselect']['field_suffix'][2] = '<br>';
+$zz['fields'][25]['subselect']['sql_ignore'] = ['identifier'];
 
 $zz['fields'][26]['field_name'] = 'spielfrei';
 $zz['fields'][26]['type'] = 'select';
