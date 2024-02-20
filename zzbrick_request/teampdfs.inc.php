@@ -107,7 +107,7 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->Ln();
 		$pdf->write(19, $team['team'].' '.$team['team_no']);
 		$pdf->setFont('DejaVu', '', $settings['font_size']);
-		if ($settings['show_federation']) {
+		if ($settings['show_federation'] AND !empty($team['country'])) {
 			$pdf->write(19, ' ('
 				.$team['country']
 				.($team['regionalgruppe'] ? ', Regionalgruppe '.$team['regionalgruppe'] : '').')');
