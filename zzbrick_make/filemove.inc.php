@@ -243,7 +243,7 @@ function mod_tournaments_make_filemove_bulletin_pgn($tournament) {
 	for ($i = 1; $i <= $tournament['current_round']['runde_no']; $i++) {
 		$source = sprintf($s_filename, $i);
 		$dest = $tournament['final_dir'].'/'.$i.'.pgn';
-		$success = wrap_watchdog($source, $dest, [['log_destination'] = true]);
+		$success = wrap_watchdog($source, $dest, ['log_destination' => true]);
 		if ($success) {
 			wrap_log(sprintf('filemove watchdog bulletin %s %s => %s'
 				, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
@@ -304,7 +304,7 @@ function mod_tournaments_make_filemove_ftp_other($tournament, $ftp_other) {
 		$source = trim($other['source']);
 		if (substr($source, 0, 1) === '/') $source = 'https://'.$tournament['host_name'].$source;
 		$dest = sprintf(trim($other['dest']), $tournament['path'], $tournament['path']);
-		$success = wrap_watchdog($source, $dest, [['log_destination'] = false]);
+		$success = wrap_watchdog($source, $dest, ['log_destination' => false]);
 		if ($success) {
 			wrap_log(sprintf('filemove watchdog ftp_other %s %s => %s'
 				, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
