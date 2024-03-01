@@ -135,7 +135,8 @@ function mod_tournaments_make_filemove_queue($tournament, $parameter = []) {
 	}
 	$params = [];
 	$params['destination'] = ['timestamp'];
-	$success = wrap_watchdog($source, $tournament['queue_dir'].'/games-%s.pgn', $params, true);
+	$params['action'] = 'delete';
+	$success = wrap_watchdog($source, $tournament['queue_dir'].'/games-%s.pgn', $params);
 	if ($success) {
 		wrap_log(sprintf('filemove watchdog queue-in %s %s => %s'
 			, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
@@ -238,12 +239,11 @@ function mod_tournaments_make_filemove_bulletin_pgn($tournament) {
 	$bulletin_dir = wrap_setting('media_folder').wrap_setting('pgn_bulletin_folder').'/'.$tournament['main_series'];
 	if (!file_exists($bulletin_dir)) return;
 
-	$params['log_destination'] = true;
 	$s_filename = sprintf('%s/%s.pgn', $bulletin_dir, $tournament['parameter']['pgn_bulletin_file_template']);
 	for ($i = 1; $i <= $tournament['current_round']['runde_no']; $i++) {
 		$source = sprintf($s_filename, $i);
 		$dest = $tournament['final_dir'].'/'.$i.'.pgn';
-		$success = wrap_watchdog($source, $dest, $params, false);
+		$success = wrap_watchdog($source, $dest, [['log_destination'] = true]);
 		if ($success) {
 			wrap_log(sprintf('filemove watchdog bulletin %s %s => %s'
 				, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
@@ -275,7 +275,7 @@ function mod_tournaments_make_filemove_ftp_pgn($tournament, $ftp_paths) {
 			);
 			$round = sprintf('%02d', $i);
 			$dest = sprintf($ftp_pgn, $tournament['path'], $round);
-			$success = wrap_watchdog($source, $dest, $params, false);
+			$success = wrap_watchdog($source, $dest, $params);
 			if ($success) {
 				wrap_log(sprintf('filemove watchdog ftp_pgn %s %s => %s'
 					, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
@@ -299,13 +299,12 @@ function mod_tournaments_make_filemove_ftp_pgn($tournament, $ftp_paths) {
  */
 function mod_tournaments_make_filemove_ftp_other($tournament, $ftp_other) {
 	wrap_setting('cache', true); // file requests might change cache to false
-	$params['log_destination'] = false;
 
 	foreach ($ftp_other as $other) {
 		$source = trim($other['source']);
 		if (substr($source, 0, 1) === '/') $source = 'https://'.$tournament['host_name'].$source;
 		$dest = sprintf(trim($other['dest']), $tournament['path'], $tournament['path']);
-		$success = wrap_watchdog($source, $dest, $params, false);
+		$success = wrap_watchdog($source, $dest, [['log_destination'] = false]);
 		if ($success) {
 			wrap_log(sprintf('filemove watchdog ftp_other %s %s => %s'
 				, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
