@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2021, 2023 Gustaf Mossakowski
+ * @copyright Copyright © 2021, 2023-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -37,7 +37,7 @@ function mod_tournaments_tournamentnews($params, $settings) {
 		return $page;
 	}
 
-	require_once wrap_setting('modules_dir').'/news/zzbrick_request_get/articledata.inc.php';
+	wrap_include_files('zzbrick_request_get/articledata', 'news');
 	$data = mod_news_get_articledata($ids, $settings);
 	
 	$page['text'] = wrap_template('tournamentnews', $data);
