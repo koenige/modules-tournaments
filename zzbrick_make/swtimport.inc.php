@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -445,6 +445,7 @@ function mod_tournaments_make_swtimport_delete($ids, $event_id, $type) {
 function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $import) {
 	wrap_include_files('zzform/editing', 'custom');
 	wrap_include_files('custom/persons', 'custom');
+	wrap_include_files('zzform/batch', 'contacts');
 	
 	$ids['person_spielfrei'] = [];
 	$ids['person'] = [];
@@ -565,7 +566,10 @@ function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $im
 			$person['last_name'] = trim($name[0]);
 			$person['date_of_birth'] = trim(substr($spieler[2008], 0, 4));
 			$person['sex'] = (strtolower($spieler[2013]) === 'w') ? 'female' : 'male';
-			list($person_id, $contact_id) = my_person_add($person);
+			$contact_id = mf_contacts_add_person($person);
+			$sql = 'SELECT person_id FROM contacts WHERE contact_id = %d';
+			$sql = sprintf($sql, $contact_id);
+			$person_id = wrap_db_fetch($sql, '', 'single value');
 
 			$kennungen = [];
 			if ($spieler[2011] AND $spieler[2011] !== '***') {
