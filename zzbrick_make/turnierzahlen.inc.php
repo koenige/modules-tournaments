@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -91,8 +91,9 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 	$rating_systems = ['dwz', 'elo'];
 
 	if ($contact_ids) {
-		$ratings['DSB'] = mod_tournaments_make_turnierzahlen_dsb($contact_ids);
-		$ratings['FIDE'] = mod_tournaments_make_turnierzahlen_fide($contact_ids);
+		wrap_package_activate('ratings');
+		$ratings['DSB'] = mf_ratings_rating_dsb($contact_ids);
+		$ratings['FIDE'] = mf_ratings_rating_fide($contact_ids);
 	}
 
 	wrap_setting('log_username', 'Turnierzahlen '.implode('/', $vars));
@@ -171,51 +172,3 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 	$page['text'] = wrap_template('turnierzahlen', $data);
 	return $page;
 }
-
-/**
- * get ratings for German Chess Federation (DSB) 
- *
- * @param array $contact_ids
- * @return array
- */
-function mod_tournaments_make_turnierzahlen_dsb($contact_ids) {
-	$sql = 'SELECT contact_id
-			, DWZ AS dwz
-			, FIDE_Elo AS elo
-			, REPLACE(Spielername, ",", ", ") AS contact_last_first
-		FROM dwz_spieler
-		LEFT JOIN contacts_identifiers
-			ON contacts_identifiers.identifier = CONCAT(ZPS, "-", Mgl_Nr)
-			AND contacts_identifiers.current = "yes"
-			AND contacts_identifiers.identifier_category_id = %d
-		WHERE contact_id IN (%s)';
-	$sql = sprintf($sql
-		, wrap_category_id('identifiers/zps')
-		, implode(',', $contact_ids)
-	);
-	return wrap_db_fetch($sql, 'contact_id');
-}
-
-/**
- * get ratings for FIDE
- *
- * @param array $contact_ids
- * @return array
- */
-function mod_tournaments_make_turnierzahlen_fide($contact_ids) {
-	$sql = 'SELECT contact_id
-			, standard_rating AS elo
-			, player AS contact_last_first
-		FROM fide_players
-		LEFT JOIN contacts_identifiers
-			ON contacts_identifiers.identifier = player_id
-			AND contacts_identifiers.current = "yes"
-			AND contacts_identifiers.identifier_category_id = %d
-		WHERE contact_id IN (%s)';
-	$sql = sprintf($sql
-		, wrap_category_id('identifiers/fide-id')
-		, implode(',', $contact_ids)
-	);
-	return wrap_db_fetch($sql, 'contact_id');
-}
-
