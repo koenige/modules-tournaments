@@ -125,7 +125,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 					$data['post_gastspieler'] = $postdata['gastspieler'][$code] !== 'off' ? 1 : 0;
 				// Neuer Spieler nicht aus Vereinsliste wird ergänzt
 				if (!empty($postdata['auswahl']) AND $rangliste_no) {
-					$spieler = mf_ratings_playerdata_dwz($postdata['auswahl']);
+					$spieler = mf_ratings_playerdata_dsb($postdata['auswahl']);
 					if ($spieler) {
 						$spieler['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
 						$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler);
@@ -133,7 +133,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 					}
 					continue;
 				} elseif (!empty($postdata['auswahl']) AND empty($postdata['abbruch'])) {
-					$spieler = mf_ratings_playerdata_dwz($postdata['auswahl']);
+					$spieler = mf_ratings_playerdata_dsb($postdata['auswahl']);
 					$data['neu_treffer_ohne_rang'] = true;
 					$data['neu_ZPS'] = $spieler['ZPS'];
 					$data['neu_Mgl_Nr'] = $spieler['Mgl_Nr'];
@@ -188,7 +188,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 			} elseif (substr($code, 0, 4) === 'zps_' AND $rangliste_no) {
 				$id = substr($code, 4);
 				if (empty($data['vereinsspieler'][$id])) continue;
-				$spieler = mf_ratings_playerdata_dwz([
+				$spieler = mf_ratings_playerdata_dsb([
 					$data['vereinsspieler'][$id]['ZPS'],
 					$data['vereinsspieler'][$id]['Mgl_Nr']
 				]);
