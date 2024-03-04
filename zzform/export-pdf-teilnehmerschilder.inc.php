@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017-2020, 2022-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2017-2020, 2022-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -138,7 +138,10 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	);
 	$data = wrap_db_fetch($sql, 'participation_id');
 	if (!$data) wrap_quit(404, 'Es gibt keine Teilnehmerschilder für diese Personen.');
-	$data = mf_tournaments_players_title($data);
+	if (in_array('ratings', wrap_setting('modules'))) {
+		wrap_package_activate('ratings');
+		$data = mf_ratings_titles($data);
+	}
 	
 	foreach ($data as $participation_id => $line) {
 		if ($line['parameters'])
@@ -299,58 +302,4 @@ function mf_tournaments_p_qrcode($id) {
 	$command = 'convert -scale 300x300 %s %s';
 	exec(sprintf($command, $file, $file));
 	return $file;
-}
-
-/**
- * get FIDE title for players
- *
- * @param array $data with field 'contact_id'
- * @return array
- * @todo read women’s title as well and check which one is higher
- */
-function mf_tournaments_players_title($data) {
-	$contact_ids = [];
-	foreach ($data as $line)
-		$contact_ids[] = $line['contact_id'];
-
-	$titles = [];
-	// check in FIDE database, German database does not have all titles
-	// why? no players without membership in German federation
-	// players that have a new FIDE ID
-	$sql = 'SELECT contact_id, fide_players.title
-		FROM fide_players
-		LEFT JOIN contacts_identifiers
-			ON fide_players.player_id = contacts_identifiers.identifier
-		WHERE contacts_identifiers.current = "yes"
-		AND contacts_identifiers.identifier_category_id = %d
-		AND contacts_identifiers.contact_id IN (%s)
-		AND NOT ISNULL(fide_players.title)
-	';
-	$sql = sprintf($sql
-		, wrap_category_id('identifiers/fide-id')
-		, implode(',', $contact_ids)
-	);
-	$titles += wrap_db_fetch($sql, 'contact_id', 'key/value');
-
-	// probably unnecessary query since all titles should be in FIDE database
-	$sql = 'SELECT contact_id, dwz_spieler.FIDE_Titel
-		FROM dwz_spieler
-		LEFT JOIN contacts_identifiers
-			ON contacts_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", dwz_spieler.Mgl_Nr)
-		WHERE contacts_identifiers.current = "yes"
-		AND contacts_identifiers.identifier_category_id = %d
-		AND contacts_identifiers.contact_id IN (%s)
-		AND NOT ISNULL(dwz_spieler.FIDE_Titel)
-	';
-	$sql = sprintf($sql
-		, wrap_category_id('identifiers/zps')
-		, implode(',', $contact_ids)
-	);
-	$titles += wrap_db_fetch($sql, 'contact_id', 'key/value');
-
-	foreach ($data as $index => $line) {
-		if (!array_key_exists($line['contact_id'], $titles)) continue;
-		$data[$index]['fide_title'] = $titles[$line['contact_id']];
-	}
-	return $data;
 }
