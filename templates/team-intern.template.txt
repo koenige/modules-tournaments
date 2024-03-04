@@ -5,24 +5,8 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2022 Gustaf Mossakowski
+# @copyright Copyright © 2012-2022, 2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
-#
-# List of fields:
-# team_id, team, team_no, datum_anreise, uhrzeit_anreise, datum_abreise,
-# uhrzeit_abreise, setzliste_no, platz_no, zps_code, contact_id, team_identifier,
-# team_identifier_short, meldung_datum, regionalgruppe, meldung, url
-# contact, federation_identifier, turnierform, country,
-# endstand, zwischenstand, mannschaft_(verein), event_id, event,
-# bretter_min, bretter_max, alter_max, alter_min, geschlecht,
-# gastspieler_status, duration, dauer_tage,
-# teilnehmerliste, pseudo_dwz, turnierort, year,
-# event_identifier, main_series_path, main_series, spieler { team_id,
-# participation_id, person_id, usergroup, identifier, person, sex,
-# geburtsjahr, t_dwz, t_elo, t_fidetitel, rang_no, brett_no, gastspieler,
-# e_mail, telefon, status, spielberechtigt, zps_code, pflicht, position },
-# spielerzahl, aufstellung_komplett, zps_codes, verein-vorsitz { person, add
-# }, betreuer { person, add }, komplett
 #
 <h1>%%% item team %%% %%% item team_no %%%
 <br><a href="../">%%% item event %%% %%% item duration wrap_date %%%</a> <em>in %%% item turnierort %%%</em></h1>

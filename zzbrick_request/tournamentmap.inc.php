@@ -122,7 +122,7 @@ function mod_tournaments_tournamentmap_json($params) {
 	$sql = 'SELECT participations.participation_id AS tt_id
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
 			, CONCAT(event, " ", IFNULL(events.event_year, YEAR(events.date_begin))) AS turniername
-			, zps.identifier AS zps_code
+			, zps.identifier AS player_id_dsb
 			, IFNULL(participations.club_contact_id, teams.club_contact_id) AS club_contact_id
 			, fide.identifier AS player_id_fide
 			, t_verein AS verein
@@ -199,7 +199,7 @@ function mod_tournaments_tournamentmap_json($params) {
 		}
 		$data[$person['contact_id']]['spieler'][] = [
 			'spieler' => $person['spieler'],
-			'zps_code' => !empty($person['Mgl_Nr']) ? $person['zps']."-".$person['Mgl_Nr'] : $person['zps_code'],
+			'player_id_dsb' => !empty($person['Mgl_Nr']) ? $person['zps']."-".$person['Mgl_Nr'] : $person['player_id_dsb'],
 			'dwz' => $person['dwz'],
 			'player_id_fide' => $person['player_id_fide'],
 			'elo' => $person['elo'],

@@ -31,9 +31,9 @@
 </td></tr>
 <tr><th>Wertung:</th><td>
 %%% condition if t_dwz | t_elo %%%
-DWZ: %%% comment condition if zps_code <a href="http://www.schachbund.de/spieler.html?zps=%%/% item zps_code %%/%"> %%%
+DWZ: %%% comment condition if player_id_dsb <a href="http://www.schachbund.de/spieler.html?zps=%%/% item player_id_dsb %%/%"> %%%
 %%% comment condition endif %%%
-%%% item t_dwz %%%%%% comment item zps_code "</a>" %%%%%% condition if t_elo %%%, Elo: %%% condition if player_id_fide %%%
+%%% item t_dwz %%%%%% comment item player_id_dsb "</a>" %%%%%% condition if t_elo %%%, Elo: %%% condition if player_id_fide %%%
 <a href="http://ratings.fide.com/card.phtml?event=%%% item player_id_fide %%%">
 %%% condition endif %%%
 %%% item t_elo %%%

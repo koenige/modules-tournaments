@@ -35,7 +35,7 @@ function mod_tournaments_player($vars, $settings, $event) {
 			, platz_no
 			, contacts.identifier AS personen_kennung
 			, SUBSTRING_INDEX(events.identifier, "/", -1) AS turnier_kennung
-			, (SELECT identifier FROM contacts_identifiers zps WHERE zps.contact_id = contacts.contact_id AND current = "yes" AND identifier_category_id = %d) AS zps_code
+			, (SELECT identifier FROM contacts_identifiers zps WHERE zps.contact_id = contacts.contact_id AND current = "yes" AND identifier_category_id = %d) AS player_id_dsb
 			, (SELECT identifier FROM contacts_identifiers fide WHERE fide.contact_id = contacts.contact_id AND current = "yes" AND identifier_category_id = %d) AS player_id_fide
 			, livebretter
 			, IF(DATE_SUB(events.date_end, INTERVAL 2 DAY) < CURDATE(), 1, NULL) AS einsendeschluss

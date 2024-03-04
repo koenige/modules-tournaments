@@ -72,10 +72,10 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 	$data['vereinsspieler'] = wrap_db_fetch($sql, 'Mgl_Nr');
 	foreach ($data['vereinsspieler'] as $id => $spieler) {
 		if ($spieler['Mgl_Nr'])
-			$data['zps_codes'][] = $spieler['ZPS'].'-'.$spieler['Mgl_Nr'];
+			$data['player_ids_dsb'][] = $spieler['ZPS'].'-'.$spieler['Mgl_Nr'];
 		foreach ($data['spieler'] AS $gemeldete_spieler) {
-			if (empty($gemeldete_spieler['zps_code'])) continue;
-			if ($gemeldete_spieler['zps_code'] !== $spieler['ZPS'].'-'.$spieler['Mgl_Nr']) continue;
+			if (empty($gemeldete_spieler['player_id_dsb'])) continue;
+			if ($gemeldete_spieler['player_id_dsb'] !== $spieler['ZPS'].'-'.$spieler['Mgl_Nr']) continue;
 			unset($data['vereinsspieler'][$id]);
 			continue 2;
 		}
@@ -377,7 +377,7 @@ function cms_team_spielersuche($data, $postdata) {
 	$sql = sprintf($sql
 		, wrap_db_escape($spielername)
 		, wrap_db_escape($spielername_r)
-		, !empty($data['zps_codes']) ? implode('","', $data['zps_codes']) : ''
+		, !empty($data['player_ids_dsb']) ? implode('","', $data['player_ids_dsb']) : ''
 		, $where
 	);
 	$treffer = wrap_db_fetch($sql, 'unique_id');

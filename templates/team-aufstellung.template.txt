@@ -40,7 +40,7 @@
 %%% condition if participation_id %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
 <td><input type="number" class="rangno" name="rang[tln_%%% item participation_id %%%]" value="%%% item rang_no %%%"></td>
-<td>%%% item zps_code %%%</td>
+<td>%%% item player_id_dsb %%%</td>
 <td>%%% item person %%%</td>
 <td>%%% item geschlecht %%%</td>
 <td>%%% item geburtsjahr %%%</td>
