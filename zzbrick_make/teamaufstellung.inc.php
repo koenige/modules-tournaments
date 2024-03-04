@@ -24,6 +24,7 @@
  */
 function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 	wrap_include_files('validate', 'zzform');
+	wrap_include_files('zzform/editing', 'ratings');
 
 	if ($data['meldung'] !== 'offen') wrap_quit(403, 'Das Team wurde bereits abschließend gemeldet. Eine Änderung der Aufstellung ist nicht mehr möglich.');
 	
@@ -124,8 +125,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 					$data['post_gastspieler'] = $postdata['gastspieler'][$code] !== 'off' ? 1 : 0;
 				// Neuer Spieler nicht aus Vereinsliste wird ergänzt
 				if (!empty($postdata['auswahl']) AND $rangliste_no) {
-					$zps = explode('-', $postdata['auswahl']);
-					$spieler = my_dwz_spielerdaten($zps[0], $zps[1]);
+					$spieler = mf_ratings_playerdata_dwz($postdata['auswahl']);
 					if ($spieler) {
 						$spieler['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
 						$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler);
@@ -133,8 +133,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 					}
 					continue;
 				} elseif (!empty($postdata['auswahl']) AND empty($postdata['abbruch'])) {
-					$zps = explode('-', $postdata['auswahl']);
-					$spieler = my_dwz_spielerdaten($zps[0], $zps[1]);
+					$spieler = mf_ratings_playerdata_dwz($postdata['auswahl']);
 					$data['neu_treffer_ohne_rang'] = true;
 					$data['neu_ZPS'] = $spieler['ZPS'];
 					$data['neu_Mgl_Nr'] = $spieler['Mgl_Nr'];
@@ -189,10 +188,10 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 			} elseif (substr($code, 0, 4) === 'zps_' AND $rangliste_no) {
 				$id = substr($code, 4);
 				if (empty($data['vereinsspieler'][$id])) continue;
-				$spieler = my_dwz_spielerdaten(
+				$spieler = mf_ratings_playerdata_dwz([
 					$data['vereinsspieler'][$id]['ZPS'],
 					$data['vereinsspieler'][$id]['Mgl_Nr']
-				);
+				]);
 				if ($spieler) {
 					$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler);
 					if ($ops) $changed = true;
