@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2017, 2019-2021, 2023 Gustaf Mossakowski
+# @copyright Copyright © 2012-2017, 2019-2021, 2023-2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 # event, duration, veranstaltungsort, address, postcode,
@@ -73,11 +73,11 @@
 %%% condition endif %%%
 %%% condition if zeige_elo %%%
 <td class="number">
-%%% condition if fide_id %%%
-<a href="http://ratings.fide.com/card.phtml?event=%%% item fide_id %%%">
+%%% condition if id_fide %%%
+<a href="http://ratings.fide.com/card.phtml?event=%%% item id_fide %%%">
 %%% condition endif %%%
 %%% item t_elo %%%
-%%% item fide_id "</a>" %%%</td>
+%%% item id_fide "</a>" %%%</td>
 %%% condition endif %%%
 %%% condition if qualification_col %%%
 <td>%%% condition if qualification_event %%%<a href="/%%% item qualification_event_identifier %%%/tabelle/">%%% item qualification_event %%% %%% item qualification_year %%%</a>

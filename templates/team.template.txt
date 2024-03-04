@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2023 Gustaf Mossakowski
+# @copyright Copyright © 2012-2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>%%% item team %%% %%% item team_no %%%
@@ -75,11 +75,11 @@
 %%% comment condition endif %%%
 %%% item t_dwz %%%%%% comment item zps_code "</a>" %%%</td>
 <td class="number">
-%%% condition if fide_id %%%
-<a href="http://ratings.fide.com/card.phtml?event=%%% item fide_id %%%">
+%%% condition if id_fide %%%
+<a href="http://ratings.fide.com/card.phtml?event=%%% item id_fide %%%">
 %%% condition endif %%%
 %%% item t_elo %%%
-%%% item fide_id "</a>" %%%</td>
+%%% item id_fide "</a>" %%%</td>
 %%% condition if gastspieler_status %%%
 <td>%%% item gastspieler "Gast" %%%</td>
 %%% condition endif %%%

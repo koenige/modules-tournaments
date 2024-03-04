@@ -5,14 +5,14 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2016, 2020-2021 Gustaf Mossakowski
+# @copyright Copyright © 2016, 2020-2021, 2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 var locations = {"type": "FeatureCollection", "features": [
 %%% loop start %%%
 %%% condition if longitude & latitude %%%
 {"type":"Feature","id":"%%% item id %%%","properties":{"org":"%%% item title wrap_js_escape %%%","identifier":"%%% item identifier %%%",
-"description":"%%% loop spieler %%%<li>%%% condition if teilnehmer_nr %%%<a href='/%%% item event_identifier %%%/spieler/%%% item teilnehmer_nr %%%.html'>%%% condition endif %%%<strong>%%% item spieler %%%</strong>%%% item teilnehmer_nr </a> %%%%%% condition if dwz %%% <abbr title='Deutsche Wertungszahl'>DWZ</abbr>: %%% comment condition if zps_code <a href='http://www.schachbund.de/spieler.html?zps=%/%% item zps_code %/%%'>%%%%%% comment condition endif %%%%%% item dwz %%%%%% comment item zps_code </a> %%%%%% condition endif %%%%%% condition if elo %%%%%% condition if dwz %%%, %%% condition endif %%%<abbr title='Internationale Wertungszahl nach Arpad Elö'>Elo</abbr>: %%% condition if fide_id %%%<a href='http://ratings.fide.com/card.phtml?event=%%% item fide_id %%%'>%%% condition endif %%%%%% item elo %%%%%% item fide_id </a> %%%%%% condition endif %%% (%%% item turnier %%%%%% condition if team %%% <a href='/%%% item team_identifier %%%/'>%%% item team wrap_html_escape %%%</a>%%% condition endif %%%)</li>%%% loop end %%%"
+"description":"%%% loop spieler %%%<li>%%% condition if teilnehmer_nr %%%<a href='/%%% item event_identifier %%%/spieler/%%% item teilnehmer_nr %%%.html'>%%% condition endif %%%<strong>%%% item spieler %%%</strong>%%% item teilnehmer_nr </a> %%%%%% condition if dwz %%% <abbr title='Deutsche Wertungszahl'>DWZ</abbr>: %%% comment condition if zps_code <a href='http://www.schachbund.de/spieler.html?zps=%/%% item zps_code %/%%'>%%%%%% comment condition endif %%%%%% item dwz %%%%%% comment item zps_code </a> %%%%%% condition endif %%%%%% condition if elo %%%%%% condition if dwz %%%, %%% condition endif %%%<abbr title='Internationale Wertungszahl nach Arpad Elö'>Elo</abbr>: %%% condition if id_fide %%%<a href='http://ratings.fide.com/card.phtml?event=%%% item id_fide %%%'>%%% condition endif %%%%%% item elo %%%%%% item id_fide </a> %%%%%% condition endif %%% (%%% item turnier %%%%%% condition if team %%% <a href='/%%% item team_identifier %%%/'>%%% item team wrap_html_escape %%%</a>%%% condition endif %%%)</li>%%% loop end %%%"
 %%% condition if website %%%,"website":"%%% item website %%%"%%% condition endif %%%
 },"geometry": {"type":"Point","coordinates": [%%% item longitude %%%,%%% item latitude %%%] } }%%% loopposition first|middle "," %%% 
 %%% condition endif %%%

@@ -124,7 +124,7 @@ function mod_tournaments_tournamentmap_json($params) {
 			, CONCAT(event, " ", IFNULL(events.event_year, YEAR(events.date_begin))) AS turniername
 			, zps.identifier AS zps_code
 			, IFNULL(participations.club_contact_id, teams.club_contact_id) AS club_contact_id
-			, fide.identifier AS fide_id
+			, fide.identifier AS id_fide
 			, t_verein AS verein
 			, t_dwz AS dwz, t_elo AS elo
 			, participations.setzliste_no AS teilnehmer_nr
@@ -201,7 +201,7 @@ function mod_tournaments_tournamentmap_json($params) {
 			'spieler' => $person['spieler'],
 			'zps_code' => !empty($person['Mgl_Nr']) ? $person['zps']."-".$person['Mgl_Nr'] : $person['zps_code'],
 			'dwz' => $person['dwz'],
-			'fide_id' => $person['fide_id'],
+			'id_fide' => $person['id_fide'],
 			'elo' => $person['elo'],
 			'teilnehmer_nr' => !empty($person['teilnehmer_nr']) ? $person['teilnehmer_nr'] : '',
 			'turnier' => $person['turniername'],
