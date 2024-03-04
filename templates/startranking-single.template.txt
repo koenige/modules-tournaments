@@ -73,11 +73,11 @@
 %%% condition endif %%%
 %%% condition if zeige_elo %%%
 <td class="number">
-%%% condition if id_fide %%%
-<a href="http://ratings.fide.com/card.phtml?event=%%% item id_fide %%%">
+%%% condition if player_id_fide %%%
+<a href="http://ratings.fide.com/card.phtml?event=%%% item player_id_fide %%%">
 %%% condition endif %%%
 %%% item t_elo %%%
-%%% item id_fide "</a>" %%%</td>
+%%% item player_id_fide "</a>" %%%</td>
 %%% condition endif %%%
 %%% condition if qualification_col %%%
 <td>%%% condition if qualification_event %%%<a href="/%%% item qualification_event_identifier %%%/tabelle/">%%% item qualification_event %%% %%% item qualification_year %%%</a>
