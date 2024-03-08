@@ -10,7 +10,7 @@
  * @author Erik Kothe <kontakt@erikkothe.de>
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2018-2022 Erik Kothe
- * @copyright Copyright © 2022-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -19,12 +19,11 @@
  * send a message to a player while the tournament is runnng
  *
  * @param array $vars
+ * @param array $settings
+ * @param array $data
  * @return array $page
  */
-function mod_tournaments_make_playermessage($vars, $settings) {
-	$data = my_event($vars[0], $vars[1]);
-	if (!$data) return false;
-
+function mod_tournaments_make_playermessage($vars, $settings, $data) {
 	$sql = 'SELECT participation_id, contact
 		FROM participations
 		LEFT JOIN contacts USING (contact_id)
@@ -34,8 +33,9 @@ function mod_tournaments_make_playermessage($vars, $settings) {
 	$data = array_merge($data, wrap_db_fetch($sql));
 	if (!$data['contact']) return false;
 	
-	$sql = 'SELECT IF(spielernachrichten = "ja", NULL, 1)
+	$sql = 'SELECT IF(spielernachrichten = "ja" AND DATE_SUB(events.date_end, INTERVAL 2 DAY) >= CURDATE(), NULL, 1), date_end
 		FROM tournaments
+		LEFT JOIN events USING (event_id)
 	    WHERE event_id = %d';
 	$sql = sprintf($sql, $data['event_id']);
 	$data['news_inactive'] = wrap_db_fetch($sql, '', 'single value');
@@ -63,12 +63,6 @@ function mod_tournaments_make_playermessage($vars, $settings) {
 	$page['text'] = wrap_template('playermessage', $data);
 	$page['title'] = sprintf('Brett-Nachricht an %s – %s %d', $data['contact'], $data['event'], $data['year']);
 	$page['dont_show_h1'] = true;
-	$page['breadcrumbs'][] = '<a href="../../../../">'.$data['year'].'</a>';
-	if ($data['main_series']) {
-		$page['breadcrumbs'][] = '<a href="../../../../'.$data['main_series_path'].'/">'.$data['main_series'].'</a>';
-	}
-	$page['breadcrumbs'][] = '<a href="../../../">'.$data['event'].'</a>';
-	$page['breadcrumbs'][] = '<a href="../../">Startrangliste</a>';
 	$page['breadcrumbs'][] = '<a href="../">'.$data['contact'].'</a>';
 	$page['breadcrumbs'][]['title'] = 'Brett-Nachricht';
 	$page['meta'][] = ['name' => 'robots', 'content' => 'noindex'];
