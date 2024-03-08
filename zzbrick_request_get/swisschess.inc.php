@@ -20,7 +20,7 @@ function mod_tournaments_get_swisschess($vars) {
 	$where = 'spielberechtigt != "nein"';
 	if (array_key_exists('alle', $_GET)) $where = '(ISNULL(spielberechtigt) OR spielberechtigt != "nein")';
 
-	wrap_db_query('SET NAMES latin1');
+	wrap_db_charset('latin1');
 	// Abfrage Spalte 2, 3: erste Zeile für MM, zweite für EM
 	$sql = 'SELECT
 			SUBSTRING(CONCAT(IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname, ",", t_vorname), 1, 32) AS name
@@ -90,7 +90,7 @@ function mod_tournaments_get_swisschess($vars) {
 	);
 	$data = wrap_db_fetch($sql, 'teilnehmer_info_4');
 	if (!$data) {
-		wrap_db_query('SET NAMES utf8mb4');
+		wrap_db_charset('utf8mb4');
 		return false;
 	}
 	wrap_setting('character_set', 'windows-1252');
