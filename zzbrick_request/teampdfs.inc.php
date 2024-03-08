@@ -294,10 +294,13 @@ function mod_tournaments_teampdfs_draft(&$pdf, $daten) {
  * @todo in Termin-Funktionsskript verschieben
  */
 function mf_tournaments_pdf_event_accounts($event_id) {
-	$sql = 'SELECT bankaccount_id, kontotyp
+	$sql = 'SELECT bankaccount_id
+			, roles.category AS bankaccount_category
 			, IFNULL(holder, contact) AS holder, iban, bic, bank
-		FROM events_accounts
+		FROM events_bankaccounts
 		LEFT JOIN bankaccounts USING (bankaccount_id)
+		LEFT JOIN categories roles
+			ON events_bankaccounts.role_category_id = roles.category_id
 		LEFT JOIN contacts
 			ON contacts.contact_id = bankaccounts.holder_contact_id
 		WHERE event_id = %d';
@@ -306,7 +309,7 @@ function mf_tournaments_pdf_event_accounts($event_id) {
 	$event = [];
 	if (!$konten) return $event;
 	foreach ($konten as $id => $konto) {
-		$event['konten_'.strtolower($konto['kontotyp'])][$id] = $konto;
+		$event['konten_'.strtolower($konto['bankaccount_category'])][$id] = $konto;
 	}
 	return $event;
 }
