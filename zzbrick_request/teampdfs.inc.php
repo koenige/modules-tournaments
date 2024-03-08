@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2013-2014, 2017-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2013-2014, 2017-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -294,15 +294,15 @@ function mod_tournaments_teampdfs_draft(&$pdf, $daten) {
  * @todo in Termin-Funktionsskript verschieben
  */
 function mf_tournaments_pdf_event_accounts($event_id) {
-	$sql = 'SELECT account_id, kontotyp
-			, IFNULL(inhaber, contact) AS inhaber, iban, bic, institut
+	$sql = 'SELECT bankaccount_id, kontotyp
+			, IFNULL(holder, contact) AS holder, iban, bic, bank
 		FROM events_accounts
-		LEFT JOIN accounts USING (account_id)
+		LEFT JOIN bankaccounts USING (bankaccount_id)
 		LEFT JOIN contacts
-			ON contacts.contact_id = accounts.owner_contact_id
+			ON contacts.contact_id = bankaccounts.holder_contact_id
 		WHERE event_id = %d';
 	$sql = sprintf($sql, $event_id);
-	$konten = wrap_db_fetch($sql, 'account_id');
+	$konten = wrap_db_fetch($sql, 'bankaccount_id');
 	$event = [];
 	if (!$konten) return $event;
 	foreach ($konten as $id => $konto) {
