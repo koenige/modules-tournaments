@@ -14,7 +14,7 @@
 
 
 $zz['title'] = 'Turniere';
-$zz['table'] = 'tournaments';
+$zz['table'] = '/*_PREFIX_*/tournaments';
 
 $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'tournament_id';
@@ -23,12 +23,16 @@ $zz['fields'][1]['type'] = 'id';
 $zz['fields'][2]['field_name'] = 'event_id';
 $zz['fields'][2]['type'] = 'write_once';
 $zz['fields'][2]['type_detail'] = 'select';
-$zz['fields'][2]['sql'] = 'SELECT event_id, date_begin, event
-	FROM events
-	WHERE ISNULL(main_event_id)
-	ORDER BY event';
+$zz['fields'][2]['sql'] = 'SELECT event_id
+		, CONCAT(event, " ", IFNULL(event_year, YEAR(date_begin))) AS event
+		, identifier
+	FROM /*_PREFIX_*/events
+	LEFT JOIN /*_PREFIX_*/categories
+		ON /*_PREFIX_*/events.event_category_id = /*_PREFIX_*/categories.category_id
+	WHERE /*_PREFIX_*/categories.parameters LIKE "%&tournament=1%"
+	ORDER BY identifier';
 $zz['fields'][2]['display_field'] = 'turnier';
-$zz['fields'][2]['search'] = 'CONCAT(events.event, " ", IFNULL(event_year, YEAR(date_begin)))';
+$zz['fields'][2]['search'] = 'CONCAT(/*_PREFIX_*/events.event, " ", IFNULL(event_year, YEAR(date_begin)))';
 $zz['fields'][2]['unique'] = true;
 $zz['fields'][2]['if']['where']['hide_in_form'] = true;
 $zz['fields'][2]['link'] = [
@@ -42,14 +46,14 @@ $zz['fields'][3]['title_tab'] = 'Form';
 $zz['fields'][3]['field_name'] = 'turnierform_category_id';
 $zz['fields'][3]['type'] = 'select';
 $zz['fields'][3]['sql'] = 'SELECT category_id, category, main_category_id
-	FROM categories
+	FROM /*_PREFIX_*/categories
 	ORDER BY category';
 $zz['fields'][3]['if'][1]['sql'] = 'SELECT category_id, category, main_category_id
-	FROM categories
+	FROM /*_PREFIX_*/categories
 	WHERE parameters LIKE "%team=1%"
 	ORDER BY category';
 $zz['fields'][3]['if'][2]['sql'] = 'SELECT category_id, category, main_category_id
-	FROM categories
+	FROM /*_PREFIX_*/categories
 	WHERE parameters LIKE "%team=0%"
 	ORDER BY category';
 $zz['fields'][3]['show_hierarchy'] = 'main_category_id';
@@ -67,7 +71,7 @@ $zz['fields'][4]['title'] = 'Modus';
 $zz['fields'][4]['field_name'] = 'modus_category_id';
 $zz['fields'][4]['type'] = 'select';
 $zz['fields'][4]['sql'] = 'SELECT category_id, category, main_category_id
-	FROM categories
+	FROM /*_PREFIX_*/categories
 	ORDER BY category';
 $zz['fields'][4]['show_hierarchy'] = 'main_category_id';
 $zz['fields'][4]['show_hierarchy_subtree'] = wrap_category_id('turniermodi');
@@ -173,7 +177,7 @@ $zz['fields'][28]['fields'][2]['type'] = 'foreign_key';
 $zz['fields'][28]['sql'] .= $zz['fields'][28]['sqlorder'];
 $zz['fields'][28]['subselect']['sql'] = 'SELECT tournament_id, category_short
 		, turniere_kennungen.kennung
-	FROM turniere_kennungen
+	FROM /*_PREFIX_*/turniere_kennungen
 	LEFT JOIN categories
 		ON categories.category_id = turniere_kennungen.kennung_category_id';
 
@@ -361,9 +365,9 @@ $zz['fields'][43]['form_display'] = 'set';
 $zz['fields'][43]['fields'][2]['type'] = 'foreign_key';
 $zz['fields'][43]['sql'] .= $zz['fields'][43]['sqlorder'];
 $zz['fields'][43]['subselect']['sql'] = 'SELECT tournament_id, category, category_short
-	FROM turniere_status
-	LEFT JOIN categories
-		ON categories.category_id = turniere_status.status_category_id';
+	FROM /*_PREFIX_*/turniere_status
+	LEFT JOIN /*_PREFIX_*/categories
+		ON /*_PREFIX_*/categories.category_id = /*_PREFIX_*/turniere_status.status_category_id';
 $zz['fields'][43]['subselect']['field_prefix'][0] = '<abbr title="';
 $zz['fields'][43]['subselect']['field_suffix'][0] = '">';
 $zz['fields'][43]['subselect']['field_suffix'][1] = '</abbr>';
@@ -395,47 +399,47 @@ $zz['fields'][54]['field_name'] = 'main_tournament_id';
 $zz['fields'][54]['type'] = 'select';
 $zz['fields'][54]['sql'] = 'SELECT tournament_id
 		, CONCAT(event, " ", IFNULL(event_year, YEAR(date_begin))) AS tournament, identifier
-	FROM tournaments
-	LEFT JOIN events USING (event_id)
+	FROM /*_PREFIX_*/tournaments
+	LEFT JOIN /*_PREFIX_*/events USING (event_id)
 	ORDER BY date_begin, identifier DESC';
 $zz['fields'][54]['exclude_from_search'] = true;
 $zz['fields'][54]['hide_in_list'] = true;
 
 
-$zz['sql'] = 'SELECT tournaments.*
-		, CONCAT(events.event, " ", IFNULL(event_year, YEAR(date_begin))) AS turnier
-		, events.identifier AS event_identifier
+$zz['sql'] = 'SELECT /*_PREFIX_*/tournaments.*
+		, CONCAT(/*_PREFIX_*/events.event, " ", IFNULL(event_year, YEAR(date_begin))) AS turnier
+		, /*_PREFIX_*/events.identifier AS event_identifier
 		, modus.category_short AS modus
 		, turnierformen.category_short AS turnierform
-		, (SELECT COUNT(*) FROM teams
+		, (SELECT COUNT(*) FROM /*_PREFIX_*/teams
 			WHERE teams.event_id = tournaments.event_id
 			AND team_status = "Teilnehmer"
 			AND spielfrei = "nein"
 		) AS teams
-		, (SELECT COUNT(*) FROM participations
+		, (SELECT COUNT(*) FROM /*_PREFIX_*/participations
 			WHERE participations.event_id = tournaments.event_id
 			AND status_category_id = %d
 			AND usergroup_id = %d
 		) AS spieler
-	FROM tournaments
-	LEFT JOIN events USING (event_id)
-	LEFT JOIN categories series
-		ON events.series_category_id = series.category_id
-	LEFT JOIN categories modus
-		ON tournaments.modus_category_id = modus.category_id
-	LEFT JOIN categories turnierformen
-		ON tournaments.turnierform_category_id = turnierformen.category_id
+	FROM /*_PREFIX_*/tournaments
+	LEFT JOIN /*_PREFIX_*/events USING (event_id)
+	LEFT JOIN /*_PREFIX_*/categories series
+		ON /*_PREFIX_*/events.series_category_id = series.category_id
+	LEFT JOIN /*_PREFIX_*/categories modus
+		ON /*_PREFIX_*/tournaments.modus_category_id = modus.category_id
+	LEFT JOIN /*_PREFIX_*/categories turnierformen
+		ON /*_PREFIX_*/tournaments.turnierform_category_id = turnierformen.category_id
 ';
 $zz['sql'] = sprintf($zz['sql']
 	, wrap_category_id('participation-status/participant')
 	, wrap_id('usergroups', 'spieler')
 );
-$zz['sqlorder'] = ' ORDER BY events.date_begin DESC, events.time_begin DESC,
-	events.identifier';
+$zz['sqlorder'] = ' ORDER BY /*_PREFIX_*/events.date_begin DESC, /*_PREFIX_*/events.time_begin DESC,
+	/*_PREFIX_*/events.identifier';
 
 $zz['subtitle']['event_id']['sql'] = 'SELECT event
-	, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
-	FROM events';
+	, CONCAT(/*_PREFIX_*/events.date_begin, IFNULL(CONCAT("/", /*_PREFIX_*/events.date_end), "")) AS duration
+	FROM /*_PREFIX_*/events';
 $zz['subtitle']['event_id']['var'] = ['event', 'duration'];
 $zz['subtitle']['event_id']['format'][1] = 'wrap_date';
 $zz['subtitle']['event_id']['link'] = '../';
@@ -443,11 +447,11 @@ $zz['subtitle']['event_id']['link_no_append'] = true;
 
 $zz['filter'][2]['sql'] = 'SELECT DISTINCT main_series.category_id
 		, main_series.category_short, date_begin
-	FROM tournaments
-	LEFT JOIN events USING (event_id)
-	LEFT JOIN categories series
-		ON events.series_category_id = series.category_id
-	LEFT JOIN categories main_series
+	FROM /*_PREFIX_*/tournaments
+	LEFT JOIN /*_PREFIX_*/events USING (event_id)
+	LEFT JOIN /*_PREFIX_*/categories series
+		ON /*_PREFIX_*/events.series_category_id = series.category_id
+	LEFT JOIN /*_PREFIX_*/categories main_series
 		ON series.main_category_id = main_series.category_id
 	WHERE NOT ISNULL(main_series.category_id)
 	ORDER BY date_begin DESC';
@@ -458,11 +462,11 @@ $zz['filter'][2]['where'] = 'series.main_category_id';
 
 $zz['filter'][1]['sql'] = 'SELECT DISTINCT IFNULL(event_year, YEAR(date_begin)) AS year_idf
 		, IFNULL(event_year, YEAR(date_begin)) AS year
-	FROM tournaments
-	LEFT JOIN events USING (event_id)
-	LEFT JOIN categories series
-		ON events.series_category_id = series.category_id
-	LEFT JOIN categories main_series
+	FROM /*_PREFIX_*/tournaments
+	LEFT JOIN /*_PREFIX_*/events USING (event_id)
+	LEFT JOIN /*_PREFIX_*/categories series
+		ON /*_PREFIX_*/events.series_category_id = series.category_id
+	LEFT JOIN /*_PREFIX_*/categories main_series
 		ON series.main_category_id = main_series.category_id
 	ORDER BY IFNULL(event_year, YEAR(date_begin)) DESC';
 $zz['filter'][1]['title'] = 'Jahr';
@@ -473,12 +477,12 @@ $zz['filter'][1]['depends_on'] = 2;
 
 $zz['conditions'][1]['scope'] = 'record';
 $zz['conditions'][1]['where'] = sprintf(
-	'events.event_category_id = %d', wrap_category_id('termine/mannschaft')
+	'events.event_category_id = %d', wrap_category_id('events/team')
 );
 
 $zz['conditions'][2]['scope'] = 'record';
 $zz['conditions'][2]['where'] = sprintf(
-	'events.event_category_id = %d', wrap_category_id('termine/einzel')
+	'events.event_category_id = %d', wrap_category_id('events/single')
 );
 
 $zz['record']['copy'] = true;

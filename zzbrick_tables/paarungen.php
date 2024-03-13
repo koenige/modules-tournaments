@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2015, 2017, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2015, 2017, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -25,10 +25,14 @@ $zz['fields'][1]['type'] = 'id';
 $zz['fields'][2]['title'] = 'Termin';
 $zz['fields'][2]['field_name'] = 'event_id';
 $zz['fields'][2]['type'] = 'select';
-$zz['fields'][2]['sql'] = 'SELECT event_id, event
-	FROM events
-	WHERE ISNULL(main_event_id)
-	ORDER BY date_begin, identifier';
+$zz['fields'][2]['sql'] = 'SELECT event_id
+		, CONCAT(event, " ", IFNULL(event_year, YEAR(date_begin))) AS event
+		, identifier
+	FROM /*_PREFIX_*/events
+	LEFT JOIN /*_PREFIX_*/categories
+		ON /*_PREFIX_*/events.event_category_id = /*_PREFIX_*/categories.category_id
+	WHERE /*_PREFIX_*/categories.parameters LIKE "%&tournament=1%"
+	ORDER BY identifier';
 $zz['fields'][2]['key_field_name'] = 'events.event_id';
 $zz['fields'][2]['display_field'] = 'event';
 $zz['fields'][2]['if']['where']['hide_in_list'] = true;
@@ -63,7 +67,8 @@ $zz['fields'][5]['auto_value'] = 'increment';
 $zz['fields'][6]['title'] = 'Heimteam';
 $zz['fields'][6]['field_name'] = 'heim_team_id';
 $zz['fields'][6]['type'] = 'select';
-$zz['fields'][6]['sql'] = 'SELECT team_id, CONCAT(event, ": ") AS event
+$zz['fields'][6]['sql'] = 'SELECT team_id
+		, CONCAT(event, " ", IFNULL(event_year, YEAR(date_begin))) AS event
 		, CONCAT(team, IFNULL(CONCAT(" ", team_no),"")) AS team
 	FROM teams
 	LEFT JOIN events USING (event_id)
@@ -77,7 +82,8 @@ $zz['fields'][6]['character_set'] = 'latin1';
 $zz['fields'][7]['title'] = 'Auswärtsteam';
 $zz['fields'][7]['field_name'] = 'auswaerts_team_id';
 $zz['fields'][7]['type'] = 'select';
-$zz['fields'][7]['sql'] = 'SELECT team_id, CONCAT(event, ": ") AS event
+$zz['fields'][7]['sql'] = 'SELECT team_id
+		, CONCAT(event, " ", IFNULL(event_year, YEAR(date_begin))) AS event
 		, CONCAT(team, IFNULL(CONCAT(" ", team_no),"")) AS team
 	FROM teams
 	LEFT JOIN events USING (event_id)
