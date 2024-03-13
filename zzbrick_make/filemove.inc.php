@@ -57,7 +57,7 @@ function mod_tournaments_make_filemove() {
 	$sql = sprintf($sql
 		, wrap_setting('filemove_begin_before_round_mins')
 		, implode(',', array_keys($tournaments))
-		, wrap_category_id('zeitplan/runde')
+		, wrap_category_id('event/round')
 	);
 	$rounds = wrap_db_fetch($sql, ['main_event_id', 'event_id']);
 	foreach ($rounds as $main_event_id => $rounds_per_event) {

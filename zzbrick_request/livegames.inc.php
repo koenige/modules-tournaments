@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2016, 2018-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2016, 2018-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -225,7 +225,7 @@ function mod_tournaments_livegames_rundendaten($tournament_ids) {
 		WHERE main_event_id IN (%s)
 		AND event_category_id = %d';
 	$sql = sprintf($sql, implode(',', $tournament_ids),
-		wrap_category_id('zeitplan/runde'));
+		wrap_category_id('event/round'));
 	$rundendaten = wrap_db_fetch($sql, ['main_event_id', 'runde_no']);
 	return $rundendaten;
 }

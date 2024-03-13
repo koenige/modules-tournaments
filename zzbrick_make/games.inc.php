@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -452,7 +452,7 @@ function cms_partienupdate_trigger() {
 		AND NOT ISNULL(partien.partie_id)
 		ORDER BY tournaments.event_id, runden.runde_no
 	';
-	$sql = sprintf($sql, wrap_category_id('zeitplan/runde'));
+	$sql = sprintf($sql, wrap_category_id('event/round'));
 	// in SQL-Abfrage werden alle Runden ausgegeben, wrap_db_fetch() speichert
 	// aber nach event_id und durch die Sortierung wird nur die letzte Runde
 	// gespeichert

@@ -184,14 +184,14 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		ORDER BY IFNULL(date_begin, date_end) ASC, IFNULL(time_begin, time_end) ASC, runde_no
 	';
 	$sql = sprintf($sql, $internal ? 1 : 'NULL', $event['event_id']
-		, wrap_category_id('zeitplan/runde')
-		, wrap_category_id('zeitplan/meldefrist')
-		, wrap_category_id('zeitplan/zahlungsfrist')
+		, wrap_category_id('event/round')
+		, wrap_category_id('event/meldefrist')
+		, wrap_category_id('event/zahlungsfrist')
 	);
 	$event['events'] = wrap_db_fetch($sql, 'event_id');
 	foreach ($event['events'] as $event_id => $my_datum) {
 		if ($event['offen'] OR $event['freiplatz']) {
-			if ($my_datum['event_category_id'] !== wrap_category_id('zeitplan/meldefrist')) continue;
+			if ($my_datum['event_category_id'] !== wrap_category_id('event/meldefrist')) continue;
 			if ($my_datum['date_begin'] > date('Y-m-d')) {
 				$event['offen'] = false;
 				$event['freiplatz'] = false;
@@ -209,8 +209,8 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	if ($event['date_begin'] <= date('Y-m-d')) {
 		foreach ($event['events'] as $id => $timetable) {
 			if (in_array($timetable['event_category_id'], [
-				wrap_category_id('zeitplan/meldefrist'),
-				wrap_category_id('zeitplan/zahlungsfrist')
+				wrap_category_id('event/meldefrist'),
+				wrap_category_id('event/zahlungsfrist')
 			]) AND $timetable['date_begin'] <= date('Y-m-d'))
 			unset($event['events'][$id]);
 		}
