@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2015, 2017, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2015, 2017, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -16,7 +16,7 @@
 if (!wrap_setting('tournaments_upload_swt'))
 	wrap_quit(403, 'SWT-Upload ist auf dieser Plattform nicht erlaubt.');
 
-$zz = zzform_include('turniere');
+$zz = zzform_include('tournaments');
 
 $zz['title'] = 'SWT-Upload';
 $zz['where']['event_id'] = $brick['data']['event_id'];

@@ -9,7 +9,7 @@
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
- * @copyright Copyright © 2012-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2024 Gustaf Mossakowski
  * @copyright Copyright © 2014 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
@@ -191,7 +191,7 @@ function mod_tournaments_make_standings_round($vars) {
 	$values['action'] = 'update';
 	$values['POST']['tournament_id'] = $event['tournament_id'];
 	$values['POST']['tabellenstand_runde_no'] = $max_runde_no;
-	$ops = zzform_multi('turniere', $values);
+	$ops = zzform_multi('tournaments', $values);
 
 	$page['text'] = sprintf(wrap_text('Standings for tournament %s, round %d have been successfully updated.'), $event['identifier'], $round_no);
 	return mod_tournaments_make_standings_return($page, $time, $type);

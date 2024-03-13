@@ -8,12 +8,12 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2015, 2017, 2019-2021, 2023 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2015, 2017, 2019-2021, 2023-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-$zz = zzform_include('turniere');
+$zz = zzform_include('tournaments');
 
 $sql = 'SELECT tournament_id
 	FROM tournaments
