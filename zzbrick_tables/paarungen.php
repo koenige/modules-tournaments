@@ -45,12 +45,12 @@ $zz['fields'][15]['type'] = 'number';
 $zz['fields'][15]['if']['where']['hide_in_list'] = true;
 $zz['fields'][15]['if']['where']['hide_in_form'] = true;
 
-$zz['fields'][3]['title'] = 'Ort';
+$zz['fields'][3]['title'] = 'Place';
 $zz['fields'][3]['field_name'] = 'place_contact_id';
 $zz['fields'][3]['type'] = 'select';
 $zz['fields'][3]['sql'] = sprintf('SELECT contact_id, contact
 	FROM contacts
-	WHERE contact_category_id = %d', wrap_category_id('kontakte/veranstaltungsort'));
+	WHERE contact_category_id = %d', wrap_category_id('contact/place'));
 $zz['fields'][3]['key_field_name'] = 'contact_id';
 $zz['fields'][3]['type'] = 'select';
 $zz['fields'][3]['hide_in_list'] = true;
