@@ -46,7 +46,7 @@ CREATE TABLE `paarungen` (
   PRIMARY KEY (`paarung_id`),
   UNIQUE KEY `runde_no` (`event_id`,`runde_no`,`tisch_no`),
   UNIQUE KEY `runde_termin_id` (`event_id`,`heim_team_id`,`auswaerts_team_id`),
-  KEY `ort_id` (`place_contact_id`),
+  KEY `place_contact_id` (`place_contact_id`),
   KEY `heim_team_id` (`heim_team_id`),
   KEY `auswaerts_team_id` (`auswaerts_team_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
