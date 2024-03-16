@@ -232,11 +232,11 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% loop end %%%
 %%% condition endif %%%
 
-%%% condition if veranstaltungsort %%%
+%%% condition if place_contact %%%
 <dt>Veranstaltungsort:</dt>
 
 <dd><strong>%%% condition if url %%%%%% loop url 1 %%%<a href="%%% item identification %%%">%%% loop end %%%%%% condition endif %%%
-%%% item veranstaltungsort %%%%%% condition if url %%% </a> %%% condition endif %%%</strong> 
+%%% item place_contact %%%%%% condition if url %%% </a> %%% condition endif %%%</strong> 
 %%% condition if address %%%</dd>
 <dd>%%% item address %%%, %%% item postcode %%% %%% item place %%%</dd>
 %%% condition endif %%%

@@ -24,7 +24,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		$sql_condition = ' AND NOT ISNULL(event_website_id) ';
 	}
 
-	$sql = 'SELECT places.contact AS veranstaltungsort
+	$sql = 'SELECT places.contact AS place_contact
 			, address, postcode, place, places.description
 			, latitude, longitude, place_contact_id
 			, IF(offen = "ja", IF(date_begin < CURDATE(), 0, 1), 0) AS offen
