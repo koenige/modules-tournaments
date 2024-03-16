@@ -783,13 +783,13 @@ function mod_tournaments_make_swtimport_paarungen($event, $tournament, $ids) {
 				$values['POST']['auswaerts_team_id'] = $ids['team_hex'][$paarung[3002]];
 			case '3001-3': // Heim gegen spielfrei
 				$values['POST']['heim_team_id'] = $ids['team_hex'][$team_hex_id];
-				$ort = 'heim';
+				$venue = 'heim';
 				break;
 			case '3001-2':
 				$values['POST']['heim_team_id'] = $ids['team_hex'][$paarung[3002]];
 			case '3001-4':
 				$values['POST']['auswaerts_team_id'] = $ids['team_hex'][$team_hex_id];
-				$ort = 'auswaerts';
+				$venue = 'auswaerts';
 				break;
 			default:
 				wrap_error(
@@ -812,7 +812,7 @@ function mod_tournaments_make_swtimport_paarungen($event, $tournament, $ids) {
 			// Paarung-ID speichern für Partien
 			$ids['paarungen'][$ids['team_hex2dec'][$team_hex_id]][$runde] = [
 				'id' => $ops['id'],
-				'ort' => $ort,
+				'venue' => $venue,
 				'tisch' => $values['POST']['tisch_no']
 			];
 			if (!isset($ids['t']['Teampaarungen'][$ops['result']])) {
@@ -900,7 +900,7 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 		$p_key += $ids['paarungen'][$team_id][$runde]['tisch'] * 10000;
 		$paarung['paarung_id'] = $ids['paarungen'][$team_id][$runde]['id'];
 		$paarung['team_id'] = $team_id;
-		$paarung['ort'] = $ids['paarungen'][$team_id][$runde]['ort'];
+		$paarung['venue'] = $ids['paarungen'][$team_id][$runde]['venue'];
 		// Brett korrigieren
 		if (!empty($brett_reduzieren[$paarung['paarung_id']][$team_id])) {
 			$decrease = 0;
@@ -1014,7 +1014,7 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 			if ($event['turnierform'] !== 'e') {
 				// Lustig lustig, SwissChess speichert die Info schwarz/weiß
 				// woanders
-				if ($spieler['ort'] === 'heim') {
+				if ($spieler['venue'] === 'heim') {
 					$values['POST']['heim_wertung'] = cms_swtparser_ergebnis($spieler[4003]);
 					if ($brett_no & 1) {
 						if ($erstes_heim_brett === 'weiß') $farbe = 'weiß';
@@ -1047,7 +1047,7 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 					// kampflose Ergebnisse gegen NN, ggf. speichern
 					$values['POST']['schwarz_ergebnis'] = 0;
 					if ($event['turnierform'] !== 'e') {
-						if ($spieler['ort'] === 'heim') {
+						if ($spieler['venue'] === 'heim') {
 							$values['POST']['auswaerts_wertung'] = 0;
 						} else {
 							$values['POST']['heim_wertung'] = 0;
@@ -1066,7 +1066,7 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 					// kampflose Ergebnisse gegen NN, ggf. speichern
 					$values['POST']['weiss_ergebnis'] = 0;
 					if ($event['turnierform'] !== 'e') {
-						if ($spieler['ort'] === 'heim') {
+						if ($spieler['venue'] === 'heim') {
 							$values['POST']['auswaerts_wertung'] = 0;
 						} else {
 							$values['POST']['heim_wertung'] = 0;
