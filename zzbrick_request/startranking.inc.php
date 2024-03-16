@@ -16,9 +16,7 @@
 function mod_tournaments_startranking($vars, $settings, $event) {
 	if (empty($event)) return false;
 	
-	$sql = 'SELECT places.contact AS veranstaltungsort
-			, address, postcode, place, places.description
-			, latitude, longitude
+	$sql = 'SELECT latitude, longitude
 			, IF(teilnehmerliste = "ja", 1, 0) AS teilnehmerliste, pseudo_dwz
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
@@ -81,7 +79,7 @@ function mod_tournaments_startranking_single($event) {
 			, t_verein
 			, t_dwz, t_elo, t_fidetitel
 			, setzliste_no
-			, places.contact AS veranstaltungsort, place, latitude, longitude
+			, latitude, longitude
 			, status_category_id
 			, DATE_FORMAT(entry_date, "%%d.%%m %%H:%%i") AS entry_date
 			, entry_date AS entry_date_raw
@@ -154,7 +152,7 @@ function mod_tournaments_startranking_team($event) {
 			, team, team_no
 			, IF(NOT ISNULL(teams.setzliste_no), teams.identifier, "") AS team_identifier, team_status
 			, SUBSTRING_INDEX(teams.identifier, "/", -1) AS team_identifier_short
-			, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
+			, latitude, longitude, setzliste_no
 			, eintrag_datum
 			, teams.club_contact_id
 		FROM teams

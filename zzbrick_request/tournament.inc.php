@@ -442,21 +442,13 @@ function mod_tournaments_tournament_players_compact($event) {
 function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 	$sql = 'SELECT teams.team_id
 			, team, team_no, teams.identifier AS team_identifier, team_status
-			, places.contact AS veranstaltungsort, place, latitude, longitude, setzliste_no
+			, setzliste_no
 			, IF(LENGTH(main_series.path) > 7, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "/", SUBSTRING_INDEX(main_series.path, "/", -1)), NULL) AS main_series_path
 			, platz_no, tabellenstand_id
 			, teams.club_contact_id
 		FROM teams
 		LEFT JOIN contacts organisationen
 			ON teams.club_contact_id = organisationen.contact_id
-		LEFT JOIN contacts_contacts
-			ON contacts_contacts.contact_id = organisationen.contact_id
-			AND contacts_contacts.relation_category_id = %d
-			AND contacts_contacts.published = "yes"
-		LEFT JOIN contacts places
-			ON contacts_contacts.contact_id = places.contact_id
-		LEFT JOIN addresses
-			ON places.contact_id = addresses.contact_id
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
@@ -468,15 +460,12 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 		WHERE teams.event_id = %d
 		AND team_status IN ("Teilnehmer", "Teilnahmeberechtigt")
 		AND spielfrei = "nein"
-		ORDER BY platz_no, setzliste_no, place, team, team_no
+		ORDER BY platz_no, setzliste_no, team, team_no
 	';
 	$sql = sprintf($sql
-		, wrap_category_id('relation/venue')
 		, $event['round_no']
 		, $event['event_id']
 	);
-	// @todo Klären, was passiert wenn mehr als 1 Ort zu Verein in Datenbank! 
-	// (Reihenfolge-Feld einführen)
 	$event['teams'] = wrap_db_fetch($sql, 'team_id');
 	if (!$event['teams']) return '';
 
