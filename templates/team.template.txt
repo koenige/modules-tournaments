@@ -163,11 +163,8 @@ nicht abschließend geprüft.)</em></p>
 <div class="mapverein">
 <div id="mapverein"> </div>
 <script type="text/javascript">
+	%%% template leaflet-tiles-mapbox %%%
 
-	var tiles = L.tileLayer('https://api.mapbox.com/styles/v1/%%% setting mapbox_user %%%/%%% setting mapbox_style %%%/tiles/512/{z}/{x}/{y}?access_token=%%% setting mapbox_access_token %%%', {
-		maxZoom: 18, tileSize: 512,  zoomOffset: -1,
-		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-	});
 	var map = L.map('mapverein', {scrollWheelZoom: false}).addLayer(tiles);
 	map.setView([%%% item latitude %%%, %%% item longitude %%%], 8);
 	L.Icon.Default.imagePath = '/_layout/clubs/leaflet/';
