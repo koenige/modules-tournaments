@@ -83,8 +83,8 @@ function mod_tournaments_team($vars, $settings, $data) {
 	}
 
 	// Einen Spielort auslesen
-	$sql = 'SELECT contacts.contact_id AS place_id
-			, latitude, longitude, contacts.contact AS veranstaltungsort
+	$sql = 'SELECT contacts.contact_id AS venue_contact_id
+			, latitude, longitude, contacts.contact AS venue_contact
 			, place, address, postcode
 		FROM contacts
 		LEFT JOIN addresses USING (contact_id)
