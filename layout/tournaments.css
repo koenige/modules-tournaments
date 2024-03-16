@@ -290,15 +290,15 @@ body table.lv tbody tr:last-child td
 /* Karte mit Spielern */
 
 #mapverein		{ width: 320px; height: 320px; background: #EEE; }
-#playermap		{ width: 480px; height: 600px; background: #DDD;
+#participants_map		{ width: 480px; height: 600px; background: #DDD;
 				border: 1px solid #666; }
-#playermap .verein
+#participants_map .verein
 				{ font-size: 90%; margin: 0; background: #FFF; 
 				padding: .25em .1em .1em .5em; }
 .map_spieler	{ margin: 1em 0; padding: 0; list-style: none; }
 .map_spieler li	{ margin: .25em 0; padding: 0; }
 @media screen and (max-width: 640px) {
-	#mapverein, #playermap
+	#mapverein, #participants_map
 					{ width: 100%; }
 }
 

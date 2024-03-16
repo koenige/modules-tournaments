@@ -47,8 +47,7 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 			}
 		}
 		if ($event['latitude']) {
-			$page['head'] = wrap_template('leaflet-head');
-			$event['map'] = my_teilnehmerkarte($event);
+			$event['map'] = mf_leaflet_participants_map($event);
 		}
 	} else {
 		$event = mod_tournaments_startranking_team($event);
