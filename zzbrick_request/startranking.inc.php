@@ -33,6 +33,10 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 	$page['dont_show_h1'] = true;
 
 	$meldeliste = false;
+	$map_settings['latitude'] = $event['latitude'] ?? false;
+	$map_settings['longitude'] = $event['longitude'] ?? false;
+	$map_settings['place'] = $event['place'] ?? false;
+
 	if ($event['turnierform'] === 'e') {
 		$event = mod_tournaments_startranking_single($event);
 		if (!$event['spieler']) return false;
@@ -47,10 +51,20 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 			}
 		}
 		if ($event['latitude']) {
-			$event['map'] = mf_leaflet_participants_map($event);
+			$map_settings['area'] = 'tournaments_playercard';
+			$map_settings['area_fields'] = ['identifier', 'setzliste_no'];
+			$map_settings['contact_fields'] = ['person'];
+			$map_settings['static_fields']['identifier'] = $event['identifier'];
+			$event['map'] = mf_leaflet_participants_map($map_settings, $event['spieler'] ?? []);
 		}
 	} else {
 		$event = mod_tournaments_startranking_team($event);
+		if ($event['latitude']) {
+			$map_settings['area'] = 'tournaments_team';
+			$map_settings['area_fields'] = ['team_identifier'];
+			$map_settings['contact_fields'] = ['team', 'team_no'];
+			$event['map'] = mf_leaflet_participants_map($map_settings, $event['teams'] ?? []);
+		}
 	}
 	if ($meldeliste) {
 		$page['title'] = $event['event'].' '.$event['year'].': Meldeliste';
