@@ -55,6 +55,7 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 			$map_settings['area_fields'] = ['identifier', 'setzliste_no'];
 			$map_settings['contact_fields'] = ['person'];
 			$map_settings['static_fields']['identifier'] = $event['identifier'];
+			wrap_include_files('participants-map', 'leaflet');
 			$event['map'] = mf_leaflet_participants_map($map_settings, $event['spieler'] ?? []);
 		}
 	} else {
@@ -63,6 +64,7 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 			$map_settings['area'] = 'tournaments_team';
 			$map_settings['area_fields'] = ['team_identifier'];
 			$map_settings['contact_fields'] = ['team', 'team_no'];
+			wrap_include_files('participants-map', 'leaflet');
 			$event['map'] = mf_leaflet_participants_map($map_settings, $event['teams'] ?? []);
 		}
 	}
