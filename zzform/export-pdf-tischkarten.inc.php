@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2017, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -31,7 +31,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	$event = wrap_static('zzform', 'event');
 	$event_title = sprintf("%s \n%s %s"
 		, str_replace('-', '- ', $event['main_series_long'])
-		, $event['turnierort'], $event['year']
+		, $event['place'], $event['year']
 	);
 	$event_title = mf_tournaments_event_title_wrap($event_title);
 	

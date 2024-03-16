@@ -5,11 +5,11 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2016, 2020-2021 Gustaf Mossakowski
+# @copyright Copyright © 2012-2016, 2020-2021, 2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Ergebnisse %%% item round_event %%%%%% item live " (Live)" %%%
-<br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
+<br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
 %%% condition if live %%%
 <p>Liveergebnisse: Die Ergebnisse sind vorläufig und ohne Gewähr.<!-- <br>

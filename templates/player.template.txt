@@ -9,7 +9,7 @@
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>%%% item fidetitel_lang "<abbr title='%s'>" %%%%%% item t_fidetitel "%s" %%%%%% item fidetitel_lang "</abbr>" %%% %%% item name %%%
-<br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
+<br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
 <div class="playercard">
 %%% condition if bilder %%%

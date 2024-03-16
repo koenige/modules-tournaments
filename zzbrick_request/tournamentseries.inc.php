@@ -47,7 +47,7 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 	$sql = 'SELECT events.event_id, events.identifier, event
 			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
 			, date_begin, date_end, time_begin
-			, IFNULL(place, places.contact) AS turnierort
+			, IFNULL(place, places.contact) AS place
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, (SELECT COUNT(*) FROM partien
@@ -124,7 +124,7 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 	$tournament_ids = [];
 	foreach ($event['tournaments'] as $event_id => $tournament) {
 		$tournament_ids[$tournament['tournament_id']] = $event_id;
-		if ($tournament['turnierort'] === $event['turnierort'])
+		if ($tournament['place'] === $event['place'])
 			$event['tournaments'][$event_id]['place_equal'] = true;
 	}
 	foreach ($event['tournaments'] as $event_id => $tournament) {

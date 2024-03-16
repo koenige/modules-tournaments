@@ -5,12 +5,12 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2018 Gustaf Mossakowski
+# @copyright Copyright © 2018, 2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 %%% condition if head %%%
 <h1>PDF-Upload: <a href="../">%%% item team %%% %%% item team_no %%%</a>
-<br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> <em>in %%% item turnierort %%%</em></h1>
+<br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> <em>in %%% item place %%%</em></h1>
 
 %%% condition else %%%
 <p class="fuss"><strong><a href="../">Zurück zur Team-Übersicht</a></strong></p>

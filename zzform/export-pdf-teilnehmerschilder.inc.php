@@ -225,7 +225,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			$pdf->setFont('FiraSans-Regular', '', $card['event_font_size']);
 			$pdf->SetTextColor(0, 0, 0);
 			$pdf->SetXY($left + $card['width']/2, $card['margin'] + $top);
-			$pdf->MultiCell(125, round($card['event_font_size'] * 1.2), $event['main_series_long']."\n".$event['turnierort'].' '.$event['year'], 0, 'L');
+			$pdf->MultiCell(125, round($card['event_font_size'] * 1.2), $event['main_series_long']."\n".$event['place'].' '.$event['year'], 0, 'L');
 			
 			// name
 			$pdf->SetXY($card['margin'] + $left, $pdf->GetY() + $card['margin'] * 1.2);

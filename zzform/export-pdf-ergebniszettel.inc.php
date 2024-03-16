@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017, 2019-2021, 2023 Gustaf Mossakowski
+ * @copyright Copyright © 2017, 2019-2021, 2023-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -83,8 +83,8 @@ function mf_tournaments_export_pdf_ergebniszettel($ops) {
 		$length = $pdf->GetStringWidth($line[$nos['event_id']]['text']);
 		$pdf->Cell($length, 14, $line[$nos['event_id']]['text'], 0, 0, 'L');
 		$pdf->setFont('FiraSans-Regular', '', 11);
-		$length_2 = $pdf->GetStringWidth(' '.$event['turnierort'].' '.$event['year']);
-		$pdf->Cell($length_2, 14, ' '.$event['turnierort'].' '.$event['year'], 0, 0, 'L');
+		$length_2 = $pdf->GetStringWidth(' '.$event['place'].' '.$event['year']);
+		$pdf->Cell($length_2, 14, ' '.$event['place'].' '.$event['year'], 0, 0, 'L');
 		// $line[$nos['runde_no']]
 		$pdf->setFont('FiraSans-SemiBold', '', 11);
 		$pdf->Cell(257 - $length - $length_2, 14, ' '.$line[$nos['runde_no']]['text'].'. Runde', 0, 1, 'L');

@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -337,7 +337,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	
 	$tabelle['partien'] = $event['partien'] ? $event['partien'] : NULL;
 	$tabelle['duration'] = $event['duration'];
-	$tabelle['turnierort'] = $event['turnierort'];
+	$tabelle['place'] = $event['place'];
 	
 	$tabelle['endstand'] = $event['endstand'] ? 1 : NULL;
 	$tabelle['live'] = $event['live'] ? 1 : NULL;

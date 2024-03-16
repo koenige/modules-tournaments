@@ -5,11 +5,11 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2014-2023 Gustaf Mossakowski
+# @copyright Copyright © 2014-2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>%%% item event %%%
-<br>%%% item duration wrap_date %%% %%% item turnierort "<em>in %s</em>" %%%</h1>
+<br>%%% item duration wrap_date %%% %%% item place "<em>in %s</em>" %%%</h1>
 
 %%% condition if internal %%%
 <div class="infocol">
@@ -35,13 +35,13 @@
 %%% condition if tournaments %%%<strong>%%% condition endif %%%
 <a href="../../%%% item identifier %%%/">%%% item event %%%</a>
 %%% condition if tournaments %%%</strong>%%% condition endif %%%
-%%% condition unless place_equal %%%%%% item turnierort " in %s" %%%%%% condition endif %%%
+%%% condition unless place_equal %%%%%% item place " in %s" %%%%%% condition endif %%%
 %%% condition if tournaments %%%
 <p><em>Qualifikation:</em></p>
 <ul>
 %%% loop tournaments %%%
 <li>%%% item duration wrap_date %%%%%% condition unless date_end %%%%%% item time_begin wrap_time ", %s Uhr" %%%%%% condition endif %%%: <a href="../../%%% item identifier %%%/">%%% item event %%%</a>
-%%% condition unless place_equal %%%%%% item turnierort " in %s" %%%%%% condition endif %%%
+%%% condition unless place_equal %%%%%% item place " in %s" %%%%%% condition endif %%%
 %%% loop end %%%
 </ul>
 %%% condition endif %%%

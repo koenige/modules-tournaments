@@ -7,11 +7,11 @@
 # @author Erik Kothe <kontakt@errikkothe.de>
 # @author Gustaf Mossakowski <gustaf@koenige.org>
 # @copyright Copyright © 2018-2022 Erik Kothe
-# @copyright Copyright © 2022 Gustaf Mossakowski
+# @copyright Copyright © 2022, 2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Brett-Nachricht an <a href="../">%%% item contact %%%</a>
-<br><a href="../../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item turnierort "<em>in %s</em>" %%%</h1>
+<br><a href="../../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
 %%% condition if news_inactive %%%
 <p>Für dieses Jahr sind die Brettgrüße geschlossen.</p>

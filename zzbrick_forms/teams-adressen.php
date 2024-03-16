@@ -2,7 +2,7 @@
 
 // Zugzwang Project
 // deutsche-schachjugend.de
-// Copyright (c) 2017-2023 Gustaf Mossakowski <gustaf@koenige.org>
+// Copyright (c) 2017-2024 Gustaf Mossakowski <gustaf@koenige.org>
 // Skript: Kontaktdaten einer Person eines Teams eines Turniers
 
 
@@ -104,6 +104,6 @@ $zz['page']['breadcrumbs'][] = sprintf('<a href="../">%s</a>', $organisation);
 $zz['page']['breadcrumbs'][]['title'] = 'Adressen';
 
 $zz['title'] = '<a href="../">'.$type.' '.$organisation.'</a>: Adressen
-	<br><a href="../../">'.$brick['data']['event'].' '.wrap_date($brick['data']['duration']).'</a> <em>in '.$brick['data']['turnierort'].'</em>';
+	<br><a href="../../">'.$brick['data']['event'].' '.wrap_date($brick['data']['duration']).'</a> <em>in '.$brick['data']['place'].'</em>';
 
 $zz['page']['referer'] = '../';

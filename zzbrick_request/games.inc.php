@@ -672,7 +672,7 @@ function mod_tournaments_games_html($event, $settings) {
 		$event['event_id'], $runde, $tisch, $brett
 	);
 	$partie = wrap_db_fetch($sql);
-	$copy_fields = ['main_series_path', 'main_series', 'duration', 'turnierort'];
+	$copy_fields = ['main_series_path', 'main_series', 'duration', 'place'];
 	foreach ($copy_fields as $copy_field)
 		$partie[$copy_field] = $event[$copy_field];
 	if (!$partie) return false;

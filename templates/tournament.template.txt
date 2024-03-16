@@ -9,7 +9,7 @@
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>%%% item event %%%<br>
-%%% item duration wrap_date %%% %%% item turnierort "<em>in %s</em>"%%%</h1>
+%%% item duration wrap_date %%% %%% item place "<em>in %s</em>"%%%</h1>
 
 %%% condition if team_abgesagt %%%
 <p class="error">Schade. Wir haben Deine Absage erhalten.</p>
