@@ -288,7 +288,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	}
 
 	if (empty($event['einzel']) AND $event['latitude'] AND !$internal) {
-		$page['head'] = wrap_template('termin-map-head');
+		$page['head'] = wrap_template('leaflet-head');
 		$event['map'] = my_teilnehmerkarte($event);
 	}
 

@@ -162,6 +162,7 @@ nicht abschließend geprüft.)</em></p>
 %%% condition if map %%%
 <div class="mapverein">
 <div id="mapverein"> </div>
+%%% template leaflet-js %%%
 <script type="text/javascript">
 	%%% template leaflet-tiles-mapbox %%%
 

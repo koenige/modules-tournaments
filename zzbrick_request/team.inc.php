@@ -119,7 +119,7 @@ function mod_tournaments_team($vars, $settings, $data) {
 	$page['link']['prev'][0]['title'] = 'Vorherige/r in Setzliste';
 
 	if (!empty($data['latitude'])) {
-		$page['head'] = wrap_template('termin-map-head');
+		$page['head'] = wrap_template('leaflet-head');
 		$data['map'] = true;
 	}
 
