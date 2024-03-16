@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -18,8 +18,7 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 	// displayed on this website?
 	if (!$internal and !$event['website_id']) return false;
 
-	$sql = 'SELECT 
-			places.contact AS ort, takes_place, events.description
+	$sql = 'SELECT takes_place, events.description
 			, series.description AS series_description
 			, SUBSTRING_INDEX(series.path, "/", -1) AS series_path
 			, website_org.contact_abbr
@@ -29,8 +28,6 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 		LEFT JOIN events_websites
 			ON events.event_id = events_websites.event_id
 			AND events_websites.website_id = %d
-		LEFT JOIN contacts places
-			ON places.contact_id = events.place_contact_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
 		WHERE events.event_id = %d
