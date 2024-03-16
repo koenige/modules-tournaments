@@ -83,6 +83,7 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 			ON addresses.contact_id = places.contact_id
 		WHERE series.main_category_id = %d
 		AND IFNULL(event_year, YEAR(date_begin)) = %d
+		AND NOT ISNULL(events_websites.website_id)
 		ORDER BY series.sequence, date_begin, events.identifier';
 	$sql = sprintf($sql
 		, wrap_id('usergroups', 'spieler')
