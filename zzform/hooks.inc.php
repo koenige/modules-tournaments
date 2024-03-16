@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -355,7 +355,7 @@ function mf_tournaments_remarks_mail($ops) {
 		if ($record['benachrichtigung'] !== 'ja') continue;
 
 		$sql = 'SELECT event
-				, places.contact AS ort
+				, places.contact AS place_contact
 				, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
 				, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 				, events.identifier AS event_identifier
