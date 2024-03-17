@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2013-2016, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2013-2016, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -92,14 +92,14 @@ function mod_tournaments_make_swtwriter($vars, $settings, $event) {
 			// 1046, 2038
 			if ($token['content'] == 1012) {
 				// 1012 MNr. Rangliste
-				$team_id = mod_tournaments_make_swtwriter_read_id($handle, $token, 'team_id', 'teams', $event['event_id']);
+				$team_id = mod_tournaments_make_swtwriter_read_id($handle, $token, 'team_id', $event['event_id']);
 			} elseif ($token['content'] == 1046) {
 				// 1046 Team Info4
 				$result = mod_tournaments_make_swtwriter_write($handle, $token, 'team_id', $team_id);
 				if ($result) $writer['changes_team_id']++;
 			} elseif ($token['content'] == 2020) {
 				// 2020 Spieler TNr.-ID hex
-				$person_id = mod_tournaments_make_swtwriter_read_id($handle, $token, 'person_id', 'participations', $event['event_id']);
+				$person_id = mod_tournaments_make_swtwriter_read_id($handle, $token, 'person_id', $event['event_id']);
 			} elseif ($token['content'] == 2038) {
 				// 2038 Spieler Info4
 				$result = mod_tournaments_make_swtwriter_write($handle, $token, 'person_id', $person_id);
@@ -131,17 +131,26 @@ function mod_tournaments_make_swtwriter($vars, $settings, $event) {
  * @param resource $handle
  * @param array $token
  * @param string $field
- * @param string $table
  * @param int $event_id
  * @return int $id
  */
-function mod_tournaments_make_swtwriter_read_id($handle, $token, $field, $table, $event_id) {
+function mod_tournaments_make_swtwriter_read_id($handle, $token, $field, $event_id) {
 	fseek($handle, $token['begin']);
 	$string = fread($handle, $token['end'] - $token['begin'] + 1);
-	$sql = 'SELECT %s
-		FROM %s
-		WHERE event_id = %d AND fremdschluessel = %d';
-	$sql = sprintf($sql, $field, $table, $event_id, hexdec(bin2hex(strrev($string))));
+	switch ($field) {
+	case 'team_id':
+		$sql = 'SELECT team_id
+			FROM teams
+			WHERE event_id = %d AND fremdschluessel = %d';
+		break;
+	case 'person_id':
+		$sql = 'SELECT person_id
+			FROM participations
+			LEFT JOIN persons USING (contact_id)
+			WHERE event_id = %d AND fremdschluessel = %d';
+		break;
+	}
+	$sql = sprintf($sql, $event_id, hexdec(bin2hex(strrev($string))));
 	$id = wrap_db_fetch($sql, '', 'single value');
 	return $id;
 }
