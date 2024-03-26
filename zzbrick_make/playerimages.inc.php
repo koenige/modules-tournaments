@@ -10,13 +10,14 @@
  * @author Erik Kothe <kontakt@erikkothe.de>
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2017 Erik Kothe
- * @copyright Copyright © 2017, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2017, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
 function mod_tournaments_make_playerimages($params, $settings, $event) {
-	$event_ids = mf_tournaments_series_events($event['event_id']);
+	wrap_package_activate('events');
+	$event_ids = mf_events_subevents($event['event_id']);
 	$event_ids[] = $event['event_id'];
 
 	$sql = 'SELECT person_id, participation_id

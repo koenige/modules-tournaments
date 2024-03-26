@@ -17,7 +17,8 @@ $zz = zzform_include('spielernachrichten');
 
 $event_ids = [];
 if (!empty($brick['data']['event_id'])) {
-	$event_ids = mf_tournaments_series_events($brick['data']['event_id']);
+	wrap_package_activate('events');
+	$event_ids = mf_events_subevents($brick['data']['event_id']);
 	$zz['sql'] = wrap_edit_sql($zz['sql'], 'WHERE', sprintf('event_id IN (%s)', implode(',', $event_ids)));
 	$zz['title'] .= ': <br>'.$brick['data']['series_short'].' '.$brick['data']['year'];
 }

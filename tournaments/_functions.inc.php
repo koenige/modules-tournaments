@@ -194,26 +194,6 @@ function mf_tournaments_final_standings($event_ids) {
 }
 
 /**
- * Zugehörige Teiltermine von Hauptreihe ermitteln
- *
- * @param int $event_id
- * @return array
- */
-function mf_tournaments_series_events($event_id) {
-	$sql = 'SELECT events.event_id
-		FROM events
-		LEFT JOIN categories series
-			ON events.series_category_id = series.category_id
-		LEFT JOIN events main_events
-			ON main_events.series_category_id = series.main_category_id
-		AND IFNULL(main_events.event_year, YEAR(main_events.date_begin)) = IFNULL(events.event_year, YEAR(events.date_begin))
-		WHERE main_events.event_id = %d';
-	$sql = sprintf($sql, $event_id);
-	$event_ids = wrap_db_fetch($sql, '_dummy_', 'single value');
-	return $event_ids;
-}
-
-/**
  * get all federations
  *
  * @string $id_field_name (optional)
