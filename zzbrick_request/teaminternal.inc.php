@@ -159,7 +159,8 @@ Bei Absage wird ebenfalls der angekreuzte Text geloggt, der Status
 aber auf gelöscht gestellt. Eine Meldung oder Statusänderung ist dann
 nicht mehr möglich.
 */
-		$values['POST']['anmerkung'] = $data['cancellation'].
+		$values['POST']['anmerkung'] = $data['cancellation'] ?? 'Wir nehmen nicht teil.';
+		$values['POST']['anmerkung'] .= 
 			(!empty($_POST['bemerkungen']) ? ' – '.$_POST['bemerkungen'] : '');
 		$values['POST']['team_id'] = $data['team_id'];
 		$values['POST']['anmerkung_status'] = 'offen';
@@ -188,7 +189,8 @@ kann ganz normal melden. Dazu wird im Hintergrund die Zusage mit
 Termin, Team, Zusagetext und Timestamp in einer Logtabelle
 gespeichert.
 		*/
-		$values['POST']['anmerkung'] = $data['acceptance'].
+		$values['POST']['anmerkung'] = $data['acceptance'] ?? 'Wir nehmen teil und akzeptieren die Bedingungen aus der Ausschreibung.';
+		$values['POST']['anmerkung'] .= 
 			(!empty($_POST['bemerkungen']) ? ' – '.$_POST['bemerkungen'] : '');
 		$values['POST']['team_id'] = $data['team_id'];
 		$values['POST']['anmerkung_status'] = !empty($_POST['bemerkungen']) ? 'offen' : 'erledigt';
@@ -211,8 +213,9 @@ dem Freitextfeld. Dadurch kann zu einem späteren Zeitpunkt zu- oder
 abgesagt werden oder auch zwischendurch eine Nachricht geschrieben
 werden.
 */
-		$values['POST']['anmerkung'] = $data['delay']
-			.(!empty($_POST['bemerkungen']) ? ' – '.$_POST['bemerkungen'] : '');
+		$values['POST']['anmerkung'] = $data['delay'] ?? 'Wir bitten um Verlängerung der Entscheidungsfrist.';
+		$values['POST']['anmerkung'] .= 
+			(!empty($_POST['bemerkungen']) ? ' – '.$_POST['bemerkungen'] : '');
 		$values['POST']['team_id'] = $data['team_id'];
 		$values['POST']['anmerkung_status'] = 'offen';
 		$values['POST']['benachrichtigung'] = 'ja';
