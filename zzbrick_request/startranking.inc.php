@@ -89,7 +89,7 @@ function mod_tournaments_startranking_single($event) {
 	// @todo Sortierung nach DWZ oder Elo, je nach Turniereinstellung
 	$sql = 'SELECT person_id
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
-			, CONCAT(t_nachname, ", ", t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), "")) AS nachname_vorname
+			, CONCAT(t_nachname, ", ", t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), "")) AS last_first
 			, t_extra
 			, t_verein
 			, t_dwz, t_elo, t_fidetitel

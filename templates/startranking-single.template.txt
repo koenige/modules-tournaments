@@ -47,7 +47,7 @@
 <td class="number longer">%%% item fidetitel_lang "<abbr title='%s'>" %%%%%% item t_fidetitel "%s" %%%%%% item fidetitel_lang "</abbr>" %%%</td>
 %%% condition endif %%%
 <td class="person">
-<span class="sortonly">%%% item nachname_vorname %%%</span>
+<span class="sortonly">%%% item last_first %%%</span>
 <span class="shorter">%%% item fidetitel_lang "<abbr title='%s'>" %%%%%% item t_fidetitel "%s" %%%%%% item fidetitel_lang "</abbr>" %%%</span> 
 %%% condition if setzliste_no %%%<a href="../spieler/%%% item setzliste_no %%%/">%%% condition endif %%%
 %%% item person %%%
