@@ -44,6 +44,8 @@ function mod_tournaments_placeholder_team($brick) {
 			, CONCAT("event_id:", events.event_id) AS event_rights
 			, CONCAT("team_id:", team_id) AS team_rights
 			, place_categories.parameters
+			, tournaments.urkunde_parameter AS tournament_parameters
+			, series.parameters AS series_parameters
 		FROM teams
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN tournaments USING (event_id)
@@ -75,9 +77,14 @@ function mod_tournaments_placeholder_team($brick) {
 	if ($team['parameters']) {
 		parse_str($team['parameters'], $parameters);
 		$team += $parameters;
+		wrap_module_parameters('events', $team['parameters'], false);
 	}
 	if ($team['tournament_form_parameters'])
 		parse_str($team['tournament_form_parameters'], $team['tournament_form_parameters']);
+	if ($team['series_parameters'])
+		wrap_module_parameters('tournaments', $team['series_parameters'], false);
+	if ($team['tournament_parameters'])
+		wrap_module_parameters('tournaments', $team['tournament_parameters'], false);
 
 	if (!empty($brick['local_settings']['internal']) AND empty($brick['local_settings']['no_team_breadcrumbs'])) {
 		$bc_template = '<a href="'.wrap_setting('events_internal_path').'/%s/">%s</a>';
