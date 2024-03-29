@@ -387,18 +387,15 @@ function mod_tournaments_make_swtimport_delete($ids, $event_id, $type) {
 		$table = 'teams';
 		$id_source = 'team_hex';
 		$key = 'Teams';
-		$where = '';
-		$status_field_name = 'team_status';
-		$status = 'Löschung';
+		$where[] = 'team_status = "Löschung"';
 		break;
 	case 'participations':
 		$id_field = 'participation_id';
 		$table = 'participations';
 		$id_source = 'participations';
 		$key = 'Teilnahmen (Spieler)';
-		$where = sprintf(' AND usergroup_id = %d', wrap_id('usergroups', 'spieler'));
-		$status_field_name = 'status_category_id';
-		$status = wrap_category_id('participation-status/deleted');
+		$where[] = sprintf('usergroup_id = %d', wrap_id('usergroups', 'spieler'));
+		$where[] = sprintf('status_category_id = %d', wrap_category_id('participation-status/deleted'));
 		break;
 	default:
 		wrap_error(sprintf('Löschen: Typ nicht unterstützt (%s)', $typ));
@@ -409,27 +406,21 @@ function mod_tournaments_make_swtimport_delete($ids, $event_id, $type) {
 		FROM %s
 		WHERE event_id = %d
 		AND %s NOT IN (%s)
-		%s';
-	$sql = sprintf($sql, $id_field, $table, $event_id, $id_field, implode(',', $ids[$id_source]), $where);
-	$loeschen_ids = wrap_db_fetch($sql);
+		AND %s';
+	$sql = sprintf($sql
+		, $id_field
+		, $table
+		, $event_id
+		, $id_field
+		, implode(',', $ids[$id_source])
+		, implode(' AND ', $where)
+	);
+	$deletable_ids = wrap_db_fetch($sql);
 
-	foreach ($loeschen_ids as $id) {
-		$values = [];
-		$values['action'] = 'delete';
-		if ($status_field_name === 'status_category_id')
-			$values['ids'] = ['status_category_id'];
-		$values['POST'][$id_field] = $id;
-		$values['POST'][$status_field_name] = $status;
-		$ops = zzform_multi($table, $values);
-		if (!$ops['id']) {
-			wrap_error(sprintf('ID %d (%s) konnte nicht gelöscht werden.', $id, $table));
-		} else {
-			if (!isset($ids['t'][$key][$ops['result']])) {
-				$ids['t'][$key][$ops['result']] = 0;
-			}
-			$ids['t'][$key][$ops['result']]++;
-		}
-	}
+	$deleted = zzform_delete($table, $deletable_ids);
+	if (!isset($ids['t'][$key]['successful_delete']))
+		$ids['t'][$key]['successful_delete'] = 0;
+	$ids['t'][$key]['successful_delete'] += count($deleted);
 	return $ids;
 }
 
@@ -1112,29 +1103,20 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
  * Überzählige Partien nach SWT-Import löschen
  *
  * @param int $event_id
- * @param array $partie_ids
+ * @param array $game_ids
  * @return void
  */
-function mod_tournaments_make_swtimport_partien_loeschen($event_id, $partie_ids) {
-	if (!$partie_ids) return;
+function mod_tournaments_make_swtimport_partien_loeschen($event_id, $game_ids) {
+	if (!$game_ids) return;
 
 	$sql = 'SELECT partie_id FROM partien
 		WHERE event_id = %d
 		AND partie_id NOT IN (%s)';
-	$sql = sprintf($sql, $event_id, implode(',', $partie_ids));
-	$partie_ids = wrap_db_fetch($sql, 'partie_id', 'single value');
-	if (!$partie_ids) return;
+	$sql = sprintf($sql, $event_id, implode(',', $game_ids));
+	$game_ids = wrap_db_fetch($sql, 'partie_id', 'single value');
+	if (!$game_ids) return;
 
-	$values = [
-		'action' => 'delete'
-	];
-	foreach ($partie_ids as $partie_id) {
-		$values['POST']['partie_id'] = $partie_id;
-		$ops = zzform_multi('partien', $values);
-		if (!$ops['id']) {
-			wrap_error(sprintf('Partie %s konnte nicht gelöscht werden: ', $partie_id).implode("\n", $ops['error']));
-		}
-	}
+	zzform_delete('partien', $game_ids);
 }
 
 /**
