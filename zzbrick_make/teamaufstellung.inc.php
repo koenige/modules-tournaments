@@ -172,6 +172,8 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 							$data['post_geschlecht_m'] = true;
 						elseif ($postdata['geschlecht'] === 'w')
 							$data['post_geschlecht_w'] = true;
+						elseif ($postdata['geschlecht'] === 'd')
+							$data['post_geschlecht_d'] = true;
 						// Keinen Spieler gefunden
 						if (!empty($data['tournament_form_parameters']['mitglied'])) {
 							// DSB-Mitgliedschaft erforderlich
@@ -181,7 +183,14 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 						} else {
 							// Turniere ohne erforderliche DSB-Mitgliedschaft:
 							// Option, Spieler hinzuzufügen
-							$data['neu_spieler_hinzufuegen'] = true;
+							$required_fields = ['first_name', 'last_name', 'geschlecht', 'date_of_birth'];
+							$complete = true;
+							foreach ($required_fields as $required_field)
+								if (empty($postdata[$required_field])) $complete = false;
+							if ($complete)
+								$data['neu_spieler_hinzufuegen'] = true;
+							else
+								$data['new_player_more_data'] = true;
 						}
 					}
 				}
@@ -204,8 +213,8 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 					if ($ops) $changed = true;
 				} else {
 					// Aus Rangliste gelöscht
-					$ops = cms_team_spieler_delete($id);
-					if ($ops) $changed = true;
+					$ids = zzform_delete('participations', $id);
+					if ($ids) $changed = true;
 				}
 			}
 		}
@@ -314,23 +323,6 @@ function cms_team_spieler_update($id, $rangliste_no, $gastspieler, $data) {
 	$ops = zzform_multi('participations', $values);
 	if (!$ops['id']) {
 		wrap_error(sprintf('Teilnahme für Person mit ID %d konnte nicht aktualisiert werden', $id), E_USER_ERROR);
-	}
-	return $ops;
-}
-
-/**
- * Teilnehmerdaten löschen
- *
- * @param int $id
- * @return array $ops
- */
-function cms_team_spieler_delete($id) {
-	$values = [];
-	$values['action'] = 'delete';
-	$values['POST']['participation_id'] = $id;
-	$ops = zzform_multi('participations', $values);
-	if (!$ops['id']) {
-		wrap_error(sprintf('Teilnahme für Person mit ID %d konnte nicht gelöscht werden', $id), E_USER_ERROR);
 	}
 	return $ops;
 }
