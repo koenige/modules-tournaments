@@ -66,7 +66,7 @@ unset($zz['fields'][17]);
 // Buchungskategorie
 $zz['fields'][19]['type'] = 'hidden';
 $zz['fields'][19]['class'] = 'hidden';
-$zz['fields'][19]['default'] = wrap_category_id('buchungen/buchung');
+$zz['fields'][19]['default'] = wrap_category_id('costs/buchungen/buchung');
 
 $zz['hooks']['before_upload'] = 'my_buchung';
 
