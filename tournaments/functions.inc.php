@@ -602,8 +602,8 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 function mf_tournaments_team_bookings($team_ids, $event) {
 	$sql = 'SELECT team_id, buchung_id
 			, gruppe, anzahl_tage, anzahl_maennlich, anzahl_weiblich
-			, IFNULL(kosten, buchung) AS kosten
-			, kosten_betrag, kosten_waehrung
+			, IFNULL(product, buchung) AS booking
+			, price, currency
 			, betrag, betrag_waehrung
 			, anmerkungen
 			, (CASE WHEN kosten_status = "offen" THEN "vielleicht"
@@ -619,35 +619,35 @@ function mf_tournaments_team_bookings($team_ids, $event) {
 		WHERE team_id IN (%s)
 		ORDER BY categories.sequence, category, gruppe';
 	$sql = sprintf($sql, is_array($team_ids) ? implode(',', $team_ids) : $team_ids);
-	$alle_kosten = wrap_db_fetch($sql, ['team_id', 'buchung_id']);
-	if (!$alle_kosten) return [];
+	$bookings = wrap_db_fetch($sql, ['team_id', 'buchung_id']);
+	if (!$bookings) return [];
 	$teams = [];
-	foreach ($alle_kosten as $id => $team_kosten) {
-		$teams[$id]['betrag'] = 0;
-		$teams[$id]['tage_teilnehmer'] = 0;
-		$teams[$id]['tage_betreuer'] = 0;
-		$teams[$id]['kosten'] = $team_kosten;
-		foreach ($team_kosten as $k_id => $kosten) {
+	foreach ($bookings as $team_id => $bookings_per_team) {
+		$teams[$team_id]['betrag'] = 0;
+		$teams[$team_id]['tage_teilnehmer'] = 0;
+		$teams[$team_id]['tage_betreuer'] = 0;
+		$teams[$team_id]['bookings'] = $bookings_per_team;
+		foreach ($bookings_per_team as $booking_id => $booking) {
 			// Bedingung für komplett:
 			// min. min_spieler * dauer_tage für Teilnehmer
 			// min. dauer_tage für Betreuer
-			if ($kosten['kosten_status'] === 'nein' OR $kosten['kosten_status'] === 'befreit') {
-				$teams[$id]['kosten'][$k_id]['betrag'] = 0;
-				$teams[$id]['kosten'][$k_id]['gelöscht'] = true;
+			if ($booking['kosten_status'] === 'nein' OR $booking['kosten_status'] === 'befreit') {
+				$teams[$team_id]['bookings'][$booking_id]['betrag'] = 0;
+				$teams[$team_id]['bookings'][$booking_id]['gelöscht'] = true;
 				continue;
 			}
-			$tage = $kosten['anzahl_tage'] * ($kosten['anzahl_maennlich'] + $kosten['anzahl_weiblich']);
-			if ($kosten['gruppe'] === 'Teilnehmer') {
-				$teams[$id]['tage_teilnehmer'] += $tage;
-			} elseif ($kosten['gruppe'] === 'Betreuer') {
-				$teams[$id]['tage_betreuer'] += $tage;
+			$tage = $booking['anzahl_tage'] * ($booking['anzahl_maennlich'] + $booking['anzahl_weiblich']);
+			if ($booking['gruppe'] === 'Teilnehmer') {
+				$teams[$team_id]['tage_teilnehmer'] += $tage;
+			} elseif ($booking['gruppe'] === 'Betreuer') {
+				$teams[$team_id]['tage_betreuer'] += $tage;
 			}
-			$teams[$id]['betrag'] += $kosten['betrag'];
-			$teams[$id]['betrag_waehrung'] = $kosten['betrag_waehrung'];
+			$teams[$team_id]['betrag'] += $booking['betrag'];
+			$teams[$team_id]['betrag_waehrung'] = $booking['betrag_waehrung'];
 		}
-		if ($teams[$id]['tage_betreuer'] >= $event['dauer_tage']
-			AND $teams[$id]['tage_teilnehmer'] >= ($event['dauer_tage'] * $event['bretter_min'])) {
-			$teams[$id]['buchung_komplett'] = true;	
+		if ($teams[$team_id]['tage_betreuer'] >= $event['dauer_tage']
+			AND $teams[$team_id]['tage_teilnehmer'] >= ($event['dauer_tage'] * $event['bretter_min'])) {
+			$teams[$team_id]['buchung_komplett'] = true;	
 		}
 	}
 	if (is_array($team_ids)) return $teams;

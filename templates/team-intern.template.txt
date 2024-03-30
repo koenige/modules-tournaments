@@ -141,7 +141,7 @@ Noch nicht angegeben.
 %%% condition if zimmerbuchung %%%
 <h3>4. Zimmerbuchung %%% condition if bearbeiten_sonstige %%%<small>(<a href="buchung/">Bearbeiten</a>)</small>%%% condition endif %%%</h3>
 
-%%% condition if kosten %%%
+%%% condition if bookings %%%
 <div class="results">
 <table>
 <thead>
@@ -156,11 +156,11 @@ Noch nicht angegeben.
 </tr>
 </tfoot>
 <tbody>
-%%% loop kosten %%%
+%%% loop bookings %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
-<td>%%% item gelöscht "<del>" %%%%%% item usergroup %%%%%% item gelöscht "</del>" %%%</td>
-<td>%%% item gelöscht "<del>" %%%%%% item kosten %%%%%% item gelöscht "</del>" %%%</td>
-<td class="number">%%% item gelöscht "<del>" %%%%%% item kosten_betrag wrap_money %%%&nbsp;%%% item kosten_waehrung %%%%%% item gelöscht "</del>" %%%</td>
+<td>%%% item gelöscht "<del>" %%%%%% item gruppe %%%%%% item gelöscht "</del>" %%%</td>
+<td>%%% item gelöscht "<del>" %%%%%% item booking %%%%%% item gelöscht "</del>" %%%</td>
+<td class="number">%%% item gelöscht "<del>" %%%%%% item price wrap_money %%%&nbsp;%%% item currency %%%%%% item gelöscht "</del>" %%%</td>
 <td class="number">%%% item gelöscht "<del>" %%%%%% item anzahl_tage %%%%%% item gelöscht "</del>" %%%</td>
 <td class="number">%%% item gelöscht "<del>" %%%%%% item anzahl_weiblich %%%%%% item gelöscht "</del>" %%%</td>
 <td class="number">%%% item gelöscht "<del>" %%%%%% item anzahl_maennlich %%%%%% item gelöscht "</del>" %%%</td>
