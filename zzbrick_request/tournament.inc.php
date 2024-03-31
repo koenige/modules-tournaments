@@ -441,9 +441,8 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 			, IF(LENGTH(main_series.path) > 7, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "/", SUBSTRING_INDEX(main_series.path, "/", -1)), NULL) AS main_series_path
 			, platz_no, tabellenstand_id
 			, teams.club_contact_id
+			, (SELECT place FROM addresses WHERE addresses.contact_id = teams.club_contact_id ORDER BY address_id LIMIT 1) AS place
 		FROM teams
-		LEFT JOIN contacts organisationen
-			ON teams.club_contact_id = organisationen.contact_id
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
@@ -515,8 +514,8 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 	if ($dwz_sort AND !$event['round_no']) {
 		// Sortierung nach DWZ-Schnitt
 		foreach ($event['teams'] AS $key => $row) {
-			$teamname[$key] = $row['place'];
-			$verband[$key] = $row['country'];
+			$teamname[$key] = $row['place'].$row['team'].$row['team_no'];
+			$verband[$key] = $row['country'] ?? '';
 			$schnitt[$key] = $row['dwz_schnitt'] ?? NULL;
 		}
 		
