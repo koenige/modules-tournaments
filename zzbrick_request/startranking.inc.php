@@ -170,6 +170,7 @@ function mod_tournaments_startranking_team($event) {
 			, latitude, longitude, setzliste_no
 			, eintrag_datum
 			, teams.club_contact_id
+			, place
 		FROM teams
 		LEFT JOIN contacts organisationen
 			ON teams.club_contact_id = organisationen.contact_id
@@ -180,7 +181,7 @@ function mod_tournaments_startranking_team($event) {
 		LEFT JOIN contacts places
 			ON contacts_contacts.contact_id = places.contact_id
 		LEFT JOIN addresses
-			ON places.contact_id = addresses.contact_id
+			ON IFNULL(places.contact_id, organisationen.contact_id) = addresses.contact_id
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
@@ -196,6 +197,7 @@ function mod_tournaments_startranking_team($event) {
 	);
 	// @todo Klären, was passiert wenn mehr als 1 Ort zu Verein in Datenbank! (Reihenfolge-Feld einführen)
 	$event['teams'] = wrap_db_fetch($sql, 'team_id');
+	
 	if (!$event['teams']) wrap_quit(404); // es liegt noch keine Rangliste vor.
 	$event['teams'] = mf_tournaments_clubs_to_federations($event['teams'], 'club_contact_id');
 	$event['meldeliste'] = false;
@@ -220,7 +222,7 @@ function mod_tournaments_startranking_team($event) {
 	foreach ($event['teams'] AS $key => $row) {
 		if ($event['meldeliste']) $event['teams'][$key]['meldeliste'] = true;
 		if ($dwz_sortierung) {
-			$teamname[$key] = $row['place'];
+			$teamname[$key] = $row['place'].$row['team'].$row['team_no'];
 			$verband[$key] = $row['country'] ?? '';
 			$schnitt[$key] = $row['dwz_schnitt'] ?? NULL;
 			if ($schnitt[$key]) $event['dwz_schnitt'] = true;
