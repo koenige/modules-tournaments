@@ -345,7 +345,7 @@ function mf_tournaments_team_players($team_ids, $event) {
 	$alle_spieler = wrap_db_fetch($sql, ['team_id', 'person_id']);
 	if (!$alle_spieler) return [];
 	foreach ($alle_spieler as $id => $team_spieler) {
-		$team_spieler = mf_tournaments_person_identifiers($team_spieler, ['fide-id', 'zps']);
+		$team_spieler = mf_tournaments_person_identifiers($team_spieler);
 
 		$teams[$id]['spielberechtigt'] = true;
 		$teams[$id]['dwz_schnitt'] = 0;

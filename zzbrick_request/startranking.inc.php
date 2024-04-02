@@ -140,7 +140,7 @@ function mod_tournaments_startranking_single($event) {
 	$event['spieler'] = wrap_db_fetch($sql, 'person_id');
 	if (!$event['spieler']) return $event;
 	$event['spieler'] = mf_tournaments_clubs_to_federations($event['spieler'], 'club_contact_id');
-	$event['spieler'] = mf_tournaments_person_identifiers($event['spieler'], ['fide-id', 'zps']);
+	$event['spieler'] = mf_tournaments_person_identifiers($event['spieler']);
 	$event['zeige_dwz'] = false;
 	$event['zeige_elo'] = false;
 	$event['zeige_titel'] = false;
