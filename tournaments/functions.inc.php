@@ -744,7 +744,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 		ORDER BY %s';
 	$sql = sprintf($sql
 		, wrap_category_id('provider/e-mail')
-		, wrap_category_id('identifiers/zps')
+		, wrap_category_id('identifiers/pass_dsb')
 		, implode(',', array_keys($team_ids))
 		, $order_by
 	);

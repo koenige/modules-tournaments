@@ -60,8 +60,8 @@ function mod_tournaments_player($vars, $settings, $event) {
 		AND events.event_id = %d
 	';
 	$sql = sprintf($sql
-		, wrap_category_id('identifiers/zps')
-		, wrap_category_id('identifiers/fide-id')
+		, wrap_category_id('identifiers/pass_dsb')
+		, wrap_category_id('identifiers/id_fide')
 		, $vars[2]
 		, wrap_category_id('participation-status/participant')
 		, $event['event_id']

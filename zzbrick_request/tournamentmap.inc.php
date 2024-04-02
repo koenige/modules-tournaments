@@ -115,7 +115,7 @@ function mod_tournaments_tournamentmap_json($params) {
 	$sql = sprintf($sql
 		, wrap_category_id('provider/website')
 		, wrap_category_id('relation/venue')
-		, wrap_category_id('identifiers/zps')
+		, wrap_category_id('identifiers/pass_dsb')
 	);
 	$organisationen = wrap_db_fetch($sql, 'contact_id');
 
@@ -155,8 +155,8 @@ function mod_tournaments_tournamentmap_json($params) {
 		ORDER BY t_nachname, t_vorname
 	';
 	$sql = sprintf($sql,
-		wrap_category_id('identifiers/zps'),
-		wrap_category_id('identifiers/fide-id'),
+		wrap_category_id('identifiers/pass_dsb'),
+		wrap_category_id('identifiers/id_fide'),
 		wrap_db_escape($params[1]), $params[0],
 		wrap_id('usergroups', 'spieler'),
 		$federation ? sprintf(

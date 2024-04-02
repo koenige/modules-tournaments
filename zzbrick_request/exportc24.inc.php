@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2017-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -128,7 +128,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		ORDER BY team_id, brett_no, rang_no, IF(ISNULL(contacts_identifiers.identifier), 1, NULL), contacts_identifiers.identifier, participation_id';
 	$sql = sprintf($sql
 		, $brett_no ? 'brett_no' : 'rang_no'
-		, wrap_category_id('identifiers/fide-id')
+		, wrap_category_id('identifiers/id_fide')
 		, $event['event_id']
 		, wrap_id('usergroups', 'spieler')
 		, wrap_category_id('participation-status/participant')

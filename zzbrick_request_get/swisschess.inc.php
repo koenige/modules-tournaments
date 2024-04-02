@@ -81,9 +81,9 @@ function mod_tournaments_get_swisschess($vars) {
 		AND (ISNULL(teams.team_id) OR teams.team_status = "Teilnehmer")
 		ORDER BY team, team_no, rang_no, t_nachname, t_vorname';
 	$sql = sprintf($sql
-		, wrap_category_id('identifiers/zps')
-		, wrap_category_id('identifiers/fide-id')
-		, wrap_category_id('identifiers/pkz')
+		, wrap_category_id('identifiers/pass_dsb')
+		, wrap_category_id('identifiers/id_fide')
+		, wrap_category_id('identifiers/pass_dsb')
 		, $vars[0], wrap_db_escape($vars[1])
 		, wrap_id('usergroups', 'spieler')
 		, $where

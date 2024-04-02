@@ -118,8 +118,8 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 			WHERE contact_id = %d
 			AND ISNULL(participations.participation_id)
 			ORDER BY Spielername',
-			wrap_category_id('identifiers/zps'),
-			wrap_category_id('identifiers/zps'),
+			wrap_category_id('identifiers/pass_dsb'),
+			wrap_category_id('identifiers/pass_dsb'),
 			!empty($_GET['add']['usergroup_id']) ? $_GET['add']['usergroup_id'] : 0,
 			$brick['data']['event_id'],
 			$brick['data']['contact_id']
@@ -136,7 +136,7 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 				AND contacts_identifiers.current = "yes"
 				AND contacts_identifiers.identifier_category_id = %d
 			ORDER BY Spielername'
-			, wrap_category_id('identifiers/zps')
+			, wrap_category_id('identifiers/pass_dsb')
 		);
 		$zz['fields'][2]['sql_ignore'][] = 'voller_name';
 	}
