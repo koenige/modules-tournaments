@@ -64,9 +64,9 @@
 %%% condition endif %%%
 </td>
 %%% condition if zeige_dwz %%%
-<td class="number">%%% comment condition if player_id_dsb <a href="http://www.schachbund.de/spieler.html?zps=%/%% item player_id_dsb %/%%">%%%
+<td class="number">%%% comment condition if player_pass_dsb <a href="http://www.schachbund.de/spieler.html?zps=%/%% item player_pass_dsb %/%%">%%%
 %%% comment condition endif %%%
-%%% item t_dwz %%%%%% comment item player_id_dsb "</a>" %%%</td>
+%%% item t_dwz %%%%%% comment item player_pass_dsb "</a>" %%%</td>
 %%% condition endif %%%
 %%% condition if zeige_elo %%%
 <td class="number">

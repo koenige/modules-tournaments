@@ -726,7 +726,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 				WHEN spielberechtigt = "ja" THEN "ja"
 				ELSE NULL
 				END) AS status, spielberechtigt
-			, contacts_identifiers.identifier AS player_id_dsb
+			, contacts_identifiers.identifier AS player_pass_dsb
 		FROM participations
 		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN contacts USING (contact_id)
@@ -775,7 +775,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 			];
 		}
 		$i = 0;
-		$participations[$id]['player_ids_dsb'] = [];
+		$participations[$id]['player_passes_dsb'] = [];
 		$aeltester_spieler = 0;
 		foreach (array_keys($participations[$id]['spieler']) as $spieler_id) {
 			$i++;
@@ -783,8 +783,8 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 			$participations[$id]['spieler'][$spieler_id]['position'] = $i;
 			if (!empty($event['gastspieler_status']))
 				$participations[$id]['spieler'][$spieler_id]['gastspieler_status'] = 1;
-			if (!empty($participations[$id]['spieler'][$spieler_id]['player_id_dsb']))
-				$participations[$id]['player_ids_dsb'][] = $participations[$id]['spieler'][$spieler_id]['player_id_dsb'];
+			if (!empty($participations[$id]['spieler'][$spieler_id]['player_pass_dsb']))
+				$participations[$id]['player_passes_dsb'][] = $participations[$id]['spieler'][$spieler_id]['player_pass_dsb'];
 			if (empty($participations[$id]['spieler'][$spieler_id]['geburtsjahr'])) continue;
 			if ($participations[$id]['spieler'][$spieler_id]['geburtsjahr'] > $aeltester_spieler) {
 				$aeltester_spieler = $participations[$id]['spieler'][$spieler_id]['geburtsjahr'];
