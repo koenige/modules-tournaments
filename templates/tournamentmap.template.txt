@@ -30,6 +30,7 @@ Herkunftsorte der Spieler
 <p>Spielorte oder ungefähre Orte der Vereine der Teilnehmerinnen und Teilnehmer</p>
 </div>
 
+%%% template leaflet-js %%%
 <script type="text/javascript" src="%%% item contact ../ %%%../herkunftsorte%%% item federation_identifier "/%s" %%%.geojson"></script>
 <script type="text/javascript">
 	%%% template leaflet-tiles-mapbox %%%

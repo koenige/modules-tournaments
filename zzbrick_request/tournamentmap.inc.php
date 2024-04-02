@@ -25,6 +25,8 @@ function mod_tournaments_tournamentmap($vars, $settings, $event) {
 	if (str_ends_with(end($vars), '.geojson'))
 		return mod_tournaments_tournamentmap_json($vars);
 
+	wrap_package_activate('clubs'); // CSS, fullscreen #map
+
 	$federation = count($vars) === 3 ? array_pop($vars) : '';
 	if ($federation) {
 		$contact_ids = mod_tournaments_tournamentmap_federation($federation);
@@ -58,7 +60,8 @@ function mod_tournaments_tournamentmap($vars, $settings, $event) {
 	$players = wrap_db_fetch($sql, '', 'single value');
 	if (!$players) return false;
 	
-	$page['head'] = wrap_template('clubs-map-head');
+	wrap_setting('leaflet_markercluster', true);
+	$page['head'] = wrap_template('leaflet-head');
 
 	$page['title'] = 'Herkunftsorte der Spieler: '.$event['event'].' '.$event['year'];
 	if ($federation) $page['title'] .= ' – '.$event['contact'];
