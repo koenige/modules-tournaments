@@ -209,8 +209,14 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 				$id = substr($code, 4); 
 				if ($rangliste_no) {
 					// Rangliste geändert
-					$ops = cms_team_spieler_update($id, $rangliste_no, $gastspieler, $data);
-					if ($ops) $changed = true;
+					$line = [
+						'participation_id' => $id,
+						'rang_no' => $rangliste_no,
+						'gastspieler' =>  $data['gastspieler_status'] ?
+							($gastspieler ? 'ja' : 'nein') : NULL
+					];
+					$result = zzform_update('participations', $line, E_USER_ERROR);
+					if ($result) $changed = true;
 				} else {
 					// Aus Rangliste gelöscht
 					$ids = zzform_delete('participations', $id);
@@ -270,61 +276,24 @@ function cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler) {
 	$contact_id = my_person_speichern($spieler);
 
 	// direkte Speicherung in participations
-	$values = [];
-	$values['action'] = 'insert';
-	$values['ids'] = ['usergroup_id', 'event_id', 'team_id', 'contact_id', 'club_contact_id'];
-	$values['POST']['usergroup_id'] = wrap_id('usergroups', 'spieler');
-	$values['POST']['event_id'] = $data['event_id'];
-	$values['POST']['team_id'] = $data['team_id'];
-	$values['POST']['contact_id'] = $contact_id;
-	$values['POST']['rang_no'] = $rangliste_no;
-	$values['POST']['t_vorname'] = $spieler['first_name'];
-	$values['POST']['t_nachname'] = $spieler['last_name'];
-	// bei Nicht-DSB-Mitgliedern nicht vorhandene Daten
-	$values['POST']['club_contact_id'] = isset($spieler['contact_id']) ? $spieler['contact_id'] : '';
-	$values['POST']['t_verein'] = isset($spieler['contact']) ? $spieler['contact'] : '';
-	$values['POST']['t_dwz'] = isset($spieler['DWZ']) ? $spieler['DWZ'] : '';
-	$values['POST']['t_elo'] = isset($spieler['FIDE_Elo']) ? $spieler['FIDE_Elo'] : '';
-	$values['POST']['t_fidetitel'] = isset($spieler['FIDE_Titel']) ? $spieler['FIDE_Titel'] : '';
-
-	if ($data['gastspieler_status']) {
-		if ($gastspieler) $values['POST']['gastspieler'] = 'ja';
-		else $values['POST']['gastspieler'] = 'nein';
-	}
-	$ops = zzform_multi('participations', $values);
-	if (!$ops['id']) {
-		wrap_error(sprintf('Teilnahme für Kontakt mit ID %d konnte nicht hinzugefügt werden',
-			$contact_id), E_USER_ERROR);
-	}
+	$line = [
+		'usergroup_id' => wrap_id('usergroups', 'spieler'),
+		'event_id' => $data['event_id'],
+		'team_id' => $data['team_id'],
+		'contact_id' => $contact_id,
+		'rang_no' => $rangliste_no,
+		't_vorname' => $spieler['first_name'],
+		't_nachname' => $spieler['last_name'],
+		// bei Nicht-DSB-Mitgliedern nicht vorhandene Daten
+		'club_contact_id' => $spieler['club_contact_id'] ?? '',
+		't_verein' => $spieler['club_contact'] ?? '',
+		't_dwz' => $spieler['DWZ'] ?? '',
+		't_elo' => $spieler['FIDE_Elo'] ?? '',
+		't_fidetitel' => $spieler['FIDE_Titel'] ?? '',
+		'gastspieler' => $data['gastspieler_status'] ? ($gastspieler ? 'ja' : 'nein') : NULL
+	];
+	zzform_insert('participations', $line, E_USER_ERROR);
 	return true;
-}
-
-/**
- * Teilnehmerdaten aktualisieren
- *
- * @param int $id
- * @param int $rangliste_no
- * @param bool $gastspieler
- * @param array $data
- * @return array $ops
- */
-function cms_team_spieler_update($id, $rangliste_no, $gastspieler, $data) {
-	$values = [];
-	$values['action'] = 'update';
-	$values['POST']['participation_id'] = $id;
-	$values['POST']['rang_no'] = $rangliste_no;
-	if ($data['gastspieler_status']) {
-		if ($gastspieler) {
-			$values['POST']['gastspieler'] = 'ja';
-		} else {
-			$values['POST']['gastspieler'] = 'nein';
-		}
-	}
-	$ops = zzform_multi('participations', $values);
-	if (!$ops['id']) {
-		wrap_error(sprintf('Teilnahme für Person mit ID %d konnte nicht aktualisiert werden', $id), E_USER_ERROR);
-	}
-	return $ops;
 }
 
 /**
