@@ -37,6 +37,7 @@ DWZ: %%% comment condition if player_pass_dsb <a href="http://www.schachbund.de/
 %%% path ratings_fide_profile player_id_fide "html=<a href="%s">" %%%
 %%% item t_elo %%%
 %%% path ratings_fide_profile player_id_fide "html=</a>" %%%
+%%% condition endif %%%
 %%% condition else %%%
 keine
 %%% condition endif %%%
