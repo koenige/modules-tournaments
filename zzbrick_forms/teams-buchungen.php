@@ -34,7 +34,18 @@ $zz['record']['add'] = true; // nur eine Kategorie hinzufügbar
 
 $zz['fields'][2]['class'] = 'hidden';
 unset($zz['fields'][2]['link']);
-$zz['fields'][3]['sql'] .= sprintf(' AND event_id = %d', $brick['data']['event_id']);
+$zz['fields'][3]['sql'] = sprintf('SELECT costs.cost_id, product
+		, CONCAT(price, " ", currency) AS price
+		, haeufigkeit
+	FROM costs
+	LEFT JOIN costs_categories
+		ON costs.cost_id = costs_categories.cost_id
+		AND type_category_id = %d
+	LEFT JOIN categories
+		ON costs_categories.category_id = categories.category_id
+	WHERE categories.parameters LIKE "%%&teilnehmer=1%%"
+	AND event_id = %d
+', wrap_category_id('costs/buchungen'), $brick['data']['event_id']);
 $zz['fields'][5]['default'] = $brick['data']['dauer_tage'];
 $zz['fields'][6]['required'] = true;
 $zz['fields'][7]['required'] = true;
