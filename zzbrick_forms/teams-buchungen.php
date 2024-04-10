@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014, 2016-2020, 2022-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2014, 2016-2020, 2022-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -90,5 +90,7 @@ if (!brick_access_rights('Organisator', $brick['data']['event_rights'])
 	$zz['if'][2]['record']['delete'] = false;
 	$zz['if'][2]['record']['edit'] = false;
 }
+$zz['if'][10]['record']['edit'] = false;
+$zz['if'][10]['record']['delete'] = false;
 
 unset($zz['subtitle']);
