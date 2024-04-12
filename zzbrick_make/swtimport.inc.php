@@ -706,6 +706,17 @@ function mod_tournaments_make_swtimport_participations($event, $spielerliste, $i
 			$ids['t']['Teilnahmen (Spieler)'][$ops['result']] = 0;
 		}
 		$ids['t']['Teilnahmen (Spieler)'][$ops['result']]++;
+		if ($values['action'] === 'insert') {
+			if (wrap_category_id('participations/registration', 'check')) {
+				$line = [
+					'participation_id' => $ops['id'],
+					'category_id' => wrap_category_id('participations/registration/import'),
+					'type_category_id' => wrap_category_id('participations/registration'),
+					'sequence' => 1
+				];
+				zzform_insert('participations_categories', $line);
+			}
+		}
 	}
 	// @todo weitere Spieler, die nicht 
 	return $ids;

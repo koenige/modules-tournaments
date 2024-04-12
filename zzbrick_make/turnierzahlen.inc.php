@@ -160,14 +160,11 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 		}
 	}
 	if ($updated) {
-		$values = [];
-		$values['action'] = 'update';
-		$values['POST']['tournament_id'] = $event['tournament_id'];
-		$values['POST']['ratings_updated'] = date('Y-m-d');
-		$ops = zzform_multi('tournaments', $values);
-		if (empty($ops['id'])) {
-			wrap_log(sprintf('Unable to set `ratings_updated` for tournament %s', $event['identifier']));
-		}
+		$line = [
+			'tournament_id' => $event['tournament_id'],
+			'ratings_updated' => date('Y-m-d')
+		];
+		zzform_update('tournaments', $line);
 	}
 	$page['text'] = wrap_template('turnierzahlen', $data);
 	return $page;

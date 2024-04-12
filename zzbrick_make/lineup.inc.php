@@ -198,19 +198,12 @@ function mod_tournaments_make_lineup_boards($data) {
 		AND $data['board_count'] < $data['player_count']) {
 		$data['not_enough_players'] = true;
 	} else {
-		$values = [];
-		$values['action'] = 'update';
-		$values['ids'] = ['participation_id'];
 		foreach ($data['players'] as $player) {
-			$values['POST']['participation_id'] = $player['participation_id'];
-			$values['POST']['brett_no'] = $player['board_no'];
-			$ops = zzform_multi('participations', $values);
-			if (!$ops['id']) {
-				wrap_error(sprintf(
-					'Konnte Brettnummer nicht festlegen (Teilnahme-ID %d, Brett-Nr: %d)'
-					, $player['participation_id'], $player['board_no']
-				), E_USER_ERROR);
-			}
+			$line = [
+				'participation_id' => $player['participation_id'],
+				'brett_no' => $player['board_no']
+			];
+			zzform_update('participations', $line, E_USER_ERROR);
 		}
 		wrap_redirect_change('?board=1');
 	}

@@ -290,9 +290,13 @@ function cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler) {
 		't_dwz' => $spieler['DWZ'] ?? '',
 		't_elo' => $spieler['FIDE_Elo'] ?? '',
 		't_fidetitel' => $spieler['FIDE_Titel'] ?? '',
-		'gastspieler' => $data['gastspieler_status'] ? ($gastspieler ? 'ja' : 'nein') : NULL
+		'gastspieler' => $data['gastspieler_status'] ? ($gastspieler ? 'ja' : 'nein') : NULL,
 	];
-	zzform_insert('participations', $line, E_USER_ERROR);
+	if (wrap_category_id('participations/registration', 'check')) {
+		$line['participations_categories_'.wrap_category_id('participations/registration')][]['category_id']
+			= wrap_category_id('participations/registration/team');
+	}
+	$participation_id = zzform_insert('participations', $line, E_USER_ERROR);
 	return true;
 }
 
