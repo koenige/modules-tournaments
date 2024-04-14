@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2020-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2020-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -284,12 +284,6 @@ function mod_tournaments_make_lineup_round($data) {
 		$sql = sprintf($sql, $data['paarung_id']);
 		$games = wrap_db_fetch($sql, 'brett_no');
 
-		$values = [];
-		$values['ids'] = [
-			'event_id', 'paarung_id', 'weiss_person_id', 'schwarz_person_id',
-			'partiestatus_category_id'
-		];
-		
 		$home_team_first_board = 'schwarz';
 		$away_team_first_board = 'weiss';
 		if (!empty($data['home_team_first_board'])) {
@@ -310,45 +304,44 @@ function mod_tournaments_make_lineup_round($data) {
 				else $colour = $home_team_first_board;
 			}
 			$other_colour = ($colour === 'weiss') ? 'schwarz' : 'weiss';
-
-			$values['POST'] = [];
-			if (empty($games[$board_no])) {
-				$values['action'] = 'insert';
-				$values['POST']['partiestatus_category_id'] = wrap_category_id('partiestatus/laufend');
-				$values['POST']['event_id'] = $data['event_id'];
-				$values['POST']['runde_no'] = $data['current_round'];
-				$values['POST']['paarung_id'] = $data['paarung_id'];
-				$values['POST']['brett_no'] = $board_no;
-			} else {
-				$values['action'] = 'update';
-				$values['POST']['partie_id'] = $games[$board_no]['partie_id'];
-			}
-			$values['POST'][$colour.'_person_id'] = $player['person_id'];
+			
+			$line = [
+				'partie_id' => $games[$board_no]['partie_id'] ?? NULL,
+				$colour.'_person_id' => $player['person_id']
+			];
 			if (!empty($player['bye'])) {
-				$values['POST'][$colour.'_ergebnis'] = 0;
-				$values['POST'][$other_colour.'_ergebnis'] = 1;
-				$values['POST']['heim_wertung'] = $data['home_team'] ? 0 : 1;
-				$values['POST']['auswaerts_wertung'] = $data['home_team'] ? 1 : 0;
-				$values['POST']['partiestatus_category_id'] = wrap_category_id('partiestatus/kampflos');
+				$line[$colour.'_ergebnis'] = 0;
+				$line[$other_colour.'_ergebnis'] = 1;
+				$line['heim_wertung'] = $data['home_team'] ? 0 : 1;
+				$line['auswaerts_wertung'] = $data['home_team'] ? 1 : 0;
+				$line['partiestatus_category_id'] = wrap_category_id('partiestatus/kampflos');
 			}
-			$ops = zzform_multi('partien', $values);
-			if (!$ops['id']) {
+			if (!$line['partie_id']) {
+				$line['partiestatus_category_id'] = wrap_category_id('partiestatus/laufend');
+				$line['event_id'] = $data['event_id'];
+				$line['runde_no'] = $data['current_round'];
+				$line['paarung_id'] = $data['paarung_id'];
+				$line['brett_no'] = $board_no;
+				$game_id = zzform_insert('partien', $line);
+			} else {
+				$game_id = zzform_update('partien', $line);
+			}
+			if (is_null($game_id)) {
 				$error = true;
-				if ($values['action'] === 'insert') {
+				if (!$line['partie_id']) {
 					// if violation of UNIQUE: if insert then update
 					$sql = 'SELECT partie_id
 						FROM partien
 						WHERE paarung_id = %d AND brett_no = %d';
 					$sql = sprintf($sql, $data['paarung_id'], $board_no);
-					$partie_id = wrap_db_fetch($sql, '', 'single value');
-					if ($partie_id) {
-						$values['action'] = 'update';
-						$values['POST']['partie_id'] = $games[$board_no]['partie_id'];
-						if ($values['POST']['partiestatus_category_id'] === wrap_category_id('partiestatus/laufend')) {
-							unset($values['POST']['partiestatus_category_id']);
+					$game_id = wrap_db_fetch($sql, '', 'single value');
+					if ($game_id) {
+						$line['partie_id'] = $games[$board_no]['partie_id'];
+						if ($line['partiestatus_category_id'] === wrap_category_id('partiestatus/laufend')) {
+							unset($line['partiestatus_category_id']);
 						}
-						$ops = zzform_multi('partien', $values);
-						if ($ops['id']) $error = false;
+						$game_id = zzform_update('partien', $line);
+						if (!is_null($game_id)) $error = false;
 					}
 				}	
 				if ($error) {

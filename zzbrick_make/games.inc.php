@@ -226,16 +226,16 @@ function mod_tournaments_make_games($vars) {
 				if ($partien[$partie_id]['moves'] === $partie['Result']) continue;
 				if ($partien[$partie_id]['moves'] === '*') continue;
 			}
-			$values = [];
-			$values['action'] = 'update';
-			$values['POST']['partie_id'] = $partie_id;
+			$line = [
+				'partie_id' => $partie_id
+			];
 			// @todo check if it's only a comment
 			if ($comment = mf_chess_pgn_only_comment($partien[$partie_id]['moves'], $partien[$partie_id]['head']['Result'])) {
 				if (!empty($partien[$partie_id]['kommentar'])) continue;
 				if (!empty($partien[$partie_id]['pgn'])) continue;
-				$values['POST']['kommentar'] = $comment;
+				$line['kommentar'] = $comment;
 			} elseif (!in_array($partien[$partie_id]['moves'], ['*', '0-1', '1-0', '1/2-1/2'])) {
-				$values['POST']['pgn'] = $partien[$partie_id]['moves'];
+				$line['pgn'] = $partien[$partie_id]['moves'];
 			}
 			$ergebnis = mf_tournaments_pgn_result($partien[$partie_id]['moves'], $partien[$partie_id]['head']['Result']);
 			if ($ergebnis) {
@@ -245,17 +245,17 @@ function mod_tournaments_make_games($vars) {
 					$ergebnis['weiss'] = $schwarz;
 				}
 				if (!$partie['block_ergebnis_aus_pgn']) {
-					$values['POST']['weiss_ergebnis'] = $ergebnis['weiss'];
-					$values['POST']['schwarz_ergebnis'] = $ergebnis['schwarz'];
+					$line['weiss_ergebnis'] = $ergebnis['weiss'];
+					$line['schwarz_ergebnis'] = $ergebnis['schwarz'];
 					if ($event['event_category'] === 'mannschaft') {
 						switch ($partie['heim_spieler_farbe']) {
 						case 'schwarz':
-							$values['POST']['heim_wertung'] = $ergebnis['schwarz'];
-							$values['POST']['auswaerts_wertung'] = $ergebnis['weiss'];
+							$line['heim_wertung'] = $ergebnis['schwarz'];
+							$line['auswaerts_wertung'] = $ergebnis['weiss'];
 							break;
 						case 'weiß':
-							$values['POST']['heim_wertung'] = $ergebnis['weiss'];
-							$values['POST']['auswaerts_wertung'] = $ergebnis['schwarz'];
+							$line['heim_wertung'] = $ergebnis['weiss'];
+							$line['auswaerts_wertung'] = $ergebnis['schwarz'];
 							break;
 						}
 					}
@@ -278,27 +278,25 @@ function mod_tournaments_make_games($vars) {
 			}
 			$moves = mf_chess_pgn_to_html($partien[$partie_id]);
 			if ($partien[$partie_id]['moves'] !== '*') {
-				$values['POST']['eco'] = isset($partien[$partie_id]['head']['ECO']) ? $partien[$partie_id]['head']['ECO'] : '';
-				if ($values['POST']['eco'] === '*') $values['POST']['eco'] = '';
+				$line['eco'] = $partien[$partie_id]['head']['ECO'] ?? '';
+				if ($line['eco'] === '*') $line['eco'] = '';
 			}
-			$values['POST']['halbzuege'] = $moves['move'];
-			$values['POST']['vertauschte_farben'] = isset($partien[$partie_id]['vertauschte_farben']) ? 'ja' : 'nein';
-			if (!empty($moves['BlackClock'])) {
-				$values['POST']['schwarz_zeit'] = $moves['BlackClock'];
-			}
-			if (!empty($moves['WhiteClock'])) {
-				$values['POST']['weiss_zeit'] = $moves['WhiteClock'];
-			}
-			$ops = zzform_multi('partien', $values);
-			if (!$ops['id']) {
+			$line['halbzuege'] = $moves['move'];
+			$line['vertauschte_farben'] = isset($partien[$partie_id]['vertauschte_farben']) ? 'ja' : 'nein';
+			if (!empty($moves['BlackClock']))
+				$line['schwarz_zeit'] = $moves['BlackClock'];
+			if (!empty($moves['WhiteClock']))
+				$line['weiss_zeit'] = $moves['WhiteClock'];
+			$game_id = zzform_update('partien', $line);
+			if (is_null($game_id)) {
 				wrap_log(sprintf(
-					'PGN-Import: Partie %s-%s, %s %d, Runde %d konnte nicht importiert werden. Fehler: ',
+					'PGN-Import: Partie %s-%s, %s %d, Runde %d konnte nicht importiert werden.',
 					$partie['White'], $partie['Black'], $event['event'], $event['year'], $partie['runde_no']
-				).implode(', ', $ops['error']));
+				));
 				$event['db_errors']++;
-			} elseif ($ops['result'] === 'successful_update') {
+			} elseif ($game_id) {
 				$event['updates']++;
-			} elseif ($ops['result'] === 'no_update') {
+			} elseif ($game_id === 0) {
 				$event['no_updates']++;
 			}
 		} else {
@@ -314,12 +312,12 @@ function mod_tournaments_make_games($vars) {
 			$event['not_found']++;
 			/*
 			// @todo Sollte eine Partie gelöscht werden, falls vorhanden?
-			$values = [];
-			$values['action'] = 'update';
-			$values['POST']['partie_id'] = $partie_id;
-			$values['POST']['pgn'] = '';
-			$values['POST']['eco'] = '';
-			$ops = zzform_multi('partien', $values);
+			$line = [
+				'partie_id' => $partie_id,
+				'pgn' => '',
+				'eco' => ''
+			];
+			zzform_update('partien', $line);
 			*/
 		}
 	}

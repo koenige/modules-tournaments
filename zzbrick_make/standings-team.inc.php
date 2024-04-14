@@ -119,16 +119,14 @@ function mod_tournaments_make_standings_team($event) {
 		$unwanted_keys = [
 			'dwz_schnitt', 'eindeutig'
 		];
-		foreach ($unwanted_keys as $key) {
+		foreach ($unwanted_keys as $key)
 			unset($stand[$key]);
-		}
-		$values = [];
-		$values['POST'] = $stand;
-		$values['POST']['event_id'] = $event['event_id'];
-		$values['POST']['runde_no'] = $event['runde_no'];
-		$values['ids'] = ['team_id', 'event_id'];
+
+		$line = $stand;
+		$line['event_id'] = $event['event_id'];
+		$line['runde_no'] = $event['runde_no'];
 		if (!empty($existing_standings[$stand['team_id']])) {
-			$values['POST']['tabellenstand_id'] = $existing_standings[$stand['team_id']];
+			$line['tabellenstand_id'] = $existing_standings[$stand['team_id']];
 			// überflüssige Tabellenstände löschen
 			// @todo irgendwann so etwas direkt in zzform mit Funktion lösen
 			// (alle anderen Datensätze, die nicht aktualisiert werden, löschen)
@@ -139,20 +137,15 @@ function mod_tournaments_make_standings_team($event) {
 			$data = wrap_db_fetch($sql, 'tsw_id');
 			foreach ($data as $tsw_id => $bestandswertung) {
 				if (in_array($bestandswertung['wertung_category_id'], array_keys($stand['wertungen']))) continue;
-				$values['POST']['wertungen'][] = [
+				$line['wertungen'][] = [
 					'tsw_id' => $bestandswertung['tsw_id'],
 					'wertung_category_id' => '',
 					'wertung' => ''
 				];
 			}
-			$values['action'] = 'update';
+			zzform_update('tabellenstaende', $line, E_USER_ERROR);
 		} else {
-			$values['action'] = 'insert';
-		}
-		$ops = zzform_multi('tabellenstaende', $values);
-		if (!$ops['id']) {
-			wrap_error('Tabellenstand konnte nicht aktualisiert oder hinzugefügt werden.
-			Termin: '.$event['identifier'].', Runde: '.$event['runde_no'].'. Fehler: '.implode(', ', $ops['error']), E_USER_ERROR);
+			zzform_insert('tabellenstaende', $line, E_USER_ERROR);
 		}
 	}
 }

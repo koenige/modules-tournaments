@@ -145,32 +145,25 @@ function mod_tournaments_make_standings_write_single($event_id, $runde_no, $tabe
 
 	// Daten in Datenbank schreiben
 	foreach ($tabelle as $index => $stand) {
-		$values = [];
-		$values['ids'] = ['event_id', 'person_id'];
 		// Hauptdatensatz
 		// debug
 		if (!array_key_exists('person_id', $stand)) {
 			wrap_error('TABELLENSTAND '.json_encode($stand));
 			continue;
 		}
-		if (array_key_exists($stand['person_id'], $tabellenstaende)) {
-			$values['action'] = 'update';
-			$values['POST']['tabellenstand_id'] = $tabellenstaende[$stand['person_id']];
-		} else {
-			$values['action'] = 'insert';
-			$values['POST']['tabellenstand_id'] = '';
-		}
-		$values['POST']['event_id'] = $event_id;
-		$values['POST']['runde_no'] = $runde_no;
-		$values['POST']['person_id'] = $stand['person_id'];
-		$values['POST']['platz_no'] = $stand['platz_no'];
+		$line = [
+			'tabellenstand_id' => $tabellenstaende[$stand['person_id']] ?? NULL,
+			'event_id' => $event_id,
+			'runde_no' => $runde_no,
+			'person_id' => $stand['person_id'],
+			'platz_no' => $stand['platz_no']
+		];
 		foreach ($punktspalten AS $ps) {
-			$values['POST']['spiele_'.$ps] = isset($guv[$stand['person_id']]['spiele_'.$ps])
+			$line['spiele_'.$ps] = isset($guv[$stand['person_id']]['spiele_'.$ps])
 			? $guv[$stand['person_id']]['spiele_'.$ps] : 0;
 		}
-
 		// Feinwertungen, Detaildatensätze
-		$values['POST']['wertungen'] = $stand['wertungen'];
+		$line['wertungen'] = $stand['wertungen'];
 		if ($values['action'] === 'update') {
 			// überflüssige Feinwertungen löschen
 			$sql = 'SELECT tsw_id, wertung_category_id FROM
@@ -180,18 +173,17 @@ function mod_tournaments_make_standings_write_single($event_id, $runde_no, $tabe
 			$feinwertungen = wrap_db_fetch($sql, 'tsw_id');
 			foreach ($feinwertungen as $bestandswertung) {
 				if (in_array($bestandswertung['wertung_category_id'], array_keys($stand['wertungen']))) continue;
-				$values['POST']['wertungen'][] = [
+				$line['wertungen'][] = [
 					'tsw_id' => $bestandswertung['tsw_id'],
 					'wertung_category_id' => '',
 					'wertung' => ''
 				];
 			}
 		}
-		$ops = zzform_multi('tabellenstaende', $values);
-		if (!$ops['id']) {
-			wrap_error('Tabellenstand konnte nicht aktualisiert oder hinzugefügt werden.
-			Termin-ID: '.$event_id.', Runde: '.$runde_no.'. Fehler: '.implode(', ', $ops['error']), E_USER_ERROR);
-		}
+		if ($line['tabellenstand_id'])
+			zzform_update('tabellenstaende', $line, E_USER_ERROR);
+		else
+			zzform_insert('tabellenstaende', $line, E_USER_ERROR);
 	}
 	return true;
 }

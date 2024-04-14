@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -103,17 +103,12 @@ function mod_tournaments_teaminternal($vars, $settings, $data) {
 
 	if (!empty($_POST) AND array_key_exists('komplett', $_POST)) {
 		// Meldung komplett
-		$values = [];
-		$values['action'] = 'update';
-		$values['POST']['team_id'] = $data['team_id'];
-		$values['POST']['meldung'] = 'komplett';
-		$values['POST']['meldung_datum'] = date('Y-m-d H:i:s');
-		$values['ids'] = ['team_id'];
-		$ops = zzform_multi('teams', $values);
-		if (!$ops['id']) {
-			wrap_error(sprintf('Komplettstatus für Team-ID %d konnte nicht hinzugefügt werden',
-				$data['team_id']), E_USER_ERROR);
-		}
+		$line = [
+			'team_id' => $data['team_id'],
+			'meldung' => 'komplett',
+			'meldung_datum' => date('Y-m-d H:i:s')
+		];
+		zzform_update('teams', $line, E_USER_ERROR);
 		return wrap_redirect_change();
 	}
 	$sql = 'SELECT meldung 
@@ -159,21 +154,23 @@ Bei Absage wird ebenfalls der angekreuzte Text geloggt, der Status
 aber auf gelöscht gestellt. Eine Meldung oder Statusänderung ist dann
 nicht mehr möglich.
 */
-		$values['POST']['anmerkung'] = $data['cancellation'] ?? 'Wir nehmen nicht teil.';
-		$values['POST']['anmerkung'] .= 
-			(!empty($_POST['bemerkungen']) ? ' – '.$_POST['bemerkungen'] : '');
-		$values['POST']['team_id'] = $data['team_id'];
-		$values['POST']['anmerkung_status'] = 'offen';
-		$values['POST']['benachrichtigung'] = 'ja';
-		$values['POST']['sichtbarkeit'] = ['Team', 'Organisator'];
-		$values['action'] = 'insert';
-		$ops = zzform_multi('anmerkungen', $values);
+		$remarks = $data['cancellation'] ?? 'Wir nehmen nicht teil.';
+		if (!empty($_POST['bemerkungen']))
+			$remarks .= ' – '.$_POST['bemerkungen'];
+		$line = [
+			'anmerkung' => $remarks,
+			'team_id'] => $data['team_id'];
+			'anmerkung_status' => 'offen',
+			'benachrichtigung' => 'ja',
+			'sichtbarkeit' => ['Team', 'Organisator']
+		];
+		zzform_insert('anmerkungen', $line);
 
-		$values = [];
-		$values['POST']['team_id'] = $data['team_id'];
-		$values['POST']['team_status'] = 'Löschung';
-		$values['action'] = 'update';
-		$ops = zzform_multi('teams', $values);
+		$line = [
+			'team_id' => $data['team_id'],
+			'team_status' => 'Löschung'
+		];
+		zzform_update('teams', $line);
 		/*
 Mir würde das reichen, wenn die Meldungen der Form "Hat abgesagt am
 xx.xx.xxxx durch yy" als unerledigte Anmerkung zur Mannschaft hinterlegt
@@ -189,21 +186,23 @@ kann ganz normal melden. Dazu wird im Hintergrund die Zusage mit
 Termin, Team, Zusagetext und Timestamp in einer Logtabelle
 gespeichert.
 		*/
-		$values['POST']['anmerkung'] = $data['acceptance'] ?? 'Wir nehmen teil und akzeptieren die Bedingungen aus der Ausschreibung.';
-		$values['POST']['anmerkung'] .= 
-			(!empty($_POST['bemerkungen']) ? ' – '.$_POST['bemerkungen'] : '');
-		$values['POST']['team_id'] = $data['team_id'];
-		$values['POST']['anmerkung_status'] = !empty($_POST['bemerkungen']) ? 'offen' : 'erledigt';
-		$values['POST']['benachrichtigung'] = !empty($_POST['bemerkungen']) ? 'ja' : 'nein';
-		$values['POST']['sichtbarkeit'] = ['Team', 'Organisator'];
-		$values['action'] = 'insert';
-		$ops = zzform_multi('anmerkungen', $values);
+		$remarks = $data['acceptance'] ?? 'Wir nehmen teil und akzeptieren die Bedingungen aus der Ausschreibung.';
+		if (!empty($_POST['bemerkungen']))
+			$remarks .= ' – '.$_POST['bemerkungen'];
+		$line = [
+			'anmerkung' => $remarks,
+			'team_id' => $data['team_id'],
+			'anmerkung_status' => !empty($_POST['bemerkungen']) ? 'offen' : 'erledigt',
+			'benachrichtigung' => !empty($_POST['bemerkungen']) ? 'ja' : 'nein',
+			'sichtbarkeit' => ['Team', 'Organisator']
+		];
+		zzform_insert('anmerkungen', $line);
 
-		$values = [];
-		$values['POST']['team_id'] = $data['team_id'];
-		$values['POST']['team_status'] = 'Teilnehmer';
-		$values['action'] = 'update';
-		$ops = zzform_multi('teams', $values);
+		$line = [
+			'team_id' => $data['team_id'],
+			'team_status' => 'Teilnehmer'
+		];
+		zzform_update('teams', $line);
 		return wrap_redirect_change();
 	case 'spaeter':
 /*
@@ -213,15 +212,17 @@ dem Freitextfeld. Dadurch kann zu einem späteren Zeitpunkt zu- oder
 abgesagt werden oder auch zwischendurch eine Nachricht geschrieben
 werden.
 */
-		$values['POST']['anmerkung'] = $data['delay'] ?? 'Wir bitten um Verlängerung der Entscheidungsfrist.';
-		$values['POST']['anmerkung'] .= 
-			(!empty($_POST['bemerkungen']) ? ' – '.$_POST['bemerkungen'] : '');
-		$values['POST']['team_id'] = $data['team_id'];
-		$values['POST']['anmerkung_status'] = 'offen';
-		$values['POST']['benachrichtigung'] = 'ja';
-		$values['POST']['sichtbarkeit'] = ['Team', 'Organisator'];
-		$values['action'] = 'insert';
-		$ops = zzform_multi('anmerkungen', $values);
+		$remarks = $data['delay'] ?? 'Wir bitten um Verlängerung der Entscheidungsfrist.';
+		if (!empty($_POST['bemerkungen']))
+			$remarks .= ' – '.$_POST['bemerkungen'];
+		$line = [
+			'anmerkung' => $remarks,
+			'team_id' => $data['team_id'],
+			'anmerkung_status' => 'offen',
+			'benachrichtigung' => 'ja',
+			'sichtbarkeit' => ['Team', 'Organisator']
+		];
+		zzform_insert('anmerkungen', $line);
 		return wrap_redirect_change('?spaeter');
 	}
 	return false;

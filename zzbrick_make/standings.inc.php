@@ -187,11 +187,11 @@ function mod_tournaments_make_standings_round($vars) {
 	$sql = 'SELECT MAX(runde_no) FROM tabellenstaende WHERE event_id = %d';
 	$sql = sprintf($sql, $event['event_id']);
 	$max_runde_no = wrap_db_fetch($sql, '', 'single value');
-	$values = [];
-	$values['action'] = 'update';
-	$values['POST']['tournament_id'] = $event['tournament_id'];
-	$values['POST']['tabellenstand_runde_no'] = $max_runde_no;
-	$ops = zzform_multi('tournaments', $values);
+	$line = [
+		'tournament_id' => $event['tournament_id'],
+		'tabellenstand_runde_no' => $max_runde_no
+	];
+	zzform_update('tournaments', $line);
 
 	$page['text'] = sprintf(wrap_text('Standings for tournament %s, round %d have been successfully updated.'), $event['identifier'], $round_no);
 	return mod_tournaments_make_standings_return($page, $time, $type);

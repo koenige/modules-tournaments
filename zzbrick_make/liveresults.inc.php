@@ -10,7 +10,7 @@
  * @author Erik Kothe
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2008 Erik Kothe
- * @copyright Copyright © 2008, 2012, 2014, 2016-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2008, 2012, 2014, 2016-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -196,15 +196,12 @@ function mod_tournament_make_liveresults_tournament($params) {
 		} else {
 			unset($_POST['runde_no']);
 			// Datenbank speichern vorbereiten
-			$values = [];
-			$values['action'] = 'update';
 			foreach ($_POST as $partie_id => $ergebnis) {
 				if ($ergebnis === '') continue;
 				if (!in_array($partie_id, array_keys($partien))) {
 					$turnier['falsche_runde'] = true;
 					continue;
 				}
-				$values['POST']['partie_id'] = $partie_id;
 				switch ($ergebnis) {
 					case 'r': case 'R': case '5': case '0.5':
 						$weiss = 0.5; $schwarz = 0.5;
@@ -238,30 +235,23 @@ function mod_tournament_make_liveresults_tournament($params) {
 					default:
 						continue 2;
 				}
-				$values['POST']['weiss_ergebnis'] = $weiss;
-				$values['POST']['schwarz_ergebnis'] = $schwarz;
-				$values['POST']['partiestatus_category_id'] = wrap_category_id('partiestatus/'.$partiestatus);
-				$values['POST']['block_ergebnis_aus_pgn'] = 'ja';
+				$line = [
+					'partie_id' => $partie_id,
+					'weiss_ergebnis' => $weiss,
+					'schwarz_ergebnis' => $schwarz,
+					'partiestatus_category_id' => wrap_category_id('partiestatus/'.$partiestatus),
+					'block_ergebnis_aus_pgn' => 'ja'
+				];
 				if ($turnier['turnierform_kennung'] !== 'e') {
 					if ($partien[$partie_id]['heim_spieler_farbe'] === 'weiß') {
-						$values['POST']['heim_wertung'] = $weiss;
-						$values['POST']['auswaerts_wertung'] = $schwarz;
+						$line['heim_wertung'] = $weiss;
+						$line['auswaerts_wertung'] = $schwarz;
 					} else {
-						$values['POST']['heim_wertung'] = $schwarz;
-						$values['POST']['auswaerts_wertung'] = $weiss;
+						$line['heim_wertung'] = $schwarz;
+						$line['auswaerts_wertung'] = $weiss;
 					}
 				}
-				$ops = zzform_multi('partien', $values);
-				if (!$ops['id']) {
-					wrap_log(
-						sprintf(
-							'Livergebnis wurde nicht gespeichert, ID: %d, Ergebnis: %s',
-							$partie_id, $ergebnis
-						).implode(', ', $ops['error'])
-					);
-				} else {
-					$updated = true;
-				}
+				$updated = zzform_update('partien', $line, E_USER_NOTICE, wrap_text('Live result was not saved'));
 			}
 		}
 	}

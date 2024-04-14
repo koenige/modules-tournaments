@@ -100,14 +100,15 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 
 	$updated = false;
 	foreach ($participations as $participation_id => $participation) {
-		$values = [];
-		$values['POST']['participation_id'] = $participation_id;
+		$line = [
+			'participation_id' => $participation_id
+		];
 		if (!$data['meldezahlen_gespeichert']) {
 			// Schreiben von m_dwz und m_elo nur, falls Meldezahlen noch nicht
 			// gespeichert wurden. Bei wiederholter Aktualisierung der 
 			// Turnierzahlen werden die Meldezahlen logischerweise nicht nochmal geschrieben
 			foreach ($rating_systems as $system)
-				$values['POST']['m_'.$system] = $participation['t_'.$system];
+				$line['m_'.$system] = $participation['t_'.$system];
 		}
 		$status = 'not_found';
 		foreach ($ratings as $federation => $ratings_per_sys) {
@@ -117,13 +118,13 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 			if ($status === 'not_found') $status = 'exists';
 			foreach ($rating_systems as $system) {
 				if (empty($ratings_per_sys[$participation['contact_id']][$system])) continue;
-				$values['POST']['t_'.$system] = $ratings_per_sys[$participation['contact_id']][$system];
-				if ($participation['t_'.$system].'' !== $values['POST']['t_'.$system].'') {
+				$line['t_'.$system] = $ratings_per_sys[$participation['contact_id']][$system];
+				if ($participation['t_'.$system].'' !== $line['t_'.$system].'') {
 					$data['changes'][] = [
 						'contact' => $participation['contact'],
 						'system' => $system,
 						'old_rating' => $participation['t_'.$system],
-						'new_rating' => $values['POST']['t_'.$system],
+						'new_rating' => $line['t_'.$system],
 						'link' => wrap_path('contacts_profile[person]', $participation['identifier'], false) // @todo remove ,false
 					];
 				}
@@ -148,15 +149,14 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 				$status => 1,
 				'link' => wrap_path('contacts_profile[person]', $participation['identifier'], false) // @todo remove ,false
 			];
-			$values['POST']['remarks'] = $participation['remarks']
+			$line['remarks'] = $participation['remarks']
 				? $participation['remarks']."\n\n"
 				: "";
-			$values['POST']['remarks'] .= sprintf(wrap_text('No ratings found when updating on %s.'), wrap_date(date('Y-m-d')));
+			$line['remarks'] .= sprintf(wrap_text('No ratings found when updating on %s.'), wrap_date(date('Y-m-d')));
 		}
-		$values['action'] = 'update';
 		if (!$data['testlauf']) {
-			$ops = zzform_multi('participations', $values);
-			if (!$updated AND $ops['result'] === 'successful_update') $updated = true;
+			$participation_id = zzform_update('participations', $line);
+			if (!$updated AND $participation_id) $updated = true;
 		}
 	}
 	if ($updated) {
