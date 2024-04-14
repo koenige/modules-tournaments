@@ -214,7 +214,7 @@ function mf_tournaments_federations($id_field_name = 'country_id') {
 		ORDER BY country';
 	$sql = sprintf($sql
 		, wrap_category_id('contact/federation')
-		, wrap_setting('contact_ids[dsb]')
+		, wrap_setting('clubs_confederation_contact_id')
 		, wrap_category_id('relation/member')
 	);
 	return wrap_db_fetch($sql, $id_field_name);

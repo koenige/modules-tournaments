@@ -526,7 +526,7 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 	    AND contacts_contacts.relation_category_id = %d
 	    AND contacts.contact_category_id = %d';
 	$sql = sprintf($sql
-		, wrap_setting('contact_ids[dsb]')
+		, wrap_setting('clubs_confederation_contact_id')
 		, wrap_category_id('relation/member')
 		, wrap_category_id('contact/federation')
 	);

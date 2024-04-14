@@ -238,7 +238,7 @@ function mod_tournaments_tournamentmap_federation($federation) {
 	$sql = sprintf($sql
 		, wrap_db_escape($federation)
 		, wrap_category_id('relation/member')
-		, wrap_setting('contact_ids[dsb]')
+		, wrap_setting('clubs_confederation_contact_id')
 	);
 	$federation = wrap_db_fetch($sql);
 	if (!$federation) return [];

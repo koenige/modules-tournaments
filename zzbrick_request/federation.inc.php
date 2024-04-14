@@ -42,7 +42,7 @@ function mod_tournaments_federation($vars, $settings, $event) {
 		, wrap_db_escape($vars[2])
 		, wrap_db_escape($vars[2])
 		, wrap_category_id('relation/member')
-		, wrap_setting('contact_ids[dsb]')
+		, wrap_setting('clubs_confederation_contact_id')
 	);
 	$data = wrap_db_fetch($sql);
 	if (!$data) return false;
