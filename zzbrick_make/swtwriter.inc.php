@@ -72,6 +72,12 @@ function mod_tournaments_make_swtwriter($vars, $settings, $event) {
 	$field_names = swtparser_get_field_names('de');
 
 	if (isset($_GET['delete'])) {
+		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+			$writer['request_delete'] = true;
+			$page['query_strings'][] = 'delete';
+			$page['text'] = wrap_template('swtwriter', $writer);
+			return $page;
+		}
 		switch ($_GET['delete']) {
 			// Spieler und Team Info4
 			case 'teams': $to_delete = [1046]; break;
