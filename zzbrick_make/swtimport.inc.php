@@ -558,7 +558,7 @@ function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $im
 			$person['date_of_birth'] = trim(substr($spieler[2008], 0, 4));
 			$person['sex'] = (strtolower($spieler[2013]) === 'w') ? 'female' : 'male';
 			$contact_id = mf_contacts_add_person($person);
-			$sql = 'SELECT person_id FROM contacts WHERE contact_id = %d';
+			$sql = 'SELECT person_id FROM persons WHERE contact_id = %d';
 			$sql = sprintf($sql, $contact_id);
 			$person_id = wrap_db_fetch($sql, '', 'single value');
 
