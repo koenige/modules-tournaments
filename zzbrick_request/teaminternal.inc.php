@@ -159,7 +159,7 @@ nicht mehr möglich.
 			$remarks .= ' – '.$_POST['bemerkungen'];
 		$line = [
 			'anmerkung' => $remarks,
-			'team_id' => $data['team_id'];
+			'team_id' => $data['team_id'],
 			'anmerkung_status' => 'offen',
 			'benachrichtigung' => 'ja',
 			'sichtbarkeit' => ['Team', 'Organisator']
