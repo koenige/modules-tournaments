@@ -52,7 +52,6 @@ if ($brick['data']['turnierform'] === 'm-v') {
 	$zz['fields'][6]['value'] = $brick['data']['contact_id'];
 }
 
-unset($zz['fields'][2]['add_details']);
 $zz['fields'][2]['unless']['export_mode']['list_append_next'] = false;
 
 $zz['fields'][3]['sql'] = sprintf('SELECT usergroup_id, usergroup
