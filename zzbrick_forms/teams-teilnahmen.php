@@ -24,49 +24,85 @@ $zz = zzform_include('participations');
 $zz['page']['title'] = $brick['page']['title'].'Kontaktdaten';
 $zz['page']['breadcrumbs'][]['title'] = 'Kontaktdaten';
 
+$brick['data']['usergroups'] = mf_tournaments_team_usergroups($brick['data']['turnierform']);
+
 $zz['footer']['text'] = wrap_template('team-kontakt', $brick['data']);
 $brick['data']['head'] = true;
 $zz['explanation'] = wrap_template('team-kontakt', $brick['data']);
 
-if ($brick['data']['turnierform'] === 'm-v') {
-	$gruppen_ids = wrap_id('usergroups', 'team-organisator').','.
-		wrap_id('usergroups', 'verein-jugend').','.
-		wrap_id('usergroups', 'betreuer').','.
-		wrap_id('usergroups', 'verein-vorsitz');
-} else {
-	// keine Vereinsmannschaft!
-	$gruppen_ids = wrap_id('usergroups', 'team-organisator').','.
-		wrap_id('usergroups', 'betreuer');
-}
 $zz['sql'] .= sprintf(' WHERE usergroup_id IN (%s)
-	AND ((ISNULL(team_id) AND ISNULL(participations.event_id)) OR team_id = %d)', $gruppen_ids, $brick['data']['team_id']);
+	AND ((ISNULL(team_id) AND ISNULL(participations.event_id)) OR team_id = %d)', 
+	implode(',', array_keys($brick['data']['usergroups'])), $brick['data']['team_id']
+);
 if ($brick['data']['turnierform'] === 'm-v') {
 	$zz['sql'] .= sprintf(' AND (ISNULL(participations.club_contact_id) OR (participations.club_contact_id = %d))',
 		$brick['data']['contact_id']);
 }
 
-$zz['fields'][6]['hide_in_form'] = true;
-$zz['fields'][6]['hide_in_list'] = true;
-$zz['fields'][6]['unless'][21] = false;
-if ($brick['data']['turnierform'] === 'm-v') {
-	$zz['fields'][6]['value'] = $brick['data']['contact_id'];
+foreach ($zz['fields'] as $no => $field) {
+	$field_name = $field['field_name'] ?? '';
+	switch ($field_name) {
+	case 'participation_id':
+		break;
+
+	case 'contact_id':
+		$zz['fields'][$no]['unless']['export_mode']['list_append_next'] = false;
+		break;
+
+	case 'usergroup_id':
+		$zz['fields'][$no]['sql'] = sprintf(
+			'SELECT usergroup_id, usergroup
+			FROM usergroups WHERE usergroup_id IN (%s) ORDER BY usergroup',
+			implode(',', array_keys($brick['data']['usergroups']))
+		);
+		$zz['fields'][$no]['type'] = 'write_once';
+		$zz['fields'][$no]['type_detail'] = 'select';
+		unset($zz['fields'][$no]['if']['where']);
+		break;
+		
+	case 'event_id':
+		$zz['fields'][$no]['type'] = 'hidden';
+		$zz['fields'][$no]['value'] = $brick['data']['event_id'];
+		$zz['fields'][$no]['hide_in_list'] = true;
+		break;
+
+	case 'team_id':
+		$zz['fields'][$no]['type'] = 'hidden';
+		$zz['fields'][$no]['hide_in_list'] = true;
+		$zz['fields'][$no]['type_detail'] = 'select';
+		$zz['fields'][$no]['value'] = $brick['data']['team_id'];
+		$zz['fields'][$no]['if'][21]['value'] = false;
+		break;
+
+	case 'club_contact_id':
+		$zz['fields'][$no]['hide_in_form'] = true;
+		$zz['fields'][$no]['hide_in_list'] = true;
+		$zz['fields'][$no]['unless'][21] = false;
+		if ($brick['data']['turnierform'] === 'm-v')
+			$zz['fields'][$no]['value'] = $brick['data']['contact_id'];
+		break;
+
+	case 'verification_hash':
+		break;
+
+	case 'entry_date':
+	case 'entry_contact_id':
+	case 'status_category_id':
+		$zz['fields'][$no]['hide_in_form'] = true;
+		break;
+	
+	default:
+		unset($zz['fields'][$no]);
+		break;
+	}
 }
-
-$zz['fields'][2]['unless']['export_mode']['list_append_next'] = false;
-
-$zz['fields'][3]['sql'] = sprintf('SELECT usergroup_id, usergroup
-	FROM usergroups WHERE usergroup_id IN (%s) ORDER BY usergroup', $gruppen_ids);
-$zz['fields'][3]['type'] = 'write_once';
-$zz['fields'][3]['type_detail'] = 'select';
-unset($zz['fields'][3]['if']['where']);
-
 
 $sql = 'SELECT usergroup_id AS value, usergroup AS type, "usergroup_id" AS field_name
 	FROM usergroups
 	WHERE usergroup_id IN (%s)';
-$sql = sprintf($sql, $gruppen_ids);
+$sql = sprintf($sql, implode(',', array_keys($brick['data']['usergroups'])));
 $zz['add'] = wrap_db_fetch($sql, 'value', 'numeric');
-if (brick_access_rights('Webmaster')) {
+if (wrap_access('tournaments_teams_registrations')) {
 	$zz['add'][] = [
 		'type' => 'Freie Eingabe',
 		'field_name' => 'frei',
@@ -74,30 +110,11 @@ if (brick_access_rights('Webmaster')) {
 	];
 }
 
-$zz['fields'][4]['type'] = 'hidden';
-$zz['fields'][4]['value'] = $brick['data']['event_id'];
-$zz['fields'][4]['hide_in_list'] = true;
-
-$zz['fields'][5]['type'] = 'hidden';
-$zz['fields'][5]['hide_in_list'] = true;
-$zz['fields'][5]['type_detail'] = 'select';
-$zz['fields'][5]['value'] = $brick['data']['team_id'];
-$zz['fields'][5]['if'][21]['value'] = false;
-
-$zz['fields'][34]['hide_in_form'] = true;
-$zz['fields'][35]['hide_in_form'] = true;
-$zz['fields'][36]['hide_in_form'] = true;
-
-$fields = [1, 2, 3, 4, 5, 6, 8, 34, 35, 36];
-foreach (array_keys($zz['fields']) as $no) {
-	if (!in_array($no, $fields)) unset($zz['fields'][$no]);
-}
-
 if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 	AND empty($_GET['insert']) AND empty($_GET['update']) AND empty($_GET['noupdate'])
 	AND (empty($_GET['add']['frei']))) {
 
-	if (!brick_access_rights('Webmaster') AND !empty($data['tournament_form_parameters']['mitglied'])) {
+	if (!wrap_access('tournaments_teams_registrations') AND !empty($data['tournament_form_parameters']['mitglied'])) {
 		// Vereine haben Mitglieder, beschränke auf diese Mitglieder
 		// Erlaube keine doppelten Einträge bei demselben Termin aus derselben Gruppe!
 		$zz['fields'][2]['if']['insert']['sql'] = sprintf('SELECT CONCAT(ZPS, "-", Mgl_Nr), Spielername
@@ -124,7 +141,7 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 			$brick['data']['contact_id']
 		);
 	} else {
-		// Webmaster, Auswahlmannschaften, Schulen etc.
+		// tournaments_teams_registrations, Auswahlmannschaften, Schulen etc.
 		// erlaube auch die Auswahl von passiven Mitgliedern
 		$zz['fields'][2]['if']['insert']['sql'] = sprintf('SELECT CONCAT(ZPS, "-", Mgl_Nr), Spielername, Geburtsjahr, Status, Vereinname
 				, CONCAT(SUBSTRING_INDEX(Spielername, ",", -1), " ", SUBSTRING_INDEX(Spielername, ",", 1)) AS voller_name
@@ -140,6 +157,9 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 		$zz['fields'][2]['sql_ignore'][] = 'voller_name';
 	}
 	$zz['hooks']['before_insert'][] = 'my_dwzdaten_person';
+}
+if (!empty($_GET['add']['frei'])) {
+	$_GET['add']['usergroup_id'] = wrap_id('usergroups', $_GET['add']['frei']);
 }
 
 $zz['fields'][24]['title'] = 'Geburt';
@@ -191,7 +211,7 @@ $zz['title'] = '';
 $zz['access'] = 'add+delete';
 
 $zz['record']['copy'] = false;
-if (!brick_access_rights('Webmaster'))
+if (!wrap_access('tournaments_teams_registrations'))
 	$zz['if'][22]['record']['delete'] = false; // User darf sich nicht selbst löschen!
 $zz['setting']['zzform_max_select'] = 200;
 
@@ -201,3 +221,23 @@ $zz['details'][0]['link'] = [
 ];
 unset($zz['subtitle']);
 unset($zz['filter']);
+
+
+function mf_tournaments_team_usergroups($tournament_form) {
+	$usergroups[] = 'team-organisator';
+	$usergroups[] = 'betreuer';
+	if ($tournament_form === 'm-v') {
+		$usergroups[] = 'verein-jugend';
+		$usergroups[] = 'verein-vorsitz';
+	}
+	$ids = [];
+	foreach ($usergroups as $usergroup)
+		$ids[] = wrap_id('usergroups', $usergroup);
+
+	$sql = 'SELECT usergroup_id, usergroup
+		FROM usergroups
+	    WHERE usergroup_id IN (%s)';
+	$sql = sprintf($sql, implode(',', $ids));
+	return wrap_db_fetch($sql, 'usergroup_id');
+}
+
