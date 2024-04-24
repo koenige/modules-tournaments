@@ -131,3 +131,6 @@ $zz['filter'][2]['sql'] = sprintf('SELECT team_status, CONCAT(team_status, " (",
 	WHERE event_id = %d
 	GROUP BY team_status
 	ORDER BY team_status', $brick['data']['event_id']);
+
+if (wrap_access('tournaments_merge'))
+	$zz['list']['merge'] = true;

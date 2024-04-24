@@ -91,6 +91,7 @@ $zz['fields'][6]['type'] = 'identifier';
 $zz['fields'][6]['fields'] = ['event_id[identifier]', 'team', 'team_no'];
 $zz['fields'][6]['identifier']['concat'] = ['/', '/', '-'];
 $zz['fields'][6]['hide_in_list'] = true;
+$zz['fields'][6]['merge_ignore'] = true;
 
 $zz['fields'][6]['separator'] = 'text <div class="separator">Vor dem Turnier</div>';
 
@@ -140,6 +141,7 @@ $zz['fields'][32]['type_detail'] = 'datetime';
 $zz['fields'][32]['display_field'] = 'meldung_datum_list';
 $zz['fields'][32]['search'] = 'meldung_datum';
 $zz['fields'][32]['unless']['export_mode']['list_prefix'] = '<br>';
+$zz['fields'][32]['merge_ignore'] = true;
 
 $zz['fields'][33]['title'] = 'Hash';
 $zz['fields'][33]['field_name'] = 'meldung_hash';
@@ -147,6 +149,7 @@ $zz['fields'][33]['type'] = 'identifier';
 $zz['fields'][33]['hide_in_list'] = true;
 $zz['fields'][33]['identifier']['random_hash'] = 16;
 $zz['fields'][33]['fields'] = ['meldung_hash'];
+$zz['fields'][33]['merge_ignore'] = true;
 
 if (wrap_access('tournaments_teams_foreign_key')) {
 	$zz['fields'][40]['title'] = 'Fremdschlüssel';
@@ -311,6 +314,7 @@ $zz['fields'][27]['type_detail'] = 'datetime';
 $zz['fields'][27]['hide_in_list'] = true;
 $zz['fields'][27]['if']['insert']['default'] = date('Y-m-d H:i:s');
 $zz['fields'][27]['export'] = false;
+$zz['fields'][27]['merge_ignore'] = true;
 
 $zz['fields'][28]['title'] = 'Meldebogen';
 $zz['fields'][28]['field_name'] = 'meldebogen';

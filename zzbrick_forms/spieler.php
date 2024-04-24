@@ -22,6 +22,20 @@ $zz['page']['dont_show_title_as_breadcrumb'] = true;
 $zz['page']['breadcrumbs'][] = ['title' => 'Spieler'];
 $zz['page']['referer'] = '../';
 
+foreach ($zz['fields'] as $no => $field) {
+	if (empty($field['field_name'])) continue;
+	switch ($field['field_name']) {
+	case 'team_id':
+	case 'club_contact_id':
+	case 'entry_date':
+	case 'verification_hash':
+	case 'entry_contact_id':
+	case 't_verein':
+		$zz['fields'][$no]['merge_ignore'] = true;
+		break;
+	}
+}
+
 $zz['fields'][2]['display_field'] = 'person';
 if (brick_access_rights()) {
 	// @todo warum ist das write_once?
@@ -223,6 +237,8 @@ $zz['filter'][4]['sql'] = sprintf('SELECT DISTINCT status_category_id, category 
 $zz['export'][] = 'CSV Excel';
 
 $zz['page']['extra']['wide'] = true;
+if (wrap_access('tournaments_merge'))
+	$zz['list']['merge'] = true;
 
 if (!brick_access_rights(['AK Spielbetrieb'])
 	AND !brick_access_rights(['Technik', 'Organisator', 'Turnierleiter'], $brick['data']['event_rights'])
