@@ -64,9 +64,20 @@ function mod_tournaments_placeholder_team($brick) {
 			ON places.contact_category_id = place_categories.category_id
 		WHERE teams.identifier = "%d/%s/%s"
 		AND spielfrei = "nein"';
-	$sql = sprintf($sql, $year, wrap_db_escape($identifier), wrap_db_escape($team_idf));
-	$team = wrap_db_fetch($sql);
-	if (!$team) wrap_quit(404);
+	$sql_team = sprintf($sql, $year, wrap_db_escape($identifier), wrap_db_escape($team_idf));
+	$team = wrap_db_fetch($sql_team);
+	if (!$team) {
+		if (!str_ends_with($team_idf, '.2')) {
+			wrap_quit(404);
+		}
+		$team_idf_old = $team_idf;
+		$team_idf = substr($team_idf, 0, -2);
+		$sql_team = sprintf($sql, $year, wrap_db_escape($identifier), wrap_db_escape($team_idf));
+		$team = wrap_db_fetch($sql_team);
+		if (!$team) wrap_quit(404);
+		$url = str_replace($team_idf_old, $team_idf, wrap_setting('request_uri'));
+		return wrap_redirect($url, 301);
+	}
 
 	if (!empty($brick['local_settings']['internal'])) {
 		$zz_page['access'] = []; // remove rights from event placeholder
