@@ -183,18 +183,18 @@ function mod_tournaments_team($vars, $settings, $data) {
 					CONCAT(weiss_status.t_vorname, " ", IFNULL(CONCAT(weiss_status.t_namenszusatz, " "), ""), weiss_status.t_nachname)
 				) AS weiss
 				, weiss_person_id
-				, IF(partiestatus_category_id = %d, 0.5,
+				, IF(partiestatus_category_id = /*_ID categories partiestatus/haengepartie _*/, 0.5,
 					CASE weiss_ergebnis
-					WHEN 1.0 THEN IF(partiestatus_category_id = %d, "+", 1)
-					WHEN 0.5 THEN IF(partiestatus_category_id = %d, "=", 0.5)
-					WHEN 0 THEN IF(partiestatus_category_id = %d, "-", 0)
+					WHEN 1.0 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "+", 1)
+					WHEN 0.5 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "=", 0.5)
+					WHEN 0 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "-", 0)
 					END
 				) AS weiss_ergebnis
-				, IF(partiestatus_category_id = %d, 0.5,
+				, IF(partiestatus_category_id = /*_ID categories partiestatus/haengepartie _*/, 0.5,
 					CASE schwarz_ergebnis
-					WHEN 1.0 THEN IF(partiestatus_category_id = %d, "+", 1)
-					WHEN 0.5 THEN IF(partiestatus_category_id = %d, "=", 0.5)
-					WHEN 0 THEN IF(partiestatus_category_id = %d, "-", 0)
+					WHEN 1.0 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "+", 1)
+					WHEN 0.5 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "=", 0.5)
+					WHEN 0 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "-", 0)
 					END
 				) AS schwarz_ergebnis
 				, IF(ISNULL(schwarz_status.t_vorname),
@@ -202,9 +202,9 @@ function mod_tournaments_team($vars, $settings, $data) {
 					CONCAT(schwarz_status.t_vorname, " ", IFNULL(CONCAT(schwarz_status.t_namenszusatz, " "), ""), schwarz_status.t_nachname)
 				) AS schwarz
 				, schwarz_person_id
-				, IF(partiestatus_category_id = %d, 1, NULL) AS haengepartie
+				, IF(partiestatus_category_id = /*_ID categories partiestatus/haengepartie _*/, 1, NULL) AS haengepartie
 				, category AS partiestatus
-				, IF(NOT ISNULL(pgn), IF(partiestatus_category_id != %d, 1, NULL), NULL) AS pgn
+				, IF(NOT ISNULL(pgn), IF(partiestatus_category_id != /*_ID categories partiestatus/kampflos _*/, 1, NULL), NULL) AS pgn
 				, schwarz_status.t_dwz AS schwarz_dwz
 				, schwarz_status.t_elo AS schwarz_elo
 				, weiss_status.t_dwz AS weiss_dwz
@@ -232,16 +232,6 @@ function mod_tournaments_team($vars, $settings, $data) {
 			WHERE partien.event_id = %d
 			AND (weiss_person_id IN (%s) OR schwarz_person_id IN (%s))';
 		$sql = sprintf($sql
-			, wrap_category_id('partiestatus/haengepartie')
-			, wrap_category_id('partiestatus/kampflos')
-			, wrap_category_id('partiestatus/kampflos')
-			, wrap_category_id('partiestatus/kampflos')
-			, wrap_category_id('partiestatus/haengepartie')
-			, wrap_category_id('partiestatus/kampflos')
-			, wrap_category_id('partiestatus/kampflos')
-			, wrap_category_id('partiestatus/kampflos')
-			, wrap_category_id('partiestatus/haengepartie')
-			, wrap_category_id('partiestatus/kampflos')
 			, wrap_id('usergroups', 'spieler'), $data['event_id']
 			, wrap_id('usergroups', 'spieler'), $data['event_id']
 			, $data['event_id']
@@ -260,7 +250,7 @@ function mod_tournaments_team($vars, $settings, $data) {
 			$data['spieler'][$person_id]['summe_bp'] = 0;
 			if (!$partien) continue;
 			foreach ($partien as $partie_id => $partie) {
-				if ($data['paarungen'][$partie['runde_no']]['lineup']) continue;
+				if (!empty($data['paarungen'][$partie['runde_no']]['lineup'])) continue;
 				$ergebnis = '';
 				if (empty($data['spieler'][$person_id]['partien'][$partie['runde_no']])) {
 					$data['spieler'][$person_id]['partien'][$partie['runde_no']] = [];
