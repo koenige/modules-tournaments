@@ -226,7 +226,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
 	$fields = [
 		'usergroup_id', 'parameters', 't_vorname', 't_nachname', 'person_id',
 		't_fidetitel', 't_verein', 'event_id', 'federation_contact_id',
-		'lebensalter', 'role', 't_dwz', 't_elo', 'sex', 'club_contact_id',
+		'age', 'role', 't_dwz', 't_elo', 'sex', 'club_contact_id',
 		'series_parameters', 'usergroup_category'
 	];
 	$nos = [];
@@ -272,7 +272,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
 	$new['event'] = $line[$nos['event_id']]['text'];
 	$new['federation_abbr'] = !empty($nos['federation_contact_id']) ? $line[$nos['federation_contact_id']]['text'] : '';
 	$new['club_contact_id'] = !empty($nos['club_contact_id']) ? $line[$nos['club_contact_id']]['value'] : '';
-	$new['age'] = !empty($nos['lebensalter']) ? $line[$nos['lebensalter']]['value'] : '';
+	$new['age'] = !empty($nos['age']) ? $line[$nos['age']]['value'] : '';
 
 	return $new;
 }
