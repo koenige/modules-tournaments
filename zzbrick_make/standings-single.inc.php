@@ -9,7 +9,7 @@
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
- * @copyright Copyright © 2012-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022, 2024 Gustaf Mossakowski
  * @copyright Copyright © 2014, 2022 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
@@ -164,7 +164,7 @@ function mod_tournaments_make_standings_write_single($event_id, $runde_no, $tabe
 		}
 		// Feinwertungen, Detaildatensätze
 		$line['wertungen'] = $stand['wertungen'];
-		if ($values['action'] === 'update') {
+		if ($line['tabellenstand_id']) {
 			// überflüssige Feinwertungen löschen
 			$sql = 'SELECT tsw_id, wertung_category_id FROM
 				tabellenstaende_wertungen
@@ -179,11 +179,10 @@ function mod_tournaments_make_standings_write_single($event_id, $runde_no, $tabe
 					'wertung' => ''
 				];
 			}
-		}
-		if ($line['tabellenstand_id'])
 			zzform_update('tabellenstaende', $line, E_USER_ERROR);
-		else
+		} else {
 			zzform_insert('tabellenstaende', $line, E_USER_ERROR);
+		}
 	}
 	return true;
 }
