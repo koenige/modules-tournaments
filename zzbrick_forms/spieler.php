@@ -76,6 +76,13 @@ foreach ($zz['fields'] as $no => $field) {
 			unset($zz['fields'][$no]);
 		break;
 
+	case 'buchungen':
+	case 'usergroup_category':
+	case 'series_parameters':
+	case 'parameters':
+		unset($zz['fields'][$no]);
+		break;
+
 	}
 }
 
@@ -163,7 +170,15 @@ $zz['sql'] = 'SELECT participations.*
 		, (SELECT identifier FROM contacts_identifiers
 			WHERE contacts_identifiers.contact_id = contacts.contact_id
 			AND contacts_identifiers.identifier_category_id = %d
-			AND current = "yes") AS player_id_fide
+			AND current = "yes"
+		) AS player_id_fide
+		, IFNULL(
+			TIMESTAMPDIFF(YEAR, date_of_birth, IFNULL(CAST(IF(
+				SUBSTRING(date_of_death, -6) = "-00-00",
+				CONCAT(YEAR(date_of_death), "-01-01"), date_of_death) AS DATE
+			), CURDATE())),
+			YEAR(IFNULL(date_of_death, CURDATE())) - YEAR(date_of_birth)
+		) AS age
 	FROM participations
 	LEFT JOIN persons USING (contact_id)
 	LEFT JOIN contacts USING (contact_id)
