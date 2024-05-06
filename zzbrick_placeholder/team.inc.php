@@ -97,9 +97,9 @@ function mod_tournaments_placeholder_team($brick) {
 	if ($team['tournament_parameters'])
 		wrap_module_parameters('tournaments', $team['tournament_parameters'], false);
 
-	if (!empty($brick['local_settings']['internal']) AND empty($brick['local_settings']['no_team_breadcrumbs'])) {
-		$bc_template = '<a href="'.wrap_setting('events_internal_path').'/%s/">%s</a>';
 
+	$bc_template = '<a href="'.wrap_setting('events_internal_path').'/%s/">%s</a>';
+	if (!empty($brick['local_settings']['internal']) AND empty($brick['local_settings']['no_team_breadcrumbs'])) {
 		$brick['page']['breadcrumbs'][] = sprintf(
 			$bc_template, $team['year'], $team['year']
 		);
@@ -115,6 +115,10 @@ function mod_tournaments_placeholder_team($brick) {
 			$brick['page']['breadcrumbs'][] = sprintf(
 				$bc_template, implode('/', [$year, $identifier, $team_idf]), $team['team']
 			);
+	} else {
+		$brick['page']['breadcrumbs'][] = sprintf(
+			$bc_template, $team['event_identifier'], $team['event']
+		);
 	}
 
 	$brick['page']['dont_show_h1'] = true;
