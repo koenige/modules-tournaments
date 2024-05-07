@@ -2,7 +2,7 @@
 
 /**
  * tournaments module
- * export participant data as PDF for tables
+ * export participant data as PDF for place cards
  *
  * Part of »Zugwzang Project«
  * https://www.zugzwang.org/modules/tournaments
@@ -36,11 +36,10 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	$event_title = mf_tournaments_event_title_wrap($event_title);
 	
 	// get data for cards
-	$first_field = reset($ops['output']['head']);
-	switch ($first_field['field_name']) {
-		case 'usergroup_id': $data = mf_tournaments_export_pdf_tischkarten_single($ops); break;
+	switch ($ops['output']['head'][0]['field_name']) {
+		case 'participation_id': $data = mf_tournaments_export_pdf_tischkarten_single($ops); break;
 		case 'team_id': $data = mf_tournaments_export_pdf_tischkarten_team($ops); break;
-		default: return false;
+		default: wrap_quit(404);
 	}
 	if (!$data) wrap_quit(404, 'Es gibt keine Tischkarten für diese Personen.');
 
@@ -156,32 +155,90 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	exit;
 }
 
+/**
+ * get data for place cards for single tournament
+ *
+ * @param array $ops
+ * @return array
+ */
 function mf_tournaments_export_pdf_tischkarten_single($ops) {	
-	require_once __DIR__.'/export-pdf-teilnehmerschilder.inc.php';
-	
 	// Feld-IDs raussuchen
-	$nos = mf_tournaments_export_pdf_teilnehmerschilder_nos($ops['output']['head']);
+	$ids = [];
+	foreach ($ops['output']['head'] as $index => $field) {
+		if (!array_key_exists('field_name', $field)) continue;
+		if ($field['field_name'] !== 'participation_id') continue;
+		foreach ($ops['output']['rows'] as $row)
+			$ids[] = $row[$index]['value'];
+	}
 	
-	$name_tag['image_size'] = 68;
+	$sql = 'SELECT participation_id
+			, CONCAT(IFNULL(CONCAT(t_fidetitel, " "), ""), IFNULL(
+				CONCAT(t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), ""), " ", t_nachname),
+				contacts.contact
+			)) AS name
+			, t_verein AS club, t_dwz, t_elo, t_fidetitel, club_contact_id, role
+			, persons.sex
+			, usergroups.usergroup, usergroups.parameters AS usergroup_parameters
+			, usergroup_categories.category AS usergroup_category
+			, series.parameters AS series_parameters
+			, series.category_short AS event
+	    FROM participations
+	    LEFT JOIN contacts USING (contact_id)
+	    LEFT JOIN persons USING (contact_id)
+	    LEFT JOIN usergroups USING (usergroup_id)
+		LEFT JOIN categories usergroup_categories
+			ON usergroups.usergroup_category_id = usergroup_categories.category_id
+	    LEFT JOIN events USING (event_id)
+	    LEFT JOIN categories series
+	    	ON events.series_category_id = series.category_id
+	    WHERE participation_id IN (%s)
+	    AND usergroup_id = /*_ID usergroups spieler _*/
+	    ORDER BY FIELD(participation_id, %s)';
+	$sql = sprintf($sql, implode(',', $ids), implode(',', $ids));
+	$data = wrap_db_fetch($sql, 'participation_id');
 
-	$data = [];
-	foreach ($ops['output']['rows'] as $index => $line) {
-		// ignoriere Orga vorab
-		if (!in_array($line[$nos['usergroup_id']]['text'], ['Spieler'])) continue;
-		$data[$index] = mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos, $name_tag);
-		$data[$index]['colors'] = mf_tournaments_pdf_colors($data[$index]['parameters'], $data[$index]['role']);
-		$data[$index]['group_line'] = mf_tournaments_pdf_group_line($data[$index]);
-		$data[$index]['club_line'] = mf_tournaments_pdf_club_line($data[$index]);
+	$data = mf_tournaments_clubs_to_federations($data);
+	foreach ($data as $index => &$line) {
+		mf_tournaments_parameters($line, ['usergroup', 'series']);
 
-		// Daten anpassen
-		$data[$index]['ratings'] = [];
-		if ($line[$nos['t_dwz']]['text']) $data[$index]['ratings']['DWZ'] = ' '.$line[$nos['t_dwz']]['text'];
-		if ($line[$nos['t_elo']]['text']) $data[$index]['ratings']['Elo'] = ' '.$line[$nos['t_elo']]['text'];
+		$line['colors'] = mf_tournaments_pdf_colors($line['parameters'], $line['role']);
+		$line['group_line'] = mf_tournaments_pdf_group_line($line);
+		$line['club_line'] = mf_tournaments_pdf_club_line($line);
+
+		$line['ratings'] = [];
+		if ($line['t_dwz']) $line['ratings']['DWZ'] = ' '.$line['t_dwz'];
+		if ($line['t_elo']) $line['ratings']['Elo'] = ' '.$line['t_elo'];
 	}
 	if ($data) $data['has_club_line'] = true;
 	return $data;
 }
 
+/**
+ * parse and merge a list of parameters
+ *
+ * @param array $line
+ * @param array $keys
+ * @return void
+ */
+function mf_tournaments_parameters(&$line, $keys) {
+	$line['parameters'] = [];
+	foreach ($keys as $key) {
+		$field_name = sprintf('%s_parameters', $key);
+		if (!array_key_exists($field_name, $line)) continue;
+		$params = $line[$field_name];
+		unset($line[$field_name]);
+		if (!$params) continue;
+		parse_str($params, $params);
+		$line['parameters'] = array_merge($line['parameters'], $params);
+	}
+}
+
+/**
+ * get data for place cards for team tournament
+ *
+ * @param array $ops
+ * @return array
+ */
 function mf_tournaments_export_pdf_tischkarten_team($ops) {
 	$team_ids = [];
 	foreach ($ops['output']['rows'] as $row) {
@@ -214,66 +271,3 @@ function mf_tournaments_export_pdf_tischkarten_team($ops) {
 	}
 	return $teams;
 }
-
-/**
- * Suche Feld-IDs aus Daten
- * IDs sind nicht vorherbestimmbar
- *
- * @param array $head = $ops['output']['head']
- * @return array $nos
- */
-function mf_tournaments_export_pdf_teilnehmerschilder_nos($head) {
-	$fields = [
-		'usergroup_id', 'parameters', 't_vorname', 't_nachname', 'person_id',
-		't_fidetitel', 't_verein', 'event_id', 'federation_contact_id',
-		'age', 'role', 't_dwz', 't_elo', 'sex', 'club_contact_id',
-		'series_parameters', 'usergroup_category'
-	];
-	$nos = [];
-	foreach ($head as $index => $field) {
-		if (!in_array('field_name', array_keys($field))) continue;
-		if (!in_array($field['field_name'], $fields)) continue;
-		$nos[$field['field_name']] = $index;
-	}
-	return $nos;
-}
-
-/**
- * Daten anpassen für Ausgabe
- *
- * @param array $line
- * @param array $nos
- * @return array $line
- */
-function mf_tournaments_export_pdf_teilnehmerschilder_prepare($line, $nos) {
-	if (!empty($line[$nos['parameters']]['text'])) {
-		parse_str($line[$nos['parameters']]['text'], $new['parameters']);
-	} else {
-		$new['parameters'] = [];
-	}
-	if (!empty($line[$nos['series_parameters']]['text'])) {
-		parse_str($line[$nos['series_parameters']]['text'], $series_parameters);
-		$new['parameters'] = array_merge($new['parameters'], $series_parameters);
-	}
-
-	// Spieler
-	$new['fidetitel'] = !empty($nos['t_fidetitel']) ? $line[$nos['t_fidetitel']]['text'] : '';
-	$new['name'] = ($new['fidetitel'] ? $new['fidetitel'].' ' : '')
-		.((!empty($nos['t_vorname']) AND !empty($line[$nos['t_vorname']]['text']))
-		? $line[$nos['t_vorname']]['text'].' '.$line[$nos['t_nachname']]['text']
-		: $line[$nos['person_id']]['text']);
-
-	// further data
-	$new['club'] = (!empty($nos['t_verein']) ? $line[$nos['t_verein']]['text'] : '');
-	$new['usergroup'] = $line[$nos['usergroup_id']]['text'];
-	$new['usergroup_category'] = $line[$nos['usergroup_category']]['text'];
-	$new['role'] = (!empty($nos['role']) AND !empty($line[$nos['role']]['text'])) ? $line[$nos['role']]['text'] : '';
-	$new['sex'] = !empty($nos['sex']) ? $line[$nos['sex']]['text'] : '';
-	$new['event'] = $line[$nos['event_id']]['text'];
-	$new['federation_abbr'] = !empty($nos['federation_contact_id']) ? $line[$nos['federation_contact_id']]['text'] : '';
-	$new['club_contact_id'] = !empty($nos['club_contact_id']) ? $line[$nos['club_contact_id']]['value'] : '';
-	$new['age'] = !empty($nos['age']) ? $line[$nos['age']]['value'] : '';
-
-	return $new;
-}
-
