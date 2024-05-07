@@ -183,6 +183,8 @@ function mf_tournaments_export_pdf_tischkarten_single($ops) {
 			, series.parameters AS series_parameters
 			, series.category_short AS event
 	    FROM participations
+		LEFT JOIN categories
+			ON participations.status_category_id = categories.category_id
 	    LEFT JOIN contacts USING (contact_id)
 	    LEFT JOIN persons USING (contact_id)
 	    LEFT JOIN usergroups USING (usergroup_id)
@@ -193,6 +195,7 @@ function mf_tournaments_export_pdf_tischkarten_single($ops) {
 	    	ON events.series_category_id = series.category_id
 	    WHERE participation_id IN (%s)
 	    AND usergroup_id = /*_ID usergroups spieler _*/
+		AND (ISNULL(categories.parameters) OR categories.parameters NOT LIKE "%%&tournaments_no_cards=1%%")
 	    ORDER BY FIELD(participation_id, %s)';
 	$sql = sprintf($sql, implode(',', $ids), implode(',', $ids));
 	$data = wrap_db_fetch($sql, 'participation_id');
