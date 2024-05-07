@@ -178,6 +178,7 @@ function mf_tournaments_pdf_colors($parameters, $role) {
  */
 function mf_tournaments_pdf_agegroups($parameters, $age) {
 	$text = '';
+	if (!$age AND $age !== 0) return $text;
 	if (empty($parameters['aks'])) return $text;
 	foreach ($parameters['aks'] as $ak) {
 		if ($ak >= $age) {
