@@ -32,8 +32,10 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	}
 	$sql = 'SELECT participation_id, event_id
 		FROM participations
-		LEFT JOIN usergroups USING (usergroup_id)
-		WHERE participation_id IN (%s)';
+		LEFT JOIN categories
+			ON participations.status_category_id = categories.category_id
+		WHERE participation_id IN (%s)
+		AND (ISNULL(categories.parameters) OR categories.parameters NOT LIKE "%%&tournaments_no_cards=1%%")';
 	$sql = sprintf($sql, implode(',', $ids));
 	$data = wrap_db_fetch($sql, 'participation_id');
 	
