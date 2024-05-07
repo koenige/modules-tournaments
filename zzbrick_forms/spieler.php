@@ -179,6 +179,7 @@ $zz['sql'] = 'SELECT participations.*
 			), CURDATE())),
 			YEAR(IFNULL(date_of_death, CURDATE())) - YEAR(date_of_birth)
 		) AS age
+		, participation_status.category_short
 	FROM participations
 	LEFT JOIN persons USING (contact_id)
 	LEFT JOIN contacts USING (contact_id)
@@ -200,6 +201,8 @@ $zz['sql'] = 'SELECT participations.*
 		ON verbaende.contact_id = vk.contact_id
 	LEFT JOIN contacts landesverbaende
 		ON landesverbaende.contact_id = participations.federation_contact_id
+	LEFT JOIN categories participation_status
+		ON participations.status_category_id = participation_status.category_id
 ';
 $zz['sql'] = sprintf($zz['sql']
 	, wrap_category_id('provider/e-mail')
