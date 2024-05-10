@@ -90,8 +90,10 @@ function mod_tournaments_placeholder_team($brick) {
 		$team += $parameters;
 		wrap_module_parameters('events', $team['parameters'], false);
 	}
-	if ($team['tournament_form_parameters'])
+	if ($team['tournament_form_parameters']) {
 		parse_str($team['tournament_form_parameters'], $team['tournament_form_parameters']);
+		wrap_module_parameters('tournaments', $team['tournament_form_parameters']);
+	}
 	if ($team['series_parameters'])
 		wrap_module_parameters('tournaments', $team['series_parameters'], false);
 	if ($team['tournament_parameters'])

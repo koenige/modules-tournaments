@@ -107,7 +107,7 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->Ln();
 		$pdf->write(19, $team['team'].' '.$team['team_no']);
 		$pdf->setFont('DejaVu', '', $settings['font_size']);
-		if ($settings['show_federation'] AND !empty($team['country'])) {
+		if (wrap_setting('tournaments_federation') AND !empty($team['country'])) {
 			$pdf->write(19, ' ('
 				.$team['country']
 				.($team['regionalgruppe'] ? ', Regionalgruppe '.$team['regionalgruppe'] : '').')');
@@ -242,10 +242,10 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->Ln();
 		$y_pos = $pdf->GetY();
 		$x_pos = $pdf->GetX();
-		$pdf->MultiCell(240, 10, sprintf("Datum, Unterschrift\n%s", $settings['text_chair']), 'T', 'L');
+		$pdf->MultiCell(240, 10, sprintf("Datum, Unterschrift\n%s", wrap_setting('tournaments_pdf_text_chair')), 'T', 'L');
 		$pdf->SetY($y_pos);
 		$pdf->SetX($x_pos+265);
-		$pdf->MultiCell(240, 10, sprintf("Datum, Unterschrift\nVerantwortliche/r für das Turnier %s", $settings['text_in_org']), 'T', 'L');
+		$pdf->MultiCell(240, 10, sprintf("Datum, Unterschrift\nVerantwortliche/r für das Turnier %s", wrap_setting('tournaments_pdf_text_in_org')), 'T', 'L');
 
 		if ($event['hinweis_meldebogen']) {
 			$pdf->Ln();

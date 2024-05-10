@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2013-2014, 2017-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2013-2014, 2017-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -105,7 +105,7 @@ durch die Turnierleitung bekanntgegeben.\n"
 		$pdf->Ln();
 		$pdf->write(19, $team['team'].' '.$team['team_no']);
 		$pdf->setFont('DejaVu', '', 10);
-		if ($settings['show_federation']) {
+		if (wrap_setting('tournaments_federation')) {
 			$pdf->write(19, ' ('
 				.$team['country']
 				.($team['regionalgruppe'] ? ', Regionalgruppe '.$team['regionalgruppe'] : '').')');

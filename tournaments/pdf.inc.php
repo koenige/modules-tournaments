@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -25,24 +25,6 @@ function mf_tournaments_pdf_prepare($event) {
 	wrap_page_format_files();
 
 	$settings = [];
-	switch ($event['turnierform']) {
-	case 'm-a':
-		$settings['text_chair'] = 'Vorsitzende/r Verband';
-		$settings['text_in_org'] = 'im Verband';
-		$settings['show_federation'] = false;
-		break;
-	case 'm-v':
-		$settings['text_chair'] = 'Vereinsvorsitzende/r';
-		$settings['text_in_org'] = 'im Verein';
-		$settings['show_federation'] = true;
-		break;
-	case 'm-s':
-		$settings['text_chair'] = 'Rektor/in der Schule';
-		$settings['text_in_org'] = 'in der Schule';
-		$settings['show_federation'] = true;
-		break;
-	}
-
 	$settings['logo_filename'] = wrap_setting('media_folder').'/logos/DSJ Logo Text schwarz-gelb.png';
 	$settings['logo_width'] = 146;
 	$settings['logo_height'] = 50;
