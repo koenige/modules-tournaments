@@ -273,7 +273,7 @@ function cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler) {
 
 	// Speicherung in Personen
 	// 1. Abgleich: gibt es schon Paßnr.? Alles andere zu unsicher
-	$contact_id = my_person_speichern($spieler);
+	$contact_id = mf_ratings_person_add($spieler);
 
 	// direkte Speicherung in participations
 	$line = [

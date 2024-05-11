@@ -164,7 +164,7 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 		$zz['fields'][2]['sql_ignore'][] = 'voller_name';
 	}
 	$zz['fields'][2]['sql_ignore'][] = 'pass_dsb';
-	$zz['hooks']['before_insert'][] = 'my_dwzdaten_person';
+	$zz['hooks']['before_insert'][] = 'mf_ratings_person_hook';
 }
 if (!empty($_GET['add']['frei'])) {
 	$_GET['add']['usergroup_id'] = wrap_id('usergroups', $_GET['add']['frei']);

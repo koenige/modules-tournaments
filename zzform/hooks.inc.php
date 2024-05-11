@@ -391,36 +391,3 @@ function mf_tournaments_remarks_mail($ops) {
 	}
 	return;
 }
-
-function my_dwzdaten_person($ops) {
-	if (empty($ops['record_new'][0]['contact_id'])) {
-		// Keine Daten übergeben = unmöglich, eine Person zu ergänzen
-		zz_error_exit(true);
-		return false;
-	}
-	if (!strstr($ops['record_new'][0]['contact_id'], '-')) {
-		return [];
-	}
-	list($zps, $mgl_nr) = explode('-', $ops['record_new'][0]['contact_id']);
-	if (!brick_access_rights('Webmaster') AND !empty($ops['record_new'][0]['club_contact_id'])) {
-		$club_contact_id = $ops['record_new'][0]['club_contact_id'];
-		$sql = 'SELECT DISTINCT ZPS
-			FROM dwz_spieler
-			LEFT JOIN contacts_identifiers ok
-				ON dwz_spieler.ZPS = ok.identifier
-			WHERE contact_id = %d
-			AND ok.current = "yes"';
-		$sql = sprintf($sql, $club_contact_id);
-		$zps_aus_db = wrap_db_fetch($sql, '', 'single value');
-		if ($zps != $zps_aus_db)
-			wrap_error(sprintf('Falsche Übermittlung: ZPS vom Verein weicht von ZPS der Person ab: %s, Verein: %s',
-				$ops['record_new'][0]['contact_id'], $zps_aus_db), E_USER_ERROR
-			);
-	}
-	wrap_include_files('zzform/editing', 'ratings');
-	$spieler = mf_ratings_player_data_dsb($ops['record_new'][0]['contact_id']);
-	$contact_id = my_person_speichern($spieler);
-	
-	$replace['record_replace'][0]['contact_id'] = $contact_id;
-	return $replace;
-}

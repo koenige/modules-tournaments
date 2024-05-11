@@ -569,7 +569,7 @@ function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $im
 			$kennungen['fide-id'] = $spieler[2033];
 			// alte SWT-Versionen konnten keine PKZ speichern
 			$kennungen['pkz'] = !empty($spieler[2034]) ? $spieler[2034] : '';
-			my_person_kennungen_speichern($contact_id, $kennungen);
+			mf_ratings_contacts_identifiers($contact_id, $kennungen);
 
 			if (!isset($ids['t']['Personen']['successful_insert'])) {
 				$ids['t']['Personen']['successful_insert'] = 0;
