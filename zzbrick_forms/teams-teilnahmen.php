@@ -117,21 +117,25 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 	if (!wrap_access('tournaments_teams_registrations') AND !empty($data['tournament_form_parameters']['mitglied'])) {
 		// Vereine haben Mitglieder, beschränke auf diese Mitglieder
 		// Erlaube keine doppelten Einträge bei demselben Termin aus derselben Gruppe!
-		$zz['fields'][2]['if']['insert']['sql'] = sprintf('SELECT CONCAT(ZPS, "-", Mgl_Nr), Spielername
+		$zz['fields'][2]['if']['insert']['sql'] = sprintf('SELECT
+				IFNULL(contacts.contact_id, CONCAT(ZPS, "-", Mgl_Nr)) AS contact_id
+				, CONCAT(ZPS, "-", Mgl_Nr) AS pass_dsb, Spielername
 			FROM dwz_spieler
-			LEFT JOIN contacts_identifiers
-				ON dwz_spieler.ZPS = contacts_identifiers.identifier
-				AND contacts_identifiers.current = "yes"
-				AND contacts_identifiers.identifier_category_id = %d
-			LEFT JOIN contacts_identifiers
-				ON contacts_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", dwz_spieler.Mgl_Nr)
-				AND contacts_identifiers.current = "yes"
-				AND contacts_identifiers.identifier_category_id = %d
+			LEFT JOIN contacts_identifiers club_identifiers
+				ON dwz_spieler.ZPS = club_identifiers.identifier
+				AND club_identifiers.current = "yes"
+				AND club_identifiers.identifier_category_id = %d
+			LEFT JOIN contacts_identifiers player_identifiers
+				ON player_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", dwz_spieler.Mgl_Nr)
+				AND player_identifiers.current = "yes"
+				AND player_identifiers.identifier_category_id = %d
+			LEFT JOIN contacts
+				ON player_identifiers.contact_id = contacts.contact_id
 			LEFT JOIN participations
-				ON participations.contact_id = contacts_identifiers.contact_id
+				ON participations.contact_id = player_identifiers.contact_id
 				AND participations.usergroup_id = %d
 				AND participations.event_id = %d
-			WHERE contact_id = %d
+			WHERE club_identifiers.contact_id = %d
 			AND ISNULL(participations.participation_id)
 			ORDER BY Spielername',
 			wrap_category_id('identifiers/pass_dsb'),
@@ -140,10 +144,13 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 			$brick['data']['event_id'],
 			$brick['data']['contact_id']
 		);
+		$zz['fields'][2]['id_field_name'] = 'contacts.contact_id';
 	} else {
 		// tournaments_teams_registrations, Auswahlmannschaften, Schulen etc.
 		// erlaube auch die Auswahl von passiven Mitgliedern
-		$zz['fields'][2]['if']['insert']['sql'] = sprintf('SELECT CONCAT(ZPS, "-", Mgl_Nr), Spielername, Geburtsjahr, Status, Vereinname
+		$zz['fields'][2]['if']['insert']['sql'] = sprintf('SELECT
+				IFNULL(contacts_identifiers.contact_id, CONCAT(ZPS, "-", Mgl_Nr)) AS contact_id
+				, CONCAT(ZPS, "-", Mgl_Nr) AS pass_dsb, Spielername, Geburtsjahr, Status, Vereinname
 				, CONCAT(SUBSTRING_INDEX(Spielername, ",", -1), " ", SUBSTRING_INDEX(Spielername, ",", 1)) AS voller_name
 			FROM dwz_spieler
 			LEFT JOIN dwz_vereine USING (ZPS)
@@ -156,6 +163,7 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 		);
 		$zz['fields'][2]['sql_ignore'][] = 'voller_name';
 	}
+	$zz['fields'][2]['sql_ignore'][] = 'pass_dsb';
 	$zz['hooks']['before_insert'][] = 'my_dwzdaten_person';
 }
 if (!empty($_GET['add']['frei'])) {
