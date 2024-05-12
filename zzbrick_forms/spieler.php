@@ -25,7 +25,6 @@ $zz['page']['referer'] = '../';
 foreach ($zz['fields'] as $no => $field) {
 	if (empty($field['field_name'])) continue;
 	switch ($field['field_name']) {
-	case 'team_id':
 	case 'club_contact_id':
 	case 'entry_date':
 	case 'verification_hash':
@@ -42,13 +41,18 @@ foreach ($zz['fields'] as $no => $field) {
 		break;
 
 	case 'team_id':
+		$zz['fields'][$no]['merge_ignore'] = true;
 		$zz['fields'][$no]['display_field'] = 'team';
-		if (!empty($brick['data']['event_team'])) {
+		if (wrap_setting('tournaments_type_team')) {
 			$zz['fields'][$no]['sql'] = sprintf('SELECT team_id
 					, CONCAT(team, IFNULL(CONCAT(" ", team_no),"")) AS team
 				FROM teams
 				WHERE event_id = %d
 				ORDER BY team_id', $brick['data']['event_id']);
+			if (empty($_GET['filter']['team']))
+				$zz['fields'][$no]['group_in_list'] = true;
+			else
+				$zz['fields'][$no]['hide_in_list'] = true;
 		} else {
 			$zz['fields'][$no]['hide_in_form'] = true;
 		}
@@ -65,7 +69,7 @@ foreach ($zz['fields'] as $no => $field) {
 
 	case 'brett_no':
 	case 'rang_no':
-		if (!empty($brick['data']['event_single'])) {
+		if (!wrap_setting('tournaments_type_team')) {
 			$zz['fields'][$no]['hide_in_form'] = true;
 			$zz['fields'][$no]['hide_in_list'] = true;
 		}
@@ -180,6 +184,7 @@ $zz['sql'] = 'SELECT participations.*
 			YEAR(IFNULL(date_of_death, CURDATE())) - YEAR(date_of_birth)
 		) AS age
 		, participation_status.category_short
+		, IFNULL(participation_status.description, participation_status.category) AS status_category
 	FROM participations
 	LEFT JOIN persons USING (contact_id)
 	LEFT JOIN contacts USING (contact_id)
@@ -226,13 +231,6 @@ $zz['filter'][2]['sql'] = sprintf('SELECT team_id
 	WHERE event_id = %d
 	AND team_status = "Teilnehmer"
 	ORDER BY team, team_no', $brick['data']['event_id']);
-if ($brick['data']['turnierform'] !== 'e') {
-	if (empty($_GET['filter']['team'])) {
-		$zz['fields'][5]['group_in_list'] = true;
-	} else {
-		$zz['fields'][5]['hide_in_list'] = true;
-	}
-}
 
 $zz['filter'][3]['title'] = 'Spielberechtigt';
 $zz['filter'][3]['type'] = 'list';

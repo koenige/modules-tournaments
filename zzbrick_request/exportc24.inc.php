@@ -40,7 +40,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 	$data['hidden'] = false;
 	if (!empty(wrap_setting('chess24com[logo_url]')))
 		$data['logo'] = wrap_setting('chess24com[logo_url]');
-	if ($event['turnierform'] === 'e') {
+	if (wrap_setting('tournaments_type_single')) {
 		$data['eventType'] = 'open';
 		// without table: bunchOfGames
 	} else {
@@ -72,7 +72,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 	$data['gameSources'] = [];
 	$data['players'] = [];
 
-	if ($event['turnierform'] !== 'e') {
+	if (wrap_setting('tournaments_type_team')) {
 		$sql = 'SELECT CONCAT("T", team_id) AS team_id
 				, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS name
 				, CONCAT("%s/", teams.identifier, "/") AS link
@@ -101,7 +101,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		, wrap_id('usergroups', 'spieler')
 	);
 	$brett_no = wrap_db_fetch($sql, '', 'single value');
-	if ($event['turnierform'] !== 'e') {
+	if (wrap_setting('tournaments_type_team')) {
 		$where = sprintf('AND NOT ISNULL(%s)', $brett_no ? 'brett_no' : 'rang_no');
 	} else {
 		$where = '';
@@ -142,7 +142,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		elseif (is_numeric($line['elo'])) $line['elo'] = intval($line['elo']);
 		// Chess24-Apps kommen nicht mit numerischen IDs zurecht
 		if (is_numeric($line['fideId'])) $line['fideId'] = $line['fideId'].'';
-		if ($event['turnierform'] !== 'e') {
+		if (wrap_setting('tournaments_type_team')) {
 			$data['teams']['T'.$line['team_id']]['rooster'][intval($line['no'])] = $line['fideId'];
 		}
 		unset($line['no']);
@@ -182,7 +182,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		];
 		$data['rounds'][$id]['startDate'] = floatval($round['startDate']); // intval + 32 bit server leads into problems
 		$data['rounds'][$id]['matches'][1]['games'] = (object) [];
-		if ($event['turnierform'] !== 'e') {
+		if (wrap_setting('tournaments_type_team')) {
 			// logic of chess24: force some trash to make their system work
 			$data['rounds'][$id]['matches'][1]['teams'][1] = '';
 			$data['rounds'][$id]['matches'][1]['teams'][2] = '';
@@ -292,12 +292,12 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		'fr' => ''
 	];
 
-	if ($event['turnierform'] !== 'e') {
+	if (wrap_setting('tournaments_type_team')) {
 		$data['gamesPerMatch'] = intval($turnier['gamesPerMatch']);
 	}
 
 //	$data['nameMap'] = [
-//		'Liu, Sijia Anna' => 'Liu, Sija Anna'
+//		'Last, First wrong' => 'Last, First correct'
 //	];
 
 	if (!empty($parameter['chess24_com'])) {

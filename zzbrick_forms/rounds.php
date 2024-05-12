@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2017, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2017, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -152,11 +152,14 @@ if (wrap_access('tournaments_games', $brick['data']['event_rights']) AND !wrap_a
 	$zz['record']['add'] = false;
 }
 if (wrap_access('tournaments_games', $brick['data']['event_rights']) OR wrap_access('tournaments_pairings', $brick['data']['event_rights'])) {
-	if (!empty($brick['data']['turnierform'])) {
-		if ($brick['data']['turnierform'] === 'e')
-			$zz['details'][0]['title'] = 'Games';
-		else
-			$zz['details'][0]['title'] = 'Pairings';
+	if (wrap_setting('tournaments_type_single')) {
+		$zz['details'][0]['title'] = 'Games';
+		$zz['details'][0]['link'] = [
+		// @todo use area
+			'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'identifier', 'string1' => '/'
+		];
+	} elseif (wrap_setting('tournaments_type_team')) {
+		$zz['details'][0]['title'] = 'Pairings';
 		$zz['details'][0]['link'] = [
 		// @todo use area
 			'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'identifier', 'string1' => '/'

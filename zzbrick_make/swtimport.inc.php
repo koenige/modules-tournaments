@@ -211,13 +211,13 @@ function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
  * return bool (exit on error)
  */ 
 function mod_tournaments_make_swtimport_turniercheck($event, $form, $data) {
-	if ($form === 'einzelturnier' AND $event['turnierform'] !== 'e') {
+	if ($form === 'einzelturnier' AND !wrap_setting('tournaments_type_single')) {
 		wrap_error(
 			'Turnier wurde als Mannschaftsturnier angelegt, die SWT-Datei ist aber für ein Einzelturnier!',
 			E_USER_ERROR
 		);
 	}
-	if ($form === 'mannschaftsturnier' AND $event['turnierform'] === 'e') {
+	if ($form === 'mannschaftsturnier' AND !wrap_setting('tournaments_type_team')) {
 		wrap_error(
 			'Turnier wurde als Einzelturnier angelegt, die SWT-Datei ist aber für ein Mannschaftsturnier!',
 			E_USER_ERROR
@@ -590,7 +590,7 @@ function mod_tournaments_make_swtimport_persons($event, $spielerliste, $ids, $im
  * @return array $ids
  */
 function mod_tournaments_make_swtimport_participations($event, $spielerliste, $ids) {
-	if ($event['turnierform'] !== 'e') {
+	if (wrap_setting('tournaments_type_team')) {
 		$sql = 'SELECT IF(gastspieler = "ja", 1, 0)
 			FROM tournaments WHERE event_id = %d';
 		$sql = sprintf($sql, $event['event_id']);
@@ -601,14 +601,14 @@ function mod_tournaments_make_swtimport_participations($event, $spielerliste, $i
 	
 	foreach ($spielerliste as $s_key => $spieler) {
 		$values = [];
-		if ($event['turnierform'] !== 'e') {
+		if (wrap_setting('tournaments_type_team')) {
 			// wird immer gespeichert, auch für inaktive Spieler, daher
 			// ganz vorne!
 			$ids['spieler_in_teams'][hexdec($spieler[2020])] = $spieler[2016];
 		}
 		$person_id = $ids['person'][$s_key];
 		if (is_null($person_id)) continue;
-		if ($event['turnierform'] !== 'e') {
+		if (wrap_setting('tournaments_type_team')) {
 			// Eine Spielerin darf in mehreren Teams pro Turnier gemeldet sein
 			// (2. Mannschaft)
 			$sql = 'SELECT participation_id
@@ -638,7 +638,7 @@ function mod_tournaments_make_swtimport_participations($event, $spielerliste, $i
 			$values['action'] = 'insert';
 		}
 		$spielername = explode(',', $spieler[2000]);
-		if ($event['turnierform'] !== 'e') {
+		if (wrap_setting('tournaments_type_team')) {
 			$values['POST']['team_id'] = $ids['team_dec'][$spieler[2016]];
 		}
 		if ($values['action'] === 'insert') {
@@ -683,10 +683,10 @@ function mod_tournaments_make_swtimport_participations($event, $spielerliste, $i
 		$values['POST']['t_dwz'] = $spieler[2004];
 		$values['POST']['t_elo'] = $spieler[2003];
 		$values['POST']['t_fidetitel'] = mod_tournaments_make_swtimport_titel($spieler[2002]);
-		if ($event['turnierform'] !== 'e' AND $gastspieler) {
+		if (wrap_setting('tournaments_type_team') AND $gastspieler) {
 			$values['POST']['gastspieler'] = ($spieler[2006] === 'G' ? 'ja' : 'nein');
 		}
-		if ($event['turnierform'] !== 'e') {
+		if (wrap_setting('tournaments_type_team')) {
 			$values['POST']['brett_no'] = $spieler[2017];
 		} else {
 			$values['POST']['setzliste_no'] = hexdec($spieler[2020]);
@@ -840,7 +840,7 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 	// Korrektur schwarz/weiß-Bretter
 	// @todo stimmt nicht ganz, 78-0 ist Zufall, keine Ahnung wie man damit
 	// arbeitet
-	if ($event['turnierform'] !== 'e') {
+	if (wrap_setting('tournaments_type_team')) {
 		if (in_array($tournament[79], ['78-2', '78-3']))  {
 			$erstes_heim_brett = 'schwarz';
 		} else {
@@ -861,7 +861,7 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 			if (in_array($paarung[4001], $ids['person_spielfrei'])) continue;
 			// maximal soviele Runden wie ausgelost
 			if ($runde > $tournament[3]) continue;
-			if ($event['turnierform'] !== 'e') {
+			if (wrap_setting('tournaments_type_team')) {
 				if (!isset($ids['spieler_in_teams'][hexdec($s_key)])) {
 					continue;
 				}
@@ -882,7 +882,7 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 			if ($paarung[4001] === '00') continue;
 			$paarung['s_key'] = $s_key;
 			$paarung['runde_no'] = $runde;
-			if ($event['turnierform'] === 'e') {
+			if (wrap_setting('tournaments_type_single')) {
 				$p_key = $runde * 10000 * 10000;
 				$p_key += $paarung[$brett_key];
 				$partien[$p_key][] = $paarung;
@@ -951,7 +951,7 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 	
 	foreach ($partien as $p_key => $partie) {
 		$runde_no = $partie[0]['runde_no'];
-		if ($event['turnierform'] !== 'e') {
+		if (wrap_setting('tournaments_type_team')) {
 			$brett_no = $partie[0][4006];
 			if (!empty($partie[1][4006]) AND $brett_no !== $partie[1][4006]) {
 				wrap_error(sprintf('SWT-Import: Brettnummern stimmen nicht überein (%d != %d)', $brett_no, $partie[1][4006]), E_USER_ERROR);
@@ -984,7 +984,7 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 		$values['POST']['event_id'] = $event['event_id'];
 		$values['POST']['runde_no'] = $runde_no;
 		$values['POST']['brett_no'] = $brett_no;
-		if ($event['turnierform'] !== 'e') {
+		if (wrap_setting('tournaments_type_team')) {
 			$values['POST']['paarung_id'] = $paarung_id;
 		}
 		// Partiestatus
@@ -1013,7 +1013,7 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 				default:
 					$farbe = ''; break;
 			}
-			if ($event['turnierform'] !== 'e') {
+			if (wrap_setting('tournaments_type_team')) {
 				// Lustig lustig, SwissChess speichert die Info schwarz/weiß
 				// woanders
 				if ($spieler['venue'] === 'heim') {
@@ -1048,7 +1048,7 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 					AND $values['POST']['partiestatus_category_id'] === wrap_category_id('partiestatus/kampflos')) {
 					// kampflose Ergebnisse gegen NN, ggf. speichern
 					$values['POST']['schwarz_ergebnis'] = 0;
-					if ($event['turnierform'] !== 'e') {
+					if (wrap_setting('tournaments_type_team')) {
 						if ($spieler['venue'] === 'heim') {
 							$values['POST']['auswaerts_wertung'] = 0;
 						} else {
@@ -1067,7 +1067,7 @@ function mod_tournaments_make_swtimport_partien($event, $tournament, $ids) {
 					AND $values['POST']['partiestatus_category_id'] === wrap_category_id('partiestatus/kampflos')) {
 					// kampflose Ergebnisse gegen NN, ggf. speichern
 					$values['POST']['weiss_ergebnis'] = 0;
-					if ($event['turnierform'] !== 'e') {
+					if (wrap_setting('tournaments_type_team')) {
 						if ($spieler['venue'] === 'heim') {
 							$values['POST']['auswaerts_wertung'] = 0;
 						} else {

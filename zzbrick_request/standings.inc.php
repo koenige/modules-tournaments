@@ -78,7 +78,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	$event['runde_no'] = $runde;
 	mf_tournaments_cache($event);
 
-	if ($event['turnierform'] !== 'e') {
+	if (wrap_setting('tournaments_type_team')) {
 		$sql = 'SELECT tabellenstand_id, platz_no
 				, spiele_g, spiele_u, spiele_v
 				, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
@@ -96,6 +96,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 		$sql = sprintf($sql
 			, $event['event_id'], $runde
 		);
+		$id = 'team_id';
 	} else {
 		$sql = 'SELECT tabellenstand_id, tabellenstaende.platz_no
 				, spiele_g, spiele_u, spiele_v
@@ -123,13 +124,13 @@ function mod_tournaments_standings($vars, $settings, $event) {
 			, $event['event_id'], $runde
 			, $filter['where'] ? ' AND '.implode(' AND ', $filter['where']) : ''
 		);
+		$id = 'person_id';
 	}
-	$id = $event['turnierform'] !== 'e' ? 'team_id' : 'person_id';
 	$tabelle = wrap_db_fetch($sql, 'tabellenstand_id');
 	if (!$tabelle) return false;
 	$tabelle = mf_tournaments_clubs_to_federations($tabelle, 'club_contact_id');
 
-	if ($event['live'] AND $event['turnierform'] !== 'e') {
+	if ($event['live'] AND wrap_setting('tournaments_type_team')) {
 		$sql = 'SELECT paarung_id, heim_team_id, auswaerts_team_id
 			FROM partien
 			LEFT JOIN paarungen USING (paarung_id) 
@@ -146,9 +147,8 @@ function mod_tournaments_standings($vars, $settings, $event) {
 		$laufende_begegnungen = wrap_db_fetch($sql, 'partie_id');
 	}
 
-	if ($event['turnierform'] !== 'e') {
+	if (wrap_setting('tournaments_type_team'))
 		$team_ids = [];
-	}
 	$i = 1;
 	$last_id = false;
 	$guv = NULL;
@@ -171,7 +171,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 			$tabelle[$tabellenstand_id]['platz_no_identisch'] = true;
 		}
 		// Teams mit nicht gespielten Partien: live markiert
-		if ($event['turnierform'] !== 'e') {
+		if (wrap_setting('tournaments_type_team')) {
 			foreach ($laufende_begegnungen as $begegnung) {
 				if ($begegnung['heim_team_id'] === $tabelle[$tabellenstand_id]['team_id']) {
 					$tabelle[$tabellenstand_id]['live'] = true;
@@ -194,14 +194,14 @@ function mod_tournaments_standings($vars, $settings, $event) {
 		$last_id = $tabellenstand_id;
 	}
 
-	if ($event['turnierform'] !== 'e') {
+	if (wrap_setting('tournaments_type_team')) {
 		list($dwz_schnitt, $team_ids) 
 			= mf_tournaments_team_rating_average_dwz($event['event_id'], $team_ids, $event['bretter_min'], $event['pseudo_dwz']);
 	}
 	
 	$k_a = true;
 	foreach ($tabelle as $tabellenstand_id => $tabellenstand) {
-		if ($event['turnierform'] !== 'e' AND !empty($team_ids[$tabellenstand['team_id']]['dwz_schnitt'])) {
+		if (wrap_setting('tournaments_type_team') AND !empty($team_ids[$tabellenstand['team_id']]['dwz_schnitt'])) {
 			$tabelle[$tabellenstand_id]['dwz_schnitt'] = $team_ids[$tabellenstand['team_id']]['dwz_schnitt'];
 			// Zeige DWZ-Schnitt in Überschrift abhängig von Werten in Spalte an
 			if ($tabelle[$tabellenstand_id]['dwz_schnitt'] !== 'k. A.') {
@@ -279,7 +279,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	$sql = sprintf($sql, $event['event_id']);
 	$runden = wrap_db_fetch($sql, 'runde_no', 'single value');
 	
-	if ($event['turnierform'] !== 'e') {
+	if (wrap_setting('tournaments_type_team')) {
 		// Paarungen aktuelle Runde? Falls nur Tabelle eingegen wurde
 		$sql = 'SELECT DISTINCT runde_no FROM paarungen
 			WHERE event_id = %d AND runde_no = %d';
@@ -357,7 +357,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	} else {
 		$page['breadcrumbs'][]['title'] = sprintf('Tabelle %s. Runde', $event['runde_no']);
 	}
-	if ($event['turnierform'] !== 'e') {
+	if (wrap_setting('tournaments_type_team')) {
 		$page['text'] = wrap_template('standings-team', $tabelle);
 	} else {
 		$page['text'] = wrap_template('standings-single', $tabelle);

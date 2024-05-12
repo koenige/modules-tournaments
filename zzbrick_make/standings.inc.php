@@ -115,17 +115,20 @@ function mod_tournaments_make_standings_round($vars) {
 	elseif (count($vars) !== 2) return false;
 
 	$sql = 'SELECT event_id, events.identifier
-			, runden, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform, bretter_min
+			, runden, bretter_min
 			, tournament_id
 			, (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id) AS rounds_played
+			, categories.parameters
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN categories turnierformen
-			ON tournaments.turnierform_category_id = turnierformen.category_id
+		LEFT JOIN categories
+			ON events.event_category_id = categories.category_id
 		WHERE events.identifier = "%d/%s"';
 	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
+	wrap_module_parameters('tournaments', $event['parameters']);
+
 	wrap_setting('logfile_name', $event['identifier']);
 
 	if ($round_no > $event['runden']) {
@@ -166,7 +169,7 @@ function mod_tournaments_make_standings_round($vars) {
 
 	$type = implode('/', $vars);
 	wrap_setting('log_username', wrap_setting('robot_username'));
-	if ($event['turnierform'] === 'e') {
+	if (wrap_setting('tournaments_type_single')) {
 		require_once __DIR__.'/standings-single.inc.php';
 		$tabelle = mod_tournaments_make_standings_calculate_single($event, $round_no);
 		if (!$tabelle)

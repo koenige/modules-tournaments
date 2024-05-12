@@ -242,7 +242,7 @@ function mod_tournament_make_liveresults_tournament($params) {
 					'partiestatus_category_id' => wrap_category_id('partiestatus/'.$partiestatus),
 					'block_ergebnis_aus_pgn' => 'ja'
 				];
-				if ($turnier['turnierform_kennung'] !== 'e') {
+				if (wrap_setting('tournaments_type_team')) {
 					if ($partien[$partie_id]['heim_spieler_farbe'] === 'weiß') {
 						$line['heim_wertung'] = $weiss;
 						$line['auswaerts_wertung'] = $schwarz;

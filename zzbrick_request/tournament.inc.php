@@ -270,12 +270,10 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	$event['round_no'] = mf_tournaments_current_round($event['event_id']);
 	if ($event['round_no'] AND !$internal) $event['tabelle'] = true;
 
-	if (!empty($event['turnierform'])) {
-		if ($event['turnierform'] === 'e') {
-			$event['players_compact'] = mod_tournaments_tournament_players_compact($event);
-		} else {
-			$event['teams_compact'] = mod_tournaments_tournament_teams_compact($event, $internal);
-		}
+	if (wrap_setting('tournaments_type_single')) {
+		$event['players_compact'] = mod_tournaments_tournament_players_compact($event);
+	} elseif (wrap_setting('tournaments_type_team')) {
+		$event['teams_compact'] = mod_tournaments_tournament_teams_compact($event, $internal);
 	}
 
 	$page['title'] = $event['event'].', '.wrap_date($event['duration']);

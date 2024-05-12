@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2015, 2017, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2015, 2017, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -30,7 +30,7 @@ $zz = zzform_include('tabellenstaende');
 $zz['where']['event_id'] = $brick['data']['event_id'];
 $zz['where']['runde_no'] = $brick['vars'][2];
 
-if ($brick['data']['turnierform'] === 'e') {
+if (wrap_setting('tournaments_type_single')) {
 	unset($zz['filter'][1]);
 	unset($zz['fields'][11]); // platz_brett_no
 	unset($zz['fields'][4]); // Team
@@ -58,10 +58,8 @@ $zz['fields'][5]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 $zz['fields'][6]['auto_value'] = 'increment';
 
 if (!isset($_GET['filter']['typ'])) {
-	if ($brick['data']['turnierform'] !== 'e') {
+	if (wrap_setting('tournaments_type_team')) {
 		$zz['fields'][5]['hide_in_form'] = true; // Spieler
-	}
-	if ($brick['data']['turnierform'] !== 'e') {
 		$zz['fields'][11]['hide_in_form'] = true; // Spieler-Platz
 	}
 	$zz['fields'][10]['min_records'] =

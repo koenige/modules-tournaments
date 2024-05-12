@@ -37,7 +37,7 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 	$map_settings['longitude'] = $event['longitude'] ?? false;
 	$map_settings['place'] = $event['place'] ?? false;
 
-	if ($event['turnierform'] === 'e') {
+	if (wrap_setting('tournaments_type_single')) {
 		$event = mod_tournaments_startranking_single($event);
 		if (!$event['spieler']) return false;
 		foreach ($event['spieler'] as $spieler) {
@@ -77,7 +77,7 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 		$page['title'] = $event['event'].' '.$event['year'].': Startrangliste';
 	}
 
-	if ($event['turnierform'] === 'e') {
+	if (wrap_setting('tournaments_type_single')) {
 		$page['text'] = wrap_template('startranking-single', $event);
 	} else {
 		$page['text'] = wrap_template('startranking-team', $event);
