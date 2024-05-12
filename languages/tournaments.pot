@@ -80,6 +80,10 @@ msgstr ""
 msgid "Standings for tournament %s, round %d have been successfully updated."
 msgstr ""
 
+#: zzbrick_make/standings.inc.php
+msgid "Standings for tournament %s, round %d: no updates necessary."
+msgstr ""
+
 #: zzbrick_make/swtwriter.inc.php
 #: zzbrick_request/swtreader.inc.php
 msgid "SWT file `%s` does not exist. Please upload a file first."

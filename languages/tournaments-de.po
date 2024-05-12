@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: zzbrick_forms/rounds.inc.php
 msgid "Rounds"
@@ -102,6 +102,11 @@ msgstr ""
 msgid "Standings for tournament %s, round %d have been successfully updated."
 msgstr ""
 "Der Tabellenstand für Turnier %s, Runde %d wurde erfolgreich aktualisiert."
+
+#: zzbrick_make/standings.inc.php
+msgid "Standings for tournament %s, round %d: no updates necessary."
+msgstr ""
+"Tabellenstand für Turnier %s, Runde %d: keine Aktualisierung erforderlich."
 
 #: zzbrick_make/swtwriter.inc.php zzbrick_request/swtreader.inc.php
 msgid "SWT file `%s` does not exist. Please upload a file first."

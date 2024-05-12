@@ -174,10 +174,11 @@ function mod_tournaments_make_standings_round($vars) {
 		$success = mod_tournaments_make_standings_write_single($event['event_id'], $round_no, $tabelle);
 		if (!$success)
 			return mod_tournaments_make_standings_return(false, $time, $type);
+		$changes = 1;
 	} else {
 		$event['runde_no'] = $round_no;
 		require_once __DIR__.'/standings-team.inc.php';
-		mod_tournaments_make_standings_team($event);
+		$changes = mod_tournaments_make_standings_team($event);
 	}
 	if ($round_no < $event['rounds_played'])
 		mod_tournaments_make_standings_trigger($event['identifier'].'/'.($round_no + 1));
@@ -193,7 +194,10 @@ function mod_tournaments_make_standings_round($vars) {
 	];
 	zzform_update('tournaments', $line);
 
-	$page['text'] = sprintf(wrap_text('Standings for tournament %s, round %d have been successfully updated.'), $event['identifier'], $round_no);
+	if ($changes)
+		$page['text'] = sprintf(wrap_text('Standings for tournament %s, round %d have been successfully updated.'), $event['identifier'], $round_no);
+	else
+		$page['text'] = sprintf(wrap_text('Standings for tournament %s, round %d: no updates necessary.'), $event['identifier'], $round_no);
 	return mod_tournaments_make_standings_return($page, $time, $type);
 }
 
