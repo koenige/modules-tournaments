@@ -68,7 +68,7 @@
 <h2>Suche nach %%% condition unless e %%%Team oder %%% condition endif %%%Spieler</h2>
 <form method="GET" action="./suche/" id="suche" accept-charset="utf-8">
 <p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
-<p><a href="%%% condition if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% condition endif %%%lv/">Übersicht der %%% condition if e %%%Spieler%%% condition else %%%Teams%%% condition endif %%% nach Landesverbänden</a></p>
+<p><a href="%%% condition if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% condition endif %%%lv/">Übersicht der %%% condition if setting tournaments_type_single %%%Spieler%%% condition else %%%Teams%%% condition endif %%% nach Landesverbänden</a></p>
 %%% condition if teilnehmerliste %%%
 <p><a href="%%% condition if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% condition endif %%%herkunftsorte/">Übersicht der Herkunftsorte der Teilnehmer</a></p>
 %%% condition endif %%%
