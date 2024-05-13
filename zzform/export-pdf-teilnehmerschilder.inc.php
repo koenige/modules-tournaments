@@ -38,6 +38,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		AND (ISNULL(categories.parameters) OR categories.parameters NOT LIKE "%%&tournaments_no_cards=1%%")';
 	$sql = sprintf($sql, implode(',', $ids));
 	$data = wrap_db_fetch($sql, 'participation_id');
+	if (!$data) wrap_quit(404, 'Es gibt keine Teilnehmerkarten für diese Personen.');
 	
 	$events = [];
 	foreach ($data as $line) {
