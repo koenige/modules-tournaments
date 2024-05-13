@@ -87,6 +87,9 @@ foreach ($zz['fields'] as $no => $field) {
 		unset($zz['fields'][$no]);
 		break;
 
+	case 'sex':
+		$zz['fields'][$no]['unless']['export_mode']['hide_in_list'] = false;
+		break;
 	}
 }
 
