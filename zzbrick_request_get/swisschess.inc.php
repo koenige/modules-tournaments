@@ -58,15 +58,15 @@ function mod_tournaments_get_swisschess($vars) {
 		LEFT JOIN contacts_identifiers pk
 			ON persons.contact_id = pk.contact_id
 			AND pk.current = "yes"
-			AND pk.identifier_category_id = %d
+			AND pk.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 		LEFT JOIN contacts_identifiers fide
 			ON persons.contact_id = fide.contact_id
 			AND fide.current = "yes"
-			AND fide.identifier_category_id = %d
+			AND fide.identifier_category_id = /*_ID categories identifiers/id_fide _*/
 		LEFT JOIN contacts_identifiers pkz
 			ON persons.contact_id = pkz.contact_id
 			AND pkz.current = "yes"
-			AND pkz.identifier_category_id = %d
+			AND pkz.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 		LEFT JOIN contacts_identifiers v_ok
 			ON IFNULL(organisationen.contact_id, participations.club_contact_id) = v_ok.contact_id
 			AND v_ok.current = "yes"
@@ -76,16 +76,17 @@ function mod_tournaments_get_swisschess($vars) {
 		LEFT JOIN contacts landesverbaende
 			ON lv_ok.contact_id = landesverbaende.contact_id
 		WHERE events.identifier = "%d/%s"
-		AND usergroup_id = %d
+		AND usergroup_id = /*_ID usergroups spieler _*/
 		AND %s
 		AND (ISNULL(teams.team_id) OR teams.team_status = "Teilnehmer")
+		AND participations.status_category_id IN (
+			/*_ID categories participation-status/subscribed _*/,
+			/*_ID categories participation-status/verified _*/,
+			/*_ID categories participation-status/participant _*/
+		)
 		ORDER BY team, team_no, rang_no, t_nachname, t_vorname';
 	$sql = sprintf($sql
-		, wrap_category_id('identifiers/pass_dsb')
-		, wrap_category_id('identifiers/id_fide')
-		, wrap_category_id('identifiers/pass_dsb')
 		, $vars[0], wrap_db_escape($vars[1])
-		, wrap_id('usergroups', 'spieler')
 		, $where
 	);
 	$data = wrap_db_fetch($sql, 'teilnehmer_info_4');
