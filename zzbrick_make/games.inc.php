@@ -22,9 +22,9 @@
  * 	[2]: (optional) Runde
  *  [3]: (optional) Brett oder Tisch.Brett (5, 5.6)
  */
-function mod_tournaments_make_games($vars) {
+function mod_tournaments_make_games($vars, $settings, $event) {
 	wrap_setting('cache', false);
-	if (empty($vars)) return false;
+	if (count($vars) < 2) return false;
 
 	ignore_user_abort(1);
 	ini_set('max_execution_time', 60);
@@ -76,9 +76,6 @@ function mod_tournaments_make_games($vars) {
 	case 2:
 		$pgn_filename = 'gesamt';
 		break;
-	case 1:
-		if ($vars[0] === 'update') return cms_partienupdate_trigger();
-		return false;
 	}
 
 	$error_msg = sprintf('Termin %s/%s',
@@ -161,22 +158,19 @@ function mod_tournaments_make_games($vars) {
 			ON partien.weiss_person_id = white_person.person_id
 		LEFT JOIN participations weiss
 			ON weiss.contact_id = white_person.contact_id
-			AND weiss.usergroup_id = %d
+			AND weiss.usergroup_id = /*_ ID usergroups spieler _*/
 			AND weiss.event_id = partien.event_id
 		LEFT JOIN persons black_person
 			ON partien.schwarz_person_id = black_person.person_id
 		LEFT JOIN participations schwarz
 			ON schwarz.contact_id = black_person.contact_id
-			AND schwarz.usergroup_id = %d
+			AND schwarz.usergroup_id = /*_ ID usergroups spieler _*/
 			AND schwarz.event_id = partien.event_id
 		WHERE partien.event_id = %d
-		AND partiestatus_category_id != %d
+		AND partiestatus_category_id != /*_ ID categories partiestatus/kampflos _*/
 		%s';
 	$sql = sprintf($sql,
-		wrap_id('usergroups', 'spieler'),
-		wrap_id('usergroups', 'spieler'),
 		$event['event_id'],
-		wrap_category_id('partiestatus/kampflos'),
 		$where
 	);
 	$partien = wrap_db_fetch($sql, 'partie_id');
@@ -424,48 +418,6 @@ function cms_partienupdate_normalize_name($name) {
 	if (in_array($name, array_keys($names))) return $names[$name];
 	$names[$name] = strtolower(wrap_filename(str_replace('-', '', $name), ''));
 	return $names[$name];
-}
-
-/**
- * Trigger-Funktion, die aktuell laufende Termine mit Liveübetragung sucht
- * und hier automatisch die PGNs importiert
- *
- * @param void
- * @return function
- */
-function cms_partienupdate_trigger() {
-	$sql = 'SELECT DISTINCT tournaments.event_id, runden.runde_no,
-			IF(runden.date_begin >= CURDATE() AND runden.time_begin > CURTIME(), NULL, 1) AS laufend
-			, events.identifier
-		FROM tournaments
-		JOIN events USING (event_id)
-		LEFT JOIN events runden
-			ON events.event_id = runden.main_event_id
-			AND runden.event_category_id = %d
-		LEFT JOIN partien
-			ON events.event_id = partien.event_id
-			AND runden.runde_no = partien.runde_no
-		WHERE NOT ISNULL(livebretter)
-		AND events.date_begin <= CURDATE() AND events.date_end >= CURDATE()
-		AND NOT ISNULL(partien.partie_id)
-		ORDER BY tournaments.event_id, runden.runde_no
-	';
-	$sql = sprintf($sql, wrap_category_id('event/round'));
-	// in SQL-Abfrage werden alle Runden ausgegeben, wrap_db_fetch() speichert
-	// aber nach event_id und durch die Sortierung wird nur die letzte Runde
-	// gespeichert
-	$tournaments = wrap_db_fetch($sql, 'event_id');
-
-	foreach ($tournaments as $event_id => $turnier) {
-		if (!$turnier['laufend']) continue;
-		// @todo maybe disable next two lines to reduce server load
-		$url = wrap_path('tournaments_job_games', $turnier['identifier'].'/'.$turnier['runde_no'], false);
-		wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien')]);
-		$url = wrap_path('tournaments_job_games', $turnier['identifier'].'/'.$turnier['runde_no'].'-live', false);
-		wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien'), 'priority' => -5]);
-	}
-	$page['text'] = 'Update in progress';
-	return $page;
 }
 
 /**
