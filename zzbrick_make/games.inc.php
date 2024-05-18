@@ -87,32 +87,27 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 	if ($brett_no) $error_msg .= sprintf(', Brett %s', wrap_html_escape($brett_no));
 
 	// Termin, Partien in Datenbank vorhanden?
-	$sql = 'SELECT events.event_id, events.identifier, event, IFNULL(event_year, YEAR(date_begin)) AS year
-			, COUNT(partie_id) AS partien
-			, SUBSTRING_INDEX(categories.path, "/", -1) AS event_category
+	$sql = 'SELECT COUNT(partie_id) AS partien
 			, tournament_id
-			, urkunde_parameter AS parameter
 		FROM events
 		JOIN partien USING (event_id)
 		JOIN tournaments USING (event_id)
 		LEFT JOIN paarungen USING (paarung_id)
 		JOIN categories
 			ON events.event_category_id = categories.category_id
-		WHERE events.identifier = "%d/%s"
+		WHERE events.event_id = %d
 		%s
-		GROUP BY event_id
+		GROUP BY events.event_id
 	';
-	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]), $where);
-	$event = wrap_db_fetch($sql);
-	if (!$event OR !$event['partien']) {
+	$sql = sprintf($sql, $event['event_id'], $where);
+	$event = array_merge($event, wrap_db_fetch($sql));
+	if (!$event['partien']) {
 		$page['text'] = sprintf(
 			'PGN-Import: Keine Partien vorhanden (%s).', $error_msg
 		);
 		$page['status'] = 404;
 		return $page;
 	}
-	parse_str($event['parameter'], $parameter);
-	$event += $parameter;
 
 	// PGN-Datei vorhanden?
 	$pgn_path = wrap_setting('media_folder').'/pgn/'.$event['identifier'].'/%s.pgn';
@@ -178,8 +173,8 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 	// Datei Partie für Partie auswerten
 	wrap_include_files('pgn', 'chess');
 	$games = mf_chess_pgn_parse($pgn, $pgn_filename);
-	if (!empty($event['pgn_preparation_function']))
-		$games = $event['pgn_preparation_function']($games, $event['event_id']);
+	if ($function = wrap_setting('pgn_preparation_function'))
+		$games = $function($games, $event['event_id']);
 
 	if (!empty($pgn_filename_not_live)) {
 		$pgn_not_live = sprintf($pgn_path, $pgn_filename_not_live);
@@ -205,14 +200,14 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 
 	foreach ($partien as $partie_id => $partie) {
 		if (!empty($games_not_live)) {
-			$not_live_partie = cms_partienupdate_pgnfind($games_not_live, $partie, $event);
+			$not_live_partie = cms_partienupdate_pgnfind($games_not_live, $partie);
 			// check if game in saved PGN export is unfinished, then prefer live game
 			if (!empty($not_live_partie['moves']) AND substr(trim($not_live_partie['moves']), -1) !== '*') {
-				$partien[$partie_id] = cms_partienupdate_pgnfind($games, $partie, $event);
+				$partien[$partie_id] = cms_partienupdate_pgnfind($games, $partie);
 				continue;
 			}
 		}
-		$partien[$partie_id] = cms_partienupdate_pgnfind($games, $partie, $event);
+		$partien[$partie_id] = cms_partienupdate_pgnfind($games, $partie);
 		if (!empty($partien[$partie_id]['head'])) {
 			// - Falls Partie vorhanden, PGN importieren
 			$partien[$partie_id]['moves'] = trim($partien[$partie_id]['moves']);
@@ -241,7 +236,7 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 				if (!$partie['block_ergebnis_aus_pgn']) {
 					$line['weiss_ergebnis'] = $ergebnis['weiss'];
 					$line['schwarz_ergebnis'] = $ergebnis['schwarz'];
-					if ($event['event_category'] === 'mannschaft') {
+					if (wrap_setting('tournaments_type_team')) {
 						switch ($partie['heim_spieler_farbe']) {
 						case 'schwarz':
 							$line['heim_wertung'] = $ergebnis['schwarz'];
@@ -360,12 +355,11 @@ function cms_partienupdate_pgn_index($games) {
  * Namen werden normalisiert, Leerzeichen spielen keine Rolle
  *
  * @param array $games (gefundene Partien werden hier entfernt)
- * @param array $partie
+ * @param array $game
  *		string 'White', string 'Black'
- * @param array $event
  * @return array $pgn
  */
-function cms_partienupdate_pgnfind(&$games, $partie, $event) {
+function cms_partienupdate_pgnfind(&$games, $partie) {
 	$white = cms_partienupdate_normalize_name($partie['White']);
 	$black = cms_partienupdate_normalize_name($partie['Black']);
 
@@ -388,7 +382,7 @@ function cms_partienupdate_pgnfind(&$games, $partie, $event) {
 	}
 	
 	// Round with Board?
-	if (!empty($event['pgn_match_round_table_board']) AND !empty($partie['Round_With_Board'])) {
+	if (wrap_setting('pgn_match_round_table_board') AND !empty($partie['Round_With_Board'])) {
 		foreach ($games as $index => $game) {
 			if (empty($game['head']['Round'])) continue;
 			if ($game['head']['Round'] !== $partie['Round_With_Board']) continue;
