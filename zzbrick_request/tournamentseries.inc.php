@@ -55,15 +55,15 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 			, (SELECT COUNT(*) FROM participations
 				LEFT JOIN teams USING (team_id)
 				WHERE participations.event_id = events.event_id
-				AND participations.usergroup_id = %d
-				AND participations.status_category_id = %d
+				AND participations.usergroup_id = /*_ID usergroups spieler _*/
+				AND participations.status_category_id = /*_ID categories participation-status/participant _*/
 				AND (ISNULL(team_id) OR teams.meldung = "teiloffen" OR teams.meldung = "komplett")
 			) AS spieler
 			, (SELECT COUNT(*) FROM participations
 				LEFT JOIN teams USING (team_id)
 				WHERE participations.event_id = events.event_id
-				AND participations.usergroup_id = %d
-				AND participations.status_category_id = %d
+				AND participations.usergroup_id = /*_ID usergroups spieler _*/
+				AND participations.status_category_id = /*_ID categories participation-status/participant _*/
 				AND (ISNULL(team_id) OR teams.meldung = "teiloffen" OR teams.meldung = "komplett")
 				AND (NOT ISNULL(participations.club_contact_id))
 			) AS spieler_mit_verein
@@ -86,11 +86,7 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 		AND NOT ISNULL(events_websites.website_id)
 		ORDER BY series.sequence, date_begin, events.identifier';
 	$sql = sprintf($sql
-		, wrap_id('usergroups', 'spieler')
-		, wrap_category_id('participation-status/participant')
-		, wrap_id('usergroups', 'spieler')
-		, wrap_category_id('participation-status/participant')
-		, wrap_setting('website_id')
+		, $event['website_id']
 		, $event['series_category_id']
 		, $event['year']
 	);
