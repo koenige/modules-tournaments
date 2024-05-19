@@ -130,8 +130,8 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 
 	// Partien aus Datenbank abfragen
 	$sql = 'SELECT partie_id
-			, CONCAT(weiss.t_nachname, ", ", weiss.t_vorname, IFNULL(CONCAT(" ", weiss.t_namenszusatz), "")) AS White
-			, CONCAT(schwarz.t_nachname, ", ", schwarz.t_vorname, IFNULL(CONCAT(" ", schwarz.t_namenszusatz), "")) AS Black
+			, CONCAT(IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname, ", ", weiss.t_vorname) AS White
+			, CONCAT(IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname, ", ", schwarz.t_vorname) AS Black
 			, IF((ISNULL(weiss_ergebnis) OR ISNULL(schwarz_ergebnis)), "*",
 				CONCAT(
 					CASE weiss_ergebnis WHEN 0.0 THEN 0 WHEN 0.5 THEN "1/2" WHEN 1.0 THEN 1 END,
@@ -153,16 +153,16 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 			ON partien.weiss_person_id = white_person.person_id
 		LEFT JOIN participations weiss
 			ON weiss.contact_id = white_person.contact_id
-			AND weiss.usergroup_id = /*_ ID usergroups spieler _*/
+			AND weiss.usergroup_id = /*_ID usergroups spieler _*/
 			AND weiss.event_id = partien.event_id
 		LEFT JOIN persons black_person
 			ON partien.schwarz_person_id = black_person.person_id
 		LEFT JOIN participations schwarz
 			ON schwarz.contact_id = black_person.contact_id
-			AND schwarz.usergroup_id = /*_ ID usergroups spieler _*/
+			AND schwarz.usergroup_id = /*_ID usergroups spieler _*/
 			AND schwarz.event_id = partien.event_id
 		WHERE partien.event_id = %d
-		AND partiestatus_category_id != /*_ ID categories partiestatus/kampflos _*/
+		AND partiestatus_category_id != /*_ID categories partiestatus/kampflos _*/
 		%s';
 	$sql = sprintf($sql,
 		$event['event_id'],
