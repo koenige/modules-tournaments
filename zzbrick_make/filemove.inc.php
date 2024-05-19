@@ -23,7 +23,7 @@ function mod_tournaments_make_filemove() {
 			, events.identifier
 			, REPLACE(events.identifier, "/", "-") AS path
 			, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "-", IF(main_series.path != "reihen", SUBSTRING_INDEX(main_series.path, "/", -1), SUBSTRING_INDEX(series.path, "/", -1))) AS main_series
-			, tournaments.urkunde_parameter AS parameter
+			, tournaments.urkunde_parameter AS parameters
 			, IFNULL((SELECT setting_value FROM _settings
 				WHERE setting_key = "canonical_hostname"
 				AND _settings.website_id = websites.website_id
@@ -86,12 +86,12 @@ function mod_tournaments_make_filemove() {
 	wrap_setting('syndication_timeout_ms', 2500);
 
 	foreach ($tournaments as $tournament) {
-		if ($tournament['parameter'])
-			parse_str($tournament['parameter'], $tournament['parameter']);
+		if ($tournament['parameters'])
+			parse_str($tournament['parameters'], $tournament['parameters']);
 
 		// move tournament info to other server already before tournament starts
-		if (!empty($tournament['parameter']['ftp_other'])) {
-			mod_tournaments_make_filemove_ftp_other($tournament, $tournament['parameter']['ftp_other']);
+		if (!empty($tournament['parameters']['ftp_other'])) {
+			mod_tournaments_make_filemove_ftp_other($tournament, $tournament['parameters']['ftp_other']);
 		}
 
 		if (empty($tournament['current_round'])) continue;
@@ -103,12 +103,12 @@ function mod_tournaments_make_filemove() {
 			$tournament['queue_dir'] = sprintf($pgn_queue, $tournament['path']);
 			if (!file_exists($tournament['queue_dir'])) wrap_mkdir($tournament['queue_dir']);
 		
-			mod_tournaments_make_filemove_queue($tournament, $tournament['parameter']);
+			mod_tournaments_make_filemove_queue($tournament, $tournament['parameters']);
 			mod_tournaments_make_filemove_final_pgn($tournament);
 		}
 		mod_tournaments_make_filemove_bulletin_pgn($tournament);
-		if (!empty($tournament['parameter']['ftp_pgn'])) {
-			mod_tournaments_make_filemove_ftp_pgn($tournament, $tournament['parameter']['ftp_pgn']);
+		if (!empty($tournament['parameters']['ftp_pgn'])) {
+			mod_tournaments_make_filemove_ftp_pgn($tournament, $tournament['parameters']['ftp_pgn']);
 		}
 	}
 	$page['text'] = '<p>PGN-Dateien verschoben</p>';
@@ -121,15 +121,15 @@ function mod_tournaments_make_filemove() {
  * @param array $tournament
  * @return void
  */
-function mod_tournaments_make_filemove_queue($tournament, $parameter = []) {
+function mod_tournaments_make_filemove_queue($tournament, $parameters = []) {
 	// pgn-live/2016-dvm-u20/games.pgn
 	$pgn_live = wrap_setting('media_folder').wrap_setting('pgn_live_folder').'/%s/games.pgn';
 
 	$source = sprintf($pgn_live, $tournament['path']);
 	if ($merged_source = mod_tournaments_make_filemove_concat_pgn($source))
 		$source = $merged_source;
-	if (!empty($parameter['live_pgn_offset_mins'])) {
-		$new_time = filemtime($source) + $parameter['live_pgn_offset_mins'] * 60;
+	if (!empty($parameters['live_pgn_offset_mins'])) {
+		$new_time = filemtime($source) + $parameters['live_pgn_offset_mins'] * 60;
 		touch($source, $new_time, $new_time);
 		clearstatcache();
 	}
@@ -235,11 +235,11 @@ function mod_tournaments_make_filemove_scandir($folder) {
  * @return void
  */
 function mod_tournaments_make_filemove_bulletin_pgn($tournament) {
-	if (empty($tournament['parameter']['pgn_bulletin_file_template'])) return;
+	if (empty($tournament['parameters']['pgn_bulletin_file_template'])) return;
 	$bulletin_dir = wrap_setting('media_folder').wrap_setting('pgn_bulletin_folder').'/'.$tournament['main_series'];
 	if (!file_exists($bulletin_dir)) return;
 
-	$s_filename = sprintf('%s/%s.pgn', $bulletin_dir, $tournament['parameter']['pgn_bulletin_file_template']);
+	$s_filename = sprintf('%s/%s.pgn', $bulletin_dir, $tournament['parameters']['pgn_bulletin_file_template']);
 	for ($i = 1; $i <= $tournament['current_round']['runde_no']; $i++) {
 		$source = sprintf($s_filename, $i);
 		$dest = $tournament['final_dir'].'/'.$i.'.pgn';
