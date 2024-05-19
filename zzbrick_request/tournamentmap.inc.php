@@ -31,7 +31,7 @@ function mod_tournaments_tournamentmap($vars, $settings, $event) {
 	if ($federation) {
 		$contact_ids = mod_tournaments_tournamentmap_federation($federation);
 		// no member organisations?
-		if (count($contact_ids) === 1) return false;
+		if (count($contact_ids) < 2) return false;
 		$event = array_merge($event, reset($contact_ids));
 	}
 
