@@ -42,14 +42,21 @@ function mod_tournaments_make_gamestrigger() {
 	// gespeichert
 	$tournaments = wrap_db_fetch($sql, 'event_id');
 
+	$data = [];
 	foreach ($tournaments as $event_id => $tournament) {
 		if (!$tournament['running']) continue;
 		// @todo maybe disable next two lines to reduce server load
 		$url = wrap_path('tournaments_job_games', $tournament['identifier'].'/'.$tournament['runde_no'], false);
 		wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien')]);
+		$data[] = [
+			'url' => $url, 'identifier' => $tournament['identifier']
+		];
 		$url = wrap_path('tournaments_job_games', $tournament['identifier'].'/'.$tournament['runde_no'].'-live', false);
 		wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien'), 'priority' => -5]);
+		$data[] = [
+			'url' => $url, 'identifier' => $tournament['identifier']
+		];
 	}
-	$page['text'] = 'Update in progress';
+	$page['text'] = wrap_template('gamestrigger', $data);
 	return $page;
 }
