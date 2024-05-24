@@ -12,8 +12,8 @@
 <br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
 %%% condition if live %%%
-<p>Liveergebnisse: Die Ergebnisse sind vorläufig und ohne Gewähr.<!-- <br>
-Stand: %%% item livedatum %%%. Diese Seite wird minütlich automatisch aktualisiert. --> </p>
+<p>Liveergebnisse: Die Ergebnisse sind vorläufig und ohne Gewähr.<br>
+Stand: %%% item live_date wrap_date %%%, %%% item live_date wrap_time %%% Uhr. <!-- Diese Seite wird minütlich automatisch aktualisiert. --></p>
 %%% condition endif %%%
 
 <p>%%% item wochentag %%%, %%% item date_begin wrap_date %%% %%% item time_begin %%%%%% item time_end "–%s" %%%

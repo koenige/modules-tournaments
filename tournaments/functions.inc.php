@@ -272,6 +272,7 @@ function mf_tournaments_games_sql($event, $where) {
 				AND event_id = partien.event_id
 				AND person_id = partien.weiss_person_id
 				AND wertung_category_id = %d) AS weiss_punkte
+			, partien.last_update
 		FROM partien
 		LEFT JOIN categories
 			ON partien.partiestatus_category_id = categories.category_id
@@ -318,6 +319,19 @@ function mf_tournaments_games_sql($event, $where) {
 		, $event['event_id'], $where
 	);
 	return $sql;
+}
+
+/**
+ * get last update for a round
+ *
+ * @param array $data
+ * @return string
+ */
+function mf_tournaments_last_update($data) {
+	$last_update = '';
+	foreach ($data as $line)
+		if ($line['last_update'] > $last_update) $last_update = $line['last_update'];
+	return $last_update;
 }
 
 /**

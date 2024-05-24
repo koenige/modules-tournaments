@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -90,7 +90,7 @@ function mod_tournaments_round($params, $vars, $event) {
 		$event['next'] = $event['runde_no'] + 1;
 	}
 
-	if ($event['event_category'] !== 'einzel') {
+	if (wrap_setting('tournaments_type_team')) {
 		$sql = 'SELECT paarung_id, tisch_no
 			, IF(heim_teams.spielfrei = "ja", "", heim_teams.identifier) AS heim_kennung
 			, CONCAT(heim_teams.team, IFNULL(CONCAT(" ", heim_teams.team_no), "")) AS heim_team
@@ -176,13 +176,7 @@ function mod_tournaments_round($params, $vars, $event) {
 //		$page['head'] .= sprintf(
 //			"\t<meta http-equiv='refresh' content='60; URL=%s%s/%s/'>\r", wrap_setting('host_base'), wrap_setting('events_path'), wrap_setting('brick_url_parameter')
 //		);
-		// @todo das sollte aus der Datenbank kommen, da nicht alle Turniere
-		// immer mit Swiss-Chess ausgewertet werden
-		$filename = wrap_setting('media_folder').'/swt/'.$event['identifier'].'.swt';
-		if (file_exists($filename)) {
-		// @todo Livedatum ggf. auch aus letzter Änderung Tabelle auslesen
-			$event['livedatum'] = date('d.m. H:i', filemtime($filename));
-		}
+		$event['live_date'] = mf_tournaments_last_update($event['partien']);
 	}
 
 	if (!empty($event['auslosung']))

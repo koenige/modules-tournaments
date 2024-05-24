@@ -18,7 +18,7 @@ Ergebnisse %%% item round_event %%%%%% item live " (Live)" %%%
 
 %%% condition if live %%%
 <p>Liveergebnisse: Die Ergebnisse sind vorläufig und ohne Gewähr.<br>
-Stand: %%% item livedatum %%%</p>
+Stand: %%% item live_date wrap_date %%%, %%% item live_date wrap_time %%% Uhr</p>
 %%% condition endif %%%
 
 <p>%%% item wochentag %%%, %%% item date_begin wrap_date %%% %%% item time_begin %%%%%% item time_end "–%s" %%%
