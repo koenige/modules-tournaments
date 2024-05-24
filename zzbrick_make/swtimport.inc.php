@@ -84,10 +84,10 @@ function mod_tournaments_make_swtimport($vars, $settings, $event) {
 	$tournament = swtparser(wrap_setting('media_folder').'/swt/'.$swt, wrap_setting('character_set'));
 	$field_names = swtparser_get_field_names('de');
 
-	$form = $tournament['out'][35] === 1 ? 'mannschaftsturnier' :'einzelturnier';
+	$form = $tournament['out'][35] === 1 ? 'team' :'single';
 
 	// Check: richtiges Turnier?
-	mod_tournaments_make_swtimport_turniercheck($event, $form, $tournament['out']);
+	mf_tournaments_swisschess_check($event, $form, $tournament['out']);
 
 	if ($_SERVER['REQUEST_METHOD'] === 'POST')
 		$import = mod_tournaments_make_swtimport_import($event, $form, $tournament);
@@ -122,7 +122,7 @@ function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
 	}
 
 	// Team importieren
-	if ($form === 'mannschaftsturnier') {
+	if ($form === 'team') {
 		$ids = mod_tournaments_make_swtimport_teams($event, $tournament['out']);
 	}
 
@@ -135,7 +135,7 @@ function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
 	// Paarungen importieren
 	// @todo prüfen, ob aktuelle Runde erforderlich (falls nur 1. Runde ausgelost 
 	// ist, ergibt $aktuelle_runde false)
-	if ($form === 'mannschaftsturnier') { // AND $aktuelle_runde) {
+	if ($form === 'team') { // AND $aktuelle_runde) {
 		$ids = mod_tournaments_make_swtimport_paarungen($event, $tournament['out'], $ids);
 	}
 
@@ -149,7 +149,7 @@ function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
 	wrap_setting('error_prefix', '');
 	wrap_setting('error_handling', $old_error_handling);
 	
-	if ($form === 'mannschaftsturnier') {
+	if ($form === 'team') {
 		$ids = mod_tournaments_make_swtimport_delete($ids, $event['event_id'], 'teams');
 	}
 	$ids = mod_tournaments_make_swtimport_delete($ids, $event['event_id'], 'participations');
@@ -210,14 +210,14 @@ function mod_tournaments_make_swtimport_import($event, $form, $tournament) {
  * @param array $data
  * return bool (exit on error)
  */ 
-function mod_tournaments_make_swtimport_turniercheck($event, $form, $data) {
-	if ($form === 'einzelturnier' AND !wrap_setting('tournaments_type_single')) {
+function mf_tournaments_swisschess_check($event, $form, $data) {
+	if ($form === 'single' AND !wrap_setting('tournaments_type_single')) {
 		wrap_error(
 			'Turnier wurde als Mannschaftsturnier angelegt, die SWT-Datei ist aber für ein Einzelturnier!',
 			E_USER_ERROR
 		);
 	}
-	if ($form === 'mannschaftsturnier' AND !wrap_setting('tournaments_type_team')) {
+	if ($form === 'team' AND !wrap_setting('tournaments_type_team')) {
 		wrap_error(
 			'Turnier wurde als Einzelturnier angelegt, die SWT-Datei ist aber für ein Mannschaftsturnier!',
 			E_USER_ERROR
@@ -227,7 +227,7 @@ function mod_tournaments_make_swtimport_turniercheck($event, $form, $data) {
 	// no further check possible if IDs in Swiss Chess must not be used
 	if (!empty($event['swisschess']['ignore_ids'])) return true;
 	
-	if ($form === 'einzelturnier') {
+	if ($form === 'single_tournament') {
 		$sql = 'SELECT person_id FROM participations
 			LEFT JOIN persons USING (contact_id)
 			WHERE usergroup_id = %d AND event_id = %d';
@@ -1314,7 +1314,7 @@ function mod_tournaments_make_swtimport_integrity($tournament, $form) {
 		return [$tournament, []];
 	}
 	$import = [];
-	if ($form === 'mannschaftsturnier') {
+	if ($form === 'team') {
 		list($tournament['out']['Teams'], $import_settings)
 			= mod_tournaments_make_swtimport_duplicate_id($tournament['out']['Teams'], 'team_id');
 		$import = array_merge($import, $import_settings);
