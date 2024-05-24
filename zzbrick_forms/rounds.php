@@ -79,15 +79,6 @@ foreach ($zz['fields'] as $no => $field) {
 		$zz['fields'][$no]['default'] = $brick['data']['zeitplan_max'];
 		break;
 
-	case 'identifier':
-		$zz['fields'][$no]['fields'] = [
-			'main_event_id[identifier]', 'runde_no'
-		];
-		$zz['fields'][$no]['identifier']['concat'] = [
-			'/', '/runde/'
-		];
-		break;
-
 	case 'published':
 		// published? makes no sense to unpublish rounds
 		$zz['fields'][$no]['type'] = 'hidden';
