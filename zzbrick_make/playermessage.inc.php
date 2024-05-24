@@ -30,8 +30,9 @@ function mod_tournaments_make_playermessage($vars, $settings, $data) {
 		WHERE event_id = %d
 		AND setzliste_no = %d';
 	$sql = sprintf($sql, $data['event_id'], $vars[2]);
-	$data = array_merge($data, wrap_db_fetch($sql));
-	if (!$data['contact']) return false;
+	$contact = wrap_db_fetch($sql);
+	if (!$contact) return false;
+	$data = array_merge($data, $contact);
 	
 	$sql = 'SELECT IF(spielernachrichten = "ja" AND DATE_SUB(events.date_end, INTERVAL 2 DAY) >= CURDATE(), NULL, 1), date_end
 		FROM tournaments
@@ -40,7 +41,7 @@ function mod_tournaments_make_playermessage($vars, $settings, $data) {
 	$sql = sprintf($sql, $data['event_id']);
 	$data['news_inactive'] = wrap_db_fetch($sql, '', 'single value');
 	if ($data['news_inactive']) {
-		$page['status'] = 404;
+		$page['status'] = 410;
 		$data['hide_form'] = true;
 	}
 	
