@@ -84,11 +84,6 @@ msgstr ""
 msgid "Standings for tournament %s, round %d: no updates necessary."
 msgstr ""
 
-#: zzbrick_make/swtwriter.inc.php
-#: zzbrick_request/swtreader.inc.php
-msgid "SWT file `%s` does not exist. Please upload a file first."
-msgstr ""
-
 #: zzbrick_make/turnierzahlen.inc.php
 msgid "No ratings found when updating on %s."
 msgstr ""
