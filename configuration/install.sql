@@ -27,7 +27,7 @@ CREATE TABLE `anmerkungen` (
   KEY `participation_id` (`participation_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'teams', 'team_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'team_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'teams', 'team_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'team_id', 'delete');
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'participations', 'participation_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'participation_id', 'delete');
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'persons', 'person_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'autor_person_id', 'no-delete');
 
@@ -91,6 +91,12 @@ CREATE TABLE `partien` (
   KEY `partiestatus_kategorie_id` (`partiestatus_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'events', 'event_id', (SELECT DATABASE()), 'partien', 'partie_id', 'event_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'paarungen', 'paarung_id', (SELECT DATABASE()), 'partien', 'partie_id', 'paarung_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'partien', 'partie_id', 'partiestatus_category_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'persons', 'person_id', (SELECT DATABASE()), 'partien', 'partie_id', 'schwarz_person_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'persons', 'person_id', (SELECT DATABASE()), 'partien', 'partie_id', 'weiss_person_id', 'no-delete');
+
 
 CREATE TABLE `tabellenstaende` (
   `tabellenstand_id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -110,6 +116,10 @@ CREATE TABLE `tabellenstaende` (
   KEY `termin_id` (`event_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'events', 'event_id', (SELECT DATABASE()), 'tabellenstaende', 'tabellenstand_id', 'event_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'persons', 'person_id', (SELECT DATABASE()), 'tabellenstaende', 'tabellenstand_id', 'person_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'teams', 'team_id', (SELECT DATABASE()), 'tabellenstaende', 'tabellenstand_id', 'team_id', 'delete');
+
 
 CREATE TABLE `tabellenstaende_wertungen` (
   `tsw_id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -120,6 +130,9 @@ CREATE TABLE `tabellenstaende_wertungen` (
   UNIQUE KEY `tabellenstand_id` (`tabellenstand_id`,`wertung_category_id`),
   KEY `wertung_kategorie_id` (`wertung_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tabellenstaende', 'tabellenstand_id', (SELECT DATABASE()), 'tabellenstaende_wertungen', 'tsw_id', 'tabellenstand_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'tabellenstaende_wertungen', 'tsw_id', 'wertung_category_id', 'no-delete');
 
 
 CREATE TABLE `teams` (
@@ -152,6 +165,10 @@ CREATE TABLE `teams` (
   KEY `club_contact_id` (`club_contact_id`),
   KEY `berechtigung_kategorie_id` (`berechtigung_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'teams', 'team_id', 'berechtigung_category_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'contacts', 'contact_id', (SELECT DATABASE()), 'teams', 'team_id', 'club_contact_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'events', 'event_id', (SELECT DATABASE()), 'teams', 'team_id', 'event_id', 'no-delete');
 
 
 CREATE TABLE `tournaments` (
@@ -195,6 +212,11 @@ CREATE TABLE `tournaments` (
   KEY `main_tournament_id` (`main_tournament_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'events', 'event_id', (SELECT DATABASE()), 'tournaments', 'tournament_id', 'event_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'tournaments', 'tournament_id', 'main_tournament_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'tournaments', 'tournament_id', 'modus_category_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'tournaments', 'tournament_id', 'turnierform_category_id', 'no-delete');
+
 
 CREATE TABLE `turniere_bedenkzeiten` (
   `tb_id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -206,6 +228,8 @@ CREATE TABLE `turniere_bedenkzeiten` (
   PRIMARY KEY (`tb_id`),
   KEY `tournament_id` (`tournament_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'turniere_bedenkzeiten', 'tb_id', 'tournament_id', 'delete');
 
 
 CREATE TABLE `turniere_kennungen` (
@@ -220,6 +244,9 @@ CREATE TABLE `turniere_kennungen` (
   KEY `kennung_kategorie_id` (`kennung_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'turniere_kennungen', 'tk_id', 'tournament_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'turniere_kennungen', 'tk_id', 'kennung_category_id', 'no-delete');
+
 
 CREATE TABLE `turniere_status` (
   `turnier_status_id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -228,6 +255,9 @@ CREATE TABLE `turniere_status` (
   PRIMARY KEY (`turnier_status_id`),
   UNIQUE KEY `turnier_id_status_kategorie_id` (`tournament_id`,`status_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'turniere_status', 'turnier_status_id', 'tournament_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'turniere_status', 'turnier_status_id', 'status_category_id', 'no-delete');
 
 
 CREATE TABLE `turniere_wertungen` (
@@ -241,6 +271,9 @@ CREATE TABLE `turniere_wertungen` (
   KEY `reihenfolge` (`reihenfolge`),
   KEY `wertung_kategorie_id` (`wertung_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'turniere_wertungen', 'tw_id', 'tournament_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'turniere_wertungen', 'tw_id', 'wertung_category_id', 'no-delete');
 
 
 CREATE FUNCTION `event_id`() RETURNS int
