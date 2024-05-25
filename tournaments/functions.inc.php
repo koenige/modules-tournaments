@@ -212,11 +212,11 @@ function mf_tournaments_last_update($data) {
 /**
  * sende anderen Cache-Control-Header während Turnier
  *
- * @param array $event
+ * @param string $duration
  * @return void
  */
-function mf_tournaments_cache($event) {
-	$duration = explode('/', $event['duration']);
+function mf_tournaments_cache($duration) {
+	$duration = explode('/', $duration);
 	$today = date('Y-m-d');
 	if ($today < $duration[0]) return;
 	if (empty($duration[1])) return;

@@ -101,7 +101,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		parse_str($event['series_parameter'], $series_parameter);
 		$event += $series_parameter;
 	}
-	mf_tournaments_cache($event);
+	mf_tournaments_cache($event['duration']);
 	$event['internal'] = $internal ? true : false;
 
 	if (!empty($event['turnierform']))

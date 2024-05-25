@@ -58,7 +58,7 @@ function mod_tournaments_round($params, $vars, $event) {
 	$round = wrap_db_fetch($sql);
 	if (!$round) return false;
 	$event = array_merge($event, $round);
-	mf_tournaments_cache($event);
+	mf_tournaments_cache($event['duration']);
 
 	if (wrap_setting('tournaments_type_single'))
 		$event = mod_tournaments_round_single($event);

@@ -76,7 +76,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	$event = array_merge($event, wrap_db_fetch($sql));
 	if (!$event['runden']) return false;
 	$event['runde_no'] = $runde;
-	mf_tournaments_cache($event);
+	mf_tournaments_cache($event['duration']);
 
 	if (wrap_setting('tournaments_type_team')) {
 		$sql = 'SELECT tabellenstand_id, platz_no
