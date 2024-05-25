@@ -132,7 +132,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 
 	// Auswertungen
 	$sql = 'SELECT REPLACE(SUBSTRING_INDEX(categories.path, "/", -1), "-", "_") AS category
-			, tournaments_identifiers.identifier AS turnierkennung
+			, tournaments_identifiers.identifier
 		FROM tournaments_identifiers
 		LEFT JOIN categories
 			ON tournaments_identifiers.identifier_category_id = categories.category_id
