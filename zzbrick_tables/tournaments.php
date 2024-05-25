@@ -162,10 +162,6 @@ $zz['fields'][23]['type'] = 'text';
 $zz['fields'][23]['explanation'] = 'Bretter mit Liveübertragung, bspw. 1-6, 9, 11 oder 1.1-1.6 (Tisch.Brett)';
 $zz['fields'][23]['hide_in_list'] = true;
 
-$zz['fields'][26]['field_name'] = 'turnierkennung';
-$zz['fields'][26]['explanation'] = 'Eigene Turnierkennung, wird z. B. für SWT-Dateiexport genutzt';
-$zz['fields'][26]['hide_in_list'] = true;
-
 $zz['fields'][28] = zzform_include('tournaments-identifiers');
 $zz['fields'][28]['title'] = 'Kennungen';
 $zz['fields'][28]['class'] = 'kennungen';
