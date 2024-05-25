@@ -67,3 +67,4 @@
 /* 2024-05-25-3 */	UPDATE _relations SET `detail_table` = 'tournaments_identifiers', `detail_id_field` = 'tournament_identifier_id', `detail_field` = 'identifier_category_id' WHERE `detail_table` = 'turniere_kennungen' AND `detail_field` = 'kennung_category_id';
 /* 2024-05-25-4 */	UPDATE _relations SET `detail_table` = 'tournaments_identifiers', `detail_id_field` = 'tournament_identifier_id' WHERE `detail_table` = 'turniere_kennungen';
 /* 2024-05-25-5 */	UPDATE categories SET parameters = REPLACE(parameters, '&turnier=1', '&tournaments_identifier=1') WHERE parameters LIKE '%&turnier=1%';
+/* 2024-05-26-1 */	ALTER TABLE `tournaments_identifiers` CHANGE `identifier` `identifier` varchar(24) COLLATE 'latin1_general_cs' NOT NULL AFTER `tournament_id`;

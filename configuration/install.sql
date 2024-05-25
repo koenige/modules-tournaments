@@ -235,7 +235,7 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 CREATE TABLE `tournaments_identifiers` (
   `tournament_identifier_id` int unsigned NOT NULL AUTO_INCREMENT,
   `tournament_id` int unsigned NOT NULL,
-  `identifier` varchar(15) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+  `identifier` varchar(24) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
   `identifier_category_id` int unsigned NOT NULL,
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`tournament_identifier_id`),
