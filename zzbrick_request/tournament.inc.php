@@ -148,7 +148,8 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 			$setting = sprintf('tournaments_rating_link[%s]', $area);
 			$fields = [$code];
 		}
-		$event[$area.'_tournament_link'] = vsprintf(wrap_setting($setting), $fields);
+		if (wrap_setting($setting))
+			$event[$area.'_tournament_link'] = vsprintf(wrap_setting($setting), $fields);
 	}
 	
 	// Bedenkzeit?
