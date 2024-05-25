@@ -166,7 +166,7 @@ $zz['fields'][26]['field_name'] = 'turnierkennung';
 $zz['fields'][26]['explanation'] = 'Eigene Turnierkennung, wird z. B. für SWT-Dateiexport genutzt';
 $zz['fields'][26]['hide_in_list'] = true;
 
-$zz['fields'][28] = zzform_include('turniere-kennungen');
+$zz['fields'][28] = zzform_include('tournaments-identifiers');
 $zz['fields'][28]['title'] = 'Kennungen';
 $zz['fields'][28]['class'] = 'kennungen';
 $zz['fields'][28]['type'] = 'subtable';
@@ -176,10 +176,10 @@ $zz['fields'][28]['form_display'] = 'lines';
 $zz['fields'][28]['fields'][2]['type'] = 'foreign_key';
 $zz['fields'][28]['sql'] .= $zz['fields'][28]['sqlorder'];
 $zz['fields'][28]['subselect']['sql'] = 'SELECT tournament_id, category_short
-		, turniere_kennungen.kennung
-	FROM /*_PREFIX_*/turniere_kennungen
+		, tournaments_identifiers.identifier
+	FROM /*_PREFIX_*/tournaments_identifiers
 	LEFT JOIN categories
-		ON categories.category_id = turniere_kennungen.kennung_category_id';
+		ON categories.category_id = tournaments_identifiers.identifier_category_id';
 
 $zz['fields'][27]['title'] = 'Tabellenstände';
 $zz['fields'][27]['hide_in_list'] = true;

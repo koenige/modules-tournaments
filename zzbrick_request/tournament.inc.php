@@ -132,10 +132,10 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 
 	// Auswertungen
 	$sql = 'SELECT REPLACE(SUBSTRING_INDEX(categories.path, "/", -1), "-", "_") AS category
-			, turniere_kennungen.kennung AS turnierkennung
-		FROM turniere_kennungen
+			, tournaments_identifiers.identifier AS turnierkennung
+		FROM tournaments_identifiers
 		LEFT JOIN categories
-			ON turniere_kennungen.kennung_category_id = categories.category_id
+			ON tournaments_identifiers.identifier_category_id = categories.category_id
 		WHERE tournament_id = %d';
 	$sql = sprintf($sql, $event['tournament_id']);
 	$ratings = wrap_db_fetch($sql, '_dummy_', 'key/value');

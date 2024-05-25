@@ -232,20 +232,20 @@ CREATE TABLE `turniere_bedenkzeiten` (
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'turniere_bedenkzeiten', 'tb_id', 'tournament_id', 'delete');
 
 
-CREATE TABLE `turniere_kennungen` (
-  `tk_id` int unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tournaments_identifiers` (
+  `tournament_identifier_id` int unsigned NOT NULL AUTO_INCREMENT,
   `tournament_id` int unsigned NOT NULL,
-  `kennung` varchar(15) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
-  `kennung_category_id` int unsigned NOT NULL,
+  `identifier` varchar(15) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+  `identifier_category_id` int unsigned NOT NULL,
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`tk_id`),
-  UNIQUE KEY `turnier_id_kennung_kategorie_id` (`tournament_id`,`kennung_category_id`),
-  UNIQUE KEY `kennung_kennung_kategorie_id` (`kennung`,`kennung_category_id`),
-  KEY `kennung_kategorie_id` (`kennung_category_id`)
+  PRIMARY KEY (`tournament_identifier_id`),
+  UNIQUE KEY `tournament_id_identifier_category_id` (`tournament_id`,`identifier_category_id`),
+  UNIQUE KEY `identifier_identifier_category_id` (`identifier`,`identifier_category_id`),
+  KEY `identifier_category_id` (`identifier_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'turniere_kennungen', 'tk_id', 'tournament_id', 'delete');
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'turniere_kennungen', 'tk_id', 'kennung_category_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'tournaments_identifiers', 'tournament_identifier_id', 'tournament_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'tournaments_identifiers', 'tournament_identifier_id', 'identifier_category_id', 'no-delete');
 
 
 CREATE TABLE `turniere_status` (

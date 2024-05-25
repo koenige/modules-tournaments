@@ -123,3 +123,11 @@ msgstr ""
 #: zzbrick_request/teaminternal.inc.php
 msgid "Please create a tournament first."
 msgstr "Bitte legen Sie zuerst ein Turnier an."
+
+#: zzbrick_tables/tournaments-identifiers.php
+msgid "Tournament"
+msgstr "Turnier"
+
+#: zzbrick_tables/tournaments-identifiers.php
+msgid "Tournament Identifiers"
+msgstr "Turnierkennungen"
