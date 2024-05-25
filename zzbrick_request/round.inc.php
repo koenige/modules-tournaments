@@ -18,7 +18,6 @@ function mod_tournaments_round($params, $vars, $event) {
 	if (!is_numeric($params[2])) return false;
 
 	$sql = 'SELECT events.event AS round_event, events.runde_no
-			, CONCAT("U", SUBSTRING(SUBSTRING_INDEX(SUBSTRING_INDEX(main_events.identifier, "/", -1), "-", -1), 2)) AS turnierkennung
 			, (SELECT IF(COUNT(tabellenstand_id), 1, NULL) FROM tabellenstaende
 				WHERE tabellenstaende.event_id = main_events.event_id
 				AND tabellenstaende.runde_no = events.runde_no
