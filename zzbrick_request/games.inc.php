@@ -8,17 +8,17 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2005, 2012-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2005, 2012-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
 /**
- * Ausgabe Partien bzw. PGN-Dateien
+ * PGN download and re-play games online
  *
  * @param array $vars
- *		int [0]: Jahr
- *		string [1]: Turnierkennung
+ *		int [0]: year
+ *		string [1]: event_identifier
  *		string [2]: 1.pgn, gesamt.pgn, 1-2-4
  */
 function mod_tournaments_games($vars, $settings = [], $event = []) {
