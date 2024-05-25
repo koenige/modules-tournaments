@@ -60,106 +60,11 @@ function mod_tournaments_round($params, $vars, $event) {
 	$event = array_merge($event, $round);
 	mf_tournaments_cache($event);
 
-	if (wrap_setting('tournaments_type_single')) {
-		$sql = 'SELECT DISTINCT partien.runde_no
-			FROM partien
-			WHERE partien.event_id = %d
-			ORDER BY partien.runde_no';
-	} else {
-		$sql = 'SELECT DISTINCT paarungen.runde_no
-			FROM paarungen
-			WHERE paarungen.event_id = %d
-			ORDER BY paarungen.runde_no';
-	}
-	$sql = sprintf($sql, $event['event_id']);
-	$event['runden'] = wrap_db_fetch($sql, 'runde_no', 'single value');
-	if (array_key_exists($event['runde_no'] - 1, $event['runden'])) {
-		$event['prev'] = $event['runde_no'] - 1;
-	}
-	if (array_key_exists($event['runde_no'] + 1, $event['runden'])) {
-		$event['next'] = $event['runde_no'] + 1;
-	}
-
-	if (wrap_setting('tournaments_type_team')) {
-		$sql = 'SELECT paarung_id, tisch_no
-			, IF(heim_teams.spielfrei = "ja", "", heim_teams.identifier) AS heim_kennung
-			, CONCAT(heim_teams.team, IFNULL(CONCAT(" ", heim_teams.team_no), "")) AS heim_team
-			, IF(auswaerts_teams.spielfrei = "ja", bretter_min,
-				IF(heim_teams.spielfrei = "ja", 0, SUM(heim_wertung))
-			) AS heim_m_ergebnis
-			, IF(auswaerts_teams.spielfrei = "ja", "", auswaerts_teams.identifier) AS auswaerts_kennung
-			, CONCAT(auswaerts_teams.team, IFNULL(CONCAT(" ", auswaerts_teams.team_no), "")) AS auswaerts_team
-			, IF(heim_teams.spielfrei = "ja", bretter_min, 
-				IF(auswaerts_teams.spielfrei = "ja", 0, SUM(auswaerts_wertung))
-			) AS auswaerts_m_ergebnis
-			FROM paarungen
-			LEFT JOIN teams heim_teams
-				ON paarungen.heim_team_id = heim_teams.team_id
-			LEFT JOIN teams auswaerts_teams
-				ON paarungen.auswaerts_team_id = auswaerts_teams.team_id
-			LEFT JOIN partien USING (paarung_id)
-			LEFT JOIN tournaments
-				ON tournaments.event_id = paarungen.event_id
-			WHERE paarungen.event_id = %d AND paarungen.runde_no = %d
-			GROUP BY paarung_id
-			ORDER BY tisch_no';
-		$sql = sprintf($sql, $event['event_id'], $event['runde_no']);
-		$event['paarungen'] = wrap_db_fetch($sql, 'paarung_id');
-		if (!$event['paarungen']) return false;
-	}
-
-	$sql = wrap_sql_query('tournaments_games');
-	$sql = sprintf($sql, $event['event_id'], sprintf('runde_no = %d', $event['runde_no']));
-	if (wrap_setting('tournaments_type_team')) {
-		$lineup = mf_tournaments_lineup($event);
-		if (!$lineup)
-			$partien = wrap_db_fetch($sql, ['paarung_id', 'partie_id']);
-		else
-			$partien = [];
-	} else {
-		$event['partien'] = wrap_db_fetch($sql, 'partie_id');
-		if (!$event['partien']) return;
-	}
-
-	if (wrap_setting('tournaments_type_team')) {
-		foreach ($partien as $paarung_id => $bretter) {
-			foreach ($bretter as $partie_id => $brett) {
-				if ($event['livebretter'] AND $event['live']) {
-					// Liveübertragung, nur für aktuelle Runde
-					$bretter[$partie_id]['live'] = mf_tournaments_live_round(
-						$event['livebretter'], $brett['brett_no'],
-						$event['paarungen'][$paarung_id]['tisch_no']
-					);
-					if ($bretter[$partie_id]['live']) {
-						$event['liveuebertragung'] = true;
-					}
-				}
-				$bretter[$partie_id]['runde_no'] = $event['runde_no'];
-				$bretter[$partie_id]['tisch_no'] = $event['paarungen'][$paarung_id]['tisch_no'];
-			}
-			$event['paarungen'][$paarung_id]['bretter'] = $bretter;
-		}
-	} else {
-		$event['show_brett_no'] = false;
-		$event['show_dwz'] = false;
-		$event['show_elo'] = false;
-		foreach ($event['partien'] as $partie_id => $partie) {
-			if ($partie['brett_no']) $event['show_brett_no'] = true;
-			if ($partie['heim_dwz'] OR $partie['auswaerts_dwz']) $event['show_dwz'] = true;
-			if ($partie['heim_elo'] OR $partie['auswaerts_elo']) $event['show_elo'] = true;
-			if ($event['livebretter']) {
-				$event['partien'][$partie_id]['live'] = mf_tournaments_live_round(
-					$event['livebretter'], $partie['brett_no']
-				);
-			}
-			$event['partien'][$partie_id]['runde_no'] = $event['runde_no'];
-		}
-		foreach ($event['partien'] as $partie_id => $partie) {
-			if ($event['show_brett_no']) $event['partien'][$partie_id]['show_brett_no'] = true;
-			if ($event['show_dwz']) $event['partien'][$partie_id]['show_dwz'] = true;
-			if ($event['show_elo']) $event['partien'][$partie_id]['show_elo'] = true;
-		}
-	}
+	if (wrap_setting('tournaments_type_single'))
+		$event = mod_tournaments_round_single($event);
+	else
+		$event = mod_tournaments_round_team($event);
+	if (!$event) return false;
 
 	$page['head'] = '';
 	if (mf_tournaments_current_round($event['event_id']) < $event['runde_no']) {
@@ -176,11 +81,13 @@ function mod_tournaments_round($params, $vars, $event) {
 		$page['title'] = $event['event'].' '.$event['year'].', Ergebnisse '.$event['round_event'];
 	$page['dont_show_h1'] = true;
 	$page['breadcrumbs'][]['title'] = $event['round_event'];
-	if (!empty($event['next'])) {
+	if (array_key_exists($event['runde_no'] + 1, $event['runden'])) {
+		$event['next'] = $event['runde_no'] + 1;
 		$page['link']['next'][0]['href'] = '../'.$event['next'].'/';
 		$page['link']['next'][0]['title'] = $event['next'].'. Runde';
 	}
-	if (!empty($event['prev'])) {
+	if (array_key_exists($event['runde_no'] - 1, $event['runden'])) {
+		$event['prev'] = $event['runde_no'] - 1;
 		$page['link']['prev'][0]['href'] = '../'.$event['prev'].'/';
 		$page['link']['prev'][0]['title'] = $event['prev'].'. Runde';
 	}
@@ -195,4 +102,115 @@ function mod_tournaments_round($params, $vars, $event) {
 		$page['text'] = wrap_template('round-single', $event);
 	}
 	return $page;
+}
+
+/**
+ * get round data for single event
+ *
+ * @param array $event
+ * @return array
+ */
+function mod_tournaments_round_single($event) {
+	$sql = 'SELECT DISTINCT partien.runde_no
+		FROM partien
+		WHERE partien.event_id = %d
+		ORDER BY partien.runde_no';
+	$sql = sprintf($sql, $event['event_id']);
+	$event['runden'] = wrap_db_fetch($sql, 'runde_no', 'single value');
+
+	$sql = wrap_sql_query('tournaments_games');
+	$sql = sprintf($sql, $event['event_id'], sprintf('runde_no = %d', $event['runde_no']));
+	$event['partien'] = wrap_db_fetch($sql, 'partie_id');
+
+	$event['show_brett_no'] = false;
+	$event['show_dwz'] = false;
+	$event['show_elo'] = false;
+	foreach ($event['partien'] as $partie_id => $partie) {
+		if ($partie['brett_no']) $event['show_brett_no'] = true;
+		if ($partie['heim_dwz'] OR $partie['auswaerts_dwz']) $event['show_dwz'] = true;
+		if ($partie['heim_elo'] OR $partie['auswaerts_elo']) $event['show_elo'] = true;
+		if ($event['livebretter']) {
+			$event['partien'][$partie_id]['live'] = mf_tournaments_live_round(
+				$event['livebretter'], $partie['brett_no']
+			);
+		}
+		$event['partien'][$partie_id]['runde_no'] = $event['runde_no'];
+	}
+	foreach ($event['partien'] as $partie_id => $partie) {
+		if ($event['show_brett_no']) $event['partien'][$partie_id]['show_brett_no'] = true;
+		if ($event['show_dwz']) $event['partien'][$partie_id]['show_dwz'] = true;
+		if ($event['show_elo']) $event['partien'][$partie_id]['show_elo'] = true;
+	}
+
+	return $event;
+}
+
+/**
+ * get round data for team event
+ *
+ * @param array $event
+ * @return array
+ */
+function mod_tournaments_round_team($event) {
+	$sql = 'SELECT DISTINCT paarungen.runde_no
+		FROM paarungen
+		WHERE paarungen.event_id = %d
+		ORDER BY paarungen.runde_no';
+	$sql = sprintf($sql, $event['event_id']);
+	$event['runden'] = wrap_db_fetch($sql, 'runde_no', 'single value');
+
+	$sql = 'SELECT paarung_id, tisch_no
+		, IF(heim_teams.spielfrei = "ja", "", heim_teams.identifier) AS heim_kennung
+		, CONCAT(heim_teams.team, IFNULL(CONCAT(" ", heim_teams.team_no), "")) AS heim_team
+		, IF(auswaerts_teams.spielfrei = "ja", bretter_min,
+			IF(heim_teams.spielfrei = "ja", 0, SUM(heim_wertung))
+		) AS heim_m_ergebnis
+		, IF(auswaerts_teams.spielfrei = "ja", "", auswaerts_teams.identifier) AS auswaerts_kennung
+		, CONCAT(auswaerts_teams.team, IFNULL(CONCAT(" ", auswaerts_teams.team_no), "")) AS auswaerts_team
+		, IF(heim_teams.spielfrei = "ja", bretter_min, 
+			IF(auswaerts_teams.spielfrei = "ja", 0, SUM(auswaerts_wertung))
+		) AS auswaerts_m_ergebnis
+		FROM paarungen
+		LEFT JOIN teams heim_teams
+			ON paarungen.heim_team_id = heim_teams.team_id
+		LEFT JOIN teams auswaerts_teams
+			ON paarungen.auswaerts_team_id = auswaerts_teams.team_id
+		LEFT JOIN partien USING (paarung_id)
+		LEFT JOIN tournaments
+			ON tournaments.event_id = paarungen.event_id
+		WHERE paarungen.event_id = %d AND paarungen.runde_no = %d
+		GROUP BY paarung_id
+		ORDER BY tisch_no';
+	$sql = sprintf($sql, $event['event_id'], $event['runde_no']);
+	$event['paarungen'] = wrap_db_fetch($sql, 'paarung_id');
+	if (!$event['paarungen']) return [];
+
+	$lineup = mf_tournaments_lineup($event);
+	if (!$lineup) {
+		$sql = wrap_sql_query('tournaments_games');
+		$sql = sprintf($sql, $event['event_id'], sprintf('runde_no = %d', $event['runde_no']));
+		$partien = wrap_db_fetch($sql, ['paarung_id', 'partie_id']);
+	} else {
+		$partien = [];
+	}
+
+	foreach ($partien as $paarung_id => $bretter) {
+		foreach ($bretter as $partie_id => $brett) {
+			if ($event['livebretter'] AND $event['live']) {
+				// Liveübertragung, nur für aktuelle Runde
+				$bretter[$partie_id]['live'] = mf_tournaments_live_round(
+					$event['livebretter'], $brett['brett_no'],
+					$event['paarungen'][$paarung_id]['tisch_no']
+				);
+				if ($bretter[$partie_id]['live']) {
+					$event['liveuebertragung'] = true;
+				}
+			}
+			$bretter[$partie_id]['runde_no'] = $event['runde_no'];
+			$bretter[$partie_id]['tisch_no'] = $event['paarungen'][$paarung_id]['tisch_no'];
+		}
+		$event['paarungen'][$paarung_id]['bretter'] = $bretter;
+	}
+
+	return $event;
 }
