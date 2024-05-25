@@ -17,11 +17,6 @@ function mod_tournaments_round($params, $vars, $event) {
 	if (count($params) !== 3) return false;
 	if (!is_numeric($params[2])) return false;
 
-	if (!brick_access_rights('Webmaster')) {
-		$public = ' AND NOT ISNULL(events_websites.website_id) ';
-	} else {
-		$public = '';
-	}
 	$sql = 'SELECT events.event AS round_event, events.runde_no
 			, CONCAT("U", SUBSTRING(SUBSTRING_INDEX(SUBSTRING_INDEX(main_events.identifier, "/", -1), "-", -1), 2)) AS turnierkennung
 			, (SELECT IF(COUNT(tabellenstand_id), 1, NULL) FROM tabellenstaende
@@ -54,20 +49,15 @@ function mod_tournaments_round($params, $vars, $event) {
 			ON main_events.event_id = tournaments.event_id
 		LEFT JOIN events_websites
 			ON events_websites.event_id = main_events.event_id
-			AND events_websites.website_id = %d
+			AND events_websites.website_id = /*_SETTING website_id _*/
 		WHERE main_events.event_id = %d
-		%s
+		AND NOT ISNULL(events_websites.website_id)
 		AND events.runde_no = %d
 	';
-	$sql = sprintf($sql, wrap_setting('website_id'), $event['event_id'], $public, $params[2]);
+	$sql = sprintf($sql, $event['event_id'], $params[2]);
 	$round = wrap_db_fetch($sql);
 	if (!$round) return false;
 	$event = array_merge($event, $round);
-	if ($event['tournament_parameter']) {
-		parse_str($event['tournament_parameter'], $parameters);
-		$event += $parameters;
-	}
-	$event[$event['event_category']] = true;
 	mf_tournaments_cache($event);
 
 	if (wrap_setting('tournaments_type_single')) {
