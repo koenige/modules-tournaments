@@ -81,7 +81,8 @@ function mod_tournaments_player($vars, $settings, $event) {
 	}
 	
 	// Partien
-	$sql = mf_tournaments_games_sql($data, 
+	$sql = wrap_sql_query('tournaments_games');
+	$sql = sprintf($sql, $data['event_id'],
 		sprintf('(weiss_person_id = %d OR schwarz_person_id = %d)', $data['person_id'], $data['person_id'])
 	);
 	$data['games'] = wrap_db_fetch($sql, 'partie_id');

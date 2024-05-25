@@ -70,7 +70,7 @@ function mod_tournaments_round($params, $vars, $event) {
 	$event[$event['event_category']] = true;
 	mf_tournaments_cache($event);
 
-	if ($event['event_category'] === 'einzel') {
+	if (wrap_setting('tournaments_type_single')) {
 		$sql = 'SELECT DISTINCT partien.runde_no
 			FROM partien
 			WHERE partien.event_id = %d
@@ -118,8 +118,9 @@ function mod_tournaments_round($params, $vars, $event) {
 		if (!$event['paarungen']) return false;
 	}
 
-	$sql = mf_tournaments_games_sql($event, sprintf('runde_no = %d', $event['runde_no']));
-	if ($event['event_category'] !== 'einzel') {
+	$sql = wrap_sql_query('tournaments_games');
+	$sql = sprintf($sql, $event['event_id'], sprintf('runde_no = %d', $event['runde_no']));
+	if (wrap_setting('tournaments_type_team')) {
 		$lineup = mf_tournaments_lineup($event);
 		if (!$lineup)
 			$partien = wrap_db_fetch($sql, ['paarung_id', 'partie_id']);
@@ -130,7 +131,7 @@ function mod_tournaments_round($params, $vars, $event) {
 		if (!$event['partien']) return;
 	}
 
-	if ($event['event_category'] !== 'einzel') {
+	if (wrap_setting('tournaments_type_team')) {
 		foreach ($partien as $paarung_id => $bretter) {
 			foreach ($bretter as $partie_id => $brett) {
 				if ($event['livebretter'] AND $event['live']) {
@@ -194,7 +195,7 @@ function mod_tournaments_round($params, $vars, $event) {
 		$page['link']['prev'][0]['title'] = $event['prev'].'. Runde';
 	}
 
-	if ($event['event_category'] !== 'einzel') {
+	if (wrap_setting('tournaments_type_team')) {
 		$page['text'] = wrap_template('round-team', $event);
 		if (!empty($event['liveuebertragung'])) {
 			$page['head'] .= wrap_template('round-team-live-head', $event);
