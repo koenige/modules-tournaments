@@ -27,7 +27,7 @@ $data = [];
 $data['current_time'] = date("Y-m-d H:i:s", time());
 
 if (!empty($_POST['sent_date'])) {
-	wrap_include_files('validate', 'zzform');
+	wrap_include('validate', 'zzform');
 
 	$sql = 'UPDATE spieler_nachrichten
 		SET processed = "%s"

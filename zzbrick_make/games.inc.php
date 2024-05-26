@@ -171,7 +171,7 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 	$partien = wrap_db_fetch($sql, 'partie_id');
 
 	// Datei Partie für Partie auswerten
-	wrap_include_files('pgn', 'chess');
+	wrap_include('pgn', 'chess');
 	$games = mf_chess_pgn_parse($pgn, $pgn_filename);
 	if ($function = wrap_setting('pgn_preparation_function'))
 		$games = $function($games, $event['event_id']);
@@ -183,7 +183,7 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 		}
 	}
 
-	wrap_include_files('functions', 'zzform');
+	wrap_include('functions', 'zzform');
 
 	$old_error_handling = wrap_setting('error_handling');
 	wrap_setting('error_handling', 'output');

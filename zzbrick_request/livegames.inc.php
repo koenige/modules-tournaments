@@ -23,7 +23,7 @@
  * @return array
  */
 function mod_tournaments_livegames($vars) {
-	wrap_include_files('pgn', 'chess');
+	wrap_include('pgn', 'chess');
 
 	if (count($vars) !== 2) return false;
 

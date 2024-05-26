@@ -18,7 +18,7 @@ function mod_tournaments_teampdfs($params, $settings, $event) {
 	if (!$event) return false;
 	if (count($params) < 2) return false;
 	if (count($params) > 3) return false;
-	wrap_include_files('pdf', 'tournaments');
+	wrap_include('pdf', 'tournaments');
 	
 	// $data can be from team or event placeholder
 	if (empty($event['event_identifier']))

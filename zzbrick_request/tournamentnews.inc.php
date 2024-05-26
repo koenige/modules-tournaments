@@ -37,7 +37,7 @@ function mod_tournaments_tournamentnews($params, $settings) {
 		return $page;
 	}
 
-	wrap_include_files('zzbrick_request_get/articledata', 'news');
+	wrap_include('zzbrick_request_get/articledata', 'news');
 	$data = mod_news_get_articledata($ids, $settings);
 	
 	$page['text'] = wrap_template('tournamentnews', $data);

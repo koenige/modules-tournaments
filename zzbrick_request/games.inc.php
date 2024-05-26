@@ -78,10 +78,10 @@ function mod_tournaments_games($vars, $settings = [], $event = []) {
 			return mod_tournaments_games_file_game_team($event, $matches[1], $matches[2], $matches[3], $settings);
 		return false;
 	case 'json':
-		wrap_include_files('pgn', 'chess');
+		wrap_include('pgn', 'chess');
 		return mod_tournaments_games_json($event, $settings);
 	default:
-		wrap_include_files('pgn', 'chess');
+		wrap_include('pgn', 'chess');
 		if ($settings['type'])
 			return mod_tournaments_games_special_html($event, $settings);
 		return mod_tournaments_games_html($event, $settings);

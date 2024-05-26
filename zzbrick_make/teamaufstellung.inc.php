@@ -23,8 +23,8 @@
  * @return array $page
  */
 function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
-	wrap_include_files('validate', 'zzform');
-	wrap_include_files('zzform/editing', 'ratings');
+	wrap_include('validate', 'zzform');
+	wrap_include('zzform/editing', 'ratings');
 
 	if ($data['meldung'] !== 'offen') wrap_quit(403, 'Das Team wurde bereits abschließend gemeldet. Eine Änderung der Aufstellung ist nicht mehr möglich.');
 	
@@ -255,7 +255,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
  * @return bool
  */
 function cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler) {
-	wrap_include_files('zzform/editing', 'custom');
+	wrap_include('zzform/editing', 'custom');
 	
 	// Test, ob Spieler noch hinzugefügt werden darf
 	if ($data['bretter_max']) {

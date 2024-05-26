@@ -24,7 +24,7 @@
  * @param array $ops
  */
 function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
-	wrap_include_files('pdf', 'tournaments');
+	wrap_include('pdf', 'tournaments');
 
 	$ids = [];
 	foreach ($ops['output']['rows'] as $line) {
