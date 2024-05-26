@@ -380,3 +380,45 @@ function mf_tournaments_remarks_mail($ops) {
 	}
 	return;
 }
+
+
+//
+// ---- Team ----
+//
+
+/**
+ * Bei Meldungen wird oft das Jahr weggelassen, daher hier ggf. ergänzen
+ *
+ * @param array $ops
+ * @return array $change
+ * @todo check if end year shouldn't be -1 or +1 if over new year's eve
+ */
+function mf_tournaments_complete_date($ops) {
+	$change = [];
+	foreach ($ops['not_validated'] as $index => $table) {
+		if ($table['table'] !== 'teams') continue;
+		$check = false;
+		if (!zz_check_date($ops['record_new'][$index]['datum_anreise'])) $check = true;
+		if (!zz_check_date($ops['record_new'][$index]['datum_abreise'])) $check = true;
+		if (!$check) continue;
+		$sql = 'SELECT YEAR(date_begin) as date_begin, YEAR(date_end) as date_end FROM events WHERE event_id = %d';
+		$sql = sprintf($sql, $ops['record_old'][$index]['event_id']);
+		$reisedaten = wrap_db_fetch($sql);
+		// add year
+		if ($ops['record_new'][$index]['datum_anreise'] AND !zz_check_date($ops['record_new'][$index]['datum_anreise'])) {
+			$anreise = $ops['record_new'][$index]['datum_anreise'];
+			if (substr($anreise, -1) !== '.') $anreise .= '.';
+			$anreise .= $reisedaten['date_begin'];
+			if (zz_check_date($anreise))
+				$change['record_replace'][$index]['datum_anreise'] = $anreise;
+		}
+		if ($ops['record_new'][$index]['datum_abreise'] AND !zz_check_date($ops['record_new'][$index]['datum_abreise'])) {
+			$abreise = $ops['record_new'][$index]['datum_abreise'];
+			if (substr($abreise, -1) !== '.') $abreise .= '.';
+			$abreise .= $reisedaten['date_begin'];
+			if (zz_check_date($abreise))
+				$change['record_replace'][$index]['datum_abreise'] = $abreise;
+		}
+	}
+	return $change;
+}
