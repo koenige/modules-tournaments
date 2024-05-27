@@ -85,51 +85,39 @@ function mod_tournaments_player($vars, $settings, $event) {
 	$sql = sprintf($sql, $data['event_id'],
 		sprintf('(weiss_person_id = %d OR schwarz_person_id = %d)', $data['person_id'], $data['person_id'])
 	);
-	$data['games'] = wrap_db_fetch($sql, 'partie_id');
-	$data['games'] = array_values($data['games']);
+	$games = wrap_db_fetch($sql, 'partie_id');
 	$data['punkte'] = false;
 	$data['hat_punkte'] = false;
-	$round_no = 1;
-	$index = 0;
 	$log_round_error = true;
-	$empty_round_added = 0; // if several rounds are empty, add this value to index
-	foreach ($data['games'] as $index => $game) {
-		if (mf_tournaments_live_round($data['livebretter'], $game['brett_no'])) {
-			$data['games'][$index]['live'] = true;
-		}
+	$data['games'] = [];
+	foreach ($games as $game) {
+		if (mf_tournaments_live_round($data['livebretter'], $game['brett_no']))
+			$game['live'] = true;
 		if ($game['schwarz_person_id'] === $data['person_id']) {
-			$data['games'][$index]['spielt_schwarz'] = true;
+			$game['spielt_schwarz'] = true;
 			$data['punkte'] += $game['auswaerts_ergebnis_numerisch'];
 			if (isset($game['auswaerts_ergebnis_numerisch'])) $data['hat_punkte'] = true;
 		} else {
-			$data['games'][$index]['spielt_weiss'] = true;
+			$game['spielt_weiss'] = true;
 			$data['punkte'] += $game['heim_ergebnis_numerisch'];
 			if (isset($game['heim_ergebnis_numerisch'])) $data['hat_punkte'] = true;
 		}
-		if ($game['runde_no'] < $round_no) {
-			if ($log_round_error) // log only once
-				wrap_error(sprintf(
-					'There’s a player having played more than one game per round: Event %s, round %d, %s–%s'
-					, $event['identifier'], $game['runde_no'], $game['player_white'], $game['player_black']
-				));
-				$log_round_error = false;
-		} else {
-			while ($round_no.'' !== $game['runde_no'].'') {
-				array_splice($data['games'], $index + $empty_round_added, 0, [
-					['runde_no' => $round_no, 'no_pairing' => 1]
-				]);
-				$index++;
-				$round_no++;
-				$empty_round_added++;
-			}
+		if (array_key_exists($game['runde_no'], $data['games']) AND $log_round_error) {
+			wrap_error(sprintf(
+				'There’s a player having played more than one game per round: Event %s, round %d, %s–%s'
+				, $event['identifier'], $game['runde_no'], $game['player_white'], $game['player_black']
+			));
+			$log_round_error = false;
 		}
-		$index++;
-		$round_no++;
+		$data['games'][$game['runde_no']] = $game;
 	}
-	while ($round_no <= $data['max_round_no']) {
-		$data['games'][] = ['runde_no' => $round_no, 'no_pairing' => 1];
-		$round_no++;
+	if (count($data['games']) < $data['max_round_no']) {
+		for ($i = 1; $i <= $data['max_round_no']; $i++) {
+			if (array_key_exists($i, $data['games'])) continue;
+			$data['games'][$i] = ['runde_no' => $i, 'no_pairing' => 1];
+		}
 	}
+	ksort($data['games']);
 	
 	$sql = 'SELECT participation_id, setzliste_no
 		FROM participations
