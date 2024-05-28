@@ -375,7 +375,7 @@ function mf_tournaments_pdf_teams($event, $params) {
 		}
 		$teams[$team_id]['komplett'] = mf_tournaments_team_application_complete($teams[$team_id]);
 		if (!empty($params['check_uploads'])) {
-			$filename = sprintf('%s/meldeboegen/%s%%s.pdf', wrap_setting('media_folder'), $teams[$team_id]['team_identifier']);
+			$filename = sprintf('%s/teampdfs/%s%%s.pdf', wrap_setting('media_folder'), $teams[$team_id]['team_identifier']);
 			$filenames = [
 				sprintf($filename, ''),
 				sprintf($filename, '-ehrenkodex'),
