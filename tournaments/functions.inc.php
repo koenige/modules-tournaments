@@ -200,10 +200,10 @@ function mf_tournaments_live_boards($livebretter, $brett_max, $tisch_max = false
  * get last update for a round
  *
  * @param array $data
+ * @param string $last_update
  * @return string
  */
-function mf_tournaments_last_update($data) {
-	$last_update = '';
+function mf_tournaments_last_update($data, $last_update = '') {
 	foreach ($data as $line)
 		if ($line['last_update'] > $last_update) $last_update = $line['last_update'];
 	return $last_update;
