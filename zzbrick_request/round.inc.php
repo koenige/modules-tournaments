@@ -71,7 +71,13 @@ function mod_tournaments_round($params, $vars, $event) {
 //		$page['head'] .= sprintf(
 //			"\t<meta http-equiv='refresh' content='60; URL=%s%s/%s/'>\r", wrap_setting('host_base'), wrap_setting('events_path'), wrap_setting('brick_url_parameter')
 //		);
-		$event['live_date'] = mf_tournaments_last_update($event['partien']);
+		if (wrap_setting('tournaments_type_single')) {
+			$event['live_date'] = mf_tournaments_last_update($event['partien']);
+		} else {
+			$event['live_date'] = NULL;
+			foreach ($event['paarungen'] as $pairing)
+				$event['live_date'] = mf_tournaments_last_update($pairing['bretter'] ?? [], $event['live_date']);
+		}
 	}
 
 	if (!empty($event['auslosung']))
