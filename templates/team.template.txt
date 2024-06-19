@@ -173,13 +173,13 @@ nicht abschließend geprüft.)</em></p>
 	});
 
 	L.marker([%%% item latitude %%%, %%% item longitude %%%], {icon: Icon}).addTo(map)
-	    .bindPopup('%%% item place %%%');
+	    .bindPopup('%%% item venue_place %%%');
 
 </script>
 </div>
 %%% condition endif %%%
 %%% condition if venue_contact %%%
-<p>Ort: %%% item venue_contact %%%, %%% item address %%%, %%% item postcode %%% %%% item place %%%</p>
+<p>Ort: %%% item venue_contact %%%, %%% item address %%%, %%% item postcode %%% %%% item venue_place %%%</p>
 %%% condition endif %%%
 <p><a href="https://schach.in%%% condition if setting localhost %%%.local%%% condition endif %%%/%%% item contact_identifier %%%/">Weitere Infos: %%% item contact %%%</a></p>
 
