@@ -60,6 +60,55 @@ foreach ($zz['fields'] as $no => $field) {
 
 	case 'contact_id':
 		$zz['fields'][$no]['unless']['export_mode']['list_append_next'] = false;
+		if (!empty($_GET['add']['frei'])) break; // allow here to add people from contacts
+		if (wrap_setting('tournaments_player_pool') === 'club'
+			AND !wrap_access('tournaments_teams_registrations', $brick['data']['event_rights'])
+		) {
+			// Vereine haben Mitglieder, beschränke auf diese Mitglieder
+			// Erlaube keine doppelten Einträge bei demselben Termin aus derselben Gruppe!
+			$zz['fields'][$no]['if']['insert']['sql'] = sprintf('SELECT
+					IFNULL(contacts.contact_id, CONCAT(ZPS, "-", Mgl_Nr)) AS contact_id
+					, CONCAT(ZPS, "-", Mgl_Nr) AS pass_dsb, Spielername
+				FROM dwz_spieler
+				LEFT JOIN contacts_identifiers club_identifiers
+					ON dwz_spieler.ZPS = club_identifiers.identifier
+					AND club_identifiers.current = "yes"
+					AND club_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+				LEFT JOIN contacts_identifiers player_identifiers
+					ON player_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", dwz_spieler.Mgl_Nr)
+					AND player_identifiers.current = "yes"
+					AND player_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+				LEFT JOIN contacts
+					ON player_identifiers.contact_id = contacts.contact_id
+				LEFT JOIN participations
+					ON participations.contact_id = player_identifiers.contact_id
+					AND participations.usergroup_id = %d
+					AND participations.event_id = %d
+				WHERE club_identifiers.contact_id = %d
+				AND ISNULL(participations.participation_id)
+				ORDER BY Spielername',
+				$_GET['add']['usergroup_id'] ?? 0,
+				$brick['data']['event_id'],
+				$brick['data']['contact_id']
+			);
+			$zz['fields'][$no]['id_field_name'] = 'contacts.contact_id';
+		} else {
+			// tournaments_teams_registrations, Auswahlmannschaften, Schulen etc.
+			// erlaube auch die Auswahl von passiven Mitgliedern
+			$zz['fields'][$no]['if']['insert']['sql'] = 'SELECT
+					IFNULL(contacts_identifiers.contact_id, CONCAT(ZPS, "-", Mgl_Nr)) AS contact_id
+					, CONCAT(ZPS, "-", Mgl_Nr) AS pass_dsb, Spielername, Geburtsjahr, Status, Vereinname
+					, CONCAT(SUBSTRING_INDEX(Spielername, ",", -1), " ", SUBSTRING_INDEX(Spielername, ",", 1)) AS voller_name
+				FROM dwz_spieler
+				LEFT JOIN dwz_vereine USING (ZPS)
+				LEFT JOIN contacts_identifiers
+					ON contacts_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", dwz_spieler.Mgl_Nr)
+					AND contacts_identifiers.current = "yes"
+					AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+				ORDER BY Spielername';
+			$zz['fields'][$no]['sql_ignore'][] = 'voller_name';
+		}
+		$zz['fields'][$no]['sql_ignore'][] = 'pass_dsb';
 		break;
 
 	case 'usergroup_id':
@@ -77,11 +126,13 @@ foreach ($zz['fields'] as $no => $field) {
 		$zz['fields'][$no]['type'] = 'hidden';
 		$zz['fields'][$no]['value'] = $brick['data']['event_id'];
 		$zz['fields'][$no]['hide_in_list'] = true;
+		$zz['fields'][$no]['hide_in_form'] = true;
 		break;
 
 	case 'team_id':
 		$zz['fields'][$no]['type'] = 'hidden';
 		$zz['fields'][$no]['hide_in_list'] = true;
+		$zz['fields'][$no]['hide_in_form'] = true;
 		$zz['fields'][$no]['type_detail'] = 'select';
 		$zz['fields'][$no]['value'] = $brick['data']['team_id'];
 		$zz['fields'][$no]['if'][21]['value'] = false;
@@ -108,63 +159,6 @@ foreach ($zz['fields'] as $no => $field) {
 		unset($zz['fields'][$no]);
 		break;
 	}
-}
-
-if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
-	AND empty($_GET['insert']) AND empty($_GET['update']) AND empty($_GET['noupdate'])
-	AND (empty($_GET['add']['frei']))) {
-
-	if (!wrap_access('tournaments_teams_registrations') AND wrap_setting('tournaments_player_pool')) {
-		// Vereine haben Mitglieder, beschränke auf diese Mitglieder
-		// Erlaube keine doppelten Einträge bei demselben Termin aus derselben Gruppe!
-		$zz['fields'][2]['if']['insert']['sql'] = sprintf('SELECT
-				IFNULL(contacts.contact_id, CONCAT(ZPS, "-", Mgl_Nr)) AS contact_id
-				, CONCAT(ZPS, "-", Mgl_Nr) AS pass_dsb, Spielername
-			FROM dwz_spieler
-			LEFT JOIN contacts_identifiers club_identifiers
-				ON dwz_spieler.ZPS = club_identifiers.identifier
-				AND club_identifiers.current = "yes"
-				AND club_identifiers.identifier_category_id = %d
-			LEFT JOIN contacts_identifiers player_identifiers
-				ON player_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", dwz_spieler.Mgl_Nr)
-				AND player_identifiers.current = "yes"
-				AND player_identifiers.identifier_category_id = %d
-			LEFT JOIN contacts
-				ON player_identifiers.contact_id = contacts.contact_id
-			LEFT JOIN participations
-				ON participations.contact_id = player_identifiers.contact_id
-				AND participations.usergroup_id = %d
-				AND participations.event_id = %d
-			WHERE club_identifiers.contact_id = %d
-			AND ISNULL(participations.participation_id)
-			ORDER BY Spielername',
-			wrap_category_id('identifiers/pass_dsb'),
-			wrap_category_id('identifiers/pass_dsb'),
-			!empty($_GET['add']['usergroup_id']) ? $_GET['add']['usergroup_id'] : 0,
-			$brick['data']['event_id'],
-			$brick['data']['contact_id']
-		);
-		$zz['fields'][2]['id_field_name'] = 'contacts.contact_id';
-	} else {
-		// tournaments_teams_registrations, Auswahlmannschaften, Schulen etc.
-		// erlaube auch die Auswahl von passiven Mitgliedern
-		$zz['fields'][2]['if']['insert']['sql'] = sprintf('SELECT
-				IFNULL(contacts_identifiers.contact_id, CONCAT(ZPS, "-", Mgl_Nr)) AS contact_id
-				, CONCAT(ZPS, "-", Mgl_Nr) AS pass_dsb, Spielername, Geburtsjahr, Status, Vereinname
-				, CONCAT(SUBSTRING_INDEX(Spielername, ",", -1), " ", SUBSTRING_INDEX(Spielername, ",", 1)) AS voller_name
-			FROM dwz_spieler
-			LEFT JOIN dwz_vereine USING (ZPS)
-			LEFT JOIN contacts_identifiers
-				ON contacts_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", dwz_spieler.Mgl_Nr)
-				AND contacts_identifiers.current = "yes"
-				AND contacts_identifiers.identifier_category_id = %d
-			ORDER BY Spielername'
-			, wrap_category_id('identifiers/pass_dsb')
-		);
-		$zz['fields'][2]['sql_ignore'][] = 'voller_name';
-	}
-	$zz['fields'][2]['sql_ignore'][] = 'pass_dsb';
-	$zz['hooks']['before_insert'][] = 'mf_ratings_person_hook';
 }
 
 $zz['fields'][24]['title'] = 'Geburt';
@@ -215,6 +209,7 @@ $zz['fields'][22]['subselect']['sql'] = 'SELECT contact_id, identification, CONC
 $zz['title'] = '';
 $zz['access'] = 'add+delete';
 
+$zz['hooks']['before_insert'][] = 'mf_ratings_person_hook';
 $zz['record']['copy'] = false;
 if (!wrap_access('tournaments_teams_registrations', $brick['data']['event_rights']))
 	$zz['if'][22]['record']['delete'] = false; // User darf sich nicht selbst löschen!
