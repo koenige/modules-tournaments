@@ -13,7 +13,7 @@ if ($brick['data']['meldung'] === 'gesperrt')
 
 $contact_id = $brick['data']['contact_id'];
 $organisation = $brick['data']['contact'];
-if ($brick['data']['turnierform'] === 'm-v') {
+if (wrap_setting('tournaments_player_pool') === 'club') {
 	$field = 'participations.club_contact_id';
 	$type = 'Verein';
 } else {

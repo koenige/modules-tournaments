@@ -48,10 +48,9 @@ $zz['sql'] .= sprintf(' WHERE usergroup_id IN (%s)
 	AND ((ISNULL(team_id) AND ISNULL(participations.event_id)) OR team_id = %d)', 
 	implode(',', array_keys($brick['data']['usergroups'])), $brick['data']['team_id']
 );
-if ($brick['data']['turnierform'] === 'm-v') {
+if (wrap_setting('tournaments_player_pool') === 'club')
 	$zz['sql'] .= sprintf(' AND (ISNULL(participations.club_contact_id) OR (participations.club_contact_id = %d))',
 		$brick['data']['contact_id']);
-}
 
 foreach ($zz['fields'] as $no => $field) {
 	$field_name = $field['field_name'] ?? '';
@@ -92,7 +91,7 @@ foreach ($zz['fields'] as $no => $field) {
 		$zz['fields'][$no]['hide_in_form'] = true;
 		$zz['fields'][$no]['hide_in_list'] = true;
 		$zz['fields'][$no]['unless'][21] = false;
-		if ($brick['data']['turnierform'] === 'm-v')
+		if (wrap_setting('tournaments_player_pool') === 'club')
 			$zz['fields'][$no]['value'] = $brick['data']['contact_id'];
 		break;
 
