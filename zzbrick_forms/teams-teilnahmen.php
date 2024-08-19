@@ -217,7 +217,7 @@ $zz['title'] = '';
 $zz['access'] = 'add+delete';
 
 $zz['record']['copy'] = false;
-if (!wrap_access('tournaments_teams_registrations'))
+if (!wrap_access('tournaments_teams_registrations', $brick['data']['event_rights']))
 	$zz['if'][22]['record']['delete'] = false; // User darf sich nicht selbst löschen!
 $zz['setting']['zzform_max_select'] = 200;
 
