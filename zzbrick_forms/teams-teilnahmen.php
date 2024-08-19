@@ -25,6 +25,20 @@ $zz['page']['title'] = $brick['page']['title'].'Kontaktdaten';
 $zz['page']['breadcrumbs'][]['title'] = 'Kontaktdaten';
 
 $brick['data']['usergroups'] = mf_tournaments_team_usergroups($brick['data']['turnierform']);
+$sql = 'SELECT usergroup_id AS value, usergroup AS type, "usergroup_id" AS field_name
+	FROM usergroups
+	WHERE usergroup_id IN (%s)';
+$sql = sprintf($sql, implode(',', array_keys($brick['data']['usergroups'])));
+$zz['add'] = wrap_db_fetch($sql, 'value', 'numeric');
+if (wrap_access('tournaments_teams_registrations', $brick['data']['event_rights'])) {
+	$zz['add'][] = [
+		'type' => 'Freie Eingabe',
+		'field_name' => 'frei',
+		'value' => 'betreuer'
+	];
+	if (!empty($_GET['add']['frei']))
+		$_GET['add']['usergroup_id'] = wrap_id('usergroups', $_GET['add']['frei']);
+}
 
 $zz['footer']['text'] = wrap_template('team-kontakt', $brick['data']);
 $brick['data']['head'] = true;
@@ -97,19 +111,6 @@ foreach ($zz['fields'] as $no => $field) {
 	}
 }
 
-$sql = 'SELECT usergroup_id AS value, usergroup AS type, "usergroup_id" AS field_name
-	FROM usergroups
-	WHERE usergroup_id IN (%s)';
-$sql = sprintf($sql, implode(',', array_keys($brick['data']['usergroups'])));
-$zz['add'] = wrap_db_fetch($sql, 'value', 'numeric');
-if (wrap_access('tournaments_teams_registrations')) {
-	$zz['add'][] = [
-		'type' => 'Freie Eingabe',
-		'field_name' => 'frei',
-		'value' => 'betreuer'
-	];
-}
-
 if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 	AND empty($_GET['insert']) AND empty($_GET['update']) AND empty($_GET['noupdate'])
 	AND (empty($_GET['add']['frei']))) {
@@ -165,9 +166,6 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 	}
 	$zz['fields'][2]['sql_ignore'][] = 'pass_dsb';
 	$zz['hooks']['before_insert'][] = 'mf_ratings_person_hook';
-}
-if (!empty($_GET['add']['frei'])) {
-	$_GET['add']['usergroup_id'] = wrap_id('usergroups', $_GET['add']['frei']);
 }
 
 $zz['fields'][24]['title'] = 'Geburt';
