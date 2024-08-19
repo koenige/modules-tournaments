@@ -175,7 +175,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 						elseif ($postdata['geschlecht'] === 'd')
 							$data['post_geschlecht_d'] = true;
 						// Keinen Spieler gefunden
-						if (wrap_setting('tournaments_members_only')) {
+						if (wrap_setting('tournaments_player_pool')) {
 							// DSB-Mitgliedschaft erforderlich
 							$data['neu_spieler_nicht_gefunden'] = true;
 						} elseif (!empty($postdata['date_of_birth']) AND !zz_check_date($postdata['date_of_birth'])) {

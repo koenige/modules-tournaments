@@ -115,7 +115,7 @@ if ((empty($_GET['mode']) OR $_GET['mode'] !== 'delete')
 	AND empty($_GET['insert']) AND empty($_GET['update']) AND empty($_GET['noupdate'])
 	AND (empty($_GET['add']['frei']))) {
 
-	if (!wrap_access('tournaments_teams_registrations') AND wrap_setting('tournaments_members_only')) {
+	if (!wrap_access('tournaments_teams_registrations') AND wrap_setting('tournaments_player_pool')) {
 		// Vereine haben Mitglieder, beschränke auf diese Mitglieder
 		// Erlaube keine doppelten Einträge bei demselben Termin aus derselben Gruppe!
 		$zz['fields'][2]['if']['insert']['sql'] = sprintf('SELECT

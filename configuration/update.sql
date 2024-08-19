@@ -69,3 +69,4 @@
 /* 2024-05-25-5 */	UPDATE categories SET parameters = REPLACE(parameters, '&turnier=1', '&tournaments_identifier=1') WHERE parameters LIKE '%&turnier=1%';
 /* 2024-05-26-1 */	ALTER TABLE `tournaments_identifiers` CHANGE `identifier` `identifier` varchar(24) COLLATE 'latin1_general_cs' NOT NULL AFTER `tournament_id`;
 /* 2024-05-26-2 */	ALTER TABLE `tournaments` DROP `turnierkennung`;
+/* 2024-08-19-1 */	UPDATE categories SET parameters = REPLACE(parameters, '&tournaments_members_only=1', '&tournaments_player_pool=confederation') WHERE parameters LIKE '%&tournaments_members_only=1%';
