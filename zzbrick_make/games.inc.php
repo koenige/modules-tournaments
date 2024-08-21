@@ -87,7 +87,7 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 	if ($brett_no) $error_msg .= sprintf(', Brett %s', wrap_html_escape($brett_no));
 
 	// Termin, Partien in Datenbank vorhanden?
-	$sql = 'SELECT COUNT(partie_id) AS partien
+	$sql = 'SELECT COUNT(partie_id) AS games_count
 			, tournament_id
 		FROM events
 		JOIN partien USING (event_id)
@@ -101,7 +101,7 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 	';
 	$sql = sprintf($sql, $event['event_id'], $where);
 	$event = array_merge($event, wrap_db_fetch($sql));
-	if (!$event['partien']) {
+	if (empty($event['games_count'])) {
 		$page['text'] = sprintf(
 			'PGN-Import: Keine Partien vorhanden (%s).', $error_msg
 		);
@@ -178,9 +178,8 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 
 	if (!empty($pgn_filename_not_live)) {
 		$pgn_not_live = sprintf($pgn_path, $pgn_filename_not_live);
-		if (file_exists($pgn_not_live)) {
+		if (file_exists($pgn_not_live))
 			$games_not_live = mf_chess_pgn_parse(file($pgn_not_live), $pgn_not_live);
-		}
 	}
 
 	wrap_include('functions', 'zzform');
