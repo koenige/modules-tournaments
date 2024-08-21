@@ -273,8 +273,7 @@ function mf_tournaments_fide_title($title) {
 	if (!$titles) {
 		$sql = 'SELECT category, category_short, description
 			FROM categories
-			WHERE main_category_id = %d';
-		$sql = sprintf($sql, wrap_category_id('fide-title'));
+			WHERE main_category_id = /*_ID categories fide-title _*/';
 		$titles = wrap_db_fetch($sql, 'category_short');
 	}
 	if (array_key_exists($title, $titles)) return $titles[$title]['category'];
@@ -411,14 +410,9 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 		LEFT JOIN contacts_identifiers
 			ON contacts_identifiers.contact_id = contacts.contact_id
 			AND contacts_identifiers.current = "yes"
-	    WHERE contacts_contacts.main_contact_id = %d
-	    AND contacts_contacts.relation_category_id = %d
-	    AND contacts.contact_category_id = %d';
-	$sql = sprintf($sql
-		, wrap_setting('clubs_confederation_contact_id')
-		, wrap_category_id('relation/member')
-		, wrap_category_id('contact/federation')
-	);
+	    WHERE contacts_contacts.main_contact_id = /*_SETTING clubs_confederation_contact_id _*/
+	    AND contacts_contacts.relation_category_id = /*_ID categories relation/member _*/
+	    AND contacts.contact_category_id = /*_ID categories contact/federation _*/';
 	$federations = wrap_db_fetch($sql, 'federation_contact_id');
 	$federations_by_zps = [];
 	$federations_by_country = [];
@@ -567,7 +561,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 				, YEAR(date_of_birth) AS geburtsjahr
 				, (SELECT identification FROM contactdetails
 					WHERE contactdetails.contact_id = contacts.contact_id
-					AND provider_category_id = %d
+					AND provider_category_id = /*_ID categories provider/e-mail _*/
 					LIMIT 1
 				) AS e_mail
 				, GROUP_CONCAT(category_short, ": ", identification SEPARATOR "<br>") AS telefon
@@ -580,14 +574,9 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 				ON categories.category_id = contactdetails.provider_category_id
 				AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&type=phone%%")
 			WHERE club_contact_id IN (%s)
-			AND usergroup_id IN (%d, %d)
+			AND usergroup_id IN (/*_ID usergroups verein-jugend _*/, /*_ID usergroups verein-vorsitz _*/)
 			GROUP BY participation_id';
-		$sql = sprintf($sql
-			, wrap_category_id('provider/e-mail')
-			, implode(',', $contact_ids)
-			, wrap_id('usergroups', 'verein-jugend')
-			, wrap_id('usergroups', 'verein-vorsitz')
-		);
+		$sql = sprintf($sql, implode(',', $contact_ids));
 		$vereinsbetreuer = wrap_db_fetch($sql, ['club_contact_id', 'group_identifier', 'participation_id']);
 	}
 
@@ -605,13 +594,13 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 			, IF(gastspieler = "ja", 1, NULL) AS gastspieler
 			, (SELECT identification FROM contactdetails
 				WHERE contactdetails.contact_id = contacts.contact_id
-				AND provider_category_id = %d
+				AND provider_category_id = /*_ID categories provider/e-mail _*/
 				LIMIT 1
 			) AS e_mail
 			, GROUP_CONCAT(category_short, ": ", identification SEPARATOR "<br>") AS telefon
-			, (CASE WHEN spielberechtigt = "vorläufig nein" THEN "vielleicht"
-				WHEN spielberechtigt = "nein" THEN "nein"
-				WHEN spielberechtigt = "ja" THEN "ja"
+			, (CASE WHEN spielberechtigt = "vorläufig nein" THEN "status-maybe"
+				WHEN spielberechtigt = "nein" THEN "status-no"
+				WHEN spielberechtigt = "ja" THEN "status-yes"
 				ELSE NULL
 				END) AS status, spielberechtigt
 			, contacts_identifiers.identifier AS player_pass_dsb
@@ -626,13 +615,11 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 		LEFT JOIN contacts_identifiers
 			ON contacts_identifiers.contact_id = persons.contact_id
 			AND contacts_identifiers.current = "yes"
-			AND contacts_identifiers.identifier_category_id = %d
+			AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 		WHERE team_id IN (%s)
 		GROUP BY participation_id, contact_identifier_id
 		ORDER BY %s';
 	$sql = sprintf($sql
-		, wrap_category_id('provider/e-mail')
-		, wrap_category_id('identifiers/pass_dsb')
 		, implode(',', array_keys($team_ids))
 		, $order_by
 	);
