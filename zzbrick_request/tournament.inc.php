@@ -502,7 +502,7 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 	}
 
 	$dwz_sort = false;
-	if ($event['participant_list']) {
+	if (!empty($event['participant_list'])) {
 		$dwz_sort = true;
 		$first_team = current($event['teams']);
 		if ($first_team['setzliste_no']) $dwz_sort = false;
@@ -526,7 +526,7 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 	$own_teams = mf_tournaments_team_own();
 	foreach ($event['teams'] as $id => $team) {
 		$active = false;
-		if ($event['participant_list'] AND $team['team_status'] === 'Teilnehmer') $active = true;
+		if (!empty($event['participant_list']) AND $team['team_status'] === 'Teilnehmer') $active = true;
 		elseif (in_array($id, $own_teams) AND $internal) $active = true;
 		elseif (brick_access_rights('Webmaster') AND $event['internal']) $active = true;
 		if ($active) $event['teams'][$id]['active'] = 1;
