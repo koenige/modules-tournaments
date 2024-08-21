@@ -127,8 +127,8 @@ $zz['fields'][13]['type'] = 'select';
 $zz['fields'][13]['enum'] = ['offen', 'teiloffen', 'gesperrt', 'komplett'];
 $zz['fields'][13]['unless']['export_mode']['enum_abbr'] = ['offen', 'teiloffen', 'gesperrt', 'komplett'];
 $zz['fields'][13]['unless']['export_mode']['enum_title'] = [
-	'<span class="vielleicht">&nbsp;</span>', '<span class="teilweise">&nbsp;</span>',
-	'<span class="nein">&nbsp;</span>', '<span class="ja">&nbsp;</span>'
+	'<span class="status-open">&nbsp;</span>', '<span class="status-partly">&nbsp;</span>',
+	'<span class="status-no">&nbsp;</span>', '<span class="status-yes">&nbsp;</span>'
 ];
 $zz['fields'][13]['default'] = 'gesperrt';
 $zz['fields'][13]['unless']['export_mode']['list_append_next'] = true;

@@ -494,10 +494,10 @@ function mf_tournaments_team_bookings($team_ids, $event) {
 			, price, currency
 			, betrag, betrag_waehrung
 			, anmerkungen
-			, (CASE WHEN kosten_status = "offen" THEN "vielleicht"
-				WHEN kosten_status = "gelöscht" THEN "nein"
-				WHEN kosten_status = "befreit" THEN "befreit"
-				WHEN kosten_status = "bestätigt" THEN "ja"
+			, (CASE WHEN kosten_status = "offen" THEN "status-open"
+				WHEN kosten_status = "gelöscht" THEN "status-no"
+				WHEN kosten_status = "befreit" THEN "status-exempt"
+				WHEN kosten_status = "bestätigt" THEN "status-yes"
 				END) AS kosten_status
 			, categories.path AS buchungskategorie
 		FROM buchungen
@@ -519,7 +519,7 @@ function mf_tournaments_team_bookings($team_ids, $event) {
 			// Bedingung für komplett:
 			// min. min_spieler * dauer_tage für Teilnehmer
 			// min. dauer_tage für Betreuer
-			if ($booking['kosten_status'] === 'nein' OR $booking['kosten_status'] === 'befreit') {
+			if ($booking['kosten_status'] === 'status-no' OR $booking['kosten_status'] === 'status-exempt') {
 				$teams[$team_id]['bookings'][$booking_id]['betrag'] = 0;
 				$teams[$team_id]['bookings'][$booking_id]['gelöscht'] = true;
 				continue;
