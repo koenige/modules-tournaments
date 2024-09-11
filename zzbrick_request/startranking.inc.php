@@ -20,10 +20,15 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 			, IF(teilnehmerliste = "ja", 1, 0) AS teilnehmerliste, pseudo_dwz
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
+		LEFT JOIN events_contacts events_places
+			ON events.event_id = events_places.event_id
+			AND events_places.role_category_id = /*_ID categories roles/location _*/
+			AND events_places.sequence = 1
 		LEFT JOIN contacts places
-			ON events.place_contact_id = places.contact_id
-		LEFT JOIN addresses USING (contact_id)
-		WHERE event_id = %d';
+			ON events_places.contact_id = places.contact_id
+		LEFT JOIN addresses
+			ON addresses.contact_id = places.contact_id
+		WHERE events.event_id = %d';
 	$sql = sprintf($sql, $event['event_id']);
 	$event += wrap_db_fetch($sql);
 

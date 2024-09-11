@@ -173,13 +173,17 @@ function mod_tournaments_games_series($event, $settings) {
 	$identifier = explode('/', $event['identifier']);
 	$sql = 'SELECT events.event_id
 		FROM events
+		LEFT JOIN tournaments USING (event_id)
+		LEFT JOIN events_contacts events_places
+			ON events.event_id = events_places.event_id
+			AND events_places.role_category_id = /*_ID categories roles/location _*/
+			AND events_places.sequence = 1
 		LEFT JOIN addresses
-			ON addresses.contact_id = events.place_contact_id
+			ON addresses.contact_id = events_places.contact_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
 		LEFT JOIN categories main_series
 			ON main_series.category_id = series.main_category_id
-		LEFT JOIN tournaments USING (event_id)
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = %d
@@ -530,12 +534,16 @@ function mod_tournaments_games_pgn($event_id, $round_no = false, $brett_no = fal
 		LEFT JOIN events runden
 			ON events.event_id = runden.main_event_id
 			AND runden.runde_no = partien.runde_no
+		LEFT JOIN events_contacts events_places
+			ON events.event_id = events_places.event_id
+			AND events_places.role_category_id = /*_ID categories roles/location _*/
+			AND events_places.sequence = 1
 		LEFT JOIN contacts places
-			ON events.place_contact_id = places.contact_id
+			ON events_places.contact_id = places.contact_id
 		LEFT JOIN categories place_categories
 			ON places.contact_category_id = place_categories.category_id
 		LEFT JOIN addresses
-			ON events.place_contact_id = addresses.contact_id
+			ON events_places.contact_id = addresses.contact_id
 		LEFT JOIN countries
 			ON addresses.country_id = countries.country_id
 		LEFT JOIN paarungen USING (paarung_id)

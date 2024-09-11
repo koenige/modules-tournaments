@@ -77,8 +77,12 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 			ON tournaments.turnierform_category_id = turnierformen.category_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
+		LEFT JOIN events_contacts events_places
+			ON events.event_id = events_places.event_id
+			AND events_places.role_category_id = /*_ID categories roles/location _*/
+			AND events_places.sequence = 1
 		LEFT JOIN contacts places
-			ON events.place_contact_id = places.contact_id
+			ON events_places.contact_id = places.contact_id
 		LEFT JOIN addresses
 			ON addresses.contact_id = places.contact_id
 		WHERE series.main_category_id = %d

@@ -351,8 +351,12 @@ function mf_tournaments_remarks_mail($ops) {
 				, team, team_no
 			FROM teams
 			LEFT JOIN events USING (event_id)
+			LEFT JOIN events_contacts events_places
+				ON events.event_id = events_places.event_id
+				AND events_places.role_category_id = /*_ID categories roles/location _*/
+				AND events_places.sequence = 1
 			LEFT JOIN contacts places
-				ON events.place_contact_id = places.contact_id
+				ON events_places.contact_id = places.contact_id
 			WHERE team_id = %d
 		';
 		$sql = sprintf($sql, $record['team_id']); // @todo participation_id

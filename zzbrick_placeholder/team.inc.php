@@ -24,7 +24,7 @@ function mod_tournaments_placeholder_team($brick) {
 	}
 
 	$sql = 'SELECT team_id, team, team_no, meldung
-			, event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year
+			, events.event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year
 			, SUBSTRING_INDEX(events.identifier, "/", -1) AS event_idf
 			, IFNULL(place, places.contact) AS place
 			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
@@ -49,9 +49,14 @@ function mod_tournaments_placeholder_team($brick) {
 		FROM teams
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN tournaments USING (event_id)
+		LEFT JOIN events_contacts events_places
+			ON events.event_id = events_places.event_id
+			AND events_places.role_category_id = /*_ID categories roles/location _*/
+			AND events_places.sequence = 1
 		LEFT JOIN contacts places
-			ON places.contact_id = events.place_contact_id
-		LEFT JOIN addresses USING (contact_id)
+			ON places.contact_id = events_places.contact_id
+		LEFT JOIN addresses
+			ON places.contact_id = addresses.contact_id
 		LEFT JOIN contacts clubs
 			ON clubs.contact_id = teams.club_contact_id
 		LEFT JOIN categories series

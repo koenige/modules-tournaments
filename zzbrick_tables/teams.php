@@ -250,6 +250,8 @@ $zz['fields'][21]['if']['export_mode']['subselect']['prefix'] = '';
 $zz['fields'][21]['if']['export_mode']['subselect']['suffix'] = '';
 $zz['fields'][21]['hide_in_list_if_empty'] = true;
 
+$zz['hooks'] = $zz['fields'][21]['hooks'];
+
 $zz['fields'][25]['title'] = 'Kontakt';
 $zz['fields'][25]['type'] = 'subtable';
 $zz['fields'][25]['table'] = 'participations';
@@ -414,6 +416,6 @@ $zz['filter'][1]['sql'] = 'SELECT DISTINCT meldung, meldung AS titel
 
 $zz['if']['multi']['record']['delete'] = true;
 
-$zz['hooks']['after_update'] = 'mf_tournaments_standings_update';
+$zz['hooks']['after_update'][] = 'mf_tournaments_standings_update';
 
 $zz['set_redirect'][] = ['old' => '/%s/', 'new' => '/%s/', 'field_name' => 'identifier'];
