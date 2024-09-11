@@ -80,7 +80,7 @@ foreach ($zz['fields'] as $no => $field) {
 		break;
 
 	case 'date_begin':
-		$zz['fields'][$no]['default'] = $brick['data']['zeitplan_max'];
+		$zz['fields'][$no]['default'] = $brick['data']['timetable_max'];
 		break;
 
 	case 'published':
