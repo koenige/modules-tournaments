@@ -23,8 +23,8 @@ $zz['page']['breadcrumbs'][] = ['title' => 'Spieler'];
 $zz['page']['referer'] = '../';
 
 foreach ($zz['fields'] as $no => $field) {
-	if (empty($field['field_name'])) continue;
-	switch ($field['field_name']) {
+	$identifier = zzform_field_identifier($field);
+	switch ($identifier) {
 	case 'club_contact_id':
 	case 'entry_date':
 	case 'verification_hash':

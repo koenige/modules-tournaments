@@ -54,28 +54,32 @@ if (empty($contact_ids)) {
 }
 
 foreach ($zz['fields'][9]['fields'] as $no => $field) {
-	if (empty($field['field_name'])) continue;
-	switch ($field['field_name']) {
+	$identifier = zzform_field_identifier($field);
+	switch ($identifier) {
 	case 'person_id':
 	case 'contact_id':
 	case 'title_prefix':
 	case 'date_of_birth':
 	case 'sex':
 		break;
+
 	case 'first_name':
 		// change of name not possible here
 		$zz['fields'][9]['fields'][$no]['type'] = 'display';
 		$zz['fields'][9]['fields'][$no]['list_append_next'] = false;
 		$zz['fields'][9]['if']['record_mode']['fields'][$no]['display_field'] = 'first_name';
 		break;
+
 	case 'name_particle':
 		// change of name not possible here
 		$zz['fields'][9]['fields'][$no]['type'] = 'display';
 		$zz['fields'][9]['fields'][$no]['explanation'] = false;
 		break;
+
 	case 'last_name':
 		// change of name not possible here
 		$zz['fields'][9]['fields'][$no]['type'] = 'display';
+
 	default:
 		unset($zz['fields'][9]['fields'][$no]);
 	}

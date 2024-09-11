@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014, 2016-2017, 2019-2020, 2022-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2014, 2016-2017, 2019-2020, 2022-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -54,8 +54,8 @@ $zz['fields'][2]['hide_in_form'] = false;
 $zz['fields'][2]['field_sequence'] = 1;
 
 foreach ($zz['fields'][9]['fields'] as $no => $field) {
-	if (empty($field['field_name'])) continue;
-	switch ($field['field_name']) {
+	$identifier = zzform_field_identifier($field);
+	switch ($identifier) {
 	case 'first_name':
 	case 'name_particle':
 	case 'last_name':
@@ -63,15 +63,18 @@ foreach ($zz['fields'][9]['fields'] as $no => $field) {
 		$zz['fields'][9]['fields'][$no]['type'] = 'display';
 		$zz['fields'][9]['fields'][$no]['class'] = 'hidden';
 		break;
+
 	case 'birth_name':
 	case 'title_prefix':
 	case 'title_suffix':
 		$zz['fields'][9]['fields'][$no]['hide_in_form'] = true;
 		$zz['fields'][9]['fields'][$no]['hide_in_form'] = true;
 		break;
+
 	case 'date_of_birth':
 		$zz['fields'][9]['fields'][$no]['explanation'] = '(Es reicht auch Geburtsjahr)';
 		break;
+
 	case 't_shirt':
 		$zz['fields'][9]['fields'][$no]['hide_in_form'] = true;
 		break;

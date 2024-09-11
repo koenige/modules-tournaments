@@ -57,18 +57,22 @@ if (wrap_setting('tournaments_upload_pgn')) { // 11 = author
 	$zz['fields'][11]['unless']['export_mode']['list_prefix'] = '<br>';
 }
 
-$keep_fields = [
-	'event_id', 'date_begin', 'date_end', 'time_begin', 'time_end', 'timezone',
-	'event', 'event_category_id', 'takes_place', 'published', 'main_event_id',
-	'identifier', 'created', 'website_id', 'last_update', 'runde_no', 'pgn'
-];
-
 foreach ($zz['fields'] as $no => $field) {
-	if (empty($field['field_name']) OR !in_array($field['field_name'], $keep_fields)) {
-		unset($zz['fields'][$no]);
-		continue;
-	}
-	switch ($field['field_name']) {
+	$identifier = zzform_field_identifier($field);
+	switch ($identifier) {
+	case 'event_id':
+	case 'date_end':
+	case 'time_begin':
+	case 'time_end':
+	case 'timezone':
+	case 'event_category_id':
+	case 'takes_place':
+	case 'identifier':
+	case 'last_update':
+	case 'runde_no':
+	case 'pgn':
+		break;
+
 	case 'event':
 		$zz['fields'][$no]['explanation'] = 'Can be left blank, will be added automatically';
 		$zz['fields'][$no]['required'] = false;
@@ -100,6 +104,9 @@ foreach ($zz['fields'] as $no => $field) {
 	case 'created':
 		$zz['fields'][$no]['hide_in_form'] = true;
 		break;
+	
+	default:
+		unset($zz['fields'][$no]);
 	}
 }
 
@@ -120,7 +127,8 @@ $zz['page']['referer'] = '../';
 if (wrap_access('tournaments_games', $brick['data']['event_rights']) AND !wrap_access('tournaments_pairings', $brick['data']['event_rights'])) {
 	// just allow to upload PGN files
 	foreach ($zz['fields'] as $no => $field) {
-		switch ($field['field_name']) {
+		$identifier = zzform_field_identifier($field);
+		switch ($identifier) {
 		case 'identifier':
 			$zz['fields'][$no]['hide_in_form'] = true;
 			break;

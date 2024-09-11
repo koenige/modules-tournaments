@@ -53,8 +53,8 @@ if (wrap_setting('tournaments_player_pool') === 'club')
 		$brick['data']['contact_id']);
 
 foreach ($zz['fields'] as $no => $field) {
-	$field_name = $field['field_name'] ?? '';
-	switch ($field_name) {
+	$identifier = zzform_field_identifier($field);
+	switch ($identifier) {
 	case 'participation_id':
 		break;
 

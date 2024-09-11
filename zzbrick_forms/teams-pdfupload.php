@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2018-2019, 2021-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2018-2019, 2021-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -24,22 +24,23 @@ $zz['title'] = '';
 $zz['where']['team_id'] = $brick['data']['team_id'];
 
 foreach ($zz['fields'] as $no => $field) {
-	if (empty($field['field_name'])) {
-		unset($zz['fields'][$no]);
-		continue;
-	}
-	switch ($field['field_name']) {
+	$identifier = zzform_field_identifier($field);
+	switch ($identifier) {
 	case 'team_id':
 	case 'ehrenkodex':
 		break;
+
 	case 'meldebogen':
 		$zz['fields'][$no]['dont_show_missing'] = false;
 		break;
+
 	case 'last_update':
 		$zz['fields'][$no]['class'] = 'hidden';
 		break;
+
 	case 'gastspielgenehmigung':
 		if ($brick['data']['gastspieler']) break;
+
 	default:
 		unset($zz['fields'][$no]);
 		break;

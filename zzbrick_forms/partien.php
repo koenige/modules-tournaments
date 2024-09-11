@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -42,9 +42,8 @@ if (count($brick['vars']) === 4)
 	$zz['where']['paarung_id'] = $paarung['paarung_id'];
 
 foreach ($zz['fields'] as $no => $field) {
-	if (empty($field['field_name'])) continue;
-	switch ($field['field_name']) {
-
+	$identifier = zzform_field_identifier($field);
+	switch ($identifier) {
 	case 'brett_no':
 		$zz['fields'][$no]['auto_value'] = 'increment';
 		break;
