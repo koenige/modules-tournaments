@@ -214,12 +214,14 @@ Plätze frei sind oder eine Warteliste existiert.
 <h2>Vor Ort</h2>
 <dl>
 %%% loop organisations %%%
+%%% condition unless veranstaltungsort %%%
 <dt>%%% item role_category %%%:</dt>
 %%% loop organisations %%%
 <dd><strong>
 %%% condition if url %%%%%% loop url 1 %%%<a href="%%% item identification wrap_punycode_decode %%%">%%% loop end %%%%%% condition endif %%%
 %%% item contact %%% %%% condition if url %%%</a>%%% condition endif %%%</strong></dd>
 %%% loop end %%%
+%%% condition endif %%%
 %%% loop end %%%
 
 %%% condition if organisator %%%
@@ -232,13 +234,18 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% loop end %%%
 %%% condition endif %%%
 
-%%% condition if place_contact %%%
-<dt>Veranstaltungsort:</dt>
-
-<dd><strong>%%% condition if url %%%%%% loop url 1 %%%<a href="%%% item identification %%%">%%% loop end %%%%%% condition endif %%%
-%%% item place_contact %%%%%% condition if url %%% </a> %%% condition endif %%%</strong> 
-%%% condition if address %%%</dd>
+%%% loop organisations %%%
+%%% switch type %%%
+%%% case veranstaltungsort %%%
+<dt>%%% item role_category %%%:</dt>
+%%% loop organisations %%%
+<dd><strong>
+%%% condition if url %%%%%% loop url 1 %%%<a href="%%% item identification wrap_punycode_decode %%%">%%% loop end %%%%%% condition endif %%%
+%%% item contact %%% %%% condition if url %%%</a>%%% condition endif %%%</strong></dd>
+%%% condition if addresses %%%
+%%% loop addresses %%%
 <dd>%%% item address %%%, %%% item postcode %%% %%% item place %%%</dd>
+%%% loop end %%%
 %%% condition endif %%%
 %%% loop phone %%%
 <dd>%%% item category %%% %%% item identification %%%</dd>
@@ -246,9 +253,11 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% loop mail %%%
 <dd>%%% item mailto %%%</dd>
 %%% loop end %%%
-
 %%% item description markdown "<dd>%s</dd>" %%%
-%%% condition endif %%%
+%%% loop end %%%
+%%% switch end %%%
+%%% loop end %%%
+
 %%% condition if turnierleitung %%%
 <dt>Turnierleitung:</dt>
 %%% loop turnierleitung %%%

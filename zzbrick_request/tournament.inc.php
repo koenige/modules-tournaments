@@ -23,11 +23,8 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		$internal = false;
 		$sql_condition = ' AND NOT ISNULL(event_website_id) ';
 	}
-
-	$sql = 'SELECT places.contact AS place_contact
-			, address, postcode, place, places.description
-			, latitude, longitude, place_contact_id
-			, IF(offen = "ja", IF(date_begin < CURDATE(), 0, 1), 0) AS offen
+	
+	$sql = 'SELECT IF(offen = "ja", IF(date_begin < CURDATE(), 0, 1), 0) AS offen
 			, IF(LOCATE("meldung=1", series.parameters), 1, NULL) AS online_meldung
 			, IF(ISNULL(teams_max), 1, 
 				IF((SELECT COUNT(*) FROM teams WHERE teams.event_id = events.event_id) < tournaments.teams_max, 1, NULL)
@@ -63,10 +60,6 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 			ON events.series_category_id = series.category_id
 		LEFT JOIN categories modus
 			ON tournaments.modus_category_id = modus.category_id
-		LEFT JOIN contacts places
-			ON events.place_contact_id = places.contact_id
-		LEFT JOIN addresses
-			ON addresses.contact_id = places.contact_id
 		WHERE events.event_id = %d
 		%s
 	';
@@ -126,10 +119,6 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		}
 	}
 
-	// Kontaktdetails
-	$details = mf_contacts_contactdetails($event['place_contact_id']);
-	$event += $details;
-
 	// Auswertungen
 	$sql = 'SELECT REPLACE(SUBSTRING_INDEX(categories.path, "/", -1), "-", "_") AS category
 			, tournaments_identifiers.identifier
@@ -160,7 +149,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	$sql = sprintf($sql, $event['tournament_id']);
 	$event['bedenkzeit'] = wrap_db_fetch($sql, 'tb_id');
 
-	$event['organisations'] = mf_events_event_organisations($event['event_id']);
+	$event['organisations'] = mf_events_event_organisations($event['event_id'], ['addresses' => 1]);
 
 	$sql = 'SELECT events.event_id, event
 			, CONCAT(IFNULL(date_begin, ""), IFNULL(CONCAT("/", date_end), "")) AS duration
