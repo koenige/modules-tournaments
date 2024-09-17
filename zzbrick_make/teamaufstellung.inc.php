@@ -326,7 +326,7 @@ function cms_team_spielersuche($data, $postdata) {
 	$spielername_r .= $postdata['last_name'] ? $postdata['last_name'].'%' : '%';
 	
 	//	Suche starten
-	$sql = 'SELECT CONCAT(ZPS, "-", Mgl_Nr) AS unique_id
+	$sql = 'SELECT CONCAT(ZPS, "-", IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr)) AS unique_id
 			, ZPS, Mgl_Nr, Spielername, Geschlecht, Geburtsjahr, DWZ, FIDE_Elo
 			, contact
 		FROM dwz_spieler
@@ -335,7 +335,7 @@ function cms_team_spielersuche($data, $postdata) {
 		LEFT JOIN contacts USING (contact_id)
 		WHERE (ISNULL(Status) OR Status != "P")
 		AND (Spielername LIKE "%s" OR Spielername LIKE "%s")
-		AND CONCAT(ZPS, "-", Mgl_Nr) NOT IN ("%s")
+		AND CONCAT(ZPS, "-", IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr)) NOT IN ("%s")
 		AND ok.current = "yes"
 		%s
 		ORDER BY Spielername';

@@ -67,8 +67,8 @@ foreach ($zz['fields'] as $no => $field) {
 			// Vereine haben Mitglieder, beschränke auf diese Mitglieder
 			// Erlaube keine doppelten Einträge bei demselben Termin aus derselben Gruppe!
 			$zz['fields'][$no]['if']['insert']['sql'] = sprintf('SELECT
-					IFNULL(contacts.contact_id, CONCAT(ZPS, "-", Mgl_Nr)) AS contact_id
-					, CONCAT(ZPS, "-", Mgl_Nr) AS pass_dsb, Spielername
+					IFNULL(contacts.contact_id, CONCAT(ZPS, "-", IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr))) AS contact_id
+					, CONCAT(ZPS, "-", IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr)) AS pass_dsb, Spielername
 				FROM dwz_spieler
 				LEFT JOIN contacts_identifiers club_identifiers
 					ON dwz_spieler.ZPS = club_identifiers.identifier
@@ -96,8 +96,11 @@ foreach ($zz['fields'] as $no => $field) {
 			// tournaments_teams_registrations, Auswahlmannschaften, Schulen etc.
 			// erlaube auch die Auswahl von passiven Mitgliedern
 			$zz['fields'][$no]['if']['insert']['sql'] = 'SELECT
-					IFNULL(contacts_identifiers.contact_id, CONCAT(ZPS, "-", Mgl_Nr)) AS contact_id
-					, CONCAT(ZPS, "-", Mgl_Nr) AS pass_dsb, Spielername, Geburtsjahr, Status, Vereinname
+					IFNULL(contacts_identifiers.contact_id
+						, CONCAT(ZPS, "-", IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr))
+					) AS contact_id
+					, CONCAT(ZPS, "-", IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr)) AS pass_dsb
+					, Spielername, Geburtsjahr, Status, Vereinname
 					, CONCAT(SUBSTRING_INDEX(Spielername, ",", -1), " ", SUBSTRING_INDEX(Spielername, ",", 1)) AS voller_name
 				FROM dwz_spieler
 				LEFT JOIN dwz_vereine USING (ZPS)
