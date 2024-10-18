@@ -348,7 +348,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	$page['dont_show_h1'] = true;
 	if (!empty($filter['untertitel'])) {
 		$page['title'] .= ' ('.$filter['untertitel'].')';
-		$page['breadcrumbs'][] = '<a href="../">'.sprintf('Tabelle %s. Runde', $event['runde_no']).'</a>';
+		$page['breadcrumbs'][] = ['title' => sprintf('Tabelle %s. Runde', $event['runde_no']), 'url_path' => '../'];
 		$page['breadcrumbs'][]['title'] = $filter['untertitel'];
 		$tabelle['untertitel'] = $filter['untertitel'];
 		$tabelle['filter'] = $filter_kennung;

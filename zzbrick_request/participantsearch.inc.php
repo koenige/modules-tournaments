@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -180,8 +180,8 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 	$event['teamsuche'] = $mannschaft;
 
 	$page['query_strings'] = ['q'];
-	$page['breadcrumbs'][] = '<a href="../../">'.$event['year'].'</a>';
-	$page['breadcrumbs'][] = '<a href="../">'.$event['main_series'].'</a>';
+	$page['breadcrumbs'][] = ['title' => $event['year'], 'url_path' => '../../'];
+	$page['breadcrumbs'][] = ['title' => $event['main_series'], 'url_path' => '../'];
 	$page['breadcrumbs'][]['title'] = 'Suche';
 	$page['dont_show_h1'] = true;
 	$page['title'] = $event['main_series_short'].' '.$event['year'].', Suche nach Spielerinnen, Spielern oder Teams';

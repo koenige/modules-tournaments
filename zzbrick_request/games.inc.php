@@ -711,7 +711,7 @@ function mod_tournaments_games_htmlout($partie) {
 	if (!empty($partie['breadcrumbs'])) {
 		$page['breadcrumbs'] = $partie['breadcrumbs'];
 	} else {
-		$page['breadcrumbs'][] = '<a href="../../runde/'.$partie['runde_no'].'/">'.$partie['runde_no'].'. Runde</a>';
+		$page['breadcrumbs'][] = ['title' => $partie['runde_no'].'. Runde', 'url_path' => '../../runde/'.$partie['runde_no'].'/'];
 		if (!empty($partie['tisch_no'])) {
 			$page['breadcrumbs'][]['title'] = sprintf('Partie Tisch %s, Brett %s', $partie['tisch_no'], $partie['brett_no']);
 		} elseif (!empty($partie['brett_no'])) {

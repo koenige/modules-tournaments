@@ -71,7 +71,7 @@ function mod_tournaments_tournamentmap($vars, $settings, $event) {
 	if (!$federation) {
 		$page['breadcrumbs'][]['title'] = 'Herkunftsorte';
 	} else {
-		$page['breadcrumbs'][] = '<a href="../">Herkunftsorte</a>';
+		$page['breadcrumbs'][] = ['title' => 'Herkunftsorte', 'url_path' => '../'];
 		$page['breadcrumbs'][]['title'] = $event['contact'];
 	}
 	return $page;

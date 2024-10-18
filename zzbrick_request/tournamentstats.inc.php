@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2015-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -220,8 +220,8 @@ function mod_tournaments_tournamentstats($vars) {
 	}
 
 	$page['text'] = wrap_template('tournamentstats', $data);
-	$page['breadcrumbs'][] = '<a href="../../">'.$data['year'].'</a>';
-	$page['breadcrumbs'][] = '<a href="../">'.$data['series_short'].'</a>';
+	$page['breadcrumbs'][] = ['title' => $data['year'], 'url_path' => '../../'];
+	$page['breadcrumbs'][] = ['title' => $data['series_short'], 'url_path' => '../'];
 	$page['breadcrumbs'][]['title'] = 'Turnierstatistik';
 	$page['dont_show_h1'] = true;
 	$page['title'] = 'Turnierstatistik '.$data['series_short'].' '.$data['year'];
