@@ -285,8 +285,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	$file['etag_generate_md5'] = true;
 
 	$pdf->output('F', $file['name'], true);
-	wrap_file_send($file);
-	exit;
+	wrap_send_file($file);
 }	
 
 /**

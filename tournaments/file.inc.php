@@ -55,5 +55,5 @@ function mf_tournaments_sendfile_teampdfs($params) {
 
 	$file['caching'] = false;
 	$file['name'] = wrap_setting('media_folder').'/'.$filename;
-	return wrap_file_send($file);
+	wrap_send_file($file);
 }

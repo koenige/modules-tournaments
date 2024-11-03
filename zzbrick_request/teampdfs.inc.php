@@ -70,7 +70,7 @@ function mod_tournaments_teampdfs($params, $settings, $event) {
 	if (!file_exists($file['name'])) {
 		wrap_error(sprintf('PDF für %s konnte nicht erstellt werden.', $event['event']), E_USER_ERROR);
 	}
-	wrap_file_send($file);
+	wrap_send_file($file);
 }
 
 /**

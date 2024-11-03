@@ -170,5 +170,5 @@ function Header()
 	$file['etag_generate_md5'] = true;
 
 	$pdf->output('F', $file['name'], true);
-	wrap_file_send($file);
+	wrap_send_file($file);
 }	

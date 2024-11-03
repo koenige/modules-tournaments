@@ -70,7 +70,7 @@ function mf_tournaments_pdf_send($pdf, $event, $return = 'send') {
 	$file['etag_generate_md5'] = true;
 	$pdf->output('F', $file['name'], true);
 	if ($return === 'filename') return $file['name'];
-	wrap_file_send($file);
+	wrap_send_file($file);
 }
 
 /**
