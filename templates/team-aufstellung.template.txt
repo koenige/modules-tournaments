@@ -46,7 +46,7 @@
 <td>%%% item geburtsjahr %%%</td>
 <td>%%% item t_dwz %%%</td>
 %%% condition if gastspieler_status %%%
-<td><input type='checkbox' name='gastspieler[tln_%%% item participation_id %%%]'%%% item gastspieler " checked='checked'" %%%></td>
+<td><input type='checkbox' name='gastspieler[tln_%%% item participation_id %%%]'%%% item gastspieler " checked" %%%></td>
 %%% condition endif %%%
 </tr>
 %%% condition endif %%%
@@ -71,7 +71,7 @@
 <td>%%% item first_name %%% %%% item last_name %%%</td> <td>%%% item Geschlecht %%%</td>
 <td>%%% item Geburtsjahr %%%</td> <td>%%% item DWZ %%%</td>
 %%% condition if gastspieler_status %%%
-<td><input type='checkbox' name='gastspieler[zps_%%% item Mgl_Nr %%%]'%%% item gastspieler " checked='checked'" %%%></td>
+<td><input type='checkbox' name='gastspieler[zps_%%% item Mgl_Nr %%%]'%%% item gastspieler " checked" %%%></td>
 %%% condition endif %%%
 %%% loop end %%%
 %%% condition endif %%%
@@ -122,9 +122,9 @@ W<input type="hidden" name="geschlecht" value="w">
 M<input type="hidden" name="geschlecht" value="m">
 %%% condition else %%%
 <select name="geschlecht">
-<option value="m"%%% item post_geschlecht_m " selected='selected'"%%%>M</option>
-<option value="w"%%% item post_geschlecht_w " selected='selected'"%%%>W</option>
-<option value="d"%%% item post_geschlecht_d " selected='selected'"%%%>D</option>
+<option value="m"%%% item post_geschlecht_m " selected"%%%>M</option>
+<option value="w"%%% item post_geschlecht_w " selected"%%%>W</option>
+<option value="d"%%% item post_geschlecht_d " selected"%%%>D</option>
 </select>
 %%% condition endif %%%
 </td>
@@ -133,7 +133,7 @@ M<input type="hidden" name="geschlecht" value="m">
 %%% condition endif %%%
 
 %%% condition if gastspieler_status %%%
-<td><input type="checkbox" name="gastspieler[neu]"%%% item post_gastspieler " checked='checked'" %%%></td>
+<td><input type="checkbox" name="gastspieler[neu]"%%% item post_gastspieler " checked" %%%></td>
 %%% condition endif %%%
 </tbody>
 %%% condition endif %%%
