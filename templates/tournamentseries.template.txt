@@ -11,7 +11,7 @@
 <h1>%%% item event %%%
 <br>%%% item duration wrap_date %%% %%% item place "<em>in %s</em>" %%%</h1>
 
-%%% condition if internal %%%
+%%% if internal %%%
 <div class="infocol">
 
 <h2>Werkzeuge</h2>
@@ -24,61 +24,61 @@
 </nav>
 </div>
 
-%%% condition endif %%%
+%%% endif %%%
 
 <div class="infocol">
 <h2>Turniere</h2>
-%%% condition if tournaments %%%
+%%% if tournaments %%%
 <ul class="tournaments">
 %%% loop tournaments %%%
-<li>%%% item duration wrap_date %%%%%% condition unless date_end %%%%%% item time_begin wrap_time ", %s Uhr" %%%%%% condition endif %%%: 
-%%% condition if tournaments %%%<strong>%%% condition endif %%%
+<li>%%% item duration wrap_date %%%%%% unless date_end %%%%%% item time_begin wrap_time ", %s Uhr" %%%%%% endif %%%: 
+%%% if tournaments %%%<strong>%%% endif %%%
 <a href="../../%%% item identifier %%%/">%%% item event %%%</a>
-%%% condition if tournaments %%%</strong>%%% condition endif %%%
-%%% condition unless place_equal %%%%%% item place " in %s" %%%%%% condition endif %%%
-%%% condition if tournaments %%%
+%%% if tournaments %%%</strong>%%% endif %%%
+%%% unless place_equal %%%%%% item place " in %s" %%%%%% endif %%%
+%%% if tournaments %%%
 <p><em>Qualifikation:</em></p>
 <ul>
 %%% loop tournaments %%%
-<li>%%% item duration wrap_date %%%%%% condition unless date_end %%%%%% item time_begin wrap_time ", %s Uhr" %%%%%% condition endif %%%: <a href="../../%%% item identifier %%%/">%%% item event %%%</a>
-%%% condition unless place_equal %%%%%% item place " in %s" %%%%%% condition endif %%%
+<li>%%% item duration wrap_date %%%%%% unless date_end %%%%%% item time_begin wrap_time ", %s Uhr" %%%%%% endif %%%: <a href="../../%%% item identifier %%%/">%%% item event %%%</a>
+%%% unless place_equal %%%%%% item place " in %s" %%%%%% endif %%%
 %%% loop end %%%
 </ul>
-%%% condition endif %%%
+%%% endif %%%
 </li>
 %%% loop end %%%
 </ul>
-%%% condition if series_path %%%
+%%% if series_path %%%
 <p><a href="%%% setting events_path %%%/%%% item year %%%/%%% item series_path %%%/">Terminplan aller Turniere</a></p>
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition unless internal %%%
+%%% unless internal %%%
 </div>
 <div class="infocol infocol2">
 %%% request tournamentnews * %%%
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition if pgn %%%
+%%% if pgn %%%
 <h2>Partien</h2>
 <p><a href="partien/gesamt.pgn">Download der Partien aller Turniere als PGN-Datei</a>
 <br><a href="partien/gesamt-utf8.pgn">Download der Partien aller Turniere als PGN-Datei (UTF-8)</a>
 <br>(Download kann u. U. etwas dauern, da Datei erst zusammengestellt wird)</p>
-%%% condition endif %%%
-%%% condition if spieler | teams %%%
-<h2>Suche nach %%% condition unless e %%%Team oder %%% condition endif %%%Spieler</h2>
+%%% endif %%%
+%%% if spieler | teams %%%
+<h2>Suche nach %%% unless e %%%Team oder %%% endif %%%Spieler</h2>
 <form method="GET" action="./suche/" id="suche" accept-charset="utf-8">
 <p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
-<p><a href="%%% condition if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% condition endif %%%lv/">Übersicht der %%% condition if setting tournaments_type_single %%%Spieler%%% condition else %%%Teams%%% condition endif %%% nach Landesverbänden</a></p>
-%%% condition if teilnehmerliste %%%
-<p><a href="%%% condition if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% condition endif %%%herkunftsorte/">Übersicht der Herkunftsorte der Teilnehmer</a></p>
-%%% condition endif %%%
+<p><a href="%%% if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% endif %%%lv/">Übersicht der %%% if setting tournaments_type_single %%%Spieler%%% else %%%Teams%%% endif %%% nach Landesverbänden</a></p>
+%%% if teilnehmerliste %%%
+<p><a href="%%% if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% endif %%%herkunftsorte/">Übersicht der Herkunftsorte der Teilnehmer</a></p>
+%%% endif %%%
 
 <h2>Zahlen</h2>
 
-<p><a href="%%% condition if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% condition endif %%%statistik/">Statistiken zu den Turnieren</a></p>
-%%% condition endif %%%
-%%% condition else %%%
+<p><a href="%%% if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% endif %%%statistik/">Statistiken zu den Turnieren</a></p>
+%%% endif %%%
+%%% else %%%
 <p>Die Termine der einzelnen Turniere sind noch nicht veröffentlicht.</p>
-%%% condition endif %%%
+%%% endif %%%
 </div>
 

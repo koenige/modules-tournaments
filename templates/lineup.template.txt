@@ -5,38 +5,38 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2020-2022 Gustaf Mossakowski
+# @copyright Copyright © 2020-2022, 2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
-%%% condition if set_board_order %%%
+%%% if set_board_order %%%
 
 <h2>Festlegung der Brettreihenfolge</h2>
 
 <p>Die Brettreihenfolge kann im laufenden Turnier nicht mehr geändert werden. (min. %%% item boards_min %%% Bretter%%% item boards_max ", max. %s Bretter" %%%). Es können später nur Spielerinnen und Spieler im Turnier mitspielen, an die eine Brettnummer vergeben wurde.</p>
 
-%%% condition if not_enough_players | error_no_numeric_values | error_no_fractions | error_no_fractions | error_board_no_too_low | error_board_no_duplicate %%%
+%%% if not_enough_players | error_no_numeric_values | error_no_fractions | error_no_fractions | error_board_no_too_low | error_board_no_duplicate %%%
 <div class="error"><ul>
-%%% condition if not_enough_players %%%
+%%% if not_enough_players %%%
 <li>Es können und müssen noch weitere Brettnummern vergeben werden. (min. %%% item boards_min %%% Bretter)</li>
-%%% condition endif %%%
-%%% condition if error_no_numeric_values %%%
+%%% endif %%%
+%%% if error_no_numeric_values %%%
 <li>Bitte nur Zahlen vergeben!</li>
-%%% condition endif %%%
-%%% condition if error_no_fractions %%%
+%%% endif %%%
+%%% if error_no_fractions %%%
 <li>Bitte nur ganze Zahlen vergeben, keine Brüche!</li>
-%%% condition endif %%%
-%%% condition if error_board_no_too_high %%%
+%%% endif %%%
+%%% if error_board_no_too_high %%%
 <li>Die höchste zu vergebende Brettnummer ist %%% item boards_max %%%!</li>
-%%% condition endif %%%
-%%% condition if error_board_no_too_low %%%
+%%% endif %%%
+%%% if error_board_no_too_low %%%
 <li>Brettnummern unter 1 können nicht vergeben werden.</li>
-%%% condition endif %%%
-%%% condition if error_board_no_duplicate %%%
+%%% endif %%%
+%%% if error_board_no_duplicate %%%
 <li>Eine Brettnummer wurde mehrfach vergeben.</li>
-%%% condition endif %%%
+%%% endif %%%
 </ul>
 </div>
-%%% condition endif %%%
+%%% endif %%%
 
 <div class="results">
 <form method="POST" action="">
@@ -60,7 +60,7 @@
 </form>
 </div>
 
-%%% condition elseif lineup_complete %%%
+%%% elseif lineup_complete %%%
 <h2>Festlegung der Aufstellung für die %%% item current_round %%%. Runde</h2>
 
 <p>Die Aufstellung wurde gespeichert. Änderungen sind nur über die Turnierleitung möglich.</p>
@@ -70,12 +70,12 @@
 <tbody>
 %%% loop players %%%
 <tr>
-<td>%%% condition if board_no_round %%%%%% item board_no_round %%%
-%%% condition else %%%–
-%%% condition endif %%%</td>
-<td><span class="%%% condition if white %%%weiss%%% condition elseif black %%%schwarz%%% condition endif %%%">&nbsp;</span></td>
+<td>%%% if board_no_round %%%%%% item board_no_round %%%
+%%% else %%%–
+%%% endif %%%</td>
+<td><span class="%%% if white %%%weiss%%% elseif black %%%schwarz%%% endif %%%">&nbsp;</span></td>
 <td>%%% item person %%%</td>
-<td>%%% condition if bye %%% (kampflos) %%% condition endif %%%</td>
+<td>%%% if bye %%% (kampflos) %%% endif %%%</td>
 </tr>
 %%% loop end %%%
 </tbody>
@@ -90,22 +90,22 @@
 </table>
 </div>
 
-%%% condition else %%%
+%%% else %%%
 
-%%% condition if board_saved %%%
+%%% if board_saved %%%
 <h2>Festlegung der Brettreihenfolge</h2>
 <p>Die Brettreihenfolge wurde gespeichert.</p>
-%%% condition endif %%%
+%%% endif %%%
 
 <h2>Festlegung der Aufstellung für die %%% item current_round %%%. Runde</h2>
 
 <p><strong>Hinweis:</strong> Bretter dürfen nur am Ende ohne Namensnennung freigelassen werden.</p>
 
-%%% condition if reselect_too_many_players %%%
+%%% if reselect_too_many_players %%%
 <div class="error"><ul>
 <li>Es können maximal %%% item boards_min %%% Personen aufgestellt werden.</li>
 <ul></div>
-%%% condition endif %%%
+%%% endif %%%
 
 <div class="results">
 <form method="POST" action="">
@@ -129,12 +129,12 @@
 </tr>
 </thead>
 </table>
-%%% condition if reselect_not_enough_players %%%
+%%% if reselect_not_enough_players %%%
 <p style="background: green; color: white;">Es wurden weniger Spieler/innen als möglich gemeldet.
 <br><label><input type="checkbox" name="selection_ok"> Ja, das stimmt so!</label></p>
-%%% condition endif %%%
+%%% endif %%%
 <input type="submit">
 </form>
 </div>
 
-%%% condition endif %%%
+%%% endif %%%

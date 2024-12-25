@@ -5,14 +5,14 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2022 Gustaf Mossakowski
+# @copyright Copyright © 2022, 2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <div>
 <hr>
-%%% condition if messages_sent %%%
+%%% if messages_sent %%%
 <p class="error">%%% item messages_sent %%% Nachrichten wurden als versendet markiert.</p>
-%%% condition endif %%%
+%%% endif %%%
 
 <form method="POST" action="">
 <p><label for="sent_date">Nachrichten vor diesem Datum als »verteilt« markieren«:

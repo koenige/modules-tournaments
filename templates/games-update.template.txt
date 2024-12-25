@@ -5,13 +5,13 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2014, 2018, 2020, 2022 Gustaf Mossakowski
+# @copyright Copyright © 2014, 2018, 2020, 2022, 2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <p>Der Import für das Turnier %%% item event %%% %%% item year %%%
-%%% condition if runde_no %%%, Runde %%% item runde_no %%%%%% condition endif %%%
-%%% condition if tisch_no %%%, Tisch %%% item tisch_no %%%%%% condition endif %%%
-%%% condition if brett_no %%%, Brett %%% item brett_no %%%%%% condition endif %%%
+%%% if runde_no %%%, Runde %%% item runde_no %%%%%% endif %%%
+%%% if tisch_no %%%, Tisch %%% item tisch_no %%%%%% endif %%%
+%%% if brett_no %%%, Brett %%% item brett_no %%%%%% endif %%%
  wurde fertiggestellt.</p>
 
 <p>Ergebnis:</p>
@@ -26,17 +26,17 @@
 
 <p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/">Turnier im Terminkalender</a></p>
 
-%%% condition if tisch_no %%%
+%%% if tisch_no %%%
 <p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/partien/%%% item runde_no %%%-%%% item tisch_no %%%-%%% item brett_no %%%.pgn">PGN-Datei herunterladen</a></p>
 <p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/runde/%%% item runde_no %%%/%%% item tisch_no %%%/">PGN-Datei erneut hochladen</a></p>
-%%% condition elseif brett_no %%%
+%%% elseif brett_no %%%
 <p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/partien/%%% item runde_no %%%-%%% item brett_no %%%.pgn">PGN-Datei herunterladen</a></p>
 <p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/runde/%%% item runde_no %%%/">PGN-Datei erneut hochladen</a></p>
-%%% condition elseif runde_no %%%
+%%% elseif runde_no %%%
 <p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/partien/%%% item runde_no %%%.pgn">PGN-Datei herunterladen</a></p>
 <p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/runde/">PGN-Datei erneut hochladen</a></p>
-%%% condition else %%%
+%%% else %%%
 <p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/partien/gesamt.pgn">PGN-Datei herunterladen</a></p>
 <p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/partien/gesamt-utf8.pgn">PGN-Datei herunterladen (Unicode UTF-8)</a></p>
 <p><a href="%%% setting events_internal_path %%%/%%% item identifier %%%/turnier/">PGN-Datei erneut hochladen</a></p>
-%%% condition endif %%%
+%%% endif %%%

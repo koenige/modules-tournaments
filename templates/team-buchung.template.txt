@@ -8,7 +8,7 @@
 # @copyright Copyright © 2012, 2014, 2016, 2020, 2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
-%%% condition if head %%%
+%%% if head %%%
 <h1>Buchung: <a href="../">%%% item team %%% %%% item team_no %%%</a>
 <br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> <em>in %%% item place %%%</em></h1>
 
@@ -18,6 +18,6 @@ gibt, können Sie eine auswählen. Für weitere Betreuer und Mitreisende können
 leider nicht garantieren, dass noch Plätze vorhanden sind. Bitte sprechen Sie 
 das direkt mit dem Ausrichter ab.</p>
 
-%%% condition else %%%
+%%% else %%%
 <p class="fuss"><strong><a href="../">Zurück zur Team-Übersicht</a></strong></p>
-%%% condition endif %%%
+%%% endif %%%

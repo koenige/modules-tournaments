@@ -11,12 +11,12 @@
 <h1>%%% item event %%%<br>
 %%% item duration wrap_date %%% %%% item place "<em>in %s</em>"%%%</h1>
 
-%%% condition if team_abgesagt %%%
+%%% if team_abgesagt %%%
 <p class="error">Schade. Wir haben Deine Absage erhalten.</p>
 
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition if internal %%%
+%%% if internal %%%
 
 <div class="infocol">
 <h2>Werkzeuge</h2>
@@ -27,212 +27,212 @@
 </ul>
 </nav>
 
-<p><a href="%%% condition if canonical_hostname %%%https://%%% item canonical_hostname %%%%%% condition endif %%%/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
+<p><a href="%%% if canonical_hostname %%%https://%%% item canonical_hostname %%%%%% endif %%%/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
 </div>
 
-%%% condition endif %%%
+%%% endif %%%
 
 <div class="infocol">
 <h2>Daten &amp; Fakten</h2>
 <dl>
-%%% condition if events %%%
+%%% if events %%%
 <dt>Termine:</dt>
 %%% loop events %%%
 <dd>
-%%% condition if faellt_aus %%%<del>%%% condition endif %%%
+%%% if faellt_aus %%%<del>%%% endif %%%
 <strong>%%% item dauer_gleich "<span style='visibility: hidden;'>" %%%%%% item duration wrap_date %%%%%% item dauer_gleich "</span>" %%%</strong> 
-%%% condition if time_begin %%%
+%%% if time_begin %%%
 %%% item time_begin %%%
-%%% condition if time_end %%%
-%%% condition else %%%
+%%% if time_end %%%
+%%% else %%%
  Uhr
-%%% condition endif %%%
-%%% condition endif %%%
+%%% endif %%%
+%%% endif %%%
 %%% item time_end "–%s Uhr" %%% 
-%%% condition if paarungen | partien %%%
+%%% if paarungen | partien %%%
 <a href="runde/%%% item runde_no %%%/">
-%%% condition endif %%%
-%%% condition if identifier %%%<a href="/%%% item identifier %%%/">%%% condition endif %%%
+%%% endif %%%
+%%% if identifier %%%<a href="/%%% item identifier %%%/">%%% endif %%%
 %%% item event %%%
-%%% condition if identifier %%%</a>%%% condition endif %%%
-%%% condition if paarungen | partien %%%
+%%% if identifier %%%</a>%%% endif %%%
+%%% if paarungen | partien %%%
 </a>
-%%% condition endif %%%
-%%% condition if pgn %%%
+%%% endif %%%
+%%% if pgn %%%
  · <a href="partien/%%% item runde_no %%%.pgn" title="Herunterladen der Partien der %%% item runde_no %%%. Runde im Format PGN (Portable Game Notation)">Partien [PGN]</a>
-%%% condition if internal & livebretter %%%
+%%% if internal & livebretter %%%
  · <a href="partien/%%% item runde_no %%%-live.pgn" title="Herunterladen der Live-Partien der %%% item runde_no %%%. Runde im Format PGN (Portable Game Notation)">Live [PGN]</a>
-%%% condition endif %%%
-%%% condition elseif internal %%%
-%%% condition if paarungen | partien %%%
+%%% endif %%%
+%%% elseif internal %%%
+%%% if paarungen | partien %%%
  · <a href="partien/%%% item runde_no %%%.pgn">Leere PGN</a>
  · <a href="partien/%%% item runde_no %%%-utf8.pgn">Leere PGN, UTF-8</a>
-%%% condition endif %%%
-%%% condition endif %%%
+%%% endif %%%
+%%% endif %%%
 
-%%% condition if tabelle %%%
+%%% if tabelle %%%
  · <a href="tabelle/%%% item runde_no %%%/">Tabelle</a>
 %%% loop tabellenstaende %%%
  · <a href="tabelle/%%% item runde_no %%%/%%% item tabelle %%%/">Tabelle (%%% item tabelle %%%)</a>
 %%% loop end %%%
-%%% condition endif %%%
-%%% condition if faellt_aus %%%</del> <strong>fällt aus!</strong>%%% condition endif %%%
+%%% endif %%%
+%%% if faellt_aus %%%</del> <strong>fällt aus!</strong>%%% endif %%%
 </dd>
 %%% loop end %%%
-%%% condition unless internal %%%
-%%% condition if ausschreibung %%%
+%%% unless internal %%%
+%%% if ausschreibung %%%
 <dd><a href="%%% setting events_public_url %%%#zeitplan">Kompletter Zeitplan …</a></dd>
-%%% condition endif %%%
-%%% condition endif %%%
-%%% condition endif %%%
-%%% condition if series %%%
+%%% endif %%%
+%%% endif %%%
+%%% endif %%%
+%%% if series %%%
 <dt>Reihe:</dt>
 <dd><strong>%%% item series %%%</strong> (<a href="%%% setting events_path %%%/%%% item series_path %%%/archiv/">Archiv</a>)</dd>
 <dd>%%% item series_description markdown %%%</dd>
-%%% condition endif %%%
-%%% condition if runden %%%
+%%% endif %%%
+%%% if runden %%%
 <dt>Modus:</dt>
 <dd>%%% item runden %%% Runden %%% item modus %%%</dd>
-%%% condition endif %%%
-%%% condition if bedenkzeit %%%
+%%% endif %%%
+%%% if bedenkzeit %%%
 <dd>Bedenkzeit pro Spieler und Partie: 
 %%% loop bedenkzeit %%%
 %%% item bedenkzeit minutes_format %%% Minuten %%% item zuege " für %d Züge" %%%%%% loopposition last " für den Rest der Partie" %%%%%% item zeitbonus " (%d Sekunden Zeitbonus pro Zug)" 0 "" 1 " (1 Sekunde Zeitbonus pro Zug)" %%%%%% loopposition first|middle ", " %%%
 %%% loop end %%%
 </dd>
-%%% condition endif %%%
-%%% condition if links | ausschreibung %%%
+%%% endif %%%
+%%% if links | ausschreibung %%%
 <dt>Links:</dt>
-%%% condition if ausschreibung %%%
+%%% if ausschreibung %%%
 <dd><a href="%%% setting events_public_url %%%">Ausschreibung des Turniers</a></dd>
-%%% condition endif %%%
-%%% condition if links %%%
+%%% endif %%%
+%%% if links %%%
 %%% loop links %%%
 <dd><a href="%%% item identification %%%">%%% item label %%%</a></dd>
 %%% loop end %%%
 
-%%% condition endif %%%
+%%% endif %%%
 </dl>
-%%% condition endif %%%
+%%% endif %%%
 <div class="tournament_links">
-%%% condition if partien %%%
+%%% if partien %%%
 <p><a href="%%% setting tournaments_public_url %%%partien/gesamt.pgn">Partien aller Runden [PGN]</a>
 <br><a href="%%% setting tournaments_public_url %%%partien/gesamt-utf8.pgn">Partien aller Runden [PGN, Unicode UTF-8]</a></p>
-%%% condition endif %%%
-%%% condition if fide_tournament_link %%%
+%%% endif %%%
+%%% if fide_tournament_link %%%
 <p><a href="%%% item fide_tournament_link %%%">Elo-Auswertung beim Weltschachbund FIDE</a></p>
-%%% condition endif %%%
-%%% condition if dwz_tournament_link %%%
+%%% endif %%%
+%%% if dwz_tournament_link %%%
 <p><a href="%%% item dwz_tournament_link %%%">DWZ-Auswertung beim Deutschen Schachbund</a></p>
-%%% condition endif %%%
+%%% endif %%%
 </div>
 
 </div>
 
 <div class="infocol">
-<h2>%%% condition if tabelle %%%Tabelle%%% condition else %%%Teilnehmer%%% condition endif %%%</h2>
+<h2>%%% if tabelle %%%Tabelle%%% else %%%Teilnehmer%%% endif %%%</h2>
 
-%%% condition if offen %%%
-%%% condition if einzel %%%
+%%% if offen %%%
+%%% if einzel %%%
 <p><strong>Dieses Turnier ist ein offenes Turnier! <a href="%%% setting events_public_url %%%#anmeldung">Jetzt melden!</a></strong></p>
-%%% condition else %%%
+%%% else %%%
 <p><strong>Dieses Turnier ist ein offenes Turnier!
-%%% condition if meldung_moeglich & online_meldung  %%%
+%%% if meldung_moeglich & online_meldung  %%%
 <a href="/meldung/%%% item identifier %%%/">Jetzt melden!</a></strong>
-%%% condition elseif online_meldung %%%
+%%% elseif online_meldung %%%
 </strong> Es ist leider keine Meldung mehr möglich.
 Die Meldeliste ist voll. Die Organisatoren können Auskunft geben, ob noch 
 Plätze frei sind oder eine Warteliste existiert.
-%%% condition else %%%</strong>
-%%% condition endif %%%</p>
-%%% condition endif %%%
-%%% condition elseif freiplatz %%%
-%%% condition if einzel %%%
+%%% else %%%</strong>
+%%% endif %%%</p>
+%%% endif %%%
+%%% elseif freiplatz %%%
+%%% if einzel %%%
 <p><strong>Für dieses Turnier gibt es Freiplätze. <a href="%%% setting events_public_url %%%#anmeldung">Jetzt bewerben!</a></strong></p>
-%%% condition endif %%%
-%%% condition endif %%%
+%%% endif %%%
+%%% endif %%%
 
-%%% condition if teams_compact %%%
+%%% if teams_compact %%%
 <div class="results">
 %%% item teams_compact %%%
 </div>
-%%% condition if tabelle %%%
+%%% if tabelle %%%
 <p><a href="tabelle/">Ausführlicher Tabellenstand</a></p>
 <p><a href="startrangliste/">Startrangliste</a></p>
-%%% condition endif %%%
-%%% condition if dwz_schnitt & bretter_min %%%
+%%% endif %%%
+%%% if dwz_schnitt & bretter_min %%%
 <p>DWZ-Schnitt der ersten %%% item bretter_min %%% Bretter aller Teams: <strong>%%% item dwz_schnitt %%%</strong>
-%%% condition if pseudo_dwz %%%
+%%% if pseudo_dwz %%%
  <br><em>(unter Berücksichtigung einer Pseudo-DWZ von %%% item pseudo_dwz %%% für Spieler ohne DWZ)</em>
-%%% condition endif %%%
+%%% endif %%%
 </p>
-%%% condition endif %%%
-%%% condition if participant_list %%%
+%%% endif %%%
+%%% if participant_list %%%
 <h3>Suche nach Team oder Spieler</h3>
 
-<form method="GET" action=".%%% condition if main_series_path %%%./%%% item main_series_path %%%%%% condition endif %%%/suche/" id="suche" accept-charset="utf-8">
+<form method="GET" action=".%%% if main_series_path %%%./%%% item main_series_path %%%%%% endif %%%/suche/" id="suche" accept-charset="utf-8">
 <p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
-%%% condition else %%%
+%%% else %%%
 <h3>Suche nach Team</h3>
-<form method="GET" action=".%%% condition if main_series_path %%%./%%% item main_series_path %%%%%% condition endif %%%/suche/" id="suche" accept-charset="utf-8">
+<form method="GET" action=".%%% if main_series_path %%%./%%% item main_series_path %%%%%% endif %%%/suche/" id="suche" accept-charset="utf-8">
 <p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition elseif einzelteilnehmerliste %%%
-%%% condition if tabelle %%%
+%%% elseif einzelteilnehmerliste %%%
+%%% if tabelle %%%
 <div class="results">
 %%% item players_compact %%%
 </div>
 <p><a href="tabelle/">Ausführlicher Tabellenstand</a></p>
 <p><a href="spieler/">Startrangliste</a></p>
 
-%%% condition else %%%
+%%% else %%%
 <p><a href="spieler/">Teilnehmerliste</a></p>
 
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition if photouebersicht %%%
+%%% if photouebersicht %%%
 <p><a href="%%% setting tournaments_public_url %%%photos/">Photos aller Teilnehmer</a></p>
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition if main_series_path %%%
+%%% if main_series_path %%%
 <h3>Suche nach Spielerinnen und Spielern</h3>
-<form method="GET" action=".%%% condition if main_series_path %%%./%%% item main_series_path %%%%%% condition endif %%%/suche/" id="suche" accept-charset="utf-8">
+<form method="GET" action=".%%% if main_series_path %%%./%%% item main_series_path %%%%%% endif %%%/suche/" id="suche" accept-charset="utf-8">
 <p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
-%%% condition endif %%%
-%%% condition else %%%
+%%% endif %%%
+%%% else %%%
 <p>Noch keine Teilnehmer vorhanden.</p>
-%%% condition endif %%%
-%%% condition unless internal %%%
+%%% endif %%%
+%%% unless internal %%%
 </div>
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition unless internal %%%
+%%% unless internal %%%
 <div class="infocol" style="clear:both;">
-%%% condition endif %%%
+%%% endif %%%
 
 <h2>Vor Ort</h2>
 <dl>
 %%% loop organisations %%%
-%%% condition unless veranstaltungsort %%%
+%%% unless veranstaltungsort %%%
 <dt>%%% item role_category %%%:</dt>
 %%% loop organisations %%%
 <dd><strong>
-%%% condition if url %%%%%% loop url 1 %%%<a href="%%% item identification wrap_punycode_decode %%%">%%% loop end %%%%%% condition endif %%%
-%%% item contact %%% %%% condition if url %%%</a>%%% condition endif %%%</strong></dd>
+%%% if url %%%%%% loop url 1 %%%<a href="%%% item identification wrap_punycode_decode %%%">%%% loop end %%%%%% endif %%%
+%%% item contact %%% %%% if url %%%</a>%%% endif %%%</strong></dd>
 %%% loop end %%%
-%%% condition endif %%%
+%%% endif %%%
 %%% loop end %%%
 
-%%% condition if organisator %%%
+%%% if organisator %%%
 <dt>Kontakt:</dt>
 %%% loop organisator %%%
-%%% condition if person %%%
-<dd>%%% item person %%%%%% condition if e_mail %%%, <a href="mailto:%%% item e_mail %%%">%%% item e_mail %%%</a>%%% condition endif %%%
+%%% if person %%%
+<dd>%%% item person %%%%%% if e_mail %%%, <a href="mailto:%%% item e_mail %%%">%%% item e_mail %%%</a>%%% endif %%%
 %%% item telefon "<br>%s" %%%</dd>
-%%% condition endif %%%
+%%% endif %%%
 %%% loop end %%%
-%%% condition endif %%%
+%%% endif %%%
 
 %%% loop organisations %%%
 %%% switch type %%%
@@ -240,13 +240,13 @@ Plätze frei sind oder eine Warteliste existiert.
 <dt>%%% item role_category %%%:</dt>
 %%% loop organisations %%%
 <dd><strong>
-%%% condition if url %%%%%% loop url 1 %%%<a href="%%% item identification wrap_punycode_decode %%%">%%% loop end %%%%%% condition endif %%%
-%%% item contact %%% %%% condition if url %%%</a>%%% condition endif %%%</strong></dd>
-%%% condition if addresses %%%
+%%% if url %%%%%% loop url 1 %%%<a href="%%% item identification wrap_punycode_decode %%%">%%% loop end %%%%%% endif %%%
+%%% item contact %%% %%% if url %%%</a>%%% endif %%%</strong></dd>
+%%% if addresses %%%
 %%% loop addresses %%%
 <dd>%%% item address %%%, %%% item postcode %%% %%% item place %%%</dd>
 %%% loop end %%%
-%%% condition endif %%%
+%%% endif %%%
 %%% loop phone %%%
 <dd>%%% item category %%% %%% item identification %%%</dd>
 %%% loop end %%%
@@ -258,23 +258,23 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% switch end %%%
 %%% loop end %%%
 
-%%% condition if turnierleitung %%%
+%%% if turnierleitung %%%
 <dt>Turnierleitung:</dt>
 %%% loop turnierleitung %%%
 <dd>%%% item person %%%</dd>
 %%% loop end %%%
-%%% condition endif %%%
-%%% condition if schiedsrichter %%%
+%%% endif %%%
+%%% if schiedsrichter %%%
 <dt>Schiedsrichter:</dt>
 %%% loop schiedsrichter %%%
 <dd>%%% item person %%%</dd>
 %%% loop end %%%
-%%% condition endif %%%
+%%% endif %%%
 </dl>
 </div>
 
-%%% condition unless internal %%%
-%%% condition if map %%%
+%%% unless internal %%%
+%%% if map %%%
 <div class="infocol">
 <h2>Karte</h2>
 <div class="map">
@@ -282,5 +282,5 @@ Plätze frei sind oder eine Warteliste existiert.
 </div>
 <p>(Rot: Veranstaltungsort; blau: Teilnehmer)</p>
 </div>
-%%% condition endif %%%
-%%% condition endif %%%
+%%% endif %%%
+%%% endif %%%

@@ -11,63 +11,63 @@
 <h1>Startrangliste
 <br><a href="../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
-%%% condition if map %%%
+%%% if map %%%
 <div class="infocol">
-%%% condition endif %%%
+%%% endif %%%
 <div class="results">
 <table>
 <thead>
 <tr class="sortable"><th>Nr.</th>
-<th>%%% condition if m-a %%%Land
-%%% condition elseif m-v %%%Verein
-%%% condition elseif m-s %%%Schule
-%%% condition endif %%%
-%%% condition unless m-a %%%%%% condition if country %%%<th>Land</th>%%% condition endif %%%%%% condition endif %%%
-%%% condition if dwz_schnitt %%%<th>Ø&nbsp;DWZ</th>%%% condition endif %%%
-%%% condition if meldeliste %%%
+<th>%%% if m-a %%%Land
+%%% elseif m-v %%%Verein
+%%% elseif m-s %%%Schule
+%%% endif %%%
+%%% unless m-a %%%%%% if country %%%<th>Land</th>%%% endif %%%%%% endif %%%
+%%% if dwz_schnitt %%%<th>Ø&nbsp;DWZ</th>%%% endif %%%
+%%% if meldeliste %%%
 <th>Meldung</th>
-%%% condition endif %%%
+%%% endif %%%
 </tr>
 </thead>
 <tbody id="teams">
 %%% loop teams %%%
 <tr class='%%% loopposition uneven "un" %%%even' id="%%% item team_identifier_short %%%">
 <td>%%% item setzliste_no %%%</td>
-<td>%%% condition if team_identifier %%%<a href="../../../%%% item team_identifier %%%/">%%% condition endif %%%
-%%% item team %%% %%% item team_no %%%%%% condition if team_identifier %%%</a>%%% condition endif %%%</td>
-%%% condition unless m-a %%%
-%%% condition if country %%%
-<td>%%% condition if main_event_path & federation_identifier %%%
+<td>%%% if team_identifier %%%<a href="../../../%%% item team_identifier %%%/">%%% endif %%%
+%%% item team %%% %%% item team_no %%%%%% if team_identifier %%%</a>%%% endif %%%</td>
+%%% unless m-a %%%
+%%% if country %%%
+<td>%%% if main_event_path & federation_identifier %%%
 <a href="%%% path tournaments_federation main_event_path federation_identifier %%%">
-%%% condition endif %%%
+%%% endif %%%
 <span class="short"><abbr title="%%% item country %%%">%%% item federation_abbr %%%</abbr></span>
 <span class="long">%%% item country %%%</span>
-%%% condition if main_event_path & federation_identifier %%%
+%%% if main_event_path & federation_identifier %%%
 </a>
-%%% condition endif %%%
+%%% endif %%%
 </td>
-%%% condition endif %%%
-%%% condition endif %%%
-%%% condition if dwz_schnitt %%%
+%%% endif %%%
+%%% endif %%%
+%%% if dwz_schnitt %%%
 <td class="number">%%% item dwz_schnitt %%%</td>
-%%% condition endif %%%
-%%% condition if meldeliste %%%
+%%% endif %%%
+%%% if meldeliste %%%
 <td class="meldung">%%% item eintrag_datum %%%</td>
-%%% condition endif %%%
+%%% endif %%%
 </tr>
 %%% loop end %%%
 </tbody>
 </table>
 </div>
-%%% condition if dwz_schnitt & bretter_min %%%
+%%% if dwz_schnitt & bretter_min %%%
 <p>DWZ-Schnitt der ersten %%% item bretter_min %%% Bretter aller Teams: <strong>%%% item dwz_schnitt %%%</strong>
-%%% condition if pseudo_dwz %%%
+%%% if pseudo_dwz %%%
  <br><em>(unter Berücksichtigung einer Pseudo-DWZ von %%% item pseudo_dwz %%% für Spieler ohne DWZ)</em>
-%%% condition endif %%%
+%%% endif %%%
 </p>
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition if map %%%
+%%% if map %%%
 </div>
 <div class="infocol">
 <h2>Karte</h2>
@@ -76,13 +76,13 @@
 </div>
 <p>(Rot: Veranstaltungsort; blau: Teilnehmer)</p>
 </div>
-%%% condition endif %%%
+%%% endif %%%
 <script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/core.js"></script>
 <script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/widgets/sortable.js"></script>
 <script type="text/javascript">
 	var sortTableObject = vxJS.widget.sorTable(document.getElementById('teams'), {
-		columnFormat: ["float", null, null, %%% condition if meldeliste %%%null%%% condition else %%%"float"
-%%% condition endif %%%
+		columnFormat: ["float", null, null, %%% if meldeliste %%%null%%% else %%%"float"
+%%% endif %%%
 ]
 	});
 </script>

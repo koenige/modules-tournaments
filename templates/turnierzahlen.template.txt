@@ -5,72 +5,72 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2015-2017, 2020, 2022 Gustaf Mossakowski
+# @copyright Copyright © 2015-2017, 2020, 2022, 2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Aktualisierung der Wertungszahlen
 <br>%%% item event %%% %%% item year %%%</h1>
 
-%%% condition if event_over %%%
+%%% if event_over %%%
 <p>Turnierzahlen können für Turniere, die in der Vergangenheit liegen, nicht 
 mehr geändert werden.</p>
 
-%%% condition else  %%%
+%%% else  %%%
 
-%%% condition if meldezahlen_gespeichert %%%
+%%% if meldezahlen_gespeichert %%%
 <p>Turnierzahlen wurden bereits einmal aktualisiert und die bisherigen Zahlen 
 als Meldezahlen gespeichert.</p>
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition if testlauf %%%
+%%% if testlauf %%%
 <h2>Testlauf</h2>
 <p>Ggf. wenn sich ZPS-No.
 geändert haben, ist es einfacher, diese in der Personen-Tabelle einzutragen
 und dann die Daten direkt aus der DWZ-Datenbank zu bekommen.</p>
 
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition if fehler %%%
+%%% if fehler %%%
 <ul>
 %%% loop fehler %%%
-<li>%%% condition if exists %%%<strong class="error">Keine Wertungszahl gefunden</strong> für
-%%% condition elseif not_found %%%
+<li>%%% if exists %%%<strong class="error">Keine Wertungszahl gefunden</strong> für
+%%% elseif not_found %%%
 <strong class="error">In keiner Datenbank</strong>:
-%%% condition endif %%%
+%%% endif %%%
 %%% item link "<a href='%s'>" %%%%%% item contact %%%%%% item link "</a>" %%%</li>
 %%% loop end %%%
 </ul>
-%%% condition endif %%%
+%%% endif %%%
 
 
-%%% condition if changes %%%
+%%% if changes %%%
 <ul>
 %%% loop changes %%%
-<li><strong>Update</strong> %%% item link "<a href='%s'>" %%%%%% item contact %%%%%% item link "</a>" %%%: %%% item system strtoupper %%% %%% condition if old_rating %%%%%% item old_rating %%% => %%% condition else %%% neu %%% condition endif %%%%%% item new_rating %%%</li>
+<li><strong>Update</strong> %%% item link "<a href='%s'>" %%%%%% item contact %%%%%% item link "</a>" %%%: %%% item system strtoupper %%% %%% if old_rating %%%%%% item old_rating %%% => %%% else %%% neu %%% endif %%%%%% item new_rating %%%</li>
 %%% loop end %%%
 </ul>
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition if abweichungen %%%
+%%% if abweichungen %%%
 <ul>
 %%% loop abweichungen %%%
 <li><strong>Hinweis:</strong> Abweichender Name in %%% item federation %%%-Liste für %%% item link "<a href='%s'>" %%%%%% item contact %%%%%% item link "</a>" %%%
  gefunden: %%% item contact_last_first %%%.</li>
 %%% loop end %%%
 </ul>
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition if testlauf %%%
-%%% condition if changes %%%
+%%% if testlauf %%%
+%%% if changes %%%
 <form method="POST" action="">
 <input type="submit" name="update" value="Turnierzahlen schreiben">
 </form>
 
-%%% condition else %%%
+%%% else %%%
 <p>Keine Aktualisierung nötig.</p>
-%%% condition endif %%%
-%%% condition else %%%
+%%% endif %%%
+%%% else %%%
 <p><strong>Aktualisierung der Wertungszahlen erfolgt.</strong></p>
 
-%%% condition endif %%%
-%%% condition endif %%%
+%%% endif %%%
+%%% endif %%%

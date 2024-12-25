@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2014, 2016-2017, 2020 Gustaf Mossakowski
+# @copyright Copyright © 2014, 2016-2017, 2020, 2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Tabellenstandupdates
@@ -19,7 +19,7 @@ Tabellenstände ab der gewünschten Runde neu berechnet.</p>
 <p><strong>Achtung:</strong> Die Berechnung erfolgt im Hintergrund, hier auf der Seite ist keine Änderung
 zu sehen.</p>
 
-%%% condition if runden %%%
+%%% if runden %%%
 <form method="POST" action="">
 <ul class="buttonliste">
 %%% loop runden %%%
@@ -28,7 +28,7 @@ zu sehen.</p>
 </ul>
 </form>
 
-%%% condition else %%%
+%%% else %%%
 <p class="note"><strong>Hinweis:</strong> Es sind noch keine Partien vorhanden.</p>
 
-%%% condition endif %%%
+%%% endif %%%

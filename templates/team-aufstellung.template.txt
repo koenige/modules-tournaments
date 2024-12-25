@@ -11,33 +11,33 @@
 <h1>Aufstellung: <a href="../">%%% item team %%% %%% item team_no %%%</a>
 <br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> <em>in %%% item place %%%</em></h1>
 
-%%% condition if hinweis_aufstellung %%%
+%%% if hinweis_aufstellung %%%
 <div class="hinweisbox">
 <h3>Hinweise</h3>
 %%% item hinweis_aufstellung markdown %%%
 </div>
-%%% condition endif %%%
+%%% endif %%%
 
 <div class="hauptbox">
 <h3>Meldeliste</h3>
-%%% condition if error_msg %%%
+%%% if error_msg %%%
 <p class="error">%%% item error_msg %%%</p>
-%%% condition endif %%%
+%%% endif %%%
 <form method="POST" action="%%% page url_path %%%">
 <div class="results">
 <table>
 <thead>
 <tr>
 <th>Rang</th> <th>ZPS</th> <th>Vorname / Nachname</th> <th><abbr title="Geschlecht">G.</abbr></th>
-<th>Geburt</th> <th>DWZ</th> %%% condition if gastspieler_status %%% <th><abbr title="Gastspieler/in">Gast</abbr></th> %%% condition endif %%%
+<th>Geburt</th> <th>DWZ</th> %%% if gastspieler_status %%% <th><abbr title="Gastspieler/in">Gast</abbr></th> %%% endif %%%
 </thead>
 <tfoot>
-<tr><td></td><td></td><td colspan="%%% condition if gastspieler_status %%%5%%% condition else %%%4%%% condition endif %%%"><p><input type="submit" value="Daten übernehmen"></p></td></tr>
+<tr><td></td><td></td><td colspan="%%% if gastspieler_status %%%5%%% else %%%4%%% endif %%%"><p><input type="submit" value="Daten übernehmen"></p></td></tr>
 </tfoot>
 <tbody>
-<tr><td colspan="%%% condition if gastspieler_status %%%7%%% condition else %%%6%%% condition endif %%%" class="heading">Gemeldete Spieler</td></tr>
+<tr><td colspan="%%% if gastspieler_status %%%7%%% else %%%6%%% endif %%%" class="heading">Gemeldete Spieler</td></tr>
 %%% loop spieler %%%
-%%% condition if participation_id %%%
+%%% if participation_id %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
 <td><input type="number" class="rangno" name="rang[tln_%%% item participation_id %%%]" value="%%% item rang_no %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
 <td>%%% item player_pass_dsb %%%</td>
@@ -45,41 +45,41 @@
 <td>%%% item geschlecht %%%</td>
 <td>%%% item geburtsjahr %%%</td>
 <td>%%% item t_dwz %%%</td>
-%%% condition if gastspieler_status %%%
+%%% if gastspieler_status %%%
 <td><input type='checkbox' name='gastspieler[tln_%%% item participation_id %%%]'%%% item gastspieler " checked" %%%></td>
-%%% condition endif %%%
+%%% endif %%%
 </tr>
-%%% condition endif %%%
+%%% endif %%%
 %%% loop end %%%
-%%% condition if spieler %%%
+%%% if spieler %%%
 <tr><td></td><td></td>
 <td><p class="explanation">Spielerin entfernen: einfach in Feld »Rang« keinen Wert eintragen und »Daten übernehmen« (oder <code>RETURN</code> drücken).</p></td>
-<td colspan="%%% condition if gastspieler_status %%%4%%% condition else %%%3%%% condition endif %%%"></td></tr>
-%%% condition endif %%%
+<td colspan="%%% if gastspieler_status %%%4%%% else %%%3%%% endif %%%"></td></tr>
+%%% endif %%%
 </tbody>
-%%% condition if add %%%
+%%% if add %%%
 <tbody>
-<tr><td colspan="%%% condition if gastspieler_status %%%7%%% condition else %%%6%%% condition endif %%%" class="heading">Spieler hinzufügen</td></tr>
-%%% condition if neu_treffer %%%
-%%% condition elseif neu_treffer_ohne_rang %%%
-%%% condition elseif neu_spieler_nicht_gefunden %%%
-%%% condition else %%%
+<tr><td colspan="%%% if gastspieler_status %%%7%%% else %%%6%%% endif %%%" class="heading">Spieler hinzufügen</td></tr>
+%%% if neu_treffer %%%
+%%% elseif neu_treffer_ohne_rang %%%
+%%% elseif neu_spieler_nicht_gefunden %%%
+%%% else %%%
 %%% loop vereinsspieler %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
 <td><input type="number" class="rangno" name="rang[zps_%%% item Mgl_Nr %%%]" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
 <td>%%% item ZPS %%%-%%% item Mgl_Nr %%%</td>
 <td>%%% item first_name %%% %%% item last_name %%%</td> <td>%%% item Geschlecht %%%</td>
 <td>%%% item Geburtsjahr %%%</td> <td>%%% item DWZ %%%</td>
-%%% condition if gastspieler_status %%%
+%%% if gastspieler_status %%%
 <td><input type='checkbox' name='gastspieler[zps_%%% item Mgl_Nr %%%]'%%% item gastspieler " checked" %%%></td>
-%%% condition endif %%%
+%%% endif %%%
 %%% loop end %%%
-%%% condition endif %%%
-<tr%%% condition if neu_treffer_ohne_rang %%% class="error"%%% condition elseif neu_spieler_nicht_gefunden %%% class="error"%%% condition endif %%%>
-<td%%% condition if post_rang %%% %%% condition else %%% %%% condition if neu_treffer %%% class="error" %%% condition endif %%%%%% condition endif %%%>
+%%% endif %%%
+<tr%%% if neu_treffer_ohne_rang %%% class="error"%%% elseif neu_spieler_nicht_gefunden %%% class="error"%%% endif %%%>
+<td%%% if post_rang %%% %%% else %%% %%% if neu_treffer %%% class="error" %%% endif %%%%%% endif %%%>
 <input type="number" class="rangno" name="rang[neu]" value="%%% item post_rang htmlspecialchars %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
 
-%%% condition if neu_treffer %%%
+%%% if neu_treffer %%%
 <td></td>
 <td colspan="4" class="reselect">
 <select name="auswahl">
@@ -92,7 +92,7 @@
 <p class="explanation">Bitte wählen Sie einen der Spieler aus! <input type="submit" value="Auswahl abbrechen" name="abbruch"></p>
 </td>
 
-%%% condition elseif neu_treffer_ohne_rang %%%
+%%% elseif neu_treffer_ohne_rang %%%
 <td>%%% item neu_ZPS %%%-%%% item neu_Mgl_Nr %%%</td>
 <td>%%% item neu_vorname %%% %%% item neu_nachname %%%
 <p class="error explanation">Bitte geben Sie eine Ranglistennummer an!</p>
@@ -101,42 +101,42 @@
 <td><input type="hidden" name="date_of_birth" value="%%% item post_date_of_birth htmlspecialchars %%%">
 %%% item neu_Geburtsjahr %%%</td> <td>%%% item neu_DWZ %%%</td>
 
-%%% condition else %%%
+%%% else %%%
 <td></td>
 <td>
 <span class="nobr"><input type="text" name="first_name" value="%%% item post_vorname htmlspecialchars %%%" title="%%% text First name %%%" placeholder="%%% text First name %%%"> 
 <input type="text" name="last_name" value="%%% item post_nachname htmlspecialchars %%%" title="%%% text Last name %%%" placeholder="%%% text Last name %%%"></span><br>
-%%% condition if neu_spieler_nicht_gefunden | neu_spieler_hinzufuegen | new_player_more_data %%%<p class="error">Es wurde kein Spieler beim <abbr title="Deutscher Schachbund">DSB</abbr> mit diesen Angaben gefunden. 
-%%% condition if neu_spieler_hinzufuegen %%%<input type="submit" value="Als DWZ-losen Spieler hinzufügen" name="ergaenzen">
-%%% condition elseif new_player_more_data %%%Bitte füllen Sie alle vier Felder aus, dann können Sie den Spieler oder die Spielerin als DWZ-losen Spieler hinzufügen.
-%%% condition endif %%%
+%%% if neu_spieler_nicht_gefunden | neu_spieler_hinzufuegen | new_player_more_data %%%<p class="error">Es wurde kein Spieler beim <abbr title="Deutscher Schachbund">DSB</abbr> mit diesen Angaben gefunden. 
+%%% if neu_spieler_hinzufuegen %%%<input type="submit" value="Als DWZ-losen Spieler hinzufügen" name="ergaenzen">
+%%% elseif new_player_more_data %%%Bitte füllen Sie alle vier Felder aus, dann können Sie den Spieler oder die Spielerin als DWZ-losen Spieler hinzufügen.
+%%% endif %%%
 <input type="submit" value="Suche abbrechen" name="abbruch"></p>
-%%% condition elseif date_of_birth_falsch %%%
+%%% elseif date_of_birth_falsch %%%
 <p class="error">Bitte prüfe das Geburtsdatum. Wir können es nicht verarbeiten.</p>
-%%% condition endif %%%
+%%% endif %%%
 <p class="explanation">Für weitere Spieler: Bitte Vornamen und Nachnamen eingeben, nach der Spielerin bzw. dem Spieler wird in der DWZ-Datenbank des Schachbunds gesucht.</p></td>
 <td>
-%%% condition if geschlecht_nur_w %%%
+%%% if geschlecht_nur_w %%%
 W<input type="hidden" name="geschlecht" value="w">
-%%% condition elseif geschlecht_nur_m %%%
+%%% elseif geschlecht_nur_m %%%
 M<input type="hidden" name="geschlecht" value="m">
-%%% condition else %%%
+%%% else %%%
 <select name="geschlecht">
 <option value="m"%%% item post_geschlecht_m " selected"%%%>M</option>
 <option value="w"%%% item post_geschlecht_w " selected"%%%>W</option>
 <option value="d"%%% item post_geschlecht_d " selected"%%%>D</option>
 </select>
-%%% condition endif %%%
+%%% endif %%%
 </td>
 <td class="number"><input type="text" name="date_of_birth" class="geburt" value="%%% item post_date_of_birth htmlspecialchars %%%"></td> 
 <td></td>
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition if gastspieler_status %%%
+%%% if gastspieler_status %%%
 <td><input type="checkbox" name="gastspieler[neu]"%%% item post_gastspieler " checked" %%%></td>
-%%% condition endif %%%
+%%% endif %%%
 </tbody>
-%%% condition endif %%%
+%%% endif %%%
 </table>
 </div>
 </form>

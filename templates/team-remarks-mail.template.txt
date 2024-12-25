@@ -15,9 +15,9 @@ eingegangen:
 
 Turnier:  %%% item event %%%, %%% item place_contact %%%, %%% item duration wrap_date %%% 
           %%% setting host_base %%%%%% item event_link %%% 
-%%% condition if team %%%
+%%% if team %%%
 Team:     %%% item team %%% %%% item team_no %%% 
-%%% condition endif %%%
+%%% endif %%%
 Absender: %%% item contact %%% <%%% item e_mail %%%>
 
 –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

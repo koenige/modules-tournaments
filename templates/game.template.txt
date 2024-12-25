@@ -17,9 +17,9 @@
 # schwarz_teilnehmer_nr, kommentar, WhiteClock, BlackClock, last_update,
 # vertauschte_farben, main_series_path, main_series, finished, move, html
 # 
-%%% condition if partie_id %%%
+%%% if partie_id %%%
 <div id="partie_%%% item partie_id %%%">
-%%% condition endif %%%
+%%% endif %%%
 <script type="text/javascript">
 var baseurl = '%%% setting behaviour_path %%%/ltpgnviewer/';
 var imgoffset = 1; // number of img src in HTML code before board
@@ -32,11 +32,11 @@ var imgoffset = 1; // number of img src in HTML code before board
 <div class="brett">
 
 <form name=BoardForm>
-%%% condition unless vertauschte_farben %%%
+%%% unless vertauschte_farben %%%
 <p><span class="schwarz"></span> %%% item schwarz %%% %%% item BlackClock " (Zeit: <span class='BlackClock'>%s</span>) " %%%</p>
-%%% condition else %%%
+%%% else %%%
 <p><span class="schwarz"></span> %%% item weiss %%% %%% item WhiteClock " (Zeit: <span class='BlackClock'>%s</span>) " %%%</p>
-%%% condition endif %%%
+%%% endif %%%
 <table class="position"><tr>
 <td><img src="%%% setting behaviour_path %%%/ltpgnviewer/brw.gif" onMouseDown="BoardClick(0)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/bnb.gif" onMouseDown="BoardClick(1)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/bbw.gif" onMouseDown="BoardClick(2)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/bqb.gif" onMouseDown="BoardClick(3)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/bkw.gif" onMouseDown="BoardClick(4)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/bbb.gif" onMouseDown="BoardClick(5)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/bnw.gif" onMouseDown="BoardClick(6)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/brb.gif" onMouseDown="BoardClick(7)"><br>
 <img src="%%% setting behaviour_path %%%/ltpgnviewer/bpb.gif" onMouseDown="BoardClick(8)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/bpw.gif" onMouseDown="BoardClick(9)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/bpb.gif" onMouseDown="BoardClick(10)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/bpw.gif" onMouseDown="BoardClick(11)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/bpb.gif" onMouseDown="BoardClick(12)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/bpw.gif" onMouseDown="BoardClick(13)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/bpb.gif" onMouseDown="BoardClick(14)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/bpw.gif" onMouseDown="BoardClick(15)"><br>
@@ -47,11 +47,11 @@ var imgoffset = 1; // number of img src in HTML code before board
 <img src="%%% setting behaviour_path %%%/ltpgnviewer/wpw.gif" onMouseDown="BoardClick(48)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wpb.gif" onMouseDown="BoardClick(49)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wpw.gif" onMouseDown="BoardClick(50)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wpb.gif" onMouseDown="BoardClick(51)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wpw.gif" onMouseDown="BoardClick(52)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wpb.gif" onMouseDown="BoardClick(53)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wpw.gif" onMouseDown="BoardClick(54)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wpb.gif" onMouseDown="BoardClick(55)"><br>
 <img src="%%% setting behaviour_path %%%/ltpgnviewer/wrb.gif" onMouseDown="BoardClick(56)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wnw.gif" onMouseDown="BoardClick(57)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wbb.gif" onMouseDown="BoardClick(58)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wqw.gif" onMouseDown="BoardClick(59)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wkb.gif" onMouseDown="BoardClick(60)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wbw.gif" onMouseDown="BoardClick(61)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wnb.gif" onMouseDown="BoardClick(62)"><img src="%%% setting behaviour_path %%%/ltpgnviewer/wrw.gif" onMouseDown="BoardClick(63)"></td>
 </tr></table>
-%%% condition unless vertauschte_farben %%%
+%%% unless vertauschte_farben %%%
 <p><span class="weiss"></span> %%% item weiss %%% %%% item WhiteClock " (Zeit: <span class='WhiteClock'>%s</span>) " %%%</p>
-%%% condition else %%%
+%%% else %%%
 <p><span class="weiss"></span> %%% item schwarz %%% %%% item BlackClock " (Zeit: <span class='WhiteClock'>%s</span>) " %%%</p>
-%%% condition endif %%%
+%%% endif %%%
 
 <table class="brett-nav"><TR>
 <td><input type=button value="I&lt;" width=20 style="width:25"  onClick="javascript:Init('')" title="Zum Anfang der Partie"></td>
@@ -108,70 +108,70 @@ SAN letters: <input type=text name="SAN" value="KQRBNP" size=7>
 
 <div class="zuege">
 <p><strong>
-%%% condition if weiss_teilnehmer_nr %%%
+%%% if weiss_teilnehmer_nr %%%
 <a href="../../spieler/%%% item weiss_teilnehmer_nr %%%/">
-%%% condition endif %%%
-%%% condition if weiss %%%
+%%% endif %%%
+%%% if weiss %%%
 %%% item weiss %%%
-%%% condition else %%%
+%%% else %%%
 %%% item White %%%
-%%% condition endif %%%
-%%% condition if weiss_teilnehmer_nr %%%
+%%% endif %%%
+%%% if weiss_teilnehmer_nr %%%
 </a>
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition if weiss_dwz %%%
+%%% if weiss_dwz %%%
 %%% item weiss_dwz " (%s)" %%%
-%%% condition else %%%
+%%% else %%%
 %%% item WhiteElo " (%s)" %%%
-%%% condition endif %%%
+%%% endif %%%
  – 
-%%% condition if schwarz_teilnehmer_nr %%%
+%%% if schwarz_teilnehmer_nr %%%
 <a href="../../spieler/%%% item schwarz_teilnehmer_nr %%%/">
-%%% condition endif %%%
-%%% condition if schwarz %%%
+%%% endif %%%
+%%% if schwarz %%%
 %%% item schwarz %%%
-%%% condition else %%%
+%%% else %%%
 %%% item Black %%%
-%%% condition endif %%%
-%%% condition if schwarz_teilnehmer_nr %%%
+%%% endif %%%
+%%% if schwarz_teilnehmer_nr %%%
 </a>
-%%% condition endif %%%
-%%% condition if schwarz_dwz %%%
+%%% endif %%%
+%%% if schwarz_dwz %%%
 %%% item schwarz_dwz " (%s)" %%%
-%%% condition else %%%
+%%% else %%%
 %%% item BlackElo " (%s)" %%%
-%%% condition endif %%%
+%%% endif %%%
 </strong><br>
-%%% condition if vertauschte_farben %%%
+%%% if vertauschte_farben %%%
 <em>Die Partie wurde mit vertauschten Farben gespielt:</em><br>
-%%% condition if schwarz %%%
+%%% if schwarz %%%
 %%% item schwarz %%%
-%%% condition else %%%
+%%% else %%%
 %%% item Black %%%
-%%% condition endif %%%
+%%% endif %%%
  – 
-%%% condition if weiss %%%
+%%% if weiss %%%
 %%% item weiss %%%
-%%% condition else %%%
+%%% else %%%
 %%% item White %%%
-%%% condition endif %%%<br>
-%%% condition endif %%%
+%%% endif %%%<br>
+%%% endif %%%
 <a href="../../">%%% item event %%%</a> %%% item place %%%,
- %%% condition if runde_no %%%<a href="../../runde/%%% item runde_no %%%/">%%% item runde_no %%%. Runde</a>%%% condition endif %%%
+ %%% if runde_no %%%<a href="../../runde/%%% item runde_no %%%/">%%% item runde_no %%%. Runde</a>%%% endif %%%
  %%% item tag " Tag %s" %%%
-%%% condition if tisch_no %%%
+%%% if tisch_no %%%
 <br>%%% item heim_team_identifier "<a href='../../../../%s/'>" %%%%%% item heim_team %%%%%% item heim_team_identifier "</a>" %%%–%%% item auswaerts_team_identifier "<a href='../../../../%s/'>" %%%%%% item auswaerts_team %%%%%% item auswaerts_team_identifier "</a>" %%%
-%%% condition endif %%%
-%%% condition if brett_no %%%
+%%% endif %%%
+%%% if brett_no %%%
  (Brett %%% item brett_no %%%)<br>
-%%% condition endif %%%
+%%% endif %%%
 %%% item eco "<abbr title='Eröffnungscode der Enzyklopädie der Schacheröffnungen'>ECO</abbr> <span class='ECO'>%s</span>" %%%
-%%% condition if Annotator %%%
+%%% if Annotator %%%
  Kommentar: %%% item Annotator %%%
-%%% condition endif %%%
+%%% endif %%%
 </p>
-%%% condition if pgn %%%
+%%% if pgn %%%
 <div class='PgnMoveText'>
 %%% item html %%% %%% item partiestatus %%%
 </div>
@@ -179,33 +179,33 @@ SAN letters: <input type=text name="SAN" value="KQRBNP" size=7>
 %%% item kommentar markdown %%%
 
 <p><a href="../%%% item tag "%s" %%%%%% item runde_no %%%%%% item tisch_no "-%s" %%%%%% item brett_no "-%s" %%%.pgn">Download PGN-Datei</a>
-%%% condition if url %%%
+%%% if url %%%
 | <a href="%%% item url %%%">Partie online</a>
-%%% condition endif %%%
+%%% endif %%%
 </p>
 
-%%% condition if live %%%
-%%% condition if finished %%%
-%%% condition else %%%
+%%% if live %%%
+%%% if finished %%%
+%%% else %%%
 <p class="partieanmerkung">Die aktuellen Züge werden ca. alle 15 sec neu
- übertragen%%% condition if setting live_pgn_delay_mins %%%, allerdings mit einem
- Zeitversatz von %%% setting live_pgn_delay_mins %%% Minuten%%% condition endif %%%.
+ übertragen%%% if setting live_pgn_delay_mins %%%, allerdings mit einem
+ Zeitversatz von %%% setting live_pgn_delay_mins %%% Minuten%%% endif %%%.
 Stand: <span class="LastUpdate">%%% item last_update %%%</span> Uhr.</p>
-%%% condition endif %%%
-%%% condition endif %%%
+%%% endif %%%
+%%% endif %%%
 <script type="text/javascript">
 	SetPgnMoveText('%%% item pgn %%%');
 	Init('');
 	MoveForward(%%% item move %%%);
 </script>
-%%% condition else %%%
+%%% else %%%
 <p>Partie nicht gefunden.</p>
-%%% condition endif %%%
+%%% endif %%%
 </div>
 <script type="text/javascript">
-%%% condition if partie_id %%%
+%%% if partie_id %%%
 var partie_id = %%% item partie_id %%%; 
-%%% condition endif %%%
+%%% endif %%%
 
 function Navigate (myevent) {
 	if (!myevent)
@@ -228,7 +228,7 @@ function Navigate (myevent) {
 document.onkeyup = Navigate;
 
 </script>
-%%% condition if live %%%
+%%% if live %%%
 <script type="text/javascript" src="%%% setting behaviour_path %%%/tournaments/livegame.js"></script>
 <script type="text/javascript">
 
@@ -240,7 +240,7 @@ if (live == true){
   setInterval(function () {getGamedata('/%%% item identifier %%%/partien/%%% item runde_no %%%%%% item tisch_no "-%s" %%%%%% item brett_no "-%s" %%%.json')}, 30000);
 }
 </script>
-%%% condition endif %%%
-%%% condition if partie_id %%%
+%%% endif %%%
+%%% if partie_id %%%
 </div>
-%%% condition endif %%%
+%%% endif %%%

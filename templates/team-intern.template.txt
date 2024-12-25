@@ -11,23 +11,23 @@
 <h1>%%% item team %%% %%% item team_no %%%
 <br><a href="../">%%% item event %%% %%% item duration wrap_date %%%</a> <em>in %%% item place %%%</em></h1>
 
-%%% condition if abfrage_teilnahme %%%
+%%% if abfrage_teilnahme %%%
 
 <h2>Zusage oder Absage</h2>
 
-%%% condition if abfrage_spaeter %%%
+%%% if abfrage_spaeter %%%
 <p class="error">Vielen Dank, wir haben Deinen Hinweis auf Verspätung der Meldung
 bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absagen.</p>
-%%% condition endif %%%
+%%% endif %%%
 
 <div><form method="POST" action="%%% page url_path %%%" class="berechtigung">
 <ul>
 <li><label for="zusage"><input type="radio" name="berechtigung" value="zusage" id="zusage">
-%%% condition if acceptance %%%%%% item acceptance %%%%%% condition else %%%Wir nehmen teil und akzeptieren die Bedingungen aus der Ausschreibung.%%% condition endif %%%</label></li>
+%%% if acceptance %%%%%% item acceptance %%%%%% else %%%Wir nehmen teil und akzeptieren die Bedingungen aus der Ausschreibung.%%% endif %%%</label></li>
 <li><label for="absage"><input type="radio" name="berechtigung" value="absage" id="absage">
-%%% condition if cancellation %%%%%% item cancellation %%%%%% condition else %%%Wir nehmen nicht teil.%%% condition endif %%%</label></li>
+%%% if cancellation %%%%%% item cancellation %%%%%% else %%%Wir nehmen nicht teil.%%% endif %%%</label></li>
 <li><label for="spaeter"><input type="radio" name="berechtigung" value="spaeter" id="spaeter">
-%%% condition if delay %%%%%% item delay %%%%%% condition else %%%Wir bitten um Verlängerung der Entscheidungsfrist.%%% condition endif %%%</label></li>
+%%% if delay %%%%%% item delay %%%%%% else %%%Wir bitten um Verlängerung der Entscheidungsfrist.%%% endif %%%</label></li>
 </ul>
 <p>Bemerkungen:</p>
 <textarea rows="6" cols="80" name="bemerkungen">
@@ -35,12 +35,12 @@ bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absage
 <p><input type="submit" value="Angaben übermitteln"></p>
 </form></div>
 
-%%% condition elseif lineup %%%
+%%% elseif lineup %%%
 %%% make lineup * %%% 
-%%% condition else %%%
+%%% else %%%
 
 <div class="infocol">
-<h3>1. Aufstellung %%% condition if bearbeiten_aufstellung %%%<small>(<a href="aufstellung/">Bearbeiten</a>)</small>%%% condition endif %%%</h3>
+<h3>1. Aufstellung %%% if bearbeiten_aufstellung %%%<small>(<a href="aufstellung/">Bearbeiten</a>)</small>%%% endif %%%</h3>
 
 <div class="results">
 <table>
@@ -65,7 +65,7 @@ bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absage
 </div>
 
 <div class="infocol">
-<h3>2. Kontaktdaten %%% condition if bearbeiten_sonstige %%%<small>(<a href="kontakt/">Bearbeiten</a>)</small>%%% condition endif %%%</h3>
+<h3>2. Kontaktdaten %%% if bearbeiten_sonstige %%%<small>(<a href="kontakt/">Bearbeiten</a>)</small>%%% endif %%%</h3>
 
 <div class="results">
 <table>
@@ -85,34 +85,34 @@ bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absage
 <td>%%% item e_mail %%% %%% item telefon "<br>%s" %%%</td>
 </tr>
 %%% loop end %%%
-%%% condition unless virtual %%%
+%%% unless virtual %%%
 %%% loop betreuer %%%
 <tr class="even"><td>* <strong>Betreuung vor Ort</strong></td> 
 <td>%%% item person %%%</td> <td>%%% item geburtsjahr %%%</td>
 <td>%%% item e_mail %%% %%% item telefon "<br>%s" %%%</td>
 </tr>
 %%% loop end %%%
-%%% condition endif %%%
+%%% endif %%%
 %%% loop team-organisator %%%
 <tr class="uneven"><td>Meldung vorab</td> <td>%%% item person %%%</td>
 <td>%%% item geburtsjahr %%%</td>
 <td>%%% item e_mail %%% %%% item telefon "<br>%s" %%%</td>
 </tr>
 %%% loop end %%%
-%%% condition if gast %%%
+%%% if gast %%%
 %%% loop gast %%%
 <tr class="even"><td>Gast vor Ort</td> 
 <td>%%% item person %%%</td> <td>%%% item geburtsjahr %%%</td>
 <td>%%% item e_mail %%% %%% item telefon "<br>%s" %%%</td>
 </tr>
 %%% loop end %%%
-%%% condition endif %%%
+%%% endif %%%
 </tbody>
 </table>
 </div>
 
-%%% condition unless virtual %%%
-<h3>3. An- und Abreise %%% condition if bearbeiten_sonstige %%%<small>(<a href="reisedaten/">Bearbeiten</a>)</small>%%% condition endif %%%</h3>
+%%% unless virtual %%%
+<h3>3. An- und Abreise %%% if bearbeiten_sonstige %%%<small>(<a href="reisedaten/">Bearbeiten</a>)</small>%%% endif %%%</h3>
 
 <div class="results">
 <table>
@@ -121,27 +121,27 @@ bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absage
 </thead>
 <tbody>
 <tr class="uneven"><td>
-%%% condition if datum_anreise %%%
+%%% if datum_anreise %%%
 %%% item datum_anreise wrap_date %%%%%% item uhrzeit_anreise ", %s Uhr" %%%
-%%% condition else %%%
+%%% else %%%
 Noch nicht angegeben.
-%%% condition endif %%%
+%%% endif %%%
 </td>
 <td>
-%%% condition if datum_abreise %%%
+%%% if datum_abreise %%%
 %%% item datum_abreise wrap_date %%%%%% item uhrzeit_abreise ", %s Uhr" %%%
-%%% condition else %%%
+%%% else %%%
 Noch nicht angegeben.
-%%% condition endif %%%
+%%% endif %%%
 </td></tr>
 </tbody>
 </table>
 </div>
 
-%%% condition if zimmerbuchung %%%
-<h3>4. Zimmerbuchung %%% condition if bearbeiten_sonstige %%%<small>(<a href="buchung/">Bearbeiten</a>)</small>%%% condition endif %%%</h3>
+%%% if zimmerbuchung %%%
+<h3>4. Zimmerbuchung %%% if bearbeiten_sonstige %%%<small>(<a href="buchung/">Bearbeiten</a>)</small>%%% endif %%%</h3>
 
-%%% condition if bookings %%%
+%%% if bookings %%%
 <div class="results">
 <table>
 <thead>
@@ -167,76 +167,76 @@ Noch nicht angegeben.
 <td class="number">%%% item betrag wrap_money %%%&nbsp;%%% item betrag_waehrung %%%</td>
 <td><span class="%%% item kosten_status %%%">&nbsp;</span></td>
 </tr>
-%%% condition if anmerkungen %%%
+%%% if anmerkungen %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
 <td></td><td colspan="7"><p class="explanation">%%% item anmerkungen %%%</p></td>
 </tr>
-%%% condition endif %%%
+%%% endif %%%
 %%% loop end %%%
 </tbody>
 </table>
 </div>
-%%% condition else %%%
+%%% else %%%
 <p>Sie haben noch nichts gebucht.</p>
-%%% condition endif %%%
-%%% condition else %%%
+%%% endif %%%
+%%% else %%%
 <h3>4. Zimmerbuchung erfolgt direkt über Ausrichter</h3>
-%%% condition endif %%%
-%%% condition endif %%%
+%%% endif %%%
+%%% endif %%%
 
-%%% condition if virtual %%%
+%%% if virtual %%%
 <h3>3. Meldung komplett</h3>
-%%% condition else %%%
+%%% else %%%
 <h3>5. Meldung komplett</h3>
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition if bearbeiten_sonstige %%%
+%%% if bearbeiten_sonstige %%%
 
 <form method="POST" action="">
 <p>Wenn Ihre Meldung komplett ist, bestätigen Sie das bitte. <strong>Achtung:
 danach kann die Meldung nicht mehr bearbeitet werden!</strong></p>
-%%% condition if komplett %%%
+%%% if komplett %%%
 <input type="submit" value="Ja, meine Meldung ist komplett!" name="komplett">
-%%% condition else %%%
+%%% else %%%
 <p><strong>Es fehlen noch Daten in der Meldung:</strong></p>
 <ol>
-<li><a href="aufstellung/">Aufstellung</a>: %%% condition if aufstellung_komplett %%%<span class="komplett">Alles da, super!</span>%%% condition else %%%<span class="unvollstaendig">Hier fehlt noch was.</span>%%% condition endif %%%</li>
-%%% condition unless virtual %%%
-<li><a href="kontakt/">Betreuung vor Ort</a>: %%% condition if betreuer_komplett %%%<span class="komplett">Alles da, super!</span>%%% condition else %%%
+<li><a href="aufstellung/">Aufstellung</a>: %%% if aufstellung_komplett %%%<span class="komplett">Alles da, super!</span>%%% else %%%<span class="unvollstaendig">Hier fehlt noch was.</span>%%% endif %%%</li>
+%%% unless virtual %%%
+<li><a href="kontakt/">Betreuung vor Ort</a>: %%% if betreuer_komplett %%%<span class="komplett">Alles da, super!</span>%%% else %%%
 <span class="unvollstaendig">Hier fehlt noch was.</span>
  %%% item betreuer_nicht_18 "Es muß ein volljähriger Betreuer dabei sein!" %%%
  %%% item betreuer_nicht_plus_3_jahre "Der Betreuer muß mindestens drei Jahre älter als der älteste Spieler sein!" %%%
-%%% condition endif %%%</li>
-<li><a href="reisedaten/">An- und Abreise</a>: %%% condition if reisedaten_komplett %%%<span class="komplett">Alles da, super!</span>%%% condition else %%%<span class="unvollstaendig">Hier fehlt noch was.</span>%%% condition endif %%%</li>
-%%% condition if zimmerbuchung %%%
-<li><a href="buchung/">Zimmerbuchung</a>: %%% condition if buchung_komplett %%%<span class="komplett">Alles da, super!</span>%%% condition else %%%<span class="unvollstaendig">Hier fehlt noch was.</span><br>
-<small>(Hinweis: das System prüft, ob für alle Gruppen ausreichend Buchungen vorgenommen wurden. Bitte buche daher möglichst für Teilnehmer und Betreuer separat.)</small>%%% condition endif %%%</li>
-%%% condition endif %%%
-%%% condition endif %%%
+%%% endif %%%</li>
+<li><a href="reisedaten/">An- und Abreise</a>: %%% if reisedaten_komplett %%%<span class="komplett">Alles da, super!</span>%%% else %%%<span class="unvollstaendig">Hier fehlt noch was.</span>%%% endif %%%</li>
+%%% if zimmerbuchung %%%
+<li><a href="buchung/">Zimmerbuchung</a>: %%% if buchung_komplett %%%<span class="komplett">Alles da, super!</span>%%% else %%%<span class="unvollstaendig">Hier fehlt noch was.</span><br>
+<small>(Hinweis: das System prüft, ob für alle Gruppen ausreichend Buchungen vorgenommen wurden. Bitte buche daher möglichst für Teilnehmer und Betreuer separat.)</small>%%% endif %%%</li>
+%%% endif %%%
+%%% endif %%%
 </ol>
-%%% condition endif %%%
+%%% endif %%%
 </form>
 
-%%% condition else %%%
+%%% else %%%
 <p><em>(Außerhalb der Meldefrist kann diese Meldung nicht mehr verändert werden.)</em></p>
 
-%%% condition endif %%%
+%%% endif %%%
 
 <p>Wenn Ihre Daten vollständig sind, <a href="./pdf/">drucken Sie bitte die Meldung aus (PDF)</a>,
 scannen Sie sie und 
-%%% condition if pdfupload %%%
+%%% if pdfupload %%%
 <a href="./pdfupload/">laden Sie das gescannte PDF hier wieder hoch</a>.
-%%% condition else %%%
+%%% else %%%
 laden Sie das gescannte PDF hier wieder hoch. (Der Link erscheint erst bei kompletter Meldung!)
-%%% condition endif %%%
+%%% endif %%%
 </p>
 
-%%% condition if setting tournaments_request_address_data %%%
+%%% if setting tournaments_request_address_data %%%
 <h3>6. Adressen zur Corona-Nachverfolgung</h3>
 
 <p><a href="adressdaten/">Adressen der Spielerinnen und Betreuer bearbeiten.</a> Bereits bei anderen Turnieren erfasste Adressen sind vorgegeben und können korrigiert werden.</p>
-%%% condition endif %%%
+%%% endif %%%
 
 </div>
-%%% condition endif %%%
+%%% endif %%%
 <p class="fuss"><a href="../">Zur Turnierübersicht</a></p>

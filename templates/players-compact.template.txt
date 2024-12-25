@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2023 Gustaf Mossakowski
+# @copyright Copyright © 2023-2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <table>
@@ -22,23 +22,23 @@
 <tr class='%%% loopposition uneven "un" %%%even'>
 <td>%%% item platz_no %%%</td>
 <td>
-%%% condition if setzliste_no %%%
+%%% if setzliste_no %%%
 <a href="spieler/%%% item setzliste_no %%%/">
-%%% condition endif %%%
+%%% endif %%%
 %%% item spieler %%%
 %%% item setzliste_no </a> %%%</td>
-<td>%%% condition if main_event_path & federation_identifier %%%
+<td>%%% if main_event_path & federation_identifier %%%
 <a href="%%% path tournaments_federation main_event_path federation_identifier %%%">
-%%% condition endif %%%
+%%% endif %%%
 <abbr title="%%% item country %%%">%%% item federation_abbr %%%</abbr>
-%%% condition if main_event_path & federation_identifier %%%
+%%% if main_event_path & federation_identifier %%%
 </a>
-%%% condition endif %%%</td>
+%%% endif %%%</td>
 <td class="number">%%% item wertung result_format %%%</td>
 </tr>
 %%% loop end %%%
-%%% condition if more_players %%%
+%%% if more_players %%%
 <tr><td> </td><td colspan="4">… und weitere %%% item more_players %%% Spieler</td></tr>
-%%% condition endif %%%
+%%% endif %%%
 </tbody>
 </table>

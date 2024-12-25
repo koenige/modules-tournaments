@@ -13,13 +13,13 @@
 <h1>Brett-Nachricht wg. fehlender Spielerbilder
 <br><a href="../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
-%%% condition if sent_messages %%%
+%%% if sent_messages %%%
 
 <p>Es wurden %%% item sent_messages %%% Nachrichten zum Versand vorbereitet.</p>
 
 <p><a href="./">Übersicht der fehlenden Spielerbilder</a></p>
 
-%%% condition else %%%
+%%% else %%%
 <div class="results">
 <table>
 <thead>
@@ -38,14 +38,14 @@
 <td>%%% item contact %%%</td>
 <td>%%% item event %%%</td>
 <td>%%% item contact_short %%%</td>
-<td>%%% condition if message_received %%%ja%%% condition else %%%noch nicht%%% condition endif %%%</td>
+<td>%%% if message_received %%%ja%%% else %%%noch nicht%%% endif %%%</td>
 </tr>
 %%% loop end %%%
 </tbody>
 </table>
 </div>
 
-%%% condition if form %%%
+%%% if form %%%
 <form method="POST" action="">
 <p><label for="sender">Absender:<br>
 <input type="text" value="%%% item sender %%%" name="sender" id="sender" size="32"></label></p>
@@ -56,6 +56,6 @@
 
 <input name="action" value="Teilnehmernachrichten schreiben" type="submit">
 </form>
-%%% condition endif %%%
-%%% condition endif %%%
+%%% endif %%%
+%%% endif %%%
 

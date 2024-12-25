@@ -17,19 +17,19 @@
 	<tr>
 		<th><abbr title="Platz">Pl.</abbr></th>
 		<th class="tx">Team</th>
-%%% condition if dwz_schnitt %%%
+%%% if dwz_schnitt %%%
 		<th>Ø <abbr title="Deutsche Wertungszahl">DWZ</abbr></th>
-%%% condition endif %%%
-%%% condition if m-v | m-s %%%
-%%% condition if country %%%
+%%% endif %%%
+%%% if m-v | m-s %%%
+%%% if country %%%
 		<th>Land</th>
-%%% condition endif %%%
-%%% condition endif %%%
-%%% condition if guv %%%
+%%% endif %%%
+%%% endif %%%
+%%% if guv %%%
 		<th class="bx"><abbr title="Gewonnene Spiele">G</abbr></th>		
 		<th><abbr title="Unentschiedene Spiele">U</abbr></th>
 		<th class="bxv"><abbr title="Verlorene Spiele">V</abbr></th>
-%%% condition endif %%%
+%%% endif %%%
 %%% loop wertungen %%%
 		<th><abbr title="%%% item category %%%">%%% item category_short %%%</abbr></th>
 %%% loop end %%%
@@ -38,29 +38,29 @@
 %%% loop start %%%
 	<tr class="%%% loopposition uneven "un" %%%even%%% item live " live" %%%" id="%%% item team_identifier_short %%%">
 	<td class="tz tableposition">%%% item platz_no_identisch "<span class='identical_place'>" %%%%%% item platz_no %%%%%% item platz_no_identisch "</span>" %%%
- %%% condition if platz_wechsel %%% <img src="%%% setting layout_path %%%/tournaments/standings-%%% item platz_wechsel %%%.png" alt="%%% item platz_symbol %%%" class="%%% item platz_wechsel %%%"> %%% condition endif %%%</td>
-<td>%%% condition if aktiv %%%<a href="../../../%%% item pfad %%%%%% item team_identifier %%%/">%%% condition endif %%%
+ %%% if platz_wechsel %%% <img src="%%% setting layout_path %%%/tournaments/standings-%%% item platz_wechsel %%%.png" alt="%%% item platz_symbol %%%" class="%%% item platz_wechsel %%%"> %%% endif %%%</td>
+<td>%%% if aktiv %%%<a href="../../../%%% item pfad %%%%%% item team_identifier %%%/">%%% endif %%%
 %%% item team %%%%%% item aktiv "</a>" %%%</td>
-%%% condition if dwz_schnitt %%%
+%%% if dwz_schnitt %%%
 		<td class="tm">%%% item dwz_schnitt %%%</td>
-%%% condition endif %%%
-%%% condition if m-v | m-s %%%
-%%% condition if country %%%
-<td>%%% condition if main_event_path & federation_identifier %%%
+%%% endif %%%
+%%% if m-v | m-s %%%
+%%% if country %%%
+<td>%%% if main_event_path & federation_identifier %%%
 <a href="%%% path tournaments_federation main_event_path federation_identifier %%%">
-%%% condition endif %%%
+%%% endif %%%
 <span class="short"><abbr title="%%% item country %%%">%%% item federation_abbr %%%</abbr></span>
 <span class="long">%%% item country %%%</span>
-%%% condition if main_event_path & federation_identifier %%%
+%%% if main_event_path & federation_identifier %%%
 </a>
-%%% condition endif %%%</td>
-%%% condition endif %%%
-%%% condition endif %%%
-%%% condition if guv %%%
+%%% endif %%%</td>
+%%% endif %%%
+%%% endif %%%
+%%% if guv %%%
 		<td class="tm bx">%%% item spiele_g %%%</td>
 		<td class="tm">%%% item spiele_u %%%</td>
 		<td class="tm bxv">%%% item spiele_v %%%</td>
-%%% condition endif %%%
+%%% endif %%%
 		%%% loop wertungen %%%
 		<td class="tm">%%% item wertung result_format %%%</td>
 		%%% loop end %%%
@@ -72,17 +72,17 @@
 <p class="glossary"><a href="/glossar/">Erläuterungen zu den Abkürzungen und Wertungen</a></p>
 <nav>
 <div class="relnav">
-%%% condition if vorige_runde_no %%%
+%%% if vorige_runde_no %%%
 <p class="prev"><a href="%%% item pfad %%%%%% item vorige_runde_no %%%/">Tabellenstand %%% item vorige_runde_no %%%. Runde</a></p>
-%%% condition endif %%%
+%%% endif %%%
 <p class="middle">
-%%% condition if paarungen %%%
+%%% if paarungen %%%
 <a href="../%%% item pfad %%%runde/%%% item runde_no %%%/">Paarungen der %%% item runde_no %%%. Runde</a> | 
-%%% condition endif %%%
+%%% endif %%%
 <a href="../%%% item pfad %%%">Übersicht</a></p>
-%%% condition if naechste_runde_no %%%
+%%% if naechste_runde_no %%%
 <p class="next"><a href="%%% item pfad %%%%%% item naechste_runde_no %%%/">Tabellenstand %%% item naechste_runde_no %%%. Runde</a></p>
-%%% condition endif %%%
+%%% endif %%%
 </div>
 </nav>
 <script src="%%% setting behaviour_path %%%/default/link-rel-nav.js"></script>

@@ -9,87 +9,87 @@
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>
-%%% condition if auslosung %%%
+%%% if auslosung %%%
 Auslosung %%% item round_event %%%
-%%% condition else %%%
+%%% else %%%
 Ergebnisse %%% item round_event %%%%%% item live " (Live)" %%%
-%%% condition endif %%%
+%%% endif %%%
 <br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
-%%% condition if live %%%
+%%% if live %%%
 <p>Liveergebnisse: Die Ergebnisse sind vorläufig und ohne Gewähr.<br>
 Stand: %%% item live_date wrap_date %%%, %%% item live_date wrap_time %%% Uhr</p>
-%%% condition endif %%%
+%%% endif %%%
 
 <p>%%% item wochentag %%%, %%% item date_begin wrap_date %%% %%% item time_begin %%%%%% item time_end "–%s" %%%
-%%% condition if time_begin | time_end %%% Uhr%%% condition endif %%%</p>
+%%% if time_begin | time_end %%% Uhr%%% endif %%%</p>
 
 <div class="results">
 <table>
 <thead>
 <tr>
-%%% condition if show_brett_no %%%
+%%% if show_brett_no %%%
 	<th class="tz"><span class="longer">Brett</span> <span class="shorter"><abbr title="Brett">B.</abbr></span></th>
-%%% condition endif %%%
-%%% condition if show_dwz %%%
+%%% endif %%%
+%%% if show_dwz %%%
 	<th class="th hidden400"><abbr title="Deutsche Wertungszahl">DWZ</abbr></th>
-%%% condition elseif show_elo %%%
+%%% elseif show_elo %%%
 	<th class="th"><abbr title="FIDE-Wertungszahl">Elo</abbr></th>
-%%% condition endif %%%
+%%% endif %%%
 	<th class="th"><span class="longer"><abbr title="Punkte vor der Runde">Pkt.</abbr></span><span class="shorter"><abbr title="Punkte vor der Runde">P.</abbr></span></th>
 	<th class="th">Weiß</th>
 	<th class="tm"><span class="longer">Ergebnis</span> <span class="shorter"><abbr title="Ergebnis">Erg.</abbr></span></th>
 	<th class="ta">Schwarz</th>
 	<th class="th"><span class="longer"><abbr title="Punkte vor der Runde">Pkt.</abbr></span><span class="shorter"><abbr title="Punkte vor der Runde">P.</abbr></span></th>
-%%% condition if show_dwz %%%
+%%% if show_dwz %%%
 	<th class="th hidden400"><abbr title="Deutsche Wertungszahl">DWZ</abbr></th>
-%%% condition elseif show_elo %%%
+%%% elseif show_elo %%%
 	<th class="th"><abbr title="FIDE-Wertungszahl">Elo</abbr></th>
-%%% condition endif %%%
+%%% endif %%%
 </tr>
 </thead>
 %%% loop partien %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
-%%% condition if show_brett_no %%%
+%%% if show_brett_no %%%
 	<td class="tz">%%% item brett_no %%%</td>
-%%% condition endif %%%
-%%% condition if show_dwz %%%
+%%% endif %%%
+%%% if show_dwz %%%
 	<td class="tu hidden400">%%% item heim_dwz %%%</td>
-%%% condition elseif show_elo %%%
+%%% elseif show_elo %%%
 	<td class="tu">%%% item heim_elo %%%</td>
-%%% condition endif %%%
+%%% endif %%%
 	<td class="tu">%%% item weiss_punkte result_format  %%%</td>
 	<td class="th">%%% item heim_setzliste_no "<a href='../../spieler/%d/'>" %%%%%% item heim_spieler %%%%%% item heim_setzliste_no "</a>" %%%<span class="show400"> (%%% item heim_dwz %%%)</span></td>
-	<td class="tm">%%% condition if partie %%%<a href="../../partien/%%% item runde_no %%%-%%% item brett_no %%%/">%%% condition endif %%%
-	%%% condition if heim_ergebnis | auswaerts_ergebnis %%%
+	<td class="tm">%%% if partie %%%<a href="../../partien/%%% item runde_no %%%-%%% item brett_no %%%/">%%% endif %%%
+	%%% if heim_ergebnis | auswaerts_ergebnis %%%
 	%%% item heim_ergebnis result_format %%%&nbsp;:&nbsp;%%% item auswaerts_ergebnis result_format %%%
-	%%% condition elseif live %%%
+	%%% elseif live %%%
 	LIVE
-	%%% condition else %%%
+	%%% else %%%
 	%%% item heim_ergebnis result_format %%%&nbsp;:&nbsp;%%% item auswaerts_ergebnis result_format %%%
-	%%% condition endif %%%
+	%%% endif %%%
 	%%% item haengepartie "(<abbr title="Hängepartie">H</abbr>)" %%%%%% item partie "</a>" %%%
 	</td>
 	<td class="ta">%%% item auswaerts_setzliste_no "<a href='../../spieler/%d/'>" %%%%%% item auswaerts_spieler %%%%%% item auswaerts_setzliste_no "</a>" %%%<span class="show400"> (%%% item auswaerts_dwz %%%)</span></td>
 	<td class="tu">%%% item schwarz_punkte result_format %%%</td>
-%%% condition if show_dwz %%%
+%%% if show_dwz %%%
 	<td class="tu hidden400">%%% item auswaerts_dwz %%%</td>
-%%% condition elseif show_elo %%%
+%%% elseif show_elo %%%
 	<td class="tu">%%% item auswaerts_elo %%%</td>
-%%% condition endif %%%
+%%% endif %%%
 </tr>
 %%% loop end %%%
 </table>
 </div>
 <nav>
 <div class="relnav">
-%%% condition if tabelle %%%
+%%% if tabelle %%%
 <p class="prev"><a href="../../tabelle/%%% item runde_no %%%/">Tabelle der %%% item round_event %%%</a></p>
-%%% condition endif %%%
-<p class="prev">%%% condition if prev %%%<a href="../%%% item prev %%%/">vorherige Runde</a>
-%%% condition else %%%<a href="../../">Übersicht</a>%%% condition endif %%%</p>
-<p class="next">%%% condition if next %%%<a href="../%%% item next %%%/">nächste Runde</a>
-%%% condition else %%%<a href="../../">Übersicht</a>%%% condition endif %%%</p>
+%%% endif %%%
+<p class="prev">%%% if prev %%%<a href="../%%% item prev %%%/">vorherige Runde</a>
+%%% else %%%<a href="../../">Übersicht</a>%%% endif %%%</p>
+<p class="next">%%% if next %%%<a href="../%%% item next %%%/">nächste Runde</a>
+%%% else %%%<a href="../../">Übersicht</a>%%% endif %%%</p>
 </div>
 </nav>
 <script src="%%% setting behaviour_path %%%/default/link-rel-nav.js"></script>

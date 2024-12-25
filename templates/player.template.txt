@@ -12,43 +12,43 @@
 <br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
 <div class="playercard">
-%%% condition if bilder %%%
+%%% if bilder %%%
 <p class="spielerbild js-gallery">
 %%% loop bilder 1 %%%
-%%% condition if base_filename %%%
+%%% if base_filename %%%
 <a href="%%% setting mediadblink_base_url %%%/%%% item base_filename %%%.600.%%% item preview_extension %%%?v=%%% item version %%%" class="js-img"><img src="%%% setting mediadblink_base_url %%%/%%% item base_filename %%%.160.%%% item preview_extension %%%?v=%%% item version %%%" srcset="%%% setting mediadblink_base_url %%%/%%% item base_filename %%%.160.%%% item preview_extension %%%?v=%%% item version %%% x1, %%% setting mediadblink_base_url %%%/%%% item base_filename %%%.320.%%% item preview_extension %%%?v=%%% item version %%% x2" alt=""></a>
-%%% condition endif %%%
+%%% endif %%%
 %%% loop end %%%
 </p>
-%%% condition endif %%%
+%%% endif %%%
 <table>
-<tr><th>Verein:</th><td>%%% condition if verein_kennung %%%<a href="%%% condition if setting localhost %%%https://schach.in.local%%% condition else %%%https://schach.in%%%condition endif %%%/%%% item verein_kennung %%%/">%%% condition endif %%%%%% item t_verein %%%%%% item verein_kennung </a> %%%</td></tr>
-<tr><th>Land:</th><td>%%% condition if main_event_path & federation_identifier %%%
+<tr><th>Verein:</th><td>%%% if verein_kennung %%%<a href="%%% if setting localhost %%%https://schach.in.local%%% else %%%https://schach.in%%%condition endif %%%/%%% item verein_kennung %%%/">%%% endif %%%%%% item t_verein %%%%%% item verein_kennung </a> %%%</td></tr>
+<tr><th>Land:</th><td>%%% if main_event_path & federation_identifier %%%
 <a href="%%% path tournaments_federation main_event_path federation_identifier %%%">
-%%% condition endif %%%
+%%% endif %%%
 %%% item country %%%
-%%% condition if main_event_path & federation_identifier %%%</a>%%% condition endif %%%
+%%% if main_event_path & federation_identifier %%%</a>%%% endif %%%
 </td></tr>
 <tr><th>Wertung:</th><td>
-%%% condition if t_dwz | t_elo %%%
+%%% if t_dwz | t_elo %%%
 DWZ: %%% comment condition if player_pass_dsb <a href="http://www.schachbund.de/spieler.html?zps=%%/% item player_pass_dsb %%/%"> %%%
 %%% comment condition endif %%%
-%%% item t_dwz %%%%%% comment item player_pass_dsb "</a>" %%%%%% condition if t_elo %%%, Elo: 
+%%% item t_dwz %%%%%% comment item player_pass_dsb "</a>" %%%%%% if t_elo %%%, Elo: 
 %%% path ratings_fide_profile player_id_fide "html=<a href="%s">" %%%
 %%% item t_elo %%%
 %%% path ratings_fide_profile player_id_fide "html=</a>" %%%
-%%% condition endif %%%
-%%% condition else %%%
+%%% endif %%%
+%%% else %%%
 keine
-%%% condition endif %%%
+%%% endif %%%
 </td></tr>
 <tr><th>Jahrgang:</th><td>%%% item geburtsjahr %%%</td></tr>
-<tr><th>Platz:</th><td>%%% condition if platz_no %%%<a href="../../tabelle/#s%%% item setzliste_no %%%">%%% item platz_no %%%.</a>%%% condition endif %%% (Setzliste <a href="../#s%%% item setzliste_no %%%">%%% item setzliste_no %%%</a>)</td></tr>
-<tr><th>Punkte:</th><td>%%% condition if hat_punkte %%%%%% item punkte result_format %%%%%% condition else %%%–%%% condition endif %%%</td></tr>
+<tr><th>Platz:</th><td>%%% if platz_no %%%<a href="../../tabelle/#s%%% item setzliste_no %%%">%%% item platz_no %%%.</a>%%% endif %%% (Setzliste <a href="../#s%%% item setzliste_no %%%">%%% item setzliste_no %%%</a>)</td></tr>
+<tr><th>Punkte:</th><td>%%% if hat_punkte %%%%%% item punkte result_format %%%%%% else %%%–%%% endif %%%</td></tr>
 </table>
 </div>
 
-%%% condition if games %%%
+%%% if games %%%
 <div class="results">
 <table class="spieler">
 <thead>
@@ -66,42 +66,42 @@ keine
 %%% loop games %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
 	<td class="tz"><a href="../../runde/%%% item runde_no %%%/">%%% item runde_no %%%.</a></td>
-%%% condition if no_pairing %%%
+%%% if no_pairing %%%
 	<td class="no_pairing" colspan="7">Keine Paarung</th> 
-%%% condition else %%%
+%%% else %%%
 	<td class="tz">%%% item brett_no %%%</td>
-	<td class="longer">%%% condition if spielt_schwarz %%%%%% item heim_dwz %%%%%% condition endif %%%</td>
+	<td class="longer">%%% if spielt_schwarz %%%%%% item heim_dwz %%%%%% endif %%%</td>
 	<td class="th">%%% item weiss_gewinnt "<strong>" %%%
-	%%% condition unless spielt_weiss %%%%%% condition if heim_setzliste_no %%%<a href="../../spieler/%%% item heim_setzliste_no %%%/">%%% condition endif %%%%%% condition endif %%%
-	%%% item heim_spieler %%%%%% condition unless spielt_weiss %%%%%% condition if heim_setzliste_no %%%</a>%%% condition endif %%%%%% condition endif %%%
+	%%% unless spielt_weiss %%%%%% if heim_setzliste_no %%%<a href="../../spieler/%%% item heim_setzliste_no %%%/">%%% endif %%%%%% endif %%%
+	%%% item heim_spieler %%%%%% unless spielt_weiss %%%%%% if heim_setzliste_no %%%</a>%%% endif %%%%%% endif %%%
 	%%% item weiss_gewinnt "</strong>" %%%
-	%%% condition if spielt_schwarz %%% <span class="shorter">%%% item heim_dwz "(%s)" %%%</span>%%% condition endif %%%</td>
-	<td class="tm">%%% condition if partie %%%<a href="../../partien/%%% item runde_no %%%-%%% item brett_no %%%/">%%% condition endif %%%
-	%%% condition if heim_ergebnis | auswaerts_ergebnis %%%
+	%%% if spielt_schwarz %%% <span class="shorter">%%% item heim_dwz "(%s)" %%%</span>%%% endif %%%</td>
+	<td class="tm">%%% if partie %%%<a href="../../partien/%%% item runde_no %%%-%%% item brett_no %%%/">%%% endif %%%
+	%%% if heim_ergebnis | auswaerts_ergebnis %%%
 	%%% item heim_ergebnis result_format %%% : %%% item auswaerts_ergebnis result_format %%%
-	%%% condition elseif live %%%
+	%%% elseif live %%%
 	LIVE
-	%%% condition else %%%
+	%%% else %%%
 	%%% item heim_ergebnis result_format %%% : %%% item auswaerts_ergebnis result_format %%%
-	%%% condition endif %%%
+	%%% endif %%%
 	 %%% item haengepartie "(<abbr title="Hängepartie">H</abbr>)" %%%%%% item partie "</a>" %%%</td>
 	<td class="ta">%%% item schwarz_gewinnt "<strong>" %%%
-	%%% condition unless spielt_schwarz %%%%%% condition if auswaerts_setzliste_no %%%<a href="../../spieler/%%% item auswaerts_setzliste_no %%%/">%%% condition endif %%%%%% condition endif %%%
-	%%% item auswaerts_spieler %%%%%% condition unless spielt_schwarz %%%%%% condition if auswaerts_setzliste_no %%%</a>%%% condition endif %%%%%% condition endif %%%
+	%%% unless spielt_schwarz %%%%%% if auswaerts_setzliste_no %%%<a href="../../spieler/%%% item auswaerts_setzliste_no %%%/">%%% endif %%%%%% endif %%%
+	%%% item auswaerts_spieler %%%%%% unless spielt_schwarz %%%%%% if auswaerts_setzliste_no %%%</a>%%% endif %%%%%% endif %%%
 	%%% item schwarz_gewinnt "</strong>" %%%
-	%%% condition if spielt_weiss %%% <span class="shorter">%%% item auswaerts_dwz "(%s)" %%%</span>%%% condition endif %%%</td>
-	<td class="longer">%%% condition if spielt_weiss %%%%%% item auswaerts_dwz %%%%%% condition endif %%%</td>
+	%%% if spielt_weiss %%% <span class="shorter">%%% item auswaerts_dwz "(%s)" %%%</span>%%% endif %%%</td>
+	<td class="longer">%%% if spielt_weiss %%%%%% item auswaerts_dwz %%%%%% endif %%%</td>
 	<td>%%% item eco %%%</td>
-%%% condition endif %%%
+%%% endif %%%
 </tr>
 %%% loop end %%%
 </table>
 </div>
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition if spielernachrichten %%%
-%%% condition unless einsendeschluss %%%
+%%% if spielernachrichten %%%
+%%% unless einsendeschluss %%%
 <p><a href="gruesse/">Brett-Nachricht schreiben</a></p>
-%%% condition endif %%%
-%%% condition endif %%%
+%%% endif %%%
+%%% endif %%%
 <script src="%%% setting behaviour_path %%%/default/link-rel-nav.js"></script>

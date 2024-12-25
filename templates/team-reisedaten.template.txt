@@ -8,10 +8,10 @@
 # @copyright Copyright © 2012, 2014, 2016, 2018, 2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
-%%% condition if head %%%
+%%% if head %%%
 <h1>An- und Abreise: <a href="../">%%% item team %%% %%% item team_no %%%</a>
 <br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> <em>in %%% item place %%%</em></h1>
 
-%%% condition else %%%
-<p class="fuss"><strong><a href="../">Zurück zur Team-Übersicht</a>%%% condition if zimmerbuchung %%% | <a href="../buchung/">Weiter zum Schritt 4: Zimmerbuchung</a>%%% condition endif %%%</strong></p>
-%%% condition endif %%%
+%%% else %%%
+<p class="fuss"><strong><a href="../">Zurück zur Team-Übersicht</a>%%% if zimmerbuchung %%% | <a href="../buchung/">Weiter zum Schritt 4: Zimmerbuchung</a>%%% endif %%%</strong></p>
+%%% endif %%%

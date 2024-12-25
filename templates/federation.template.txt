@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012, 2015-2023 Gustaf Mossakowski
+# @copyright Copyright © 2012, 2015-2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Ergebnisse aus dem Landesverband %%% item country %%%
@@ -18,84 +18,84 @@
 
 <div class="datenspalte">
 <div class="results">
-%%% condition if karte %%%
+%%% if karte %%%
 <p><a href="../../herkunftsorte/%%% item identifier %%%/">-> Herkunftsorte der Spieler auf der Karte</a></p>
-%%% condition endif %%%
+%%% endif %%%
 <table class="lv js-gallery">
 %%% loop events %%%
 <thead>
 <tr><td colspan="5">
 <h2><a href="../../../../%%% item event_identifier %%%/">%%% item event %%%</a><em>, %%% item duration wrap_date %%%
-%%% condition if teams | spieler %%%
-%%% condition if endstand %%%
+%%% if teams | spieler %%%
+%%% if endstand %%%
 , Endstand:
-%%% condition elseif zwischenstand %%%
+%%% elseif zwischenstand %%%
 , Tabellenstand nach der %%% item runde_no %%%. Runde:
-%%% condition elseif rangliste %%%
+%%% elseif rangliste %%%
 , Rangliste:
-%%% condition else %%%
+%%% else %%%
 , Teilnehmerliste:
-%%% condition endif %%%
-%%% condition endif %%%
+%%% endif %%%
+%%% endif %%%
 </em></h2>
 </td></tr>
 </thead>
-%%% condition if teams | spieler %%%
+%%% if teams | spieler %%%
 <tr>
 	<th><abbr title="Platz">Pl.</abbr></th>
 	<th><abbr title="Setzliste">Rg</abbr></th>
-%%% condition if turnierphotos %%%
+%%% if turnierphotos %%%
 	<th>Bild</th>
-%%% condition endif %%%
-%%% condition unless teams %%%
+%%% endif %%%
+%%% unless teams %%%
 	<th class="tx">Spieler</th>
-%%% condition endif %%%
+%%% endif %%%
 	<th class="tx">Verein</th>
 	<th class="tx"><abbr title="Punkte">Pkt.</abbr></th>
 </tr>
-%%% condition if teams %%%
+%%% if teams %%%
 %%% loop teams %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
 	<td class="tz">%%% item platz_no %%%</td>
 	<td class="tuz">%%% item setzliste_no %%%</td>
-	<td>%%% condition if teilnehmerliste %%%<a href="../../../../%%% item team_identifier %%%/">%%% condition endif %%%%%% item team %%%%%% condition if teilnehmerliste %%%</a>%%% condition endif %%%</td>
+	<td>%%% if teilnehmerliste %%%<a href="../../../../%%% item team_identifier %%%/">%%% endif %%%%%% item team %%%%%% if teilnehmerliste %%%</a>%%% endif %%%</td>
 	<td class="tz">%%% item mp result_format %%% : %%% item mp_gegner result_format %%%</td>
 </tr>
 %%% loop end %%%
-%%% condition elseif spieler %%%
+%%% elseif spieler %%%
 %%% loop spieler %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
 	<td class="tz">%%% item platz_no %%%</td>
 	<td class="tuz">%%% item setzliste_no %%%</td>
-%%% condition if turnierphotos %%%
+%%% if turnierphotos %%%
 	<td class="spielerbild">
-%%% condition if bilder %%%
+%%% if bilder %%%
 %%% loop bilder 1 %%%
-%%% condition if base_filename %%%
+%%% if base_filename %%%
 <a href="%%% setting mediadblink_base_url %%%/%%% item base_filename %%%.600.%%% item preview_extension %%%?v=%%% item version %%%" class="js-img" data-title="%%% item person %%% (%%% item verein %%%)" title="%%% item person %%% (%%% item verein %%%)"><img src="%%% setting mediadblink_base_url %%%/%%% item base_filename %%%.160.%%% item preview_extension %%%?v=%%% item version %%%" srcset="%%% setting mediadblink_base_url %%%/%%% item base_filename %%%.160.%%% item preview_extension %%%?v=%%% item version %%% 1x, %%% setting mediadblink_base_url %%%/%%% item base_filename %%%.320.%%% item preview_extension %%%?v=%%% item version %%% 2x" alt=""></a>
-%%% condition endif %%%
+%%% endif %%%
 %%% loop end %%%
-%%% condition endif %%%
+%%% endif %%%
 	</td>
-%%% condition endif %%%
-	<td>%%% condition if setzliste_no %%%<a href="../../../../%%% item event_identifier %%%/spieler/%%% item setzliste_no %%%/">%%% condition endif %%%%%% item person %%%%%% item setzliste_no "</a>" %%%</td>
+%%% endif %%%
+	<td>%%% if setzliste_no %%%<a href="../../../../%%% item event_identifier %%%/spieler/%%% item setzliste_no %%%/">%%% endif %%%%%% item person %%%%%% item setzliste_no "</a>" %%%</td>
 	<td>%%% item verein %%%</td>
 	<td class="tz">%%% item punkte result_format %%%<span class="longer"> / %%% item runde_no %%%</span></td>
 </tr>
 %%% loop end %%%
-%%% condition endif %%%
+%%% endif %%%
 
-%%% condition else %%%
+%%% else %%%
 <tr><td colspan="5" class="no_data"><p>
-%%% condition if keine_daten %%%
+%%% if keine_daten %%%
 Zu diesem Turnier liegen keine Daten vor.
-%%% condition elseif e %%%
+%%% elseif e %%%
 Aus diesem Landesverband spielt niemand bei diesem Turnier mit.
-%%% condition else %%%
+%%% else %%%
 Aus diesem Landesverband spielen keine Teams bei diesem Turnier mit.
-%%% condition endif %%%
+%%% endif %%%
 </p></td>
-%%% condition endif %%%
+%%% endif %%%
 
 %%% loop end %%%
 </table>
@@ -106,6 +106,6 @@ Aus diesem Landesverband spielen keine Teams bei diesem Turnier mit.
 %%% item anzahl_teams "treten %d Mannschaften " 0 "tritt keine Mannschaft" 1 "tritt eine Mannschaft " %%%
  an.</p>
 </div>
-%%% condition if karte %%%
+%%% if karte %%%
 <p><a href="../../herkunftsorte/%%% item identifier %%%/">-> Herkunftsorte der Spieler auf der Karte</a></p>
-%%% condition endif %%%
+%%% endif %%%

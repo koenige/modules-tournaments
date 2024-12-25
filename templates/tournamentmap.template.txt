@@ -17,13 +17,13 @@
 
 <div class="innerbox">
 <h1>
-%%% condition if contact %%%
+%%% if contact %%%
 <a href="../">
-%%% condition endif %%%
+%%% endif %%%
 Herkunftsorte der Spieler
-%%% condition if contact %%%
+%%% if contact %%%
 </a><a href="%%% path tournaments_federation identifier federation_identifier %%%">Landesverband %%% item contact_short %%%</a>
-%%% condition endif %%%
+%%% endif %%%
 </h1>
 <p><a href="%%% item contact ../ %%%../">%%% item event %%% %%% item year %%% im Schach</a></p>
 
@@ -56,7 +56,7 @@ Herkunftsorte der Spieler
 			if (feature.properties.description) {
 				popupText += '<ul class="map_spieler">' + feature.properties.description + "</ul>";
 			}
-			popupText += "<p class='more'><a href='https://schach.in%%% condition if setting localhost %%%.local%%% condition endif %%%/" + feature.properties.identifier + "/'>Weitere Informationen</a></p>";
+			popupText += "<p class='more'><a href='https://schach.in%%% if setting localhost %%%.local%%% endif %%%/" + feature.properties.identifier + "/'>Weitere Informationen</a></p>";
 			popupText += '</div>';
 			layer.bindPopup(popupText);
 		}

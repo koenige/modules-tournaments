@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2014-2016, 2018, 2020-2021 Gustaf Mossakowski
+# @copyright Copyright © 2014-2016, 2018, 2020-2021, 2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 # List of fields:
@@ -21,11 +21,11 @@
 
 <div class="abstract">
 <p>Alle Live-Partienübertragungen. Letzte Aktualisierung: %%% item last_update %%% Uhr.
-%%% condition if setting live_pgn_delay_mins %%%
+%%% if setting live_pgn_delay_mins %%%
 Die Partien werden mit %%% setting live_pgn_delay_mins %%% Minuten Verzögerung übertragen!
-%%% condition else %%%
+%%% else %%%
 Die Partien werden ohne Verzögerung übertragen!
-%%% condition endif %%%
+%%% endif %%%
 <br>(<strong>Achtung:</strong> Die Seite aktualisiert sich nicht automatisch!)</p>
 
 <ul class="quicklinks">
@@ -36,7 +36,7 @@ Die Partien werden ohne Verzögerung übertragen!
 </div>
 
 %%% loop start %%%
-%%% condition if aktuelle_runde_no %%%
+%%% if aktuelle_runde_no %%%
 <div class="liveturnier">
 <h2 id="%%% item identifier %%%"><a href="../../../%%% item identifier %%%/">%%% item event %%% %%% item year %%%</a>: <a href="../../../%%% item identifier %%%/runde/%%% item aktuelle_runde_no %%%/">%%% item aktuelle_runde_no %%%. Runde</a>, %%% item runde_wochentag %%% %%% item runde_beginn wrap_date %%% %%% item runde_time_begin %%%%%% item runde_time_end "–%s" %%% Uhr</h2>
 <a href="../../../%%% item identifier %%%/live/">Live-Bretter</a>
@@ -50,23 +50,23 @@ Die Partien werden ohne Verzögerung übertragen!
 <tr class='%%% loopposition uneven "un" %%%even'>
 	<td class="tz">%%% item brett_no %%%.</td> 
 	<td class="tz">%%% item WhiteElo %%%</td>
-	<td class="th">%%% condition if weiss_setzliste_no %%%<a href="../../../%%% item identifier %%%/spieler/%%% item weiss_setzliste_no %%%/">%%% condition endif %%%%%% item weiss %%%%%% condition if weiss_setzliste_no %%%</a>%%% condition endif %%%</td>
+	<td class="th">%%% if weiss_setzliste_no %%%<a href="../../../%%% item identifier %%%/spieler/%%% item weiss_setzliste_no %%%/">%%% endif %%%%%% item weiss %%%%%% if weiss_setzliste_no %%%</a>%%% endif %%%</td>
 	<td class="tm">
-	%%% condition if pgn %%%<a href="../../../%%% item identifier %%%/partien/%%% item runde_no %%%-%%% item brett_no %%%/">%%% condition endif %%%
-	%%% condition if weiss_ergebnis | schwarz_ergebnis %%%
+	%%% if pgn %%%<a href="../../../%%% item identifier %%%/partien/%%% item runde_no %%%-%%% item brett_no %%%/">%%% endif %%%
+	%%% if weiss_ergebnis | schwarz_ergebnis %%%
 	%%% item weiss_ergebnis result_format %%%:%%% item schwarz_ergebnis result_format %%%
-	%%% condition else %%%
+	%%% else %%%
 	LIVE
-	%%% condition endif %%%
-	%%% condition if pgn %%%</a>%%% condition endif %%%</td>
-	<td class="ta">%%% condition if schwarz_setzliste_no %%%<a href="../../../%%% item identifier %%%/spieler/%%% item schwarz_setzliste_no %%%/">%%% condition endif %%%%%% item schwarz %%%%%% condition if schwarz_setzliste_no %%%</a>%%% condition endif %%%</td>
+	%%% endif %%%
+	%%% if pgn %%%</a>%%% endif %%%</td>
+	<td class="ta">%%% if schwarz_setzliste_no %%%<a href="../../../%%% item identifier %%%/spieler/%%% item schwarz_setzliste_no %%%/">%%% endif %%%%%% item schwarz %%%%%% if schwarz_setzliste_no %%%</a>%%% endif %%%</td>
 	<td class="tz">%%% item BlackElo %%%</td>
 	<td>
-	%%% condition if pgn %%%
+	%%% if pgn %%%
 	%%% item aktuelle_zuege %%%
-	%%% condition else %%%
+	%%% else %%%
 	… noch keine Daten …
-	%%% condition endif %%%
+	%%% endif %%%
 	</td>
 </tr>
 %%% loop end %%%
@@ -77,6 +77,6 @@ Die Partien werden ohne Verzögerung übertragen!
 <p><a href="../../../%%% item identifier %%%/runde/%%% item aktuelle_runde_no %%%/">Alle Partien der %%% item aktuelle_runde_no %%%. Runde</a></p>
 </div>
 
-%%% condition endif %%%
+%%% endif %%%
 %%% loop end %%%
 </div>

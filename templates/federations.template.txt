@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012, 2014-2017, 2019-2020, 2023 Gustaf Mossakowski
+# @copyright Copyright © 2012, 2014-2017, 2019-2020, 2023-2024 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Übersicht der Landesverbände + Medaillenspiegel
@@ -15,47 +15,47 @@
 <table class="medals">
 <thead>
 <tr class="sortable">
-<th>Verband</th><th>%%% condition if e %%%Spieler%%% condition else %%%Teams%%% condition endif %%%</th>
-%%% condition if punktvergabe %%%
+<th>Verband</th><th>%%% if e %%%Spieler%%% else %%%Teams%%% endif %%%</th>
+%%% if punktvergabe %%%
 <th>Gold</th><th>Silber</th><th>Bronze</th><th>4.</th><th>5.</th><th>Gesamt</th>
-%%% condition endif %%%
+%%% endif %%%
 </tr>
 </thead>
 <tbody id="laender">
 %%% loop start %%%
-<tr class='%%% loopposition uneven "un" %%%even'><td>%%% condition if teams | spieler %%%<a href="%%% item identifier %%%/">%%% condition endif %%%
+<tr class='%%% loopposition uneven "un" %%%even'><td>%%% if teams | spieler %%%<a href="%%% item identifier %%%/">%%% endif %%%
 %%% item country %%%
-%%% condition if teams | spieler %%%</a>%%% condition endif %%%
+%%% if teams | spieler %%%</a>%%% endif %%%
 </td>
 <td>
 %%% item teams %%%
-%%% condition unless teams %%%
+%%% unless teams %%%
 %%% item spieler %%%
-%%% condition endif %%%
+%%% endif %%%
 </td>
-%%% condition if punktvergabe %%%
+%%% if punktvergabe %%%
 %%% loop plaetze %%%
 <td>%%% item anzahl "%s" 0 " " %%%</td>
 %%% loop end %%%
 <td>%%% item punkte %s %%%</td>
-%%% condition endif %%%
+%%% endif %%%
 </tr>
 %%% loop end %%%
 </table>
 </div>
 
-%%% condition if punktvergabe %%%
+%%% if punktvergabe %%%
 <p><em>
 Punktevergabe: 1. Platz = 10 Punkte, 2. Platz = 9 Punkte, 3. Platz = 8 Punkte, 4. Platz = 7 Punkte, 5. Platz = 6 Punkte;
 </em></p>
-%%% condition endif %%%
+%%% endif %%%
 
 <script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/core.js"></script>
 <script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/widgets/sortable.js"></script>
 <script type="text/javascript">
 	var sortTableObject = vxJS.widget.sorTable(document.getElementById('laender'), {
-		columnFormat: [null, "float"%%% condition if punktvergabe %%%
+		columnFormat: [null, "float"%%% if punktvergabe %%%
 , "float", "float", "float", "float", "float", "float"
-%%% condition endif %%%]
+%%% endif %%%]
 	});
 </script>
