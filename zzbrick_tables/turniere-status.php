@@ -37,7 +37,6 @@ $zz['fields'][4]['sql'] = 'SELECT category_id, category
 	FROM categories
 	WHERE main_category_id = /*_ID categories turnierstatus _*/';
 $zz['fields'][4]['display_field'] = 'category';
-$zz['fields'][4]['key_field_name'] = 'category_id';
 
 
 $zz['sql'] = 'SELECT turniere_status.*

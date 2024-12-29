@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012, 2014, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012, 2014, 2019-2021, 2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -31,7 +31,6 @@ $zz['fields'][4]['null'] = true;
 
 $zz['fields'][3]['title'] = 'Wertung';
 $zz['fields'][3]['field_name'] = 'wertung_category_id';
-$zz['fields'][3]['key_field_name'] = 'category_id';
 $zz['fields'][3]['type'] = 'select';
 $zz['fields'][3]['null'] = true;
 $zz['fields'][3]['sql'] = 'SELECT category_id, category, main_category_id

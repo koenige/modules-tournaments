@@ -41,7 +41,6 @@ $zz['fields'][3]['sql'] = 'SELECT event_id
 		ON /*_PREFIX_*/events.event_category_id = /*_PREFIX_*/categories.category_id
 	WHERE /*_PREFIX_*/categories.parameters LIKE "%&tournament=1%"
 	ORDER BY identifier';
-$zz['fields'][3]['key_field_name'] = 'events.event_id';
 $zz['fields'][3]['display_field'] = 'event';
 $zz['fields'][3]['if']['where']['hide_in_list'] = true;
 $zz['fields'][3]['if']['where']['hide_in_form'] = true;
@@ -121,7 +120,6 @@ $zz['fields'][13]['type']= 'select';
 $zz['fields'][13]['sql'] = 'SELECT category_id, category, main_category_id
 	FROM categories';
 $zz['fields'][13]['display_field'] = 'category';
-$zz['fields'][13]['key_field_name'] = 'category_id';
 $zz['fields'][13]['show_hierarchy'] = 'main_category_id';
 $zz['fields'][13]['show_hierarchy_subtree'] = wrap_category_id('partiestatus');
 

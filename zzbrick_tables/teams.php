@@ -44,7 +44,6 @@ $zz['fields'][3]['sql'] = 'SELECT contacts.contact_id, contact
 	WHERE categories.parameters LIKE "%&organisation=1%"
 	ORDER BY contacts_identifiers.identifier, contact_abbr';
 $zz['fields'][3]['display_field'] = 'organisation';
-$zz['fields'][3]['id_field_name'] = 'contacts.contact_id';
 $zz['fields'][3]['search'] = 'vereine.contact';
 $zz['fields'][3]['character_set'] = 'utf8';
 $zz['fields'][3]['sql_fieldnames_ignore'] = ['contacts.contact_id'];
@@ -101,7 +100,6 @@ $zz['fields'][7]['type'] = 'select';
 $zz['fields'][7]['sql'] = 'SELECT category_id, category, main_category_id
 	FROM categories';
 $zz['fields'][7]['show_hierarchy'] = 'main_category_id';
-$zz['fields'][7]['id_field_name'] = 'category_id';
 $zz['fields'][7]['show_hierarchy_subtree'] = wrap_category_id('berechtigungen');
 $zz['fields'][7]['display_field'] = 'category';
 $zz['fields'][7]['hide_in_list'] = true;

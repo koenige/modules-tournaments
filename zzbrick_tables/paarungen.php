@@ -33,7 +33,6 @@ $zz['fields'][2]['sql'] = 'SELECT event_id
 		ON /*_PREFIX_*/events.event_category_id = /*_PREFIX_*/categories.category_id
 	WHERE /*_PREFIX_*/categories.parameters LIKE "%&tournament=1%"
 	ORDER BY identifier';
-$zz['fields'][2]['key_field_name'] = 'events.event_id';
 $zz['fields'][2]['display_field'] = 'event';
 $zz['fields'][2]['if']['where']['hide_in_list'] = true;
 $zz['fields'][2]['if']['where']['hide_in_form'] = true;
@@ -50,7 +49,6 @@ $zz['fields'][3]['field_name'] = 'place_contact_id';
 $zz['fields'][3]['type'] = 'select';
 $zz['fields'][3]['sql'] = 'SELECT contact_id, contact
 	FROM contacts
-$zz['fields'][3]['key_field_name'] = 'contact_id';
 	WHERE contact_category_id = /*_ID categories contact/place _*/';
 $zz['fields'][3]['type'] = 'select';
 $zz['fields'][3]['hide_in_list'] = true;

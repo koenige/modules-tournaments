@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012, 2014-2015, 2017, 2019-2022 Gustaf Mossakowski
+ * @copyright Copyright © 2012, 2014-2015, 2017, 2019-2022, 2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -67,7 +67,6 @@ $zz['fields'][4]['sql'] = 'SELECT person_id
 	ORDER BY last_name, first_name, YEAR(date_of_birth), identifier';
 $zz['fields'][4]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 $zz['fields'][4]['display_field'] = 'contact';
-$zz['fields'][4]['key_field_name'] = 'person_id';
 if (!empty($_SESSION)) {
 	$zz['fields'][4]['default'] = $_SESSION['person_id'];
 }

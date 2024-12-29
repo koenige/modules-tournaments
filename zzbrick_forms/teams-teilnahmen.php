@@ -91,7 +91,7 @@ foreach ($zz['fields'] as $no => $field) {
 				$brick['data']['event_id'],
 				$brick['data']['contact_id']
 			);
-			$zz['fields'][$no]['id_field_name'] = 'contacts.contact_id';
+			$zz['fields'][$no]['key_field_name'] = 'contacts.contact_id';
 		} else {
 			// tournaments_teams_registrations, Auswahlmannschaften, Schulen etc.
 			// erlaube auch die Auswahl von passiven Mitgliedern

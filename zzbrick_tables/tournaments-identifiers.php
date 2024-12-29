@@ -41,7 +41,6 @@ $zz['fields'][4]['sql'] = 'SELECT category_id, category
 	WHERE main_category_id = /*_ID categories identifiers _*/
 	AND parameters LIKE "%tournaments_identifier=1%"';
 $zz['fields'][4]['display_field'] = 'category';
-$zz['fields'][4]['key_field_name'] = 'category_id';
 $zz['fields'][4]['def_val_ignore'] = true;
 
 $zz['fields'][20]['field_name'] = 'last_update';
