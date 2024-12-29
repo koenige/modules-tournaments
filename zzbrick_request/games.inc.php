@@ -557,7 +557,7 @@ function mod_tournaments_games_pgn($event_id, $round_no = false, $brett_no = fal
 			AND (ISNULL(weiss.team_id) OR weiss.team_id = IF(heim_spieler_farbe = "schwarz", auswaerts_teams.team_id, heim_teams.team_id))
 			AND weiss.event_id = partien.event_id
 		JOIN participations schwarz
-			ON black_persons.contact_id = schwarz.contact_id AND schwarz.usergroup_id = /*_ID categories _*/
+			ON black_persons.contact_id = schwarz.contact_id AND schwarz.usergroup_id = /*_ID usergroups spieler _*/
 			AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", heim_teams.team_id, auswaerts_teams.team_id))
 			AND schwarz.event_id = partien.event_id
 		LEFT JOIN contacts_identifiers weiss_fide_id
