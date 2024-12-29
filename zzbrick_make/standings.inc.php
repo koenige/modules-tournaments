@@ -194,9 +194,9 @@ function mod_tournaments_make_standings_round($vars) {
 	zzform_update('tournaments', $line);
 
 	if ($changes)
-		$page['text'] = sprintf(wrap_text('Standings for tournament %s, round %d have been successfully updated.'), $event['identifier'], $round_no);
+		$page['text'] = wrap_text('Standings for tournament %s, round %d have been successfully updated.', ['values' => [$event['identifier'], $round_no]]);
 	else
-		$page['text'] = sprintf(wrap_text('Standings for tournament %s, round %d: no updates necessary.'), $event['identifier'], $round_no);
+		$page['text'] = wrap_text('Standings for tournament %s, round %d: no updates necessary.', ['values' => [$event['identifier'], $round_no]]);
 	return mod_tournaments_make_standings_return($page, $time, $type);
 }
 
