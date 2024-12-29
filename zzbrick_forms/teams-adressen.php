@@ -105,7 +105,7 @@ $zz['list']['merge'] = false;
 $zz['record']['add'] = false;
 $zz['page']['dont_show_title_as_breadcrumb'] = true;
 
-$zz['page']['breadcrumbs'][] = sprintf('<a href="../">%s</a>', $organisation);
+$zz['page']['breadcrumbs'][] = ['url_path' => '../', 'title' => $organisation];
 $zz['page']['breadcrumbs'][]['title'] = 'Adressen';
 
 $zz['title'] = '<a href="../">'.$type.' '.$organisation.'</a>: Adressen

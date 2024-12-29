@@ -737,7 +737,7 @@ function mod_tournaments_games_special_html($event, $settings) {
 	$event['weiss'] = $pgn['head']['White'];
 	$event['schwarz'] = $pgn['head']['Black'];
 	$event['Annotator'] = isset($pgn['head']['Annotator']) ? $pgn['head']['Annotator'] : '';
-	$event['breadcrumbs'][] = 'Partie des Tages';
+	$event['breadcrumbs'][]['title'] = 'Partie des Tages';
 	$event['breadcrumbs'][]['title'] = 'Tag '.$event['tag'].', Partie '.$request[1];
 
 	$event += mf_chess_pgn_to_html($pgn);
