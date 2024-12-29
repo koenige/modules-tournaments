@@ -103,18 +103,18 @@ function mod_tournament_make_liveresults_tournament($params) {
 		$series_identifier = false;
 
 	$sql = 'SELECT partien.partie_id, partien.brett_no
-			, IF(partiestatus_category_id = %d, 0.5,
+			, IF(partiestatus_category_id = /*_ID categories partiestatus/haengepartie _*/, 0.5,
 				CASE weiss_ergebnis
-				WHEN 1.0 THEN IF(partiestatus_category_id = %d, "+", 1)
-				WHEN 0.5 THEN IF(partiestatus_category_id = %d, "=", 0.5)
-				WHEN 0 THEN IF(partiestatus_category_id = %d, "-", 0)
+				WHEN 1.0 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "+", 1)
+				WHEN 0.5 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "=", 0.5)
+				WHEN 0 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "-", 0)
 				END
 			) AS weiss_ergebnis
-			, IF(partiestatus_category_id = %d, 0.5,
+			, IF(partiestatus_category_id = /*_ID categories partiestatus/haengepartie _*/, 0.5,
 				CASE schwarz_ergebnis
-				WHEN 1.0 THEN IF(partiestatus_category_id = %d, "+", 1)
-				WHEN 0.5 THEN IF(partiestatus_category_id = %d, "=", 0.5)
-				WHEN 0 THEN IF(partiestatus_category_id = %d, "-", 0)
+				WHEN 1.0 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "+", 1)
+				WHEN 0.5 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "=", 0.5)
+				WHEN 0 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "-", 0)
 				END
 			) AS schwarz_ergebnis
 			, IF(NOT ISNULL(weiss_ergebnis), 1, NULL) AS gespeichert
@@ -132,13 +132,13 @@ function mod_tournament_make_liveresults_tournament($params) {
 		LEFT JOIN participations weiss
 			ON weiss.contact_id = white_persons.contact_id
 			AND weiss.event_id = partien.event_id
-			AND weiss.usergroup_id = %d
+			AND weiss.usergroup_id = /*_ID usergroups spieler _*/
 		LEFT JOIN persons black_persons
 			ON partien.schwarz_person_id = black_persons.person_id
 		LEFT JOIN participations schwarz
 			ON schwarz.contact_id = black_persons.contact_id
 			AND schwarz.event_id = partien.event_id
-			AND schwarz.usergroup_id = %d
+			AND schwarz.usergroup_id = /*_ID usergroups spieler _*/
 		LEFT JOIN paarungen USING (paarung_id)
 		LEFT JOIN teams heim_teams
 			ON paarungen.heim_team_id = heim_teams.team_id
@@ -147,19 +147,7 @@ function mod_tournament_make_liveresults_tournament($params) {
 		WHERE partien.event_id = %d
 			AND partien.runde_no = %d
 		ORDER by paarungen.tisch_no, partien.brett_no';
-	$sql = sprintf($sql
-		, wrap_category_id('partiestatus/haengepartie')
-		, wrap_category_id('partiestatus/kampflos')
-		, wrap_category_id('partiestatus/kampflos')
-		, wrap_category_id('partiestatus/kampflos')
-		, wrap_category_id('partiestatus/haengepartie')
-		, wrap_category_id('partiestatus/kampflos')
-		, wrap_category_id('partiestatus/kampflos')
-		, wrap_category_id('partiestatus/kampflos')
-		, wrap_id('usergroups', 'spieler')
-		, wrap_id('usergroups', 'spieler')
-		, $turnier['event_id'], $turnier['runde_no']
-	);
+	$sql = sprintf($sql, $turnier['event_id'], $turnier['runde_no']);
 	$turnier['ergebnisse'] = wrap_db_fetch($sql, ['paarung_id', 'partie_id'], 'list paarung_id partien');
 	$partien = [];
 	foreach ($turnier['ergebnisse'] as $paarung_id => $paarungen) {

@@ -27,16 +27,13 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 		LEFT JOIN contacts website_org USING (contact_id)
 		LEFT JOIN events_websites
 			ON events.event_id = events_websites.event_id
-			AND events_websites.website_id = %d
+			AND events_websites.website_id = /*_SETTING website_id _*/
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
 		WHERE events.event_id = %d
 		AND ISNULL(main_event_id)
 	';
-	$sql = sprintf($sql
-		, wrap_setting('website_id')
-		, $event['event_id']
-	);
+	$sql = sprintf($sql, $event['event_id']);
 	$event = array_merge($event, wrap_db_fetch($sql));
 	if ($internal) $event['internal'] = true;
 

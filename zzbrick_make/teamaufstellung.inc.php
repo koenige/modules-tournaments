@@ -33,7 +33,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 			, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
 			, (SELECT eventtext FROM eventtexts
 				WHERE eventtexts.event_id = tournaments.event_id
-				AND eventtexts.eventtext_category_id = %d
+				AND eventtexts.eventtext_category_id = /*_ID categories event-texts/note-lineup _*/
 			) AS hinweis_aufstellung
 		FROM teams
 		LEFT JOIN contacts organisationen
@@ -42,10 +42,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 			ON v_ok.contact_id = organisationen.contact_id AND v_ok.current = "yes"
 		LEFT JOIN tournaments USING (event_id)
 		WHERE teams.team_id = %d';
-	$sql = sprintf($sql
-		, wrap_category_id('event-texts/note-lineup')
-		, $data['team_id']
-	);
+	$sql = sprintf($sql, $data['team_id']);
 	$data = array_merge($data, wrap_db_fetch($sql));
 
 	$data['geschlecht'] = explode(',', strtoupper($data['geschlecht']));
@@ -260,11 +257,8 @@ function cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler) {
 	// Test, ob Spieler noch hinzugefügt werden darf
 	if ($data['bretter_max']) {
 		$sql = 'SELECT COUNT(*) FROM participations
-			WHERE usergroup_id = %d AND team_id = %d';
-		$sql = sprintf($sql
-			, wrap_id('usergroups', 'spieler')
-			, $data['team_id']
-		);
+			WHERE usergroup_id = /*_ID usergroups spieler _*/ AND team_id = %d';
+		$sql = sprintf($sql, $data['team_id']);
 		$gemeldet = wrap_db_fetch($sql, '', 'single value');
 		if ($gemeldet AND $gemeldet >= $data['bretter_max']) {
 			return false; // nicht mehr als bretter_max melden!

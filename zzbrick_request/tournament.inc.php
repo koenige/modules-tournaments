@@ -29,7 +29,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 			, IF(ISNULL(teams_max), 1, 
 				IF((SELECT COUNT(*) FROM teams WHERE teams.event_id = events.event_id) < tournaments.teams_max, 1, NULL)
 			) AS meldung_moeglich
-			, (SELECT COUNT(*) FROM forms WHERE forms.event_id = events.event_id AND forms.form_category_id = %d) AS freiplatz
+			, (SELECT COUNT(*) FROM forms WHERE forms.event_id = events.event_id AND forms.form_category_id = /*_ID categories formulare/freiplatzantrag _*/) AS freiplatz
 			, pseudo_dwz
 			, tournament_id
 			, tabellenstaende
@@ -37,7 +37,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 			, SUBSTRING_INDEX(series.path, "/", -1) AS series_path
 			, runden, modus.category AS modus
 			, IF(spielerphotos = "ja", IF((SELECT COUNT(contact_id) FROM participations
-				WHERE participations.event_id = events.event_id AND usergroup_id = %d AND NOT ISNULL(setzliste_no)), 1, NULL), NULL) AS spielerphotos
+				WHERE participations.event_id = events.event_id AND usergroup_id = /*_ID usergroups spieler _*/ AND NOT ISNULL(setzliste_no)), 1, NULL), NULL) AS spielerphotos
 			, registration
 			, livebretter
 			, website_org.contact_abbr
@@ -55,7 +55,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN events_websites
 			ON events_websites.event_id = events.event_id
-			AND events_websites.website_id = %d
+			AND events_websites.website_id = /*_SETTING website_id _*/
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
 		LEFT JOIN categories modus
@@ -63,13 +63,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		WHERE events.event_id = %d
 		%s
 	';
-	$sql = sprintf($sql
-		, wrap_category_id('formulare/freiplatzantrag')
-		, wrap_id('usergroups', 'spieler')
-		, wrap_setting('website_id')
-		, $event['event_id']
-		, $sql_condition
-	);
+	$sql = sprintf($sql, $event['event_id'], $sql_condition);
 	$tournament = wrap_db_fetch($sql);
 	if (!$tournament) return false;
 	$event = array_merge($event, $tournament);
@@ -170,14 +164,10 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 			, %s AS internal
 		FROM events
 		WHERE main_event_id = %d
-		AND event_category_id IN (%d, %d, %d)
+		AND event_category_id IN (/*_ID categories event/round _*/, /*_ID categories event/deadline _*/, /*_ID categories event/payment _*/)
 		ORDER BY IFNULL(date_begin, date_end) ASC, IFNULL(time_begin, time_end) ASC, runde_no
 	';
-	$sql = sprintf($sql, $internal ? 1 : 'NULL', $event['event_id']
-		, wrap_category_id('event/round')
-		, wrap_category_id('event/deadline')
-		, wrap_category_id('event/payment')
-	);
+	$sql = sprintf($sql, $internal ? 1 : 'NULL', $event['event_id']);
 	$event['events'] = wrap_db_fetch($sql, 'event_id');
 	foreach ($event['events'] as $event_id => $my_datum) {
 		if ($event['offen'] OR $event['freiplatz']) {
@@ -218,7 +208,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 			AND (!brick_access_rights(['Webmaster']) 
 			AND !brick_access_rights(['Schiedsrichter', 'Technik', 'Turnierleitung'], 'event:'.$event['identifier']))
 		) {
-			$event['events'][$event_id]['tabelle'] = false;
+			//$event['events'][$event_id]['tabelle'] = false;
 			$event['events'][$event_id]['paarungen'] = false;
 		}
 	}
@@ -278,15 +268,14 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	if (!empty($event['einzel'])) {
 		$sql = 'SELECT COUNT(*) FROM participations
 			WHERE event_id = %d
-			AND usergroup_id = %d
-			AND status_category_id IN (%s%d, %d, %d)';
+			AND usergroup_id = /*_ID usergroups spieler _*/
+			AND status_category_id IN (%s/*_ID categories participation-status/participant _*/,
+				/*_ID categories participation-status/disqualified _*/,
+				/*_ID categories participation-status/blocked _*/
+			)';
 		$sql = sprintf($sql
 			, $event['event_id']
-			, wrap_id('usergroups', 'spieler')
 			, ($event['date_end'] >= date('Y-m-d')) ? sprintf('%d, ', wrap_category_id('participation-status/verified')) : ''
-			, wrap_category_id('participation-status/participant')
-			, wrap_category_id('participation-status/disqualified')
-			, wrap_category_id('participation-status/blocked')
 		);
 		$event['einzelteilnehmerliste'] = wrap_db_fetch($sql, '', 'single value');
 	}
@@ -319,15 +308,12 @@ function mod_tournaments_tournament($vars, $settings, $event) {
  */
 function mod_tournaments_tournament_organisers($event, $internal) {	
 	if ($internal) {
-		$sql_fields = sprintf('
-		, GROUP_CONCAT(category, ": ", identification SEPARATOR "<br>") AS telefon
+		$sql_fields = ', GROUP_CONCAT(category, ": ", identification SEPARATOR "<br>") AS telefon
 		, (SELECT identification FROM contactdetails
 			WHERE contactdetails.contact_id = contacts.contact_id
-			AND provider_category_id = %d
+			AND provider_category_id = /*_ID categories provider/e-mail _*/
 			LIMIT 1
-		) AS e_mail'
-			, wrap_category_id('provider/e-mail')
-		);
+		) AS e_mail';
 		$sql_join = '
 		LEFT JOIN contactdetails USING (contact_id)
 		LEFT JOIN categories
@@ -348,14 +334,15 @@ function mod_tournaments_tournament_organisers($event, $internal) {
 		%s
 		LEFT JOIN usergroups USING (usergroup_id)
 		WHERE event_id = %d
-		AND usergroup_id IN (%d, %d, %d)
+		AND usergroup_id IN (
+			/*_ID usergroups organisator _*/,
+			/*_ID usergroups schiedsrichter _*/,
+			/*_ID usergroups turnierleitung _*/
+		)
 		GROUP BY participations.contact_id, usergroups.usergroup_id
 		ORDER BY last_name, first_name
 	';
-	$sql = sprintf($sql, $sql_fields, $sql_join, $event['event_id'],
-		wrap_id('usergroups', 'organisator'), wrap_id('usergroups', 'schiedsrichter'),
-		wrap_id('usergroups', 'turnierleitung')
-	);
+	$sql = sprintf($sql, $sql_fields, $sql_join, $event['event_id']);
 	$event = array_merge($event, wrap_db_fetch($sql, ['group_identifier', 'person_id']));
 	return $event;
 }
@@ -389,16 +376,14 @@ function mod_tournaments_tournament_players_compact($event) {
 			ON tabellenstaende_wertungen.tabellenstand_id = tabellenstaende.tabellenstand_id
 			AND tabellenstaende_wertungen.wertung_category_id = %d
 		WHERE participations.event_id = %d
-		AND usergroup_id = %d
-		AND status_category_id = %d
+		AND usergroup_id = /*_ID usergroups spieler _*/
+		AND status_category_id = /*_ID categories participation-status/participant _*/
 		AND NOT ISNULL(platz_no)
 		ORDER BY platz_no';
 	$sql = sprintf($sql
 		, $event['round_no']
 		, $main_rating_category_id
 		, $event['event_id']
-		, wrap_id('usergroups', 'spieler')
-		, wrap_category_id('participation-status/participant')
 	);
 	$event['players'] = wrap_db_fetch($sql, 'participation_id');
 	if ($event['players'])

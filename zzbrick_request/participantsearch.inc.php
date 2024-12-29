@@ -41,13 +41,13 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 		LEFT JOIN tournaments USING (event_id)
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
-			AND events_websites.website_id = %d
+			AND events_websites.website_id = /*_SETTING website_id _*/
 		LEFT JOIN categories event_categories
 			ON event_categories.category_id = events.event_category_id
 		WHERE (main_series.path = "reihen/%s" OR SUBSTRING_INDEX(series.path, "/", -1) = "%s")
 		AND IFNULL(event_year, YEAR(date_begin)) = %d
 	';
-	$sql = sprintf($sql, wrap_setting('website_id'), wrap_db_escape($params[1]), wrap_db_escape($params[1]), $params[0]);
+	$sql = sprintf($sql, wrap_db_escape($params[1]), wrap_db_escape($params[1]), $params[0]);
 	$events = wrap_db_fetch($sql, 'event_id');
 	if (!$events) return false;
 	$event = reset($events);
@@ -112,7 +112,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 				JOIN persons USING (contact_id)
 				JOIN contacts USING (contact_id)
 				WHERE participations.event_id IN (%s)
-				AND usergroup_id = %d
+				AND usergroup_id = /*_ID usergroups spieler _*/
 				AND NOT ISNULL(brett_no)
 				AND (
 					IF(ISNULL(t_vorname),
@@ -123,17 +123,17 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 					OR IF(ISNULL(t_vorname), CONCAT(last_name, " ", first_name), CONCAT(t_nachname, " ", t_vorname)) LIKE "%%%s%%"
 					OR contacts.identifier LIKE _latin1"%%%s%%"
 				)
-				AND status_category_id IN (%d, %d, %d)';
+				AND status_category_id IN (
+					/*_ID categories participation-status/participant _*/,
+					/*_ID categories participation-status/verified _*/,
+					/*_ID categories participation-status/disqualified _*/
+				)';
 			$sql = sprintf($sql
 				, implode(',', array_keys($events))
-				, wrap_id('usergroups', 'spieler')
 				, wrap_db_escape($_GET['q'])
 				, wrap_db_escape($_GET['q'])
 				, wrap_db_escape($_GET['q'])
 				, wrap_db_escape($_GET['q'])
-				, wrap_category_id('participation-status/participant')
-				, wrap_category_id('participation-status/verified')
-				, wrap_category_id('participation-status/disqualified')
 			);
 			$event['spieler'] = wrap_db_fetch($sql, 'person_id');
 		}
@@ -152,7 +152,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 			JOIN persons USING (contact_id)
 			JOIN contacts USING (contact_id)
 			WHERE participations.event_id IN (%s)
-			AND usergroup_id = %d
+			AND usergroup_id = /*_ID usergroups spieler _*/
 			AND (
 				IF(ISNULL(t_vorname),
 					contact,
@@ -162,17 +162,17 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 				OR IF(ISNULL(t_vorname), CONCAT(last_name, " ", first_name), CONCAT(t_nachname, " ", t_vorname)) LIKE "%%%s%%"
 				OR contacts.identifier LIKE _latin1"%%%s%%"
 			)
-			AND status_category_id IN (%d, %d, %d)';
+			AND status_category_id IN (
+				/*_ID categories participation-status/participant _*/,
+				/*_ID categories participation-status/verified _*/,
+				/*_ID categories participation-status/disqualified _*/
+			)';
 		$sql = sprintf($sql
 			, implode(',', array_keys($events))
-			, wrap_id('usergroups', 'spieler')
 			, wrap_db_escape($_GET['q'])
 			, wrap_db_escape($_GET['q'])
 			, wrap_db_escape($_GET['q'])
 			, wrap_db_escape($_GET['q'])
-			, wrap_category_id('participation-status/participant')
-			, wrap_category_id('participation-status/verified')
-			, wrap_category_id('participation-status/disqualified')
 		);
 		$event['spieler'] = wrap_db_fetch($sql, 'participation_id');
 	}

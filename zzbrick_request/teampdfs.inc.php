@@ -30,14 +30,11 @@ function mod_tournaments_teampdfs($params, $settings, $event) {
 			, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
 			, (SELECT eventtext FROM eventtexts
 				WHERE eventtexts.event_id = tournaments.event_id
-				AND eventtexts.eventtext_category_id = %d
+				AND eventtexts.eventtext_category_id = /*_ID categories event-texts/note-registration-form _*/
 			) AS hinweis_meldebogen
 	    FROM tournaments
 	    WHERE event_id = %d';
-	$sql = sprintf($sql
-		, wrap_category_id('event-texts/note-registration-form')
-		, $event['event_id']
-	);
+	$sql = sprintf($sql, $event['event_id']);
 	$event += wrap_db_fetch($sql);
 	$event += mf_tournaments_pdf_event_accounts($event['event_id']);
 	

@@ -95,12 +95,12 @@ function mod_tournaments_tournamentmap_json($params) {
 			, ok.identifier AS zps_code, contacts.identifier
 			, (SELECT identification FROM contactdetails
 				WHERE contactdetails.contact_id = contacts.contact_id
-				AND provider_category_id = %d
+				AND provider_category_id = /*_ID categories provider/website _*/
 				LIMIT 1) AS website
 		FROM contacts
 		LEFT JOIN contacts_contacts
 			ON contacts_contacts.main_contact_id = contacts.contact_id
-			AND contacts_contacts.relation_category_id = %d
+			AND contacts_contacts.relation_category_id = /*_ID categories relation/venue _*/
 			AND contacts_contacts.published = "yes"
 		LEFT JOIN contacts places
 			ON contacts_contacts.contact_id = places.contact_id
@@ -108,18 +108,12 @@ function mod_tournaments_tournamentmap_json($params) {
 			ON IFNULL(places.contact_id, contacts.contact_id) = addresses.contact_id
 		LEFT JOIN contacts_identifiers ok
 			ON ok.contact_id = contacts.contact_id AND current = "yes"
-			AND identifier_category_id = %d
+			AND identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 		LEFT JOIN categories
 			ON contacts.contact_category_id = categories.category_id
 		WHERE NOT ISNULL(contacts.contact)
-		AND categories.parameters LIKE "%%&organisation=1%%"
-		ORDER BY ok.identifier
-	';
-	$sql = sprintf($sql
-		, wrap_category_id('provider/website')
-		, wrap_category_id('relation/venue')
-		, wrap_category_id('identifiers/pass_dsb')
-	);
+		AND categories.parameters LIKE "%&organisation=1%"
+		ORDER BY ok.identifier';
 	$organisationen = wrap_db_fetch($sql, 'contact_id');
 
 	$sql = 'SELECT participations.participation_id AS tt_id
@@ -144,24 +138,21 @@ function mod_tournaments_tournamentmap_json($params) {
 			ON series.main_category_id = main_series.category_id
 		LEFT JOIN contacts_identifiers zps
 			ON participations.contact_id = zps.contact_id
-			AND zps.identifier_category_id = %d
+			AND zps.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 			AND zps.current = "yes"
 		LEFT JOIN contacts_identifiers fide
 			ON participations.contact_id = fide.contact_id
-			AND fide.identifier_category_id = %d
+			AND fide.identifier_category_id = /*_ID categories identifiers/id_fide _*/
 			AND fide.current = "yes"
 		WHERE main_series.path = "reihen/%s"
-		AND IFNULL(events.event_year, YEAR(events.date_begin)) = %d
+		AND IFNULL(events.event_year, YEAR(events.date_begin)) = /*_ID usergroups spieler _*/
 		AND (ISNULL(teams.team_id) OR teams.meldung = "komplett" OR teams.meldung = "teiloffen")
 		AND usergroup_id = %d
 		%s
 		ORDER BY t_nachname, t_vorname
 	';
 	$sql = sprintf($sql,
-		wrap_category_id('identifiers/pass_dsb'),
-		wrap_category_id('identifiers/id_fide'),
 		wrap_db_escape($params[1]), $params[0],
-		wrap_id('usergroups', 'spieler'),
 		$federation ? sprintf(
 			' AND (participations.club_contact_id IN (%s) OR teams.club_contact_id IN (%s)) '
 			, implode(',', array_keys($contact_ids))
@@ -233,13 +224,9 @@ function mod_tournaments_tournamentmap_federation($federation) {
 		FROM contacts
 		LEFT JOIN contacts_contacts USING (contact_id)
 		WHERE identifier = "%s"
-		AND contacts_contacts.relation_category_id = %d
-		AND contacts_contacts.main_contact_id = %d';
-	$sql = sprintf($sql
-		, wrap_db_escape($federation)
-		, wrap_category_id('relation/member')
-		, wrap_setting('clubs_confederation_contact_id')
-	);
+		AND contacts_contacts.relation_category_id = /*_ID categories relation/member _*/
+		AND contacts_contacts.main_contact_id = /*_SETTING clubs_confederation_contact_id _*/';
+	$sql = sprintf($sql, wrap_db_escape($federation));
 	$federation = wrap_db_fetch($sql);
 	if (!$federation) return [];
 

@@ -30,7 +30,11 @@ $sql = 'SELECT contact_id
 	WHERE IFNULL(events.event_year, YEAR(events.date_begin)) = %d
 	AND (series.main_category_id = %d OR series.category_id = %d)
 	AND %s = %d
-	AND usergroup_id NOT IN (%d, %d, %d)
+	AND usergroup_id NOT IN (
+		/*_ID usergroups team-organisator _*/,
+		/*_ID usergroups landesverband-organisator _*/,
+		/*_ID usergroups bewerber _*/
+	)
 	ORDER BY series.sequence';
 $sql = sprintf($sql
 	, $brick['vars'][0]
@@ -38,9 +42,6 @@ $sql = sprintf($sql
 	, $brick['data']['series_category_id']
 	, $field
 	, $contact_id
-	, wrap_id('usergroups', 'team-organisator')
-	, wrap_id('usergroups', 'landesverband-organisator')
-	, wrap_id('usergroups', 'bewerber')
 );
 $contact_ids = wrap_db_fetch($sql, '_dummy_', 'single value');
 

@@ -253,7 +253,7 @@ $zz['fields'][99]['field_name'] = 'last_update';
 $zz['fields'][99]['type'] = 'timestamp';
 $zz['fields'][99]['hide_in_list'] = true;
 
-$zz['sql'] = sprintf('SELECT partien.*
+$zz['sql'] = 'SELECT partien.*
 		, event, events.identifier AS event_identifier, paarungen.tisch_no
 		, CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname) AS weiss
 		, CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname) AS schwarz
@@ -274,14 +274,12 @@ $zz['sql'] = sprintf('SELECT partien.*
 		ON weiss.contact_id = white_contact.contact_id
 		AND weiss.event_id = partien.event_id
 		AND (ISNULL(weiss.team_id) OR weiss.team_id = IF(heim_spieler_farbe = "schwarz", paarungen.auswaerts_team_id, paarungen.heim_team_id))
-		AND weiss.usergroup_id = %d
+		AND weiss.usergroup_id = /*_ID usergroups spieler _*/
 	LEFT JOIN participations schwarz
 		ON schwarz.contact_id = black_contact.contact_id
 		AND schwarz.event_id = partien.event_id
 		AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", paarungen.heim_team_id, paarungen.auswaerts_team_id))
-		AND schwarz.usergroup_id = %d
-', wrap_id('usergroups', 'spieler'), wrap_id('usergroups', 'spieler'));
-
+		AND schwarz.usergroup_id = /*_ID usergroups spieler _*/';
 $zz['sqlorder'] = ' ORDER BY events.date_begin, events.identifier, runde_no, brett_no';
 
 $zz['subtitle']['event_id']['sql'] = 'SELECT event FROM events';

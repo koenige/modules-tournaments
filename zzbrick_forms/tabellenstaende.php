@@ -49,10 +49,10 @@ $zz['fields'][5]['sql'] = 'SELECT person_id
 	FROM persons
 	LEFT JOIN participations USING (contact_id)
 	LEFT JOIN contacts USING (contact_id)
-	WHERE participations.usergroup_id = %d
+	WHERE participations.usergroup_id = /*_ID usergroups spieler _*/
 	AND event_id = %d
 	ORDER BY last_name, first_name, YEAR(date_of_birth), identifier';
-$zz['fields'][5]['sql'] = sprintf($zz['fields'][5]['sql'], wrap_id('usergroups', 'spieler'), $brick['data']['event_id']);
+$zz['fields'][5]['sql'] = sprintf($zz['fields'][5]['sql'], $brick['data']['event_id']);
 $zz['fields'][5]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 
 $zz['fields'][6]['auto_value'] = 'increment';

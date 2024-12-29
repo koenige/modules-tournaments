@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -40,12 +40,9 @@ function mod_tournaments_exportcb($params, $settings, $event) {
 			, brett_no AS board
 		FROM participations
 		WHERE team_id IN (%s) AND NOT ISNULL(brett_no)
-		AND status_category_id = %d
+		AND status_category_id = /*_ID categories participation-status/participant _*/
 		ORDER BY team_id, brett_no';
-	$sql = sprintf($sql
-		, implode(',', array_keys($teams))
-		, wrap_category_id('participation-status/participant')
-	);
+	$sql = sprintf($sql, implode(',', array_keys($teams)));
 	$players = wrap_db_fetch($sql, ['team_id', 'participation_id']);
 
 	foreach ($players as $team_id => $teamplayers) {

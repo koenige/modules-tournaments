@@ -151,12 +151,8 @@ function mod_tournaments_make_standings_round($vars) {
 	$sql = 'SELECT COUNT(*)
 		FROM partien
 		WHERE event_id = %d AND runde_no = %d
-		AND partiestatus_category_id = %d';
-	$sql = sprintf($sql
-		, $event['event_id']
-		, $round_no
-		, wrap_category_id('partiestatus/normal')
-	);
+		AND partiestatus_category_id = /*_ID categories partiestatus/normal _*/';
+	$sql = sprintf($sql, $event['event_id'], $round_no);
 	$games_played_in_round = wrap_db_fetch($sql, '', 'single value');
 	if (!$games_played_in_round) {
 		$page['text'] = wrap_text(sprintf(

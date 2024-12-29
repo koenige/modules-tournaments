@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014, 2017, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2014, 2017, 2019-2021, 2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -33,9 +33,9 @@ $zz['fields'][2]['search'] = 'CONCAT(event, " ", IFNULL(event_year, YEAR(date_be
 $zz['fields'][4]['title'] = 'Kategorie';
 $zz['fields'][4]['field_name'] = 'status_category_id';
 $zz['fields'][4]['type'] = 'select';
-$zz['fields'][4]['sql'] = sprintf('SELECT category_id, category
+$zz['fields'][4]['sql'] = 'SELECT category_id, category
 	FROM categories
-	WHERE main_category_id = %d', wrap_category_id('turnierstatus'));
+	WHERE main_category_id = /*_ID categories turnierstatus _*/';
 $zz['fields'][4]['display_field'] = 'category';
 $zz['fields'][4]['key_field_name'] = 'category_id';
 

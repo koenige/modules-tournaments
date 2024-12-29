@@ -69,10 +69,9 @@ function mod_tournaments_standings($vars, $settings, $event) {
 		JOIN tournaments USING (event_id)
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
-			AND events_websites.website_id = %d
-		WHERE events.event_id = %d
-	';
-	$sql = sprintf($sql, $runde, $runde, $runde, wrap_setting('website_id'), $event['event_id']);
+			AND events_websites.website_id = /*_SETTING website_id _*/
+		WHERE events.event_id = %d';
+	$sql = sprintf($sql, $runde, $runde, $runde, $event['event_id']);
 	$event = array_merge($event, wrap_db_fetch($sql));
 	if (!$event['runden']) return false;
 	$event['runde_no'] = $runde;
@@ -93,9 +92,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 			AND spielfrei = "nein"
 			ORDER BY platz_no, team, team_no
 		';
-		$sql = sprintf($sql
-			, $event['event_id'], $runde
-		);
+		$sql = sprintf($sql, $event['event_id'], $runde);
 		$id = 'team_id';
 	} else {
 		$sql = 'SELECT tabellenstand_id, tabellenstaende.platz_no
@@ -113,14 +110,13 @@ function mod_tournaments_standings($vars, $settings, $event) {
 			LEFT JOIN participations
 				ON participations.contact_id = persons.contact_id
 				AND participations.event_id = tabellenstaende.event_id
-				AND participations.usergroup_id = %d
+				AND participations.usergroup_id = /*_ID usergroups spieler _*/
 			WHERE tabellenstaende.event_id = %d
 			AND tabellenstaende.runde_no = %d
 			%s
 			ORDER BY platz_no
 		';
 		$sql = sprintf($sql
-			, wrap_id('usergroups', 'spieler')
 			, $event['event_id'], $runde
 			, $filter['where'] ? ' AND '.implode(' AND ', $filter['where']) : ''
 		);

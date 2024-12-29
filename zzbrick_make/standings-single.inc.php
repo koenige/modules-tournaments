@@ -130,16 +130,11 @@ function mod_tournaments_make_standings_write_single($event_id, $runde_no, $tabe
 			AND partien.event_id = participations.event_id
 		WHERE participations.event_id = %d
 		AND runde_no <= %d
-		AND status_category_id = %d
-		AND usergroup_id = %d
+		AND status_category_id = /*_ID categories participation-status/participant _*/
+		AND usergroup_id = /*_ID usergroups spieler _*/
 		GROUP BY person_id
 	';
-	$sql = sprintf($sql
-		, $event_id
-		, $runde_no
-		, wrap_category_id('participation-status/participant')
-		, wrap_id('usergroups', 'spieler')
-	);
+	$sql = sprintf($sql, $event_id, $runde_no);
 	$guv = wrap_db_fetch($sql, 'person_id');
 	$punktspalten = ['g', 'u', 'v'];
 
@@ -217,13 +212,9 @@ class mod_tournaments_make_standings_single {
 			FROM participations
 			LEFT JOIN persons USING (contact_id)
 			WHERE event_id = %d
-			AND usergroup_id = %d
-			AND status_category_id = %d';
-		$sql = sprintf($sql
-			, $event_id
-			, wrap_id('usergroups', 'spieler')
-			, wrap_category_id('participation-status/participant')
-		);
+			AND usergroup_id = /*_ID usergroups spieler _*/
+			AND status_category_id = /*_ID categories participation-status/participant _*/';
+		$sql = sprintf($sql, $event_id);
 		$spieler = wrap_db_fetch($sql, 'person_id');
 		return $spieler;
 	}
@@ -305,7 +296,7 @@ class mod_tournaments_make_standings_single {
 
 		$sql = 'SELECT own_scores.person_id
 				, CONCAT(own_scores.gegner_id, "-", own_scores.runde_no) AS _index
-				, IF(opponents_scores.partiestatus_category_id = %d AND %d = 1, %s,
+				, IF(opponents_scores.partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/ AND %d = 1, %s,
 					CASE opponents_scores.ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE 0 END
 				) AS buchholz
 				, opponents_scores.runde_no AS runde_gegner
@@ -319,7 +310,6 @@ class mod_tournaments_make_standings_single {
 			AND own_scores.partiestatus_category_id != %d
 			ORDER BY own_scores.runde_no, own_scores.gegner_id, opponents_scores.runde_no';
 		$sql = sprintf($sql
-			, wrap_category_id('partiestatus/kampflos')
 			, $count_bye_as_draw, $this->remis
 			, $this->sieg, $this->remis, $this->runde_no, $this->runde_no
 			// FIDE 2012: exclude all byes, calculate individually
@@ -526,10 +516,10 @@ function mf_tournaments_make_single_gespielte_partien($event_id, $runde_no) {
 			AND partien.event_id = participations.event_id
 		WHERE participations.event_id = %d
 		AND partien.runde_no <= %d
-		AND participations.usergroup_id = %d
+		AND participations.usergroup_id = /*_ID usergroups spieler _*/
 		GROUP BY person_id
 		ORDER BY COUNT(partie_id)';
-	$sql = sprintf($sql, $event_id, $runde_no, wrap_id('usergroups', 'spieler'));
+	$sql = sprintf($sql, $event_id, $runde_no);
 	return wrap_db_fetch($sql, '_dummy_', 'key/value');
 }
 

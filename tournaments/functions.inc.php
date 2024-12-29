@@ -88,12 +88,12 @@ function mf_tournaments_team_rating_average_dwz($event_id, $teams, $bretter_min,
 		FROM participations
 		LEFT JOIN teams USING (team_id)
 		WHERE participations.event_id = %d
-		AND usergroup_id = %d
+		AND usergroup_id = /*_ID usergroups spieler _*/
 		AND (meldung = "komplett" OR meldung = "teiloffen")
 		AND (ISNULL(spielberechtigt) OR spielberechtigt != "nein")
 		AND teams.team_status = "Teilnehmer"
 		ORDER BY team_id, ISNULL(brett_no), brett_no, t_dwz DESC, t_elo DESC, rang_no';
-	$sql = sprintf($sql, $event_id, wrap_id('usergroups', 'spieler'));
+	$sql = sprintf($sql, $event_id);
 	$dwz = wrap_db_fetch($sql, ['team_id', 'participation_id']);
 	if (!$dwz) return [NULL, $teams];
 	

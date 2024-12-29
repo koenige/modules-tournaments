@@ -38,7 +38,7 @@ function mod_tournaments_games($vars, $settings = [], $event = []) {
 			, runden, tournament_id, livebretter
 			, IF(bretter_min, bretter_min, (SELECT COUNT(*)/2 FROM participations
 				WHERE event_id = events.event_id
-				AND usergroup_id = %d)) AS bretter_max
+				AND usergroup_id = /*_ID usergroups spieler _*/)) AS bretter_max
 		FROM events
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
@@ -48,11 +48,7 @@ function mod_tournaments_games($vars, $settings = [], $event = []) {
 			AND events_websites.website_id = %d
 		WHERE events.event_id = %d
 	';
-	$sql = sprintf($sql,
-		wrap_id('usergroups', 'spieler'),
-		$event['website_id'],
-		$event['event_id']
-	);
+	$sql = sprintf($sql, $event['website_id'], $event['event_id']);
 	$event = array_merge($event, wrap_db_fetch($sql));
 	$settings['send_as'] = $event['year'].' '.($event['series_short'] ?? $event['event']);
 
@@ -189,13 +185,14 @@ function mod_tournaments_games_series($event, $settings) {
 			AND events_websites.website_id = %d
 		WHERE IFNULL(event_year, YEAR(events.date_begin)) = %d
 		AND main_series.path = "reihen/%s"
-		AND (tournaments.notationspflicht = "ja" OR addresses.country_id = %d)
+		AND (tournaments.notationspflicht = "ja"
+			OR addresses.country_id = /*_ID countries -- _*/
+		)
 	';
 	$sql = sprintf($sql
 		, $event['website_id']
 		, $identifier[0]
 		, wrap_db_escape($identifier[1])
-		, wrap_id('countries', '--') // internet
 	);
 	$events = wrap_db_fetch($sql, 'event_id');
 	if (!$events) return false;
@@ -556,30 +553,26 @@ function mod_tournaments_games_pgn($event_id, $round_no = false, $brett_no = fal
 		LEFT JOIN persons black_persons
 			ON black_persons.person_id = partien.schwarz_person_id
 		JOIN participations weiss
-			ON white_persons.contact_id = weiss.contact_id AND weiss.usergroup_id = %d
+			ON white_persons.contact_id = weiss.contact_id AND weiss.usergroup_id = /*_ID usergroups spieler _*/
 			AND (ISNULL(weiss.team_id) OR weiss.team_id = IF(heim_spieler_farbe = "schwarz", auswaerts_teams.team_id, heim_teams.team_id))
 			AND weiss.event_id = partien.event_id
 		JOIN participations schwarz
-			ON black_persons.contact_id = schwarz.contact_id AND schwarz.usergroup_id = %d
+			ON black_persons.contact_id = schwarz.contact_id AND schwarz.usergroup_id = /*_ID categories _*/
 			AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", heim_teams.team_id, auswaerts_teams.team_id))
 			AND schwarz.event_id = partien.event_id
 		LEFT JOIN contacts_identifiers weiss_fide_id
 			ON weiss_fide_id.contact_id = white_persons.contact_id
 			AND weiss_fide_id.current = "yes"
-			AND weiss_fide_id.identifier_category_id = %d
+			AND weiss_fide_id.identifier_category_id = /*_ID categories identifiers/id_fide _*/
 		LEFT JOIN contacts_identifiers schwarz_fide_id
 			ON schwarz_fide_id.contact_id = black_persons.contact_id
 			AND schwarz_fide_id.current = "yes"
-			AND schwarz_fide_id.identifier_category_id = %d
+			AND schwarz_fide_id.identifier_category_id = /*_ID categories identifiers/id_fide _*/
 		WHERE events.event_id = (%d)
 		%s
 		ORDER BY events.identifier, partien.runde_no, paarungen.tisch_no, partien.brett_no
 	';
 	$sql = sprintf($sql,
-		wrap_id('usergroups', 'spieler'),
-		wrap_id('usergroups', 'spieler'),
-		wrap_category_id('identifiers/id_fide'),
-		wrap_category_id('identifiers/id_fide'),
 		$event_id,
 		$where ? ' AND '.implode(' AND ', $where) : ''
 	);
@@ -642,7 +635,7 @@ function mod_tournaments_games_html($event, $settings) {
 			, DATE_FORMAT(partien.last_update, "%%H:%%i") AS last_update
 			, tournaments.livebretter
 			, IF(vertauschte_farben = "ja", 1, NULL) AS vertauschte_farben
-			, IF(partiestatus_category_id NOT IN (%d, %d), partiestatus.category, "") AS partiestatus
+			, IF(partiestatus_category_id NOT IN (/*_ID categories partiestatus/normal _*/, /*_ID categories partiestatus/laufend _*/), partiestatus.category, "") AS partiestatus
 			, url
 		FROM partien
 		LEFT JOIN categories partiestatus
@@ -661,24 +654,18 @@ function mod_tournaments_games_html($event, $settings) {
 		LEFT JOIN persons black_persons
 			ON partien.schwarz_person_id = black_persons.person_id
 		LEFT JOIN participations weiss
-			ON white_persons.contact_id = weiss.contact_id AND weiss.usergroup_id = %d
+			ON white_persons.contact_id = weiss.contact_id AND weiss.usergroup_id = /*_ID usergroups spieler _*/
 			AND (ISNULL(weiss.team_id) OR weiss.team_id = IF(heim_spieler_farbe = "schwarz", auswaerts_teams.team_id, heim_teams.team_id))
 			AND weiss.event_id = partien.event_id
 		LEFT JOIN participations schwarz
-			ON black_persons.contact_id = schwarz.contact_id AND schwarz.usergroup_id = %d
+			ON black_persons.contact_id = schwarz.contact_id AND schwarz.usergroup_id = /*_ID usergroups spieler _*/
 			AND (ISNULL(schwarz.team_id) OR schwarz.team_id = IF(heim_spieler_farbe = "schwarz", heim_teams.team_id, auswaerts_teams.team_id))
 			AND schwarz.event_id = partien.event_id
 		WHERE partien.event_id = %d
 		AND partien.runde_no = %d
 		AND (tisch_no = %d OR ISNULL(tisch_no))
 		AND partien.brett_no = %d';
-	$sql = sprintf($sql,
-		wrap_category_id('partiestatus/normal'),
-		wrap_category_id('partiestatus/laufend'),
-		wrap_id('usergroups', 'spieler'),
-		wrap_id('usergroups', 'spieler'),
-		$event['event_id'], $runde, $tisch, $brett
-	);
+	$sql = sprintf($sql, $event['event_id'], $runde, $tisch, $brett);
 	$partie = wrap_db_fetch($sql);
 	$copy_fields = ['main_series_path', 'main_series', 'duration', 'place'];
 	foreach ($copy_fields as $copy_field)

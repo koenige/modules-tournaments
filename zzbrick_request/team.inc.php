@@ -28,7 +28,7 @@ function mod_tournaments_team($vars, $settings, $data) {
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN events_websites
 			ON events_websites.event_id = teams.event_id
-			AND events_websites.website_id = %d
+			AND events_websites.website_id = /*_SETTING website_id _*/
 		LEFT JOIN categories turnierformen
 			ON tournaments.turnierform_category_id = turnierformen.category_id
 		LEFT JOIN tabellenstaende
@@ -38,10 +38,7 @@ function mod_tournaments_team($vars, $settings, $data) {
 		WHERE teams.team_id = %d
 		AND NOT ISNULL(events_websites.website_id)
 	';
-	$sql = sprintf($sql
-		, wrap_setting('website_id')
-		, $data['team_id']
-	);
+	$sql = sprintf($sql, $data['team_id']);
 	$data = array_merge($data, wrap_db_fetch($sql));
 	if (!$data) return false;
 
@@ -91,12 +88,9 @@ function mod_tournaments_team($vars, $settings, $data) {
 		LEFT JOIN contacts_contacts USING (contact_id)
 		WHERE contacts_contacts.main_contact_id = %d
 		AND contacts_contacts.published = "yes"
-		AND contacts_contacts.relation_category_id = %d
+		AND contacts_contacts.relation_category_id = /*_ID categories relation/venue _*/
 		ORDER BY contacts.contact_id LIMIT 1';
-	$sql = sprintf($sql
-		, $data['contact_id']
-		, wrap_category_id('relation/venue')
-	);
+	$sql = sprintf($sql, $data['contact_id']);
 	$data = array_merge($data, wrap_db_fetch($sql));
 
 	$data['bilder'] = mf_mediadblink_media([$data['event_identifier'], 'Website'], [], 'group', $data['team_id']);
@@ -219,7 +213,7 @@ function mod_tournaments_team($vars, $settings, $data) {
 				ON weiss.contact_id = white_contact.contact_id
 			LEFT JOIN participations weiss_status
 				ON weiss_status.contact_id = weiss.contact_id
-				AND weiss_status.usergroup_id = %d
+				AND weiss_status.usergroup_id = /*_ID usergroups spieler _*/
 				AND weiss_status.event_id = %d
 			LEFT JOIN persons schwarz
 				ON schwarz.person_id = partien.schwarz_person_id
@@ -227,13 +221,13 @@ function mod_tournaments_team($vars, $settings, $data) {
 				ON schwarz.contact_id = black_contact.contact_id
 			LEFT JOIN participations schwarz_status
 				ON schwarz_status.contact_id = schwarz.contact_id
-				AND schwarz_status.usergroup_id = %d
+				AND schwarz_status.usergroup_id = /*_ID usergroups spieler _*/
 				AND schwarz_status.event_id = %d
 			WHERE partien.event_id = %d
 			AND (weiss_person_id IN (%s) OR schwarz_person_id IN (%s))';
 		$sql = sprintf($sql
-			, wrap_id('usergroups', 'spieler'), $data['event_id']
-			, wrap_id('usergroups', 'spieler'), $data['event_id']
+			, $data['event_id']
+			, $data['event_id']
 			, $data['event_id']
 			, implode(',', array_keys($data['spieler']))
 			, implode(',', array_keys($data['spieler']))
@@ -325,13 +319,10 @@ function mf_tournaments_team_players($team_ids, $event) {
 		LEFT JOIN persons USING (contact_id)
 		WHERE usergroups.identifier = "spieler"
 		AND (ISNULL(spielberechtigt) OR spielberechtigt = "ja")
-		AND participations.status_category_id = %d
+		AND participations.status_category_id = /*_ID categories participation-status/participant _*/
 		AND team_id IN (%s)
 		ORDER BY ISNULL(brett_no), brett_no, rang_no, t_dwz DESC, t_elo DESC, t_nachname, t_vorname';
-	$sql = sprintf($sql
-		, wrap_category_id('participation-status/participant')
-		, is_array($team_ids) ? implode(',', $team_ids) : $team_ids
-	);
+	$sql = sprintf($sql, is_array($team_ids) ? implode(',', $team_ids) : $team_ids);
 	$alle_spieler = wrap_db_fetch($sql, ['team_id', 'person_id']);
 	if (!$alle_spieler) return [];
 	foreach ($alle_spieler as $id => $team_spieler) {

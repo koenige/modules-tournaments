@@ -48,17 +48,13 @@ function mod_tournaments_make_filemove() {
 			, runde_no
 			, main_event_id, date_begin, time_begin
 			, IF(NOW() > DATE_SUB(CONCAT(date_begin, " ", time_begin),
-				INTERVAL %d MINUTE), "past", "future") AS type
+				INTERVAL /*_SETTING filemove_begin_before_round_mins _*/ MINUTE), "past", "future") AS type
 		FROM events
 		WHERE main_event_id IN (%s)
-		AND event_category_id = %d
+		AND event_category_id = /*_ID categories event/round _*/
 		AND takes_place = "yes"
 		ORDER BY main_event_id, runde_no';
-	$sql = sprintf($sql
-		, wrap_setting('filemove_begin_before_round_mins')
-		, implode(',', array_keys($tournaments))
-		, wrap_category_id('event/round')
-	);
+	$sql = sprintf($sql, implode(',', array_keys($tournaments)));
 	$rounds = wrap_db_fetch($sql, ['main_event_id', 'event_id']);
 	foreach ($rounds as $main_event_id => $rounds_per_event) {
 		$tournaments[$main_event_id]['rounds'] = $rounds_per_event;

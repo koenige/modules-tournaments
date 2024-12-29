@@ -35,8 +35,14 @@ function mod_tournaments_player($vars, $settings, $event) {
 			, platz_no
 			, contacts.identifier AS personen_kennung
 			, SUBSTRING_INDEX(events.identifier, "/", -1) AS turnier_kennung
-			, (SELECT identifier FROM contacts_identifiers zps WHERE zps.contact_id = contacts.contact_id AND current = "yes" AND identifier_category_id = %d) AS player_pass_dsb
-			, (SELECT identifier FROM contacts_identifiers fide WHERE fide.contact_id = contacts.contact_id AND current = "yes" AND identifier_category_id = %d) AS player_id_fide
+			, (SELECT identifier FROM contacts_identifiers zps
+				WHERE zps.contact_id = contacts.contact_id AND current = "yes"
+				AND identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+			) AS player_pass_dsb
+			, (SELECT identifier FROM contacts_identifiers fide
+				WHERE fide.contact_id = contacts.contact_id AND current = "yes"
+				AND identifier_category_id = /*_ID categories identifiers/id_fide _*/
+			) AS player_id_fide
 			, livebretter
 			, IF(DATE_SUB(events.date_end, INTERVAL 2 DAY) < CURDATE(), 1, NULL) AS einsendeschluss
 			, IF(spielerphotos = "ja", 1, NULL) AS spielerphotos
@@ -56,16 +62,10 @@ function mod_tournaments_player($vars, $settings, $event) {
 		LEFT JOIN contacts organisationen
 			ON participations.club_contact_id = organisationen.contact_id
 		WHERE setzliste_no = %d
-		AND status_category_id = %d
+		AND status_category_id = /*_ID categories participation-status/participant _*/
 		AND events.event_id = %d
 	';
-	$sql = sprintf($sql
-		, wrap_category_id('identifiers/pass_dsb')
-		, wrap_category_id('identifiers/id_fide')
-		, $vars[2]
-		, wrap_category_id('participation-status/participant')
-		, $event['event_id']
-	);
+	$sql = sprintf($sql, $vars[2], $event['event_id']);
 	$data = wrap_db_fetch($sql);
 	if (!$data) return false;
 
@@ -123,12 +123,9 @@ function mod_tournaments_player($vars, $settings, $event) {
 		FROM participations
 		WHERE event_id = %d
 		AND NOT ISNULL(setzliste_no)
-		AND status_category_id = %d
+		AND status_category_id = /*_ID categories participation-status/participant _*/
 		ORDER BY setzliste_no';
-	$sql = sprintf($sql
-		, $data['event_id']
-		, wrap_category_id('participation-status/participant')
-	);
+	$sql = sprintf($sql, $data['event_id']);
 	$participants = wrap_db_fetch($sql, 'participation_id');
 	
 	$data = array_merge($data, wrap_get_prevnext_flat($participants, $data['participation_id'], true));

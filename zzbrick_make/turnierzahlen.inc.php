@@ -75,12 +75,9 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN contacts USING (contact_id)
 		WHERE event_id = %d
-		AND usergroup_id = %d
+		AND usergroup_id = /*_ID usergroups spieler _*/
 	';
-	$sql = sprintf($sql,
-		$event['event_id'],
-		wrap_id('usergroups', 'spieler')
-	);
+	$sql = sprintf($sql, $event['event_id']);
 	$participations = wrap_db_fetch($sql, 'participation_id');
 
 	$contact_ids = [];

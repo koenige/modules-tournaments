@@ -267,13 +267,13 @@ $zz['fields'][25]['fields'][4]['type'] = 'select';
 $zz['fields'][25]['fields'][4]['search'] = 'contact';
 $zz['fields'][25]['hide_in_form'] = true;
 $zz['fields'][25]['sql'] =
-$zz['fields'][25]['subselect']['sql'] = sprintf('SELECT team_id
+$zz['fields'][25]['subselect']['sql'] = 'SELECT team_id
 		, contacts.identifier
 		, CONCAT(contact,
 			IF(logins.active = "yes", " (+)", " (-)")) AS person
 		, (SELECT identification FROM contactdetails
 			WHERE contactdetails.contact_id = contacts.contact_id
-			AND provider_category_id = %d
+			AND provider_category_id = /*_ID categories provider/e-mail _*/
 			LIMIT 1
 		) AS e_mail
 		, GROUP_CONCAT(CONCAT(category_short, ": ", identification) SEPARATOR "<br>") AS telefon
@@ -283,11 +283,8 @@ $zz['fields'][25]['subselect']['sql'] = sprintf('SELECT team_id
 	LEFT JOIN contactdetails USING (contact_id)
 	LEFT JOIN categories
 		ON contactdetails.provider_category_id = categories.category_id
-	WHERE usergroup_id = %d
-	GROUP BY participation_id'
-	, wrap_category_id('provider/e-mail')
-	, wrap_id('usergroups', 'team-organisator')
-);
+	WHERE usergroup_id = /*_ID usergroups team-organisator _*/
+	GROUP BY participation_id';
 $zz['fields'][25]['unless']['export_mode']['subselect']['prefix'] = '<p><em>Kontakt:</em><br>';
 $zz['fields'][25]['if']['export_mode']['subselect']['prefix'] = '';
 $zz['fields'][25]['if']['export_mode']['subselect']['suffix'] = '';

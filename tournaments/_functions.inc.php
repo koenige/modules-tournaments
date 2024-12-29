@@ -74,19 +74,19 @@ function mf_tournaments_final_standings($event_ids) {
 				AND teams.event_id = events.event_id) AS teams
 			, (SELECT COUNT(*) FROM participations
 				LEFT JOIN persons USING (contact_id)
-				WHERE status_category_id = %d
-				AND usergroup_id = %d
+				WHERE status_category_id = /*_ID categories participation-status/participant _*/
+				AND usergroup_id = /*_ID usergroups spieler _*/
 				AND sex = "male"
 				AND participations.event_id = events.event_id
-				AND (NOT ISNULL(brett_no) OR tournaments.turnierform_category_id = %d)
+				AND (NOT ISNULL(brett_no) OR tournaments.turnierform_category_id = /*_ID categories turnierformen/e _*/)
 			) AS spieler
 			, (SELECT COUNT(*) FROM participations
 				LEFT JOIN persons USING (contact_id)
-				WHERE status_category_id = %d
-				AND usergroup_id = %d
+				WHERE status_category_id = /*_ID categories participation-status/participant _*/
+				AND usergroup_id = /*_ID usergroups spieler _*/
 				AND sex = "female"
 				AND participations.event_id = events.event_id
-				AND (NOT ISNULL(brett_no) OR tournaments.turnierform_category_id = %d)
+				AND (NOT ISNULL(brett_no) OR tournaments.turnierform_category_id = /*_ID categories turnierformen/e _*/)
 			) AS spielerinnen
 			, tournaments.tabellenstaende
 			, tournaments.*
@@ -94,15 +94,7 @@ function mf_tournaments_final_standings($event_ids) {
 		LEFT JOIN tournaments USING (event_id)
 		WHERE event_id IN (%s)
 		AND ((ISNULL(events.date_end) AND events.date_begin < CURDATE()) OR events.date_end < CURDATE())';
-	$sql = sprintf($sql
-		, wrap_category_id('participation-status/participant')
-		, wrap_id('usergroups', 'spieler')
-		, wrap_category_id('turnierformen/e')
-		, wrap_category_id('participation-status/participant')
-		, wrap_id('usergroups', 'spieler')
-		, wrap_category_id('turnierformen/e')
-		, implode(',', $event_ids)
-	);
+	$sql = sprintf($sql, implode(',', $event_ids));
 	$turniere = wrap_db_fetch($sql, 'event_id');
 	$tabellenstaende = [];
 	foreach ($turniere as $event_id => $turnier) {
@@ -139,12 +131,13 @@ function mf_tournaments_final_standings($event_ids) {
 				AND participations.event_id = tabellenstaende.event_id
 				AND ISNULL(participations.team_id)
 			WHERE tabellenstaende.event_id IN (%s)
-			AND (ISNULL(participations.status_category_id) OR participations.status_category_id = %d)
+			AND (ISNULL(participations.status_category_id)
+				OR participations.status_category_id = /*_ID categories participation-status/participant _*/
+			)
 			AND (%s)
 			ORDER BY platz_no';
 		$sql = sprintf($sql
 			, implode(',', $ids)
-			, wrap_category_id('participation-status/participant')
 			, implode(') AND (', $filter[$fkennung]['where'])
 		);
 		$tabellen[$fkennung] = wrap_db_fetch($sql, ['event_id', 'tabellenstand_id']);
@@ -207,15 +200,10 @@ function mf_tournaments_federations($id_field_name = 'country_id') {
 		JOIN contacts_identifiers USING (contact_id)
 		LEFT JOIN contacts_contacts USING (contact_id)
 		JOIN countries USING (country_id)
-		WHERE contact_category_id = %d
+		WHERE contact_category_id = /*_ID categories contact/federation _*/
 		AND contacts_identifiers.current = "yes"
-		AND contacts_contacts.main_contact_id = %d
-		AND contacts_contacts.relation_category_id = %d
+		AND contacts_contacts.main_contact_id = /*_SETTING clubs_confederation_contact_id _*/
+		AND contacts_contacts.relation_category_id = /*_ID categories relation/member _*/
 		ORDER BY country';
-	$sql = sprintf($sql
-		, wrap_category_id('contact/federation')
-		, wrap_setting('clubs_confederation_contact_id')
-		, wrap_category_id('relation/member')
-	);
 	return wrap_db_fetch($sql, $id_field_name);
 }

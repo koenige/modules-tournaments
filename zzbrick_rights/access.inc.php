@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022 Gustaf Mossakowski
+ * @copyright Copyright © 2022, 2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -30,13 +30,13 @@ function mf_tournaments_team_own($status = ['Teilnehmer', 'Teilnahmeberechtigt']
 		FROM participations
 		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN teams USING (team_id)
-		WHERE usergroup_id IN (%d, %d)
+		WHERE usergroup_id IN (
+			/*_ID usergroups team-organisator _*/, /*_ID usergroups betreuer _*/
+		)
 		AND person_id = %d
 		AND team_status IN ("%s")
 	';
 	$sql = sprintf($sql
-		, wrap_id('usergroups', 'team-organisator')
-		, wrap_id('usergroups', 'betreuer')
 		, $_SESSION['person_id']
 		, implode('","', $status)
 	);

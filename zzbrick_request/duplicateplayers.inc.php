@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015-2016, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2015-2016, 2019-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -37,15 +37,12 @@ function mod_tournaments_duplicateplayers($vars) {
 
 	$sql = 'SELECT contact_id
 		FROM participations
-		WHERE usergroup_id = %d
+		WHERE usergroup_id = /*_ID usergroups spieler _*/
 		AND event_id IN (%s)
 		GROUP BY contact_id
 		HAVING COUNT(contact_id) > 1
 	';
-	$sql = sprintf($sql,
-		wrap_id('usergroups', 'spieler'),
-		implode(',', array_keys($turniere))
-	);
+	$sql = sprintf($sql, implode(',', array_keys($turniere)));
 	$doppelte = wrap_db_fetch($sql, '_dummy_', 'single value');
 	if (!$doppelte) {
 		$data['keine_doppelten'] = true;
@@ -62,14 +59,13 @@ function mod_tournaments_duplicateplayers($vars) {
 	 		LEFT JOIN events USING (event_id)
 	 		LEFT JOIN teams USING (team_id)
 	 		WHERE contact_id IN (%s)
-	 		AND usergroup_id = %d
+	 		AND usergroup_id = /*_ID usergroups spieler _*/
 	 		AND events.event_id IN (%s)
 	 		ORDER BY t_nachname, t_namenszusatz, t_vorname, team, team_no
 	 	';
-	 	$sql = sprintf($sql,
-	 		implode(',', $doppelte),
-	 		wrap_id('usergroups', 'spieler'),
-			implode(',', array_keys($turniere))
+	 	$sql = sprintf($sql
+	 		, implode(',', $doppelte)
+			, implode(',', array_keys($turniere))
 	 	);
 	 	$data = wrap_db_fetch($sql, ['contact_id', 'participation_id'], 'list contact_id turniere');
 	 	foreach ($data as $id => $spieler) {

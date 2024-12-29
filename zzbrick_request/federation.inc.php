@@ -36,13 +36,11 @@ function mod_tournaments_federation($vars, $settings, $event) {
 		LEFT JOIN countries USING (country_id)
 		WHERE (contacts.identifier = "%s" OR ok.identifier = "%s00")
 		AND ok.current = "yes"
-		AND contacts_contacts.relation_category_id = %d
-		AND contacts_contacts.main_contact_id = %d';
+		AND contacts_contacts.relation_category_id = /*_ID categories relation/member _*/
+		AND contacts_contacts.main_contact_id = /*_SETTING clubs_confederation_contact_id _*/';
 	$sql = sprintf($sql
 		, wrap_db_escape($vars[2])
 		, wrap_db_escape($vars[2])
-		, wrap_category_id('relation/member')
-		, wrap_setting('clubs_confederation_contact_id')
 	);
 	$data = wrap_db_fetch($sql);
 	if (!$data) return false;
@@ -58,13 +56,14 @@ function mod_tournaments_federation($vars, $settings, $event) {
 			, main_series.category_short AS main_series_short
 			, IF(LENGTH(main_series.path) > 7, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "/", SUBSTRING_INDEX(main_series.path, "/", -1)), NULL) AS main_event_path
 			, IF((SELECT COUNT(*) FROM participations
-				WHERE event_id = events.event_id AND usergroup_id = %d), NULL, 1
+				WHERE event_id = events.event_id AND usergroup_id = /*_ID usergroup spieler _*/), NULL, 1
 			) AS keine_daten
 			, IF((SELECT COUNT(*) FROM teams
 				WHERE team_status IN ("Teilnehmer", "Teilnahmeberechtigt") AND event_id = events.event_id
 				AND NOT ISNULL(teams.setzliste_no)), 1, 
 				IF((SELECT COUNT(*) FROM participations
-					WHERE participations.usergroup_id = %d AND event_id = events.event_id
+					WHERE participations.usergroup_id = /*_ID usergroup spieler _*/
+					AND event_id = events.event_id
 					AND NOT ISNULL(participations.setzliste_no)), 1, NULL)
 			) AS rangliste
 			, IF((SELECT COUNT(*) FROM partien
@@ -86,16 +85,11 @@ function mod_tournaments_federation($vars, $settings, $event) {
 			ON main_series.category_id = series.main_category_id
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
-			AND events_websites.website_id = %d
+			AND events_websites.website_id = /*_SETTING website_id _*/
 		WHERE main_series.path = "reihen/%s"
 		AND IFNULL(events.event_year, YEAR(events.date_begin)) = %d
 		ORDER BY series.sequence';
-	$sql = sprintf($sql,
-		wrap_id('usergroups', 'spieler'),
-		wrap_id('usergroups', 'spieler'),
-		wrap_setting('website_id'),
-		wrap_db_escape($vars[1]), $vars[0]
-	);
+	$sql = sprintf($sql, wrap_db_escape($vars[1]), $vars[0]);
 	$data['events'] = wrap_db_fetch($sql, 'event_id');
 	if (!$data['events']) return false;
 	$main_series = reset($data['events']);
@@ -114,7 +108,7 @@ function mod_tournaments_federation($vars, $settings, $event) {
 				, platz_no
 				, IF(teilnehmerliste = "ja", IF(team_status = "Teilnehmer", 1, NULL), NULL) AS teilnehmerliste
 				, tsw.wertung AS mp
-				, (runde_no * IF(turniere_wertungen.wertung_category_id = %d, tournaments.bretter_min, 2) - tsw.wertung) AS mp_gegner
+				, (runde_no * IF(turniere_wertungen.wertung_category_id = /*_ID categories turnierwertungen/bp _*/, tournaments.bretter_min, 2) - tsw.wertung) AS mp_gegner
 			FROM teams
 			LEFT JOIN tournaments USING (event_id)
 			LEFT JOIN turniere_wertungen
@@ -136,7 +130,6 @@ function mod_tournaments_federation($vars, $settings, $event) {
 			AND teams.team_status IN ("Teilnehmer", "Teilnahmeberechtigt")
 			ORDER BY platz_no, setzliste_no, teams.identifier';
 		$sql = sprintf($sql
-			, wrap_category_id('turnierwertungen/bp')
 			, implode(',', array_keys($data['events']))
 			, $data['zps_code']
 			, $data['country_id']
@@ -158,12 +151,11 @@ function mod_tournaments_federation($vars, $settings, $event) {
 			WHERE participations.event_id IN (%s)
 			AND (teams.meldung = "komplett" OR teams.meldung = "teiloffen")
 			AND (IF(NOT ISNULL(vereine.identifier), SUBSTRING(vereine.identifier, 1, 1) = "%s", contacts.country_id = %d))
-			AND usergroup_id = %d';
+			AND usergroup_id = /*_ID usergroups spieler _*/';
 		$sql = sprintf($sql,
 			implode(',', array_keys($data['events']))
 			, $data['zps_code']
 			, $data['country_id']
-			, wrap_id('usergroups', 'spieler')
 		);
 		$data['karte'] = wrap_db_fetch($sql, '', 'single value');
 		// keine LV-Teams: keine Karte.
@@ -194,25 +186,22 @@ function mod_tournaments_federation($vars, $settings, $event) {
 				AND runde_no = tournaments.tabellenstand_runde_no
 			LEFT JOIN tabellenstaende_wertungen tsw
 				ON tsw.tabellenstand_id = tabellenstaende.tabellenstand_id
-				AND wertung_category_id = %d
+				AND wertung_category_id = /*_ID categories turnierwertungen/pkt _*/
 			LEFT JOIN contacts
 				ON participations.club_contact_id = contacts.contact_id 
 			LEFT JOIN contacts_identifiers vereine
 				ON contacts.contact_id = vereine.contact_id AND vereine.current = "yes"
 			WHERE participations.event_id IN (%s)
 			AND (IF(NOT ISNULL(vereine.identifier), SUBSTRING(vereine.identifier, 1, 1) = "%s", contacts.country_id = %d))
-			AND participations.usergroup_id = %d
-			AND status_category_id IN (%s%d)
+			AND participations.usergroup_id = /*_ID usergroups spieler _*/
+			AND status_category_id IN (%s/*_ID categories participation-status/participant _*/)
 			ORDER BY platz_no, setzliste_no, t_nachname, t_vorname
 		';
 		$sql = sprintf($sql
-			, wrap_category_id('turnierwertungen/pkt')
 			, implode(',', array_keys($data['events']))
 			, $data['zps_code']
 			, $data['country_id']
-			, wrap_id('usergroups', 'spieler')
 			, $event_date_end > date('Y-m-d') ? sprintf('%d, ', wrap_category_id('participation-status/verified')) : ''
-			, wrap_category_id('participation-status/participant')
 		);
 		$spieler = wrap_db_fetch($sql, ['event_id', 'participation_id']);
 		$player_ids = [];
@@ -242,11 +231,8 @@ function mod_tournaments_federation($vars, $settings, $event) {
 		$sql = 'SELECT COUNT(*)
 			FROM contacts_contacts
 			WHERE main_contact_id = %d
-			AND relation_category_id = %d';
-		$sql = sprintf($sql
-			, $data['contact_id']
-			, wrap_category_id('relation/member')
-		);
+			AND relation_category_id = /*_ID categories relation/member _*/';
+		$sql = sprintf($sql, $data['contact_id']);
 		$sub_orgs = wrap_db_fetch($sql, '', 'single value');
 		if ($sub_orgs) $data['karte'] = true;
 	}

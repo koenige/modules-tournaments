@@ -368,9 +368,9 @@ function mf_tournaments_remarks_mail($ops) {
 			LEFT JOIN contacts USING (contact_id)
 			LEFT JOIN contactdetails USING (contact_id)
 			WHERE person_id = %d
-			AND provider_category_id = %d
+			AND provider_category_id = /*_ID categories provider/e-mail _*/
 			LIMIT 1';
-		$sql = sprintf($sql, $record['autor_person_id'], wrap_category_id('provider/e-mail'));
+		$sql = sprintf($sql, $record['autor_person_id']);
 		$record = array_merge($record, wrap_db_fetch($sql));
 
 		$msg = wrap_template('team-remarks-mail', $record);

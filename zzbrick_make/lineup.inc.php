@@ -136,15 +136,11 @@ function mod_tournaments_make_lineup_active($params) {
 	    FROM participations
 	    LEFT JOIN persons USING (contact_id)
 	    WHERE team_id = %d
-	    AND usergroup_id = %d
-	    AND status_category_id = %d
+	    AND usergroup_id = /*_ID usergroups spieler _*/
+	    AND status_category_id = /*_ID categories participation-status/participant _*/
 	    AND (ISNULL(spielberechtigt) OR spielberechtigt = "ja")
 	    ORDER BY brett_no, rang_no';
-	$sql = sprintf($sql
-		, $data['team_id']
-		, wrap_id('usergroups', 'spieler')
-		, wrap_category_id('participation-status/participant')
-	);
+	$sql = sprintf($sql, $data['team_id']);
 	$data['players'] = wrap_db_fetch($sql, 'participation_id');
 	if (!$data['players']) return false;
 	

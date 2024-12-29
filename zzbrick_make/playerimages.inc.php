@@ -37,17 +37,13 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 		LEFT JOIN contacts
 			ON contacts.contact_id = participations.federation_contact_id
 		WHERE event_id IN (%s)
-		AND usergroup_id = %d
+		AND usergroup_id = /*_ID usergroups spieler _*/
 		AND spielerphotos = "ja"
 		AND spielernachrichten = "ja"
-		AND status_category_id = %d
+		AND status_category_id = /*_ID categories participation-status/participant _*/
 		ORDER BY contacts.contact
 	';
-	$sql = sprintf($sql
-		, implode(',', $event_ids)
-		, wrap_id('usergroups', 'spieler')
-		, wrap_category_id('participation-status/participant')
-	);
+	$sql = sprintf($sql, implode(',', $event_ids));
 	$event['players'] = wrap_db_fetch($sql, 'person_id');
 	$images = mf_mediadblink_media([$params[0], $params[1], 'Website/Spieler'], [], 'person', array_keys($event['players']));
 	$event['players'] = array_diff_key($event['players'], $images);

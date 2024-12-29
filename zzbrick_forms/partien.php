@@ -61,11 +61,10 @@ foreach ($zz['fields'] as $no => $field) {
 				FROM participations
 				LEFT JOIN persons USING (contact_id)
 				LEFT JOIN teams USING (team_id)
-				WHERE usergroup_id = %d AND NOT ISNULL(brett_no)
-				AND team_id IN(%d, %d)
+				WHERE usergroup_id = /*_ID usergroups spieler _*/ AND NOT ISNULL(brett_no)
+				AND team_id IN (%d, %d)
 				ORDER BY team, brett_no, t_nachname, t_vorname';
 			$zz['fields'][$no]['sql'] = sprintf($zz['fields'][$no]['sql']
-				, wrap_id('usergroups', 'spieler')
 				, $paarung['heim_team_id']
 				, $paarung['auswaerts_team_id']
 			);
@@ -74,12 +73,12 @@ foreach ($zz['fields'] as $no => $field) {
 			);
 			$zz['fields'][$no]['group'] = 'team';
 		} else {
-			$zz['fields'][$no]['sql'] = sprintf('SELECT person_id
+			$zz['fields'][$no]['sql'] = 'SELECT person_id
 					, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 				FROM participations
 				LEFT JOIN persons USING (contact_id)
-				WHERE usergroup_id = %d
-				ORDER BY t_nachname, t_vorname', wrap_id('usergroups', 'spieler'));
+				WHERE usergroup_id = /*_ID usergroups spieler _*/
+				ORDER BY t_nachname, t_vorname';
 		}
 		$zz['fields'][$no]['sql'] = wrap_edit_sql($zz['fields'][$no]['sql'],
 			'WHERE', sprintf('participations.event_id = %d', $brick['data']['event_id'])
@@ -144,12 +143,11 @@ function mf_tournaments_get_paring_player($paarung, $farbe) {
 			WHERE team_id IN (%d, %d)
 			AND NOT ISNULL(brett_no)
 			AND spielberechtigt = "ja"
-			AND status_category_id = %d
+			AND status_category_id = /*_ID categories participation-status/participant _*/
 			ORDER BY brett_no';
 		$sql = sprintf($sql
 			, $paarung['heim_team_id']
 			, $paarung['auswaerts_team_id']
-			, wrap_category_id('participation-status/participant')
 		);
 		$aufstellungen = wrap_db_fetch($sql, ['team_id', 'person_id'], 'key/values');
 	}

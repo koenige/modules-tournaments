@@ -75,18 +75,14 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 	if (wrap_setting('tournaments_type_team')) {
 		$sql = 'SELECT CONCAT("T", team_id) AS team_id
 				, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS name
-				, CONCAT("%s/", teams.identifier, "/") AS link
+				, CONCAT("/*_SETTING host_base _*//", teams.identifier, "/") AS link
 			FROM teams
 			WHERE team_status = "Teilnehmer"
 			AND event_id = %d';
-		$sql = sprintf($sql
-			, wrap_setting('host_base')
-			, $event['event_id']
-		);
+		$sql = sprintf($sql, $event['event_id']);
 		$data['teams'] = wrap_db_fetch($sql, 'team_id');
-		foreach ($data['teams'] as $id => $team) {
+		foreach ($data['teams'] as $id => $team)
 			unset($data['teams'][$id]['team_id']);
-		}
 	} else {
 		$data['teams'] = (object) [];
 	}
@@ -95,11 +91,8 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 	$sql = 'SELECT COUNT(brett_no)
 		FROM participations
 		WHERE event_id = %d
-		AND usergroup_id = %d';
-	$sql = sprintf($sql
-		, $event['event_id']
-		, wrap_id('usergroups', 'spieler')
-	);
+		AND usergroup_id = /*_ID usergroups spieler _*/';
+	$sql = sprintf($sql, $event['event_id']);
 	$brett_no = wrap_db_fetch($sql, '', 'single value');
 	if (wrap_setting('tournaments_type_team')) {
 		$where = sprintf('AND NOT ISNULL(%s)', $brett_no ? 'brett_no' : 'rang_no');
@@ -118,21 +111,20 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		LEFT JOIN contacts_identifiers
 			ON participations.contact_id = contacts_identifiers.contact_id
 			AND contacts_identifiers.current = "yes"
-			AND contacts_identifiers.identifier_category_id = %d
+			AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/id_fide _*/
 		LEFT JOIN fide_players
 			ON contacts_identifiers.identifier = fide_players.player_id
 		WHERE event_id = %d
-		AND usergroup_id = %d
-		AND status_category_id IN (%d, %d)
+		AND usergroup_id = /*_ID usergroups spieler _*/
+		AND status_category_id IN (
+			/*_ID categories participation-status/participant _*/,
+			/*_ID categories participation-status/disqualified _*/
+		)
 		%s
 		ORDER BY team_id, brett_no, rang_no, IF(ISNULL(contacts_identifiers.identifier), 1, NULL), contacts_identifiers.identifier, participation_id';
 	$sql = sprintf($sql
 		, $brett_no ? 'brett_no' : 'rang_no'
-		, wrap_category_id('identifiers/id_fide')
 		, $event['event_id']
-		, wrap_id('usergroups', 'spieler')
-		, wrap_category_id('participation-status/participant')
-		, wrap_category_id('participation-status/disqualified')
 		, $where
 	);
 	$players = wrap_db_fetch($sql, 'participation_id');
@@ -168,12 +160,12 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 	$turnier = wrap_db_fetch($sql);
 
 	$sql = 'SELECT events.runde_no
-			, ROUND(UNIX_TIMESTAMP(CONCAT(events.date_begin, " ", events.time_begin)) * 1000) + %d * 1000 AS startDate
+			, ROUND(UNIX_TIMESTAMP(CONCAT(events.date_begin, " ", events.time_begin)) * 1000) + (/*_SETTING live_pgn_delay_mins _*/ * 60) * 1000 AS startDate
 		FROM events
 		WHERE events.main_event_id = %d
 		AND NOT ISNULL(runde_no)
 		ORDER BY events.runde_no';
-	$sql = sprintf($sql, wrap_setting('live_pgn_delay_mins') * 60, $event['event_id']);
+	$sql = sprintf($sql, $event['event_id']);
 	$data['rounds'] = wrap_db_fetch($sql, 'runde_no');
 	foreach ($data['rounds'] as $id => $round) {
 		$data['rounds'][$id]['timeControl'] = [
@@ -218,8 +210,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 	$series_event_id = wrap_db_fetch($sql, '', 'single value');
 	
 	$sql = 'SELECT category_id, category_short
-		FROM categories WHERE main_category_id = %d';
-	$sql = sprintf($sql, wrap_category_id('titel'));
+		FROM categories WHERE main_category_id = /*_ID categories titel _*/';
 	$fidetitel = wrap_db_fetch($sql, '_dummy_', 'key/value');
 	
 	$data['videoSources'] = [];

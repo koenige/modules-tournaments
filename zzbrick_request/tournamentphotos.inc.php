@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015-2016, 2018-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2015-2016, 2018-2024 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -22,15 +22,11 @@ function mod_tournaments_tournamentphotos($vars, $settings, $event) {
 		FROM participations
 		LEFT JOIN persons USING (contact_id)
 		WHERE event_id = %d
-		AND usergroup_id = %d
-		AND status_category_id = %d
+		AND usergroup_id = /*_ID usergroups spieler _*/
+		AND status_category_id = /*_ID categories participation-status/participant _*/
 		ORDER BY setzliste_no, t_nachname, t_vorname
 	';
-	$sql = sprintf($sql
-		, $event['event_id']
-		, wrap_id('usergroups', 'spieler')
-		, wrap_category_id('participation-status/participant')
-	);
+	$sql = sprintf($sql, $event['event_id']);
 	$event['spieler'] = wrap_db_fetch($sql, 'person_id');
 	if (!$event['spieler']) return false;
 

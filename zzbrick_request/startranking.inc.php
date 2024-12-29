@@ -116,7 +116,7 @@ function mod_tournaments_startranking_single($event) {
 			ON participations.club_contact_id = organisationen.contact_id
 		LEFT JOIN contacts_contacts
 			ON contacts_contacts.main_contact_id = organisationen.contact_id
-			AND contacts_contacts.relation_category_id = %d
+			AND contacts_contacts.relation_category_id = /*_ID categories relation/venue _*/
 			AND contacts_contacts.published = "yes"
 		LEFT JOIN contacts places
 			ON contacts_contacts.contact_id = places.contact_id
@@ -130,17 +130,15 @@ function mod_tournaments_startranking_single($event) {
 		LEFT JOIN events qualification
 			ON participations.qualification_event_id = qualification.event_id
 		WHERE events.event_id = %d
-		AND usergroup_id = %d
-		AND status_category_id IN (%s%d, %d, %d)
+		AND usergroup_id = /*_ID usergroups spieler _*/
+		AND status_category_id IN (%s/*_ID categories participation-status/participant _*/,
+			/*_ID categories participation-status/disqualified _*/,
+			/*_ID categories participation-status/blocked _*/
+		)
 		ORDER BY setzliste_no, IFNULL(t_dwz, t_elo) DESC, t_elo DESC, t_nachname, t_vorname';
 	$sql = sprintf($sql
-		, wrap_category_id('relation/venue')
 		, $event['event_id']
-		, wrap_id('usergroups', 'spieler')
 		, ($event['date_end'] >= date('Y-m-d')) ? sprintf('%d, ', wrap_category_id('participation-status/verified')) : ''
-		, wrap_category_id('participation-status/participant')
-		, wrap_category_id('participation-status/disqualified')
-		, wrap_category_id('participation-status/blocked')
 	);
 	$event['spieler'] = wrap_db_fetch($sql, 'person_id');
 	if (!$event['spieler']) return $event;
@@ -181,7 +179,7 @@ function mod_tournaments_startranking_team($event) {
 			ON teams.club_contact_id = organisationen.contact_id
 		LEFT JOIN contacts_contacts
 			ON contacts_contacts.main_contact_id = organisationen.contact_id
-			AND contacts_contacts.relation_category_id = %d
+			AND contacts_contacts.relation_category_id = /*_ID categories relation/venue _*/
 			AND contacts_contacts.published = "yes"
 		LEFT JOIN contacts places
 			ON contacts_contacts.contact_id = places.contact_id
@@ -196,10 +194,7 @@ function mod_tournaments_startranking_team($event) {
 		AND team_status = "Teilnehmer"
 		AND spielfrei = "nein"
 		ORDER BY setzliste_no, place, team';
-	$sql = sprintf($sql
-		, wrap_category_id('relation/venue')
-		, $event['event_id']
-	);
+	$sql = sprintf($sql, $event['event_id']);
 	// @todo Klären, was passiert wenn mehr als 1 Ort zu Verein in Datenbank! (Reihenfolge-Feld einführen)
 	$event['teams'] = wrap_db_fetch($sql, 'team_id');
 	

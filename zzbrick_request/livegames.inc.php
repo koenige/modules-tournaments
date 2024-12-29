@@ -32,11 +32,11 @@ function mod_tournaments_livegames($vars) {
 			, event, IFNULL(event_year, YEAR(date_begin)) AS year
 			, (SELECT COUNT(*) FROM participations
 			WHERE participations.event_id = tournaments.event_id
-			AND usergroup_id = %d) AS teilnehmer
+			AND usergroup_id = /*_ID usergroups spieler _*/) AS teilnehmer
 			, (SELECT MAX(runde_no) FROM partien
 			WHERE partien.event_id = tournaments.event_id) AS aktuelle_runde_no
 			, main_series.category AS main_series
-			, IF((DATE_SUB(CURDATE(), INTERVAL %d DAY) <= date_end), 1, NULL) AS current
+			, IF((DATE_SUB(CURDATE(), INTERVAL /*_SETTING live_games_show_for_days _*/ DAY) <= date_end), 1, NULL) AS current
 		FROM tournaments
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories series
@@ -47,11 +47,7 @@ function mod_tournaments_livegames($vars) {
 		AND IFNULL(event_year, YEAR(date_begin)) = %d
 		AND NOT ISNULL(livebretter)
 		ORDER BY series.sequence';
-	$sql = sprintf($sql,
-		wrap_id('usergroups', 'spieler'),
-		wrap_setting('live_games_show_for_days'),
-		wrap_db_escape($vars[1]), $vars[0]
-	);
+	$sql = sprintf($sql, wrap_db_escape($vars[1]), $vars[0]);
 	$tournaments = wrap_db_fetch($sql, 'event_id');
 	if ($tournaments) return mod_tournaments_livegames_series($tournaments);
 	
@@ -60,7 +56,7 @@ function mod_tournaments_livegames($vars) {
 			, event, IFNULL(event_year, YEAR(date_begin)) AS year
 			, (SELECT COUNT(*) FROM participations
 			WHERE participations.event_id = tournaments.event_id
-			AND usergroup_id = %d) AS teilnehmer
+			AND usergroup_id = /*_ID usergroups spieler _*/) AS teilnehmer
 			, (SELECT MAX(runde_no) FROM partien
 			WHERE partien.event_id = tournaments.event_id) AS aktuelle_runde_no
 			, main_series.category AS main_series
@@ -73,10 +69,7 @@ function mod_tournaments_livegames($vars) {
 			ON series.main_category_id = main_series.category_id
 		WHERE events.identifier = "%d/%s"
 		AND NOT ISNULL(livebretter)';
-	$sql = sprintf($sql,
-		wrap_id('usergroups', 'spieler'),
-		$vars[0], wrap_db_escape($vars[1])
-	);
+	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
 	$turnier = wrap_db_fetch($sql);
 	if ($turnier) return mod_tournaments_livegames_turnier($turnier);
 	return false;
@@ -143,14 +136,14 @@ function mod_tournaments_livegames_bretter($turnier) {
 	$sql = 'SELECT partie_id, partien.runde_no, partien.brett_no, halbzuege
 			, pgn
 			, (CASE weiss_ergebnis
-				WHEN 1.0 THEN IF(partiestatus_category_id = %d, "+", 1)
-				WHEN 0.5 THEN IF(partiestatus_category_id = %d, "=", 0.5)
-				WHEN 0 THEN IF(partiestatus_category_id = %d, "-", 0)
+				WHEN 1.0 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "+", 1)
+				WHEN 0.5 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "=", 0.5)
+				WHEN 0 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "-", 0)
 			END) AS weiss_ergebnis
 			, (CASE schwarz_ergebnis
-				WHEN 1.0 THEN IF(partiestatus_category_id = %d, "+", 1)
-				WHEN 0.5 THEN IF(partiestatus_category_id = %d, "=", 0.5)
-				WHEN 0 THEN IF(partiestatus_category_id = %d, "-", 0)
+				WHEN 1.0 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "+", 1)
+				WHEN 0.5 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "=", 0.5)
+				WHEN 0 THEN IF(partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/, "-", 0)
 			END) AS schwarz_ergebnis
 			, CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname) AS weiss
 			, CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname) AS schwarz
@@ -166,10 +159,10 @@ function mod_tournaments_livegames_bretter($turnier) {
 		LEFT JOIN persons black_persons
 			ON partien.schwarz_person_id = black_persons.person_id
 		LEFT JOIN participations weiss
-			ON white_persons.contact_id = weiss.contact_id AND weiss.usergroup_id = %d
+			ON white_persons.contact_id = weiss.contact_id AND weiss.usergroup_id = /*_ID usergroups spieler _*/
 			AND weiss.event_id = partien.event_id
 		LEFT JOIN participations schwarz
-			ON black_persons.contact_id = schwarz.contact_id AND schwarz.usergroup_id = %d
+			ON black_persons.contact_id = schwarz.contact_id AND schwarz.usergroup_id = /*_ID usergroups spieler _*/
 			AND schwarz.event_id = partien.event_id
 		WHERE partien.event_id = %d
 		AND partien.runde_no = %d
@@ -177,14 +170,6 @@ function mod_tournaments_livegames_bretter($turnier) {
 		ORDER BY brett_no
 	';
 	$sql = sprintf($sql
-		, wrap_category_id('partiestatus/kampflos')
-		, wrap_category_id('partiestatus/kampflos')
-		, wrap_category_id('partiestatus/kampflos')
-		, wrap_category_id('partiestatus/kampflos')
-		, wrap_category_id('partiestatus/kampflos')
-		, wrap_category_id('partiestatus/kampflos')
-		, wrap_id('usergroups', 'spieler')
-		, wrap_id('usergroups', 'spieler')
 		, $turnier['event_id']
 		, $turnier['aktuelle_runde_no']
 		, implode(',', $turnier['livebretter_nos'])
@@ -223,9 +208,8 @@ function mod_tournaments_livegames_rundendaten($tournament_ids) {
 			, TIME_FORMAT(time_end, "%%H:%%i") AS runde_time_end
 		FROM events
 		WHERE main_event_id IN (%s)
-		AND event_category_id = %d';
-	$sql = sprintf($sql, implode(',', $tournament_ids),
-		wrap_category_id('event/round'));
+		AND event_category_id = /*_ID categories event/round _*/';
+	$sql = sprintf($sql, implode(',', $tournament_ids));
 	$rundendaten = wrap_db_fetch($sql, ['main_event_id', 'runde_no']);
 	return $rundendaten;
 }

@@ -387,8 +387,8 @@ $zz['sql'] = 'SELECT /*_PREFIX_*/tournaments.*
 		) AS teams
 		, (SELECT COUNT(*) FROM /*_PREFIX_*/participations
 			WHERE participations.event_id = tournaments.event_id
-			AND status_category_id = %d
-			AND usergroup_id = %d
+			AND status_category_id = /*_ID categories participation-status/participant _*/
+			AND usergroup_id = /*_ID usergroups spieler _*/
 		) AS spieler
 	FROM /*_PREFIX_*/tournaments
 	LEFT JOIN /*_PREFIX_*/events USING (event_id)
@@ -399,10 +399,6 @@ $zz['sql'] = 'SELECT /*_PREFIX_*/tournaments.*
 	LEFT JOIN /*_PREFIX_*/categories turnierformen
 		ON /*_PREFIX_*/tournaments.turnierform_category_id = turnierformen.category_id
 ';
-$zz['sql'] = sprintf($zz['sql']
-	, wrap_category_id('participation-status/participant')
-	, wrap_id('usergroups', 'spieler')
-);
 $zz['sqlorder'] = ' ORDER BY /*_PREFIX_*/events.date_begin DESC, /*_PREFIX_*/events.time_begin DESC,
 	/*_PREFIX_*/events.identifier';
 
@@ -445,14 +441,10 @@ $zz['filter'][1]['where'] = 'IFNULL(event_year, YEAR(date_begin))';
 $zz['filter'][1]['depends_on'] = 2;
 
 $zz['conditions'][1]['scope'] = 'record';
-$zz['conditions'][1]['where'] = sprintf(
-	'events.event_category_id = %d', wrap_category_id('events/team')
-);
+$zz['conditions'][1]['where'] = 'events.event_category_id = /*_ID categories events/team _*/';
 
 $zz['conditions'][2]['scope'] = 'record';
-$zz['conditions'][2]['where'] = sprintf(
-	'events.event_category_id = %d', wrap_category_id('events/single')
-);
+$zz['conditions'][2]['where'] = 'events.event_category_id = /*_ID categories events/single _*/';
 
 $zz['record']['copy'] = true;
 

@@ -44,10 +44,10 @@ function mod_tournaments_federations($vars) {
 			ON series.main_category_id = main_series.category_id
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
-			AND events_websites.website_id = %d
+			AND events_websites.website_id = /*_SETTING website_id _*/
 		WHERE main_series.path = "reihen/%s"
 		AND IFNULL(event_year, YEAR(date_begin)) = %d';
-	$sql = sprintf($sql, wrap_setting('website_id'), wrap_db_escape($vars[1]), $vars[0]);
+	$sql = sprintf($sql, wrap_db_escape($vars[1]), $vars[0]);
 	$events = wrap_db_fetch($sql, 'event_id');
 	if (!$events) return false;
 	$event = reset($events);
@@ -81,7 +81,7 @@ function mod_tournaments_federations($vars) {
 			FROM events
 			LEFT JOIN participations
 				ON participations.event_id = events.event_id
-				AND usergroup_id = %d
+				AND usergroup_id = /*_ID usergroups spieler _*/
 			LEFT JOIN contacts
 				ON participations.club_contact_id = contacts.contact_id
 			LEFT JOIN contacts_identifiers ok
@@ -97,7 +97,6 @@ function mod_tournaments_federations($vars) {
 			AND NOT ISNULL(countries.country_id)
 			GROUP BY countries.country_id
 		';
-		$sql = sprintf($sql, wrap_id('usergroups', 'spieler'), implode(',', array_keys($events)));
 	} else {
 		$sql = 'SELECT countries.country_id
 				, COUNT(teams.team_id) AS anzahl_teams
@@ -121,8 +120,8 @@ function mod_tournaments_federations($vars) {
 			AND NOT ISNULL(countries.country_id)
 			GROUP BY countries.country_id
 		';
-		$sql = sprintf($sql, implode(',', array_keys($events)));
 	}
+	$sql = sprintf($sql, implode(',', array_keys($events)));
 	$tn = wrap_db_fetch($sql, 'country_id');
 	foreach ($tn as $country_id => $anzahl) {
 		if (!empty($anzahl['anzahl_teams'])) {

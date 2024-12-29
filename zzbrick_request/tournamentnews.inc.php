@@ -20,16 +20,14 @@ function mod_tournaments_tournamentnews($params, $settings) {
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN articles_categories
 			ON articles_categories.article_id = articles.article_id
-			AND articles_categories.type_category_id = %d
+			AND articles_categories.type_category_id = /*_ID categories publications _*/
 		WHERE events.identifier = "%d/%s"
 		AND articles.published = "yes"
-		AND articles_categories.category_id = %d
+		AND articles_categories.category_id = /*_ID categories publications/tournament-news _*/
 		ORDER BY date DESC';
 	$sql = sprintf($sql
-		, wrap_category_id('publications')
 		, $params[0]
 		, wrap_db_escape($params[1])
-		, wrap_category_id('publications/tournament-news')
 	);
 	$ids = wrap_db_fetch($sql, 'article_id');
 	if (!$ids) {
