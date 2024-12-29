@@ -239,7 +239,8 @@ function mod_tournament_make_liveresults_tournament($params) {
 						$line['auswaerts_wertung'] = $white;
 					}
 				}
-				$updated = zzform_update('partien', $line, E_USER_NOTICE, ['msg' => wrap_text('Live result was not saved')]);
+				$success = zzform_update('partien', $line, E_USER_NOTICE, ['msg' => wrap_text('Live result was not saved')]);
+				if ($success) $updated = true;
 			}
 		}
 	}
