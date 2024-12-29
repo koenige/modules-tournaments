@@ -83,8 +83,8 @@ function mod_tournament_make_liveresults_tournament($params) {
 			ON turnierformen.category_id = tournaments.turnierform_category_id
 		WHERE events.identifier = "%d/%s"';
 	$sql = sprintf($sql, $params[0], wrap_db_escape($params[1]));
-	$turnier = wrap_db_fetch($sql);
-	if (!$turnier) return false;
+	$event = wrap_db_fetch($sql);
+	if (!$event) return false;
 	
 	$sql = 'SELECT IFNULL(events.identifier
 			, CONCAT("%d", SUBSTRING(series.path, LENGTH(SUBSTRING_INDEX(series.path, "/", 1)) + 1))
@@ -97,7 +97,7 @@ function mod_tournament_make_liveresults_tournament($params) {
 			AND IFNULL(event_year, YEAR(events.date_begin)) = %d
 		WHERE sub_series.category_id = %d
 	';
-	$sql = sprintf($sql, $params[0], $params[0], $turnier['series_category_id']);
+	$sql = sprintf($sql, $params[0], $params[0], $event['series_category_id']);
 	$series_identifier = wrap_db_fetch($sql, '', 'single value');
 	if ($series_identifier === $params[0])
 		$series_identifier = false;
@@ -147,96 +147,96 @@ function mod_tournament_make_liveresults_tournament($params) {
 		WHERE partien.event_id = %d
 			AND partien.runde_no = %d
 		ORDER by paarungen.tisch_no, partien.brett_no';
-	$sql = sprintf($sql, $turnier['event_id'], $turnier['runde_no']);
-	$turnier['ergebnisse'] = wrap_db_fetch($sql, ['paarung_id', 'partie_id'], 'list paarung_id partien');
-	$partien = [];
-	foreach ($turnier['ergebnisse'] as $paarung_id => $paarungen) {
-		$partien += $paarungen['partien'];
+	$sql = sprintf($sql, $event['event_id'], $event['runde_no']);
+	$event['ergebnisse'] = wrap_db_fetch($sql, ['paarung_id', 'partie_id'], 'list paarung_id partien');
+	$games = [];
+	foreach ($event['ergebnisse'] as $paarung_id => $paarungen) {
+		$games += $paarungen['partien'];
 		if ($paarungen['paarung_id']) {
 			$erste_paarung = reset($paarungen['partien']);
-			$turnier['ergebnisse'][$paarung_id]['tisch_no'] = $erste_paarung['tisch_no'];
-			$turnier['ergebnisse'][$paarung_id]['heim_team'] = $erste_paarung['heim_team'];
-			$turnier['ergebnisse'][$paarung_id]['auswaerts_team'] = $erste_paarung['auswaerts_team'];
-			$turnier['ergebnisse'][$paarung_id]['heim_ergebnis'] = 0;
-			$turnier['ergebnisse'][$paarung_id]['auswaerts_ergebnis'] = 0;
+			$event['ergebnisse'][$paarung_id]['tisch_no'] = $erste_paarung['tisch_no'];
+			$event['ergebnisse'][$paarung_id]['heim_team'] = $erste_paarung['heim_team'];
+			$event['ergebnisse'][$paarung_id]['auswaerts_team'] = $erste_paarung['auswaerts_team'];
+			$event['ergebnisse'][$paarung_id]['heim_ergebnis'] = 0;
+			$event['ergebnisse'][$paarung_id]['auswaerts_ergebnis'] = 0;
 			foreach ($paarungen['partien'] as $ergebnisse) {
-				$turnier['ergebnisse'][$paarung_id]['heim_ergebnis'] += $ergebnisse['heim_wertung'];
-				$turnier['ergebnisse'][$paarung_id]['auswaerts_ergebnis'] += $ergebnisse['auswaerts_wertung'];
+				$event['ergebnisse'][$paarung_id]['heim_ergebnis'] += $ergebnisse['heim_wertung'];
+				$event['ergebnisse'][$paarung_id]['auswaerts_ergebnis'] += $ergebnisse['auswaerts_wertung'];
 			}
 		}
 	}
 
 	// Falcoify Titel
-	$turnier_titel = explode(' ', $turnier['event']);
-	$turnier_titel = array_reverse($turnier_titel);
-	$turnier_titel = implode(' ', $turnier_titel);
+	$event_title = explode(' ', $event['event']);
+	$event_title = array_reverse($event_title);
+	$event_title = implode(' ', $event_title);
 
-	$page['title'] = $turnier_titel.' Liveergebnisse'.($turnier['runde_no'] ? ', '. $turnier['runde_no'].'. Runde' : '');
+	$page['title'] = $event_title.' Liveergebnisse'.($event['runde_no'] ? ', '. $event['runde_no'].'. Runde' : '');
 
 	$updated = false;
-	if (!empty($_POST) AND $turnier['partien']) {
+	if (!empty($_POST) AND $event['partien']) {
 		if (empty($_POST['runde_no'])) {
 			// falls altes Formular von voriger Runde gepostet wird:
 			// keine Eintragungen übernehmen!
-			$turnier['falsche_runde'] = true;
-		} elseif ($_POST['runde_no'] != $turnier['runde_no']) {
-			$turnier['falsche_runde'] = true;
+			$event['falsche_runde'] = true;
+		} elseif ($_POST['runde_no'] != $event['runde_no']) {
+			$event['falsche_runde'] = true;
 		} else {
 			unset($_POST['runde_no']);
 			// Datenbank speichern vorbereiten
-			foreach ($_POST as $partie_id => $ergebnis) {
+			foreach ($_POST as $game_id => $ergebnis) {
 				if ($ergebnis === '') continue;
-				if (!in_array($partie_id, array_keys($partien))) {
-					$turnier['falsche_runde'] = true;
+				if (!in_array($game_id, array_keys($games))) {
+					$event['falsche_runde'] = true;
 					continue;
 				}
 				switch ($ergebnis) {
 					case 'r': case 'R': case '5': case '0.5':
-						$weiss = 0.5; $schwarz = 0.5;
-						$partiestatus = 'normal';
+						$white = 0.5; $black = 0.5;
+						$status = 'normal';
 						break;
 					case '1':
-						$weiss = 1; $schwarz = 0;
-						$partiestatus = 'normal';
+						$white = 1; $black = 0;
+						$status = 'normal';
 						break;
 					case '+':
-						$weiss = 1; $schwarz = 0;
-						$partiestatus = 'kampflos';
+						$white = 1; $black = 0;
+						$status = 'kampflos';
 						break;
 					case '-':
-						$weiss = 0; $schwarz = 1;
-						$partiestatus = 'kampflos';
+						$white = 0; $black = 1;
+						$status = 'kampflos';
 						break;
 					case '=':
-						$weiss = 0.5; $schwarz = 0.5;
-						$partiestatus = 'kampflos';
+						$white = 0.5; $black = 0.5;
+						$status = 'kampflos';
 						break;
 					// Werte nur löschen, wenn explizit so gewollt
 					case 'D': case 'd':
-						$weiss = ''; $schwarz = '';
-						$partiestatus = 'laufend';
+						$white = ''; $black = '';
+						$status = 'laufend';
 						break;
 					case '0':
-						$weiss = 0; $schwarz = 1;
-						$partiestatus = 'normal';
+						$white = 0; $black = 1;
+						$status = 'normal';
 						break;
 					default:
 						continue 2;
 				}
 				$line = [
-					'partie_id' => $partie_id,
-					'weiss_ergebnis' => $weiss,
-					'schwarz_ergebnis' => $schwarz,
-					'partiestatus_category_id' => wrap_category_id('partiestatus/'.$partiestatus),
+					'partie_id' => $game_id,
+					'weiss_ergebnis' => $white,
+					'schwarz_ergebnis' => $black,
+					'partiestatus_category_id' => wrap_category_id('partiestatus/'.$status),
 					'block_ergebnis_aus_pgn' => 'ja'
 				];
 				if (wrap_setting('tournaments_type_team')) {
-					if ($partien[$partie_id]['heim_spieler_farbe'] === 'weiß') {
-						$line['heim_wertung'] = $weiss;
-						$line['auswaerts_wertung'] = $schwarz;
+					if ($games[$game_id]['heim_spieler_farbe'] === 'weiß') {
+						$line['heim_wertung'] = $white;
+						$line['auswaerts_wertung'] = $black;
 					} else {
-						$line['heim_wertung'] = $schwarz;
-						$line['auswaerts_wertung'] = $weiss;
+						$line['heim_wertung'] = $black;
+						$line['auswaerts_wertung'] = $white;
 					}
 				}
 				$updated = zzform_update('partien', $line, E_USER_NOTICE, ['msg' => wrap_text('Live result was not saved')]);
@@ -248,11 +248,11 @@ function mod_tournament_make_liveresults_tournament($params) {
 	$page['dont_show_h1'] = true;
 	if ($series_identifier AND substr($series_identifier, -7) !== '/reihen') {
 		$page['breadcrumbs'][] = ['title' => 'Liveergebnisse', 'url_path' => '../../../'.$series_identifier.'/liveergebnisse/'];
-		$page['breadcrumbs'][]['title'] = $turnier['event'];
+		$page['breadcrumbs'][]['title'] = $event['event'];
 	} else {
-		$page['breadcrumbs'][] = ['title' => $turnier['event'], 'url_path' => '../'];
+		$page['breadcrumbs'][] = ['title' => $event['event'], 'url_path' => '../'];
 		$page['breadcrumbs'][]['title'] = 'Liveergebnisse';
 	}
-	$page['text'] = wrap_template('liveresults', $turnier);
+	$page['text'] = wrap_template('liveresults', $event);
 	return $page;
 }
