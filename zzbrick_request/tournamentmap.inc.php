@@ -145,9 +145,9 @@ function mod_tournaments_tournamentmap_json($params) {
 			AND fide.identifier_category_id = /*_ID categories identifiers/id_fide _*/
 			AND fide.current = "yes"
 		WHERE main_series.path = "reihen/%s"
-		AND IFNULL(events.event_year, YEAR(events.date_begin)) = /*_ID usergroups spieler _*/
+		AND IFNULL(events.event_year, YEAR(events.date_begin)) = %d
 		AND (ISNULL(teams.team_id) OR teams.meldung = "komplett" OR teams.meldung = "teiloffen")
-		AND usergroup_id = %d
+		AND usergroup_id = /*_ID usergroups spieler _*/
 		%s
 		ORDER BY t_nachname, t_vorname
 	';
