@@ -72,8 +72,9 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 			break;
 		}
 	}
+	$event['q'] = (isset($_GET['q']) AND !is_array($_GET['q'])) ? htmlspecialchars($_GET['q']) : '';
 	
-	if (!empty($_GET['q']) AND $mannschaft) {
+	if ($event['q'] AND $mannschaft) {
 		$sql = 'SELECT team_id
 				, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
 				, teams.identifier AS team_identifier
@@ -86,7 +87,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 			WHERE event_id IN (%s)
 			AND team_status IN ("Teilnehmer", "Teilnahmeberechtigt")
 			AND team LIKE "%%%s%%"';
-		$sql = sprintf($sql, implode(',', array_keys($events)), wrap_db_escape($_GET['q']));
+		$sql = sprintf($sql, implode(',', array_keys($events)), wrap_db_escape($event['q']));
 		$event['teams'] = wrap_db_fetch($sql, 'team_id');
 		if ($internal AND wrap_access('tournaments_teams')) {
 			foreach ($event['teams'] as $team_id => $team) {
@@ -130,15 +131,15 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 				)';
 			$sql = sprintf($sql
 				, implode(',', array_keys($events))
-				, wrap_db_escape($_GET['q'])
-				, wrap_db_escape($_GET['q'])
-				, wrap_db_escape($_GET['q'])
-				, wrap_db_escape($_GET['q'])
+				, wrap_db_escape($event['q'])
+				, wrap_db_escape($event['q'])
+				, wrap_db_escape($event['q'])
+				, wrap_db_escape($event['q'])
 			);
 			$event['spieler'] = wrap_db_fetch($sql, 'person_id');
 		}
 	}
-	if (!empty($_GET['q']) AND $einzel) {
+	if ($event['q'] AND $einzel) {
 		$sql = 'SELECT DISTINCT participation_id, person_id
 				, IF(ISNULL(t_vorname),
 					contact,
@@ -169,14 +170,13 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 			)';
 		$sql = sprintf($sql
 			, implode(',', array_keys($events))
-			, wrap_db_escape($_GET['q'])
-			, wrap_db_escape($_GET['q'])
-			, wrap_db_escape($_GET['q'])
-			, wrap_db_escape($_GET['q'])
+			, wrap_db_escape($event['q'])
+			, wrap_db_escape($event['q'])
+			, wrap_db_escape($event['q'])
+			, wrap_db_escape($event['q'])
 		);
 		$event['spieler'] = wrap_db_fetch($sql, 'participation_id');
 	}
-	$event['q'] = isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '';
 	$event['teamsuche'] = $mannschaft;
 
 	$page['query_strings'] = ['q'];
