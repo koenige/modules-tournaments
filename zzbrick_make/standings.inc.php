@@ -9,7 +9,7 @@
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
- * @copyright Copyright © 2012-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2025 Gustaf Mossakowski
  * @copyright Copyright © 2014 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
@@ -164,7 +164,7 @@ function mod_tournaments_make_standings_round($vars) {
 	}
 
 	$type = implode('/', $vars);
-	wrap_setting('log_username', wrap_setting('robot_username'));
+	wrap_setting('log_username', wrap_setting('default_robot_username'));
 	if (wrap_setting('tournaments_type_single')) {
 		require_once __DIR__.'/standings-single.inc.php';
 		$tabelle = mod_tournaments_make_standings_calculate_single($event, $round_no);

@@ -8,13 +8,13 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2016-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
 function mod_tournaments_make_filemove() {
-	wrap_setting('log_username', wrap_setting('robot_username'));
+	wrap_setting('log_username', wrap_setting('default_robot_username'));
 	wrap_setting('log_trigger', 'cron');
 
 	// Laufende Turniere auslesen
