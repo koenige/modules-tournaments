@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2015, 2019-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2015, 2019-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -132,3 +132,5 @@ $zz['filter'][1]['where'] = 'team_id';
 $zz['filter'][1]['selection']['NULL'] = 'Spieler';
 $zz['filter'][1]['selection']['!NULL'] = 'Teams';
 $zz['filter'][1]['default_selection'] = '!NULL';
+
+$zz['list']['batch_delete'] = true;
