@@ -56,13 +56,13 @@ function mod_tournaments_federation($vars, $settings, $event) {
 			, main_series.category_short AS main_series_short
 			, IF(LENGTH(main_series.path) > 7, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "/", SUBSTRING_INDEX(main_series.path, "/", -1)), NULL) AS main_event_path
 			, IF((SELECT COUNT(*) FROM participations
-				WHERE event_id = events.event_id AND usergroup_id = /*_ID usergroup spieler _*/), NULL, 1
+				WHERE event_id = events.event_id AND usergroup_id = /*_ID usergroups spieler _*/), NULL, 1
 			) AS keine_daten
 			, IF((SELECT COUNT(*) FROM teams
 				WHERE team_status IN ("Teilnehmer", "Teilnahmeberechtigt") AND event_id = events.event_id
 				AND NOT ISNULL(teams.setzliste_no)), 1, 
 				IF((SELECT COUNT(*) FROM participations
-					WHERE participations.usergroup_id = /*_ID usergroup spieler _*/
+					WHERE participations.usergroup_id = /*_ID usergroups spieler _*/
 					AND event_id = events.event_id
 					AND NOT ISNULL(participations.setzliste_no)), 1, NULL)
 			) AS rangliste
