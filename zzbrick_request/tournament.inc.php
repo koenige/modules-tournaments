@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -169,14 +169,14 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	';
 	$sql = sprintf($sql, $internal ? 1 : 'NULL', $event['event_id']);
 	$event['events'] = wrap_db_fetch($sql, 'event_id');
-	foreach ($event['events'] as $event_id => $my_datum) {
+	foreach ($event['events'] as $event_id => $program_item) {
 		if ($event['offen'] OR $event['freiplatz']) {
-			if ($my_datum['event_category_id'] !== wrap_category_id('event/deadline')) continue;
-			if ($my_datum['date_begin'] > date('Y-m-d')) {
+			if ($program_item['event_category_id'] !== wrap_category_id('event/deadline')) continue;
+			if ($program_item['date_begin'] > date('Y-m-d')) {
 				$event['offen'] = false;
 				$event['freiplatz'] = false;
 			}
-			if ($my_datum['date_end'] < date('Y-m-d')) {
+			if ($program_item['date_end'] < date('Y-m-d')) {
 				$event['offen'] = false;
 				$event['freiplatz'] = false;
 			}
@@ -196,13 +196,14 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		}
 	}
 	$letzte_dauer = '';
-	foreach ($event['events'] as $event_id => $my_datum) {
+	foreach ($event['events'] as $event_id => $program_item) {
 		if ($event['livebretter']) $event['events'][$event_id]['livebretter'] = true;
-		if ($my_datum['pgn']) $event['partien'] = true;
-		if ($my_datum['duration'] === $letzte_dauer) {
+		if ($program_item['pgn']) $event['partien'] = true;
+		else $event['events'][$event_id]['pgn'] = NULL;
+		if ($program_item['duration'] === $letzte_dauer) {
 			$event['events'][$event_id]['dauer_gleich'] = true;
 		} else {
-			$letzte_dauer = $my_datum['duration'];
+			$letzte_dauer = $program_item['duration'];
 		}
 		if ($internal 
 			AND (!brick_access_rights(['Webmaster']) 
