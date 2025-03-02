@@ -24,7 +24,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		$sql_condition = ' AND NOT ISNULL(event_website_id) ';
 	}
 	
-	$sql = 'SELECT IF(offen = "ja", IF(date_begin < CURDATE(), 0, 1), NULL) AS offen
+	$sql = 'SELECT IF(offen = "ja", IF(date_begin < CURDATE(), NULL, 1), NULL) AS offen
 			, IF(LOCATE("meldung=1", series.parameters), 1, NULL) AS online_meldung
 			, IF(ISNULL(teams_max), 1, 
 				IF((SELECT COUNT(*) FROM teams WHERE teams.event_id = events.event_id) < tournaments.teams_max, 1, NULL)
