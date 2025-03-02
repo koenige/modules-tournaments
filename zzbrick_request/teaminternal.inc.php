@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -46,7 +46,7 @@ function mod_tournaments_teaminternal($vars, $settings, $data) {
 
 	$sql = 'SELECT bretter_min, bretter_max, alter_max, alter_min
 			, geschlecht, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
-			, IF(teilnehmerliste = "ja", 1, 0) AS teilnehmerliste
+			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
 			, pseudo_dwz
 		FROM tournaments
 		WHERE tournaments.event_id = %d';
