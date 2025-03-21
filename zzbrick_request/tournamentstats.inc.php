@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2015-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -52,8 +52,11 @@ function mod_tournaments_tournamentstats($vars) {
 			, (SELECT COUNT(*) FROM teams WHERE teams.event_id = events.event_id AND teams.team_status = "Teilnehmer") AS teams
 			, (SELECT AVG(YEAR(events.date_begin)-YEAR(date_of_birth)) FROM participations LEFT JOIN persons USING (contact_id) WHERE event_id = events.event_id AND status_category_id = /*_ID categories participation-status/participant _*/ AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = /*_ID usergroups spieler _*/) AS average_age
 			, IF(events.event_year != YEAR(events.date_begin), CAST(events.event_year AS SIGNED) - YEAR(events.date_begin), NULL) AS different_year
+			, eventtypes.parameters AS eventtypes_parameters
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
+		LEFT JOIN categories eventtypes
+			ON events.event_category_id = eventtypes.category_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
 		LEFT JOIN categories main_series
@@ -81,7 +84,11 @@ function mod_tournaments_tournamentstats($vars) {
 
 	// check for teams
 	foreach ($data['turniere'] as $event_id => $event) {
-		if ($event['teams']) $data['summe_teams'] += $event['teams'];
+		if ($event['eventtypes_parameters'])
+			parse_str($event['eventtypes_parameters'], $data['turniere'][$event_id]['eventtypes_parameters']);
+		if (!empty($data['turniere'][$event_id]['eventtypes_parameters']['tournaments_type_single']))
+			$data['turniere'][$event_id]['teams'] = NULL;
+		elseif ($event['teams']) $data['summe_teams'] += $event['teams'];
 	}
 
 	foreach ($data['turniere'] as $event_id => $event) {
