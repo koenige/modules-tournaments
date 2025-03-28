@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012, 2015-2024 Gustaf Mossakowski
+# @copyright Copyright © 2012, 2015-2025 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Ergebnisse aus dem Landesverband %%% item country %%%
@@ -18,7 +18,7 @@
 
 <div class="datenspalte">
 <div class="results">
-%%% if karte %%%
+%%% if map %%%
 <p><a href="../../herkunftsorte/%%% item identifier %%%/">-> Herkunftsorte der Spieler auf der Karte</a></p>
 %%% endif %%%
 <table class="lv js-gallery">
@@ -106,6 +106,6 @@ Aus diesem Landesverband spielen keine Teams bei diesem Turnier mit.
 %%% item anzahl_teams "treten %d Mannschaften " 0 "tritt keine Mannschaft" 1 "tritt eine Mannschaft " %%%
  an.</p>
 </div>
-%%% if karte %%%
+%%% if map %%%
 <p><a href="../../herkunftsorte/%%% item identifier %%%/">-> Herkunftsorte der Spieler auf der Karte</a></p>
 %%% endif %%%

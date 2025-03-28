@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -139,27 +139,7 @@ function mod_tournaments_federation($vars, $settings, $event) {
 			$data['events'][$event_id]['teams'] = $event_teams;
 			$data['anzahl_teams'] += count($event_teams);
 		}
-		// Karte nur bei gemeldeten Spielern
-		$sql = 'SELECT COUNT(*)
-			FROM participations
-			LEFT JOIN teams USING (team_id)
-			LEFT JOIN contacts
-				ON participations.club_contact_id = contacts.contact_id
-			LEFT JOIN contacts_identifiers vereine
-				ON contacts.contact_id = vereine.contact_id
-				AND vereine.current = "yes"
-			WHERE participations.event_id IN (%s)
-			AND (teams.meldung = "komplett" OR teams.meldung = "teiloffen")
-			AND (IF(NOT ISNULL(vereine.identifier), SUBSTRING(vereine.identifier, 1, 1) = "%s", contacts.country_id = %d))
-			AND usergroup_id = /*_ID usergroups spieler _*/';
-		$sql = sprintf($sql,
-			implode(',', array_keys($data['events']))
-			, $data['zps_code']
-			, $data['country_id']
-		);
-		$data['karte'] = wrap_db_fetch($sql, '', 'single value');
-		// keine LV-Teams: keine Karte.
-		if (empty($data['anzahl_teams'])) $data['karte'] = '';
+		$data['map'] = mod_tournaments_federation_map($data);
 	} else {
 		$data['anzahl_spieler'] = 0;
 		$spielerphotos = false;
@@ -234,7 +214,7 @@ function mod_tournaments_federation($vars, $settings, $event) {
 			AND relation_category_id = /*_ID categories relation/member _*/';
 		$sql = sprintf($sql, $data['contact_id']);
 		$sub_orgs = wrap_db_fetch($sql, '', 'single value');
-		if ($sub_orgs) $data['karte'] = true;
+		if ($sub_orgs) $data['map'] = true;
 	}
 
 	$bilder = mf_mediadblink_media([$data['main_event_path'], 'Website/Delegation']);
@@ -253,4 +233,37 @@ function mod_tournaments_federation($vars, $settings, $event) {
 	if (in_array('magnificpopup', wrap_setting('modules')))
 		$page['extra']['magnific_popup'] = true;
 	return $page;
+}
+
+/**
+ * show link to participants map
+ * but only if there are teams with players
+ *
+ * @param array $data
+ * @return int
+ */
+function mod_tournaments_federation_map($data) {
+	// no teams per federation: no map
+	if (empty($data['anzahl_teams'])) return NULL;
+
+	$sql = 'SELECT COUNT(*)
+		FROM participations
+		LEFT JOIN teams USING (team_id)
+		LEFT JOIN contacts
+			ON participations.club_contact_id = contacts.contact_id
+		LEFT JOIN contacts_identifiers vereine
+			ON contacts.contact_id = vereine.contact_id
+			AND vereine.current = "yes"
+		WHERE participations.event_id IN (%s)
+		AND (teams.meldung = "komplett" OR teams.meldung = "teiloffen")
+		AND (IF(NOT ISNULL(vereine.identifier), SUBSTRING(vereine.identifier, 1, 1) = "%s", contacts.country_id = %d))
+		AND usergroup_id = /*_ID usergroups spieler _*/';
+	$sql = sprintf($sql,
+		implode(',', array_keys($data['events']))
+		, $data['zps_code']
+		, $data['country_id']
+	);
+	$count = wrap_db_fetch($sql, '', 'single value');
+	if ($count) return $count;
+	return NULL;
 }
