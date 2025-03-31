@@ -553,32 +553,9 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 	foreach ($contact_ids as $team_id => $contact_id) {
 		if (!$contact_id) unset($contact_ids[$team_id]);
 	}
-	if ($contact_ids) {
-		$sql = 'SELECT club_contact_id, participation_id, person_id, contacts.contact_id
-				, usergroups.usergroup
-				, usergroups.identifier AS group_identifier
-				, contact AS person
-				, YEAR(date_of_birth) AS geburtsjahr
-				, (SELECT identification FROM contactdetails
-					WHERE contactdetails.contact_id = contacts.contact_id
-					AND provider_category_id = /*_ID categories provider/e-mail _*/
-					LIMIT 1
-				) AS e_mail
-				, GROUP_CONCAT(category_short, ": ", identification SEPARATOR "<br>") AS telefon
-			FROM participations
-			LEFT JOIN persons USING (contact_id)
-			LEFT JOIN contacts USING (contact_id)
-			LEFT JOIN contactdetails USING (contact_id)
-			LEFT JOIN usergroups USING (usergroup_id)
-			LEFT JOIN categories
-				ON categories.category_id = contactdetails.provider_category_id
-				AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&type=phone%%")
-			WHERE club_contact_id IN (%s)
-			AND usergroup_id IN (/*_ID usergroups verein-jugend _*/, /*_ID usergroups verein-vorsitz _*/)
-			GROUP BY participation_id';
-		$sql = sprintf($sql, implode(',', $contact_ids));
-		$vereinsbetreuer = wrap_db_fetch($sql, ['club_contact_id', 'group_identifier', 'participation_id']);
-	}
+	$club_event = mf_tournaments_team_club_event($event);
+	if ($club_event)
+		$club_board_members = mf_tournaments_team_club_board_members($contact_ids);
 
 	$sql = 'SELECT team_id, participation_id, persons.person_id, contacts.contact_id
 			, usergroups.usergroup
@@ -626,8 +603,9 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 	$participations = wrap_db_fetch($sql, ['team_id', 'group_identifier', 'participation_id']);
 
 	foreach ($team_ids as $team_id => $club_contact_id) {
-		if (!empty($vereinsbetreuer[$club_contact_id])) {
-			$participations[$team_id] = array_merge($participations[$team_id], $vereinsbetreuer[$club_contact_id]);
+		if (!empty($club_board_members[$club_contact_id])) {
+			if (empty($participations[$team_id])) $participations[$team_id] = [];
+			$participations[$team_id] = array_merge($participations[$team_id], $club_board_members[$club_contact_id]);
 		}
 	}
 	if (!$check) {
@@ -665,7 +643,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 				$aeltester_spieler = $participations[$id]['spieler'][$spieler_id]['geburtsjahr'];
 			}
 		}
-		if ($contact_ids) {
+		if ($contact_ids AND $club_event) {
 			if (!isset($participations[$id]['verein-vorsitz'])) {
 				$participations[$id]['verein-vorsitz'][] = [
 					'person' => '--',
@@ -704,6 +682,58 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 	}
 	return $participations;
 }
+
+/**
+ * check if event is a club event
+ *
+ * @param array $event
+ * @return bool
+ */
+function mf_tournaments_team_club_event($event) {
+	if (empty($event['tournament_form_parameters']['tournaments_contact_categories']))
+		return false;
+	if (in_array('club', $event['tournament_form_parameters']['tournaments_contact_categories']))
+		return true;
+	if (in_array('chess-department', $event['tournament_form_parameters']['tournaments_contact_categories']))
+		return true;
+	return false;
+}
+
+/**
+ * get relevant board members of a club for a team
+ *
+ * @param array $contact_ids
+ * @return array
+ */
+function mf_tournaments_team_club_board_members($contact_ids) {
+	if (!$contact_ids) return [];
+	
+	$sql = 'SELECT club_contact_id, participation_id, person_id, contacts.contact_id
+			, usergroups.usergroup
+			, usergroups.identifier AS group_identifier
+			, contact AS person
+			, YEAR(date_of_birth) AS geburtsjahr
+			, (SELECT identification FROM contactdetails
+				WHERE contactdetails.contact_id = contacts.contact_id
+				AND provider_category_id = /*_ID categories provider/e-mail _*/
+				LIMIT 1
+			) AS e_mail
+			, GROUP_CONCAT(category_short, ": ", identification SEPARATOR "<br>") AS telefon
+		FROM participations
+		LEFT JOIN persons USING (contact_id)
+		LEFT JOIN contacts USING (contact_id)
+		LEFT JOIN contactdetails USING (contact_id)
+		LEFT JOIN usergroups USING (usergroup_id)
+		LEFT JOIN categories
+			ON categories.category_id = contactdetails.provider_category_id
+			AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&type=phone%%")
+		WHERE club_contact_id IN (%s)
+		AND usergroup_id IN (/*_ID usergroups verein-jugend _*/, /*_ID usergroups verein-vorsitz _*/)
+		GROUP BY participation_id';
+	$sql = sprintf($sql, implode(',', $contact_ids));
+	return wrap_db_fetch($sql, ['club_contact_id', 'group_identifier', 'participation_id']);
+}
+
 
 /**
  * Team-Meldung komplett?

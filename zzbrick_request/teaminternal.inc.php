@@ -134,7 +134,7 @@ function mod_tournaments_teaminternal($vars, $settings, $data) {
 
 	$page['query_strings'][] = 'spaeter';
 	$page['breadcrumbs'][]['title'] = $data['team'].' '.$data['team_no'];
-	$page['text'] = wrap_template('team-intern', $data);
+	$page['text'] = wrap_template('team-internal', $data);
 	return $page;
 }
 
