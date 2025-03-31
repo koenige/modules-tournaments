@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -342,7 +342,7 @@ $zz['fields'][28]['hide_in_list'] = true;
 $zz['fields'][29] = $zz['fields'][28];
 $zz['fields'][29]['title'] = 'Ehrenkodex';
 $zz['fields'][29]['field_name'] = 'ehrenkodex';
-$zz['fields'][29]['explanation'] = 'Hochladen des ausgefüllten, gescannten Ehrenkodexes';
+$zz['fields'][29]['explanation'] = 'Hochladen des ausgefüllten, gescannten Ehrenkodexes<br>(Vorlage: <a href="https://www.deutsche-schachjugend.de/fileadmin/user_upload/Ehrenkodex.pdf">Ehrenkodex der Deutschen Sportjugend</a>)';
 $zz['fields'][29]['path']['string1'] = '-ehrenkodex.';
 $zz['fields'][29]['link']['string2'] = '-ehrenkodex.';
 $zz['fields'][29]['image'][0]['path'] = $zz['fields'][29]['path'];
