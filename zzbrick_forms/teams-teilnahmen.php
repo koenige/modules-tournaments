@@ -9,7 +9,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -110,6 +110,7 @@ foreach ($zz['fields'] as $no => $field) {
 					AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 				ORDER BY Spielername';
 			$zz['fields'][$no]['sql_ignore'][] = 'voller_name';
+			$zz['fields'][$no]['key_field_name'] = 'contact_id';
 		}
 		$zz['fields'][$no]['sql_ignore'][] = 'pass_dsb';
 		break;
