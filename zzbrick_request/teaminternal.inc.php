@@ -45,7 +45,8 @@ function mod_tournaments_teaminternal($vars, $settings, $data) {
 	$data = mf_tournaments_clubs_to_federations($data, 'contact_id');
 
 	$sql = 'SELECT bretter_min, bretter_max, alter_max, alter_min
-			, geschlecht, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
+			, geschlecht
+			, IF(gastspieler = "ja", 1, NULL) AS guest_players_allowed
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
 			, pseudo_dwz
 		FROM tournaments

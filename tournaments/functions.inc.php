@@ -634,8 +634,8 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 			$i++;
 			$participations[$id]['spieler'][$spieler_id]['pflicht'] = ($i <= $event['bretter_min']) ? true : false;
 			$participations[$id]['spieler'][$spieler_id]['position'] = $i;
-			if (!empty($event['gastspieler_status']))
-				$participations[$id]['spieler'][$spieler_id]['gastspieler_status'] = 1;
+			if (!empty($event['guest_players_allowed']))
+				$participations[$id]['spieler'][$spieler_id]['guest_players_allowed'] = 1;
 			if (!empty($participations[$id]['spieler'][$spieler_id]['player_pass_dsb']))
 				$participations[$id]['player_passes_dsb'][] = $participations[$id]['spieler'][$spieler_id]['player_pass_dsb'];
 			if (empty($participations[$id]['spieler'][$spieler_id]['geburtsjahr'])) continue;

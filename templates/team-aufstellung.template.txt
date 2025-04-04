@@ -20,8 +20,10 @@
 
 <div class="hauptbox">
 <h3>Meldeliste</h3>
-%%% if error_msg %%%
-<p class="error">%%% item error_msg %%%</p>
+%%% if error_board_no_numbers %%%
+<p class="error">Es können als Brettnummern nur Zahlen (1–…) eingegeben werden.</p>
+%%% elseif error_board_no_bigger_zero %%%
+<p class="error">Es können als Brettnummern nur Zahlen größer Null eingegben werden.</p>
 %%% endif %%%
 <form method="POST" action="%%% page url_path %%%">
 <div class="results">
@@ -29,13 +31,13 @@
 <thead>
 <tr>
 <th>Rang</th> <th>ZPS</th> <th>Vorname / Nachname</th> <th><abbr title="Geschlecht">G.</abbr></th>
-<th>Geburt</th> <th>DWZ</th> %%% if gastspieler_status %%% <th><abbr title="Gastspieler/in">Gast</abbr></th> %%% endif %%%
+<th>Geburt</th> <th>DWZ</th> %%% if guest_players_allowed %%% <th><abbr title="Gastspieler/in">Gast</abbr></th> %%% endif %%%
 </thead>
 <tfoot>
-<tr><td></td><td></td><td colspan="%%% if gastspieler_status %%%5%%% else %%%4%%% endif %%%"><p><input type="submit" value="Daten übernehmen"></p></td></tr>
+<tr><td></td><td></td><td colspan="%%% if guest_players_allowed %%%5%%% else %%%4%%% endif %%%"><p><input type="submit" value="Daten übernehmen"></p></td></tr>
 </tfoot>
 <tbody>
-<tr><td colspan="%%% if gastspieler_status %%%7%%% else %%%6%%% endif %%%" class="heading">Gemeldete Spieler</td></tr>
+<tr><td colspan="%%% if guest_players_allowed %%%7%%% else %%%6%%% endif %%%" class="heading">Gemeldete Spieler</td></tr>
 %%% loop spieler %%%
 %%% if participation_id %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
@@ -45,8 +47,8 @@
 <td>%%% item geschlecht %%%</td>
 <td>%%% item geburtsjahr %%%</td>
 <td>%%% item t_dwz %%%</td>
-%%% if main__gastspieler_status %%%
-<td><input type='checkbox' name='gastspieler[tln_%%% item participation_id %%%]'%%% item gastspieler " checked" %%%></td>
+%%% if main__guest_players_allowed %%%
+<td><input type='checkbox' name='guest_player[tln_%%% item participation_id %%%]'%%% item gastspieler " checked" %%%></td>
 %%% endif %%%
 </tr>
 %%% endif %%%
@@ -54,12 +56,12 @@
 %%% if spieler %%%
 <tr><td></td><td></td>
 <td><p class="explanation">Spielerin entfernen: einfach in Feld »Rang« keinen Wert eintragen und »Daten übernehmen« (oder <code>RETURN</code> drücken).</p></td>
-<td colspan="%%% if gastspieler_status %%%4%%% else %%%3%%% endif %%%"></td></tr>
+<td colspan="%%% if guest_players_allowed %%%4%%% else %%%3%%% endif %%%"></td></tr>
 %%% endif %%%
 </tbody>
 %%% if add %%%
 <tbody>
-<tr><td colspan="%%% if gastspieler_status %%%7%%% else %%%6%%% endif %%%" class="heading">Spieler hinzufügen</td></tr>
+<tr><td colspan="%%% if guest_players_allowed %%%7%%% else %%%6%%% endif %%%" class="heading">Spieler hinzufügen</td></tr>
 %%% if neu_treffer %%%
 %%% elseif neu_treffer_ohne_rang %%%
 %%% elseif neu_spieler_nicht_gefunden %%%
@@ -70,8 +72,8 @@
 <td>%%% item ZPS %%%-%%% item Mgl_Nr %%%</td>
 <td>%%% item first_name %%% %%% item last_name %%%</td> <td>%%% item Geschlecht %%%</td>
 <td>%%% item Geburtsjahr %%%</td> <td>%%% item DWZ %%%</td>
-%%% if main__gastspieler_status %%%
-<td><input type='checkbox' name='gastspieler[zps_%%% item Mgl_Nr %%%]'%%% item gastspieler " checked" %%%></td>
+%%% if main__guest_players_allowed %%%
+<td><input type='checkbox' name='guest_player[zps_%%% item Mgl_Nr %%%]'%%% item gastspieler " checked" %%%></td>
 %%% endif %%%
 %%% loop end %%%
 %%% endif %%%
@@ -133,8 +135,8 @@ M<input type="hidden" name="geschlecht" value="m">
 <td></td>
 %%% endif %%%
 
-%%% if gastspieler_status %%%
-<td><input type="checkbox" name="gastspieler[neu]"%%% item post_gastspieler " checked" %%%></td>
+%%% if guest_players_allowed %%%
+<td><input type="checkbox" name="guest_player[neu]"%%% item post_guest_player " checked" %%%></td>
 %%% endif %%%
 </tbody>
 %%% endif %%%

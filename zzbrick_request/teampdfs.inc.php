@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2013-2014, 2017-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2013-2014, 2017-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -27,7 +27,7 @@ function mod_tournaments_teampdfs($params, $settings, $event) {
 	$sql = 'SELECT bretter_min, bretter_max
 			, pseudo_dwz, ratings_updated
 			, IF(zimmerbuchung = "ja", 1, NULL) AS zimmerbuchung
-			, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
+			, IF(gastspieler = "ja", 1, NULL) AS guest_players_allowed
 			, (SELECT eventtext FROM eventtexts
 				WHERE eventtexts.event_id = tournaments.event_id
 				AND eventtexts.eventtext_category_id = /*_ID categories event-texts/note-registration-form _*/

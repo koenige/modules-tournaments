@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016-2017, 2019-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2016-2017, 2019-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -30,7 +30,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 	
 	$sql = 'SELECT v_ok.identifier AS zps_code
 			, geschlecht, alter_min, alter_max, bretter_min, bretter_max
-			, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
+			, IF(gastspieler = "ja", 1, NULL) AS guest_players_allowed
 			, (SELECT eventtext FROM eventtexts
 				WHERE eventtexts.event_id = tournaments.event_id
 				AND eventtexts.eventtext_category_id = /*_ID categories event-texts/note-lineup _*/
@@ -75,30 +75,24 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 					$rangliste_no = substr($rangliste_no, 0, -1);
 				}
 				if (!wrap_is_int($rangliste_no)) {
-					$data['error_msg'] = 'Es können als Brettnummern nur Zahlen (1–…) eingegeben werden.';
+					$data['error_board_no_numbers'] = true;
 					continue;
 				}
 				if ($rangliste_no < 0) {
-					$data['error_msg'] = 'Es können als Brettnummern nur Zahlen größer Null eingegben werden.';
-					continue;				
+					$data['error_board_no_bigger_zero'] = true;
+					continue;
 				}
-			}
-			// Gastspieler prüfen
-			if (!empty($postdata['gastspieler'][$code]) AND $postdata['gastspieler'][$code] !== 'off') {
-				$gastspieler = true;
-			} else {
-				$gastspieler = false;
 			}
 			if ($code === 'neu' AND $data['add']) {
 				if ($rangliste_no) $data['post_rang'] = $rangliste_no;
-				if (isset($postdata['gastspieler'][$code]))
-					$data['post_gastspieler'] = $postdata['gastspieler'][$code] !== 'off' ? 1 : 0;
+				$data['post_guest_player'] = mf_tournaments_guest_player($data, $postdata, $code, false);
 				// Neuer Spieler nicht aus Vereinsliste wird ergänzt
 				if (!empty($postdata['auswahl']) AND $rangliste_no) {
 					$spieler = mf_ratings_player_data_dsb($postdata['auswahl']);
 					if ($spieler) {
 						$spieler['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
-						$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler);
+						$spieler['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
+						$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no);
 						if ($ops) $changed = true;
 					}
 					continue;
@@ -124,7 +118,8 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 					$spieler['last_name'] = $postdata['last_name'];
 					$spieler['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
 					$spieler['Geschlecht'] = strtoupper($postdata['geschlecht']);
-					$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler);
+					$spieler['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
+					$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no);
 					if ($ops) $changed = true;
 					// Spieler in eigener Personentabelle suchen
 					// Falls nicht vorhanden, ergänzen
@@ -168,11 +163,11 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 				$id = substr($code, 4);
 				if (empty($data['vereinsspieler'][$id])) continue;
 				$spieler = mf_ratings_player_data_dsb([
-					$data['vereinsspieler'][$id]['ZPS'],
-					$data['vereinsspieler'][$id]['Mgl_Nr']
+					$data['vereinsspieler'][$id]['player_pass_dsb']
 				]);
 				if ($spieler) {
-					$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler);
+					$spieler['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
+					$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no);
 					if ($ops) $changed = true;
 				}
 			} elseif (substr($code, 0, 4) === 'tln_') {
@@ -182,8 +177,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 					$line = [
 						'participation_id' => $id,
 						'rang_no' => $rangliste_no,
-						'gastspieler' =>  $data['gastspieler_status'] ?
-							($gastspieler ? 'ja' : 'nein') : NULL
+						'gastspieler' => mf_tournaments_guest_player($data, $postdata, $code)
 					];
 					$result = zzform_update('participations', $line, E_USER_ERROR);
 					if ($result) $changed = true;
@@ -220,11 +214,10 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
  *
  * @param array $spieler
  * @param array $data
- * @param int $data
- * @param bool $rangliste_no
+ * @param int $rangliste_no
  * @return bool
  */
-function cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler) {
+function cms_team_spieler_insert($spieler, $data, $rangliste_no) {
 	wrap_include('zzform/editing', 'custom');
 	
 	// Test, ob Spieler noch hinzugefügt werden darf
@@ -257,7 +250,7 @@ function cms_team_spieler_insert($spieler, $data, $rangliste_no, $gastspieler) {
 		't_dwz' => $spieler['DWZ'] ?? '',
 		't_elo' => $spieler['FIDE_Elo'] ?? '',
 		't_fidetitel' => $spieler['FIDE_Titel'] ?? '',
-		'gastspieler' => $data['gastspieler_status'] ? ($gastspieler ? 'ja' : 'nein') : NULL,
+		'gastspieler' => $spieler['guest_player']
 	];
 	if (wrap_category_id('participations/registration', 'check')) {
 		$line['participations_categories_'.wrap_category_id('participations/registration')][]['category_id']
@@ -362,4 +355,20 @@ function mod_tournaments_make_teamaufstellung_club_players($data) {
 		}
 	}
 	return $players;
+}
+
+/**
+ * get guest player status for database
+ *
+ * @param array $event
+ * @param array $postdata
+ * @param string $code
+ * @param string $return_false
+ * @return string
+ */
+function mf_tournaments_guest_player($event, $postdata, $code, $return_false = 'nein') {
+	if (empty($event['guest_players_allowed'])) return NULL;
+	if (empty($postdata['guest_player'][$code])) return $return_false;
+	if ($postdata['guest_player'][$code] === 'off') return $return_false;
+	return 'ja';
 }

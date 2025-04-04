@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2024 Gustaf Mossakowski
+# @copyright Copyright © 2012-2025 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>%%% item team %%% %%% item team_no %%%
@@ -26,7 +26,7 @@
 <table>
 <thead>
 <tr><th>Nr.</th> <th>Name</th> <th><abbr title="FIDE-Titel">Tit.</abbr></th> <th><abbr title="Geburtsjahr">Geb.</abbr></th> <th><abbr title="Deutsche Wertungszahl">DWZ</abbr></th> <th><abbr title="Elo-Wertungszahl des Weltschachbunds FIDE">Elo</abbr></th>
-%%% if gastspieler_status %%% <th>Typ</th> %%% endif %%%
+%%% if guest_players_allowed %%% <th>Typ</th> %%% endif %%%
 %%% if paarungen %%%
 %%% loop paarungen %%%
 <th class="number"><a href="../runde/%%% item runde_no %%%/#tisch-%%% item tisch_no %%%" title="Runde %%% item runde_no %%%, Gegner %%% item gegner %%%">%%% item runde_no %%%</a></th>
@@ -38,14 +38,14 @@
 %%% if paarungen %%%
 <tfoot>
 <tr>
-<th></th><th colspan="%%% if gastspieler_status %%%6%%% else %%%5%%% endif %%%">Brettpunkte</th>
+<th></th><th colspan="%%% if guest_players_allowed %%%6%%% else %%%5%%% endif %%%">Brettpunkte</th>
 %%% loop paarungen %%%
 <th class="number">%%% item punkte result_format %%%%%% item spielfrei * %%%</th>
 %%% loop end %%%
 <th class="tsum">%%% item summe_bp result_format %%%</th>
 </tr>
 <tr>
-<th></th><th colspan="%%% if gastspieler_status %%%6%%% else %%%5%%% endif %%%">Mannschaftspunkte</th>
+<th></th><th colspan="%%% if guest_players_allowed %%%6%%% else %%%5%%% endif %%%">Mannschaftspunkte</th>
 %%% loop paarungen %%%
 <th class="number">%%% if verloren %%%
 0
@@ -78,7 +78,7 @@
 %%% path ratings_fide_profile player_id_fide "html=<a href="%s">" %%%
 %%% item t_elo %%%
 %%% path ratings_fide_profile player_id_fide "html=</a>" %%%</td>
-%%% if gastspieler_status %%%
+%%% if guest_players_allowed %%%
 <td>%%% item gastspieler "Gast" %%%</td>
 %%% endif %%%
 %%% if partien %%%

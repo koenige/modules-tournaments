@@ -47,7 +47,8 @@ function mod_tournaments_team($vars, $settings, $data) {
 	$data += mf_contacts_contactdetails($data['contact_id']);
 
 	$sql = 'SELECT bretter_min, bretter_max, alter_max, alter_min
-			, geschlecht, IF(gastspieler = "ja", 1, NULL) AS gastspieler_status
+			, geschlecht
+			, IF(gastspieler = "ja", 1, NULL) AS guest_players_allowed
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
 			, pseudo_dwz
 		FROM tournaments
@@ -309,7 +310,7 @@ function mf_tournaments_team_players($team_ids, $event) {
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 			, t_verein, t_dwz, t_elo, t_fidetitel, spielberechtigt, rang_no, brett_no
 			, IF(participations.gastspieler = "ja", 1, NULL) AS gastspieler
-			, IF(tournaments.gastspieler = "ja", 1, NULL) AS gastspieler_status
+			, IF(tournaments.gastspieler = "ja", 1, NULL) AS guest_players_allowed
 			, YEAR(date_of_birth) AS geburtsjahr
 			, pseudo_dwz
 		FROM participations
