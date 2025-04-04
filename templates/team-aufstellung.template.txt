@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2017, 2021-2022, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2012-2017, 2021-2022, 2024-2025 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Aufstellung: <a href="../">%%% item team %%% %%% item team_no %%%</a>
@@ -45,7 +45,7 @@
 <td>%%% item geschlecht %%%</td>
 <td>%%% item geburtsjahr %%%</td>
 <td>%%% item t_dwz %%%</td>
-%%% if gastspieler_status %%%
+%%% if main__gastspieler_status %%%
 <td><input type='checkbox' name='gastspieler[tln_%%% item participation_id %%%]'%%% item gastspieler " checked" %%%></td>
 %%% endif %%%
 </tr>
@@ -70,7 +70,7 @@
 <td>%%% item ZPS %%%-%%% item Mgl_Nr %%%</td>
 <td>%%% item first_name %%% %%% item last_name %%%</td> <td>%%% item Geschlecht %%%</td>
 <td>%%% item Geburtsjahr %%%</td> <td>%%% item DWZ %%%</td>
-%%% if gastspieler_status %%%
+%%% if main__gastspieler_status %%%
 <td><input type='checkbox' name='gastspieler[zps_%%% item Mgl_Nr %%%]'%%% item gastspieler " checked" %%%></td>
 %%% endif %%%
 %%% loop end %%%
@@ -89,7 +89,8 @@
 %%% loop end %%%
 </select>
 <input type="hidden" name="date_of_birth" value="%%% item post_date_of_birth htmlspecialchars %%%">
-<p class="explanation">Bitte wählen Sie einen der Spieler aus! <input type="submit" value="Auswahl abbrechen" name="abbruch"></p>
+<p class="explanation">Bitte wählen Sie einen der Spieler aus!</p>
+<p><input type="submit" value="Auswahl abbrechen" name="abbruch"></p>
 </td>
 
 %%% elseif neu_treffer_ohne_rang %%%

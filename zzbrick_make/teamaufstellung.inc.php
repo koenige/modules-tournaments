@@ -52,37 +52,10 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 
 	// Aktuelle Mitglieder auslesen
 	// besser als nichts, eigentlich werden vergangene Mitglieder gesucht
-	$sql = 'SELECT ZPS, Mgl_Nr, Spielername, Geschlecht, Geburtsjahr
-			, DWZ, FIDE_Elo, contacts.contact_id, contact
-		FROM dwz_spieler
-		LEFT JOIN contacts_identifiers ok
-			ON dwz_spieler.ZPS = ok.identifier 
-		LEFT JOIN contacts USING (contact_id)
-		WHERE ZPS = "%s"
-		AND (ISNULL(Status) OR Status != "P")
-		AND Geschlecht IN("%s")
-		AND Geburtsjahr <= %d AND Geburtsjahr >= %d
-		AND ok.current = "yes"
-		ORDER BY Spielername';
-	$sql = sprintf($sql, $data['zps_code'], implode('","', $data['geschlecht'])
-		, date('Y') - $data['alter_min'], date('Y') - $data['alter_max']);
-	$data['vereinsspieler'] = wrap_db_fetch($sql, 'Mgl_Nr');
-	foreach ($data['vereinsspieler'] as $id => $spieler) {
-		if ($spieler['Mgl_Nr'])
-			$data['player_passes_dsb'][] = $spieler['ZPS'].'-'.$spieler['Mgl_Nr'];
-		foreach ($data['spieler'] AS $gemeldete_spieler) {
-			if (empty($gemeldete_spieler['player_pass_dsb'])) continue;
-			if ($gemeldete_spieler['player_pass_dsb'] !== $spieler['ZPS'].'-'.$spieler['Mgl_Nr']) continue;
-			unset($data['vereinsspieler'][$id]);
-			continue 2;
-		}
-		$spielername = explode(',', $spieler['Spielername']);
-		$data['vereinsspieler'][$id]['last_name'] = $spielername[0];
-		$data['vereinsspieler'][$id]['first_name'] = $spielername[1];
-		if ($data['gastspieler_status']) {
-			$data['vereinsspieler'][$id]['gastspieler_status'] = 1;
-		}
-	}
+	$data['vereinsspieler'] = mod_tournaments_make_teamaufstellung_club_players($data);
+	foreach ($data['vereinsspieler'] as $player)
+		if ($player['player_pass_dsb'])
+			$data['player_passes_dsb'][] = $player['player_pass_dsb'];
 	
 	$data['add'] = true;
 	if (!empty($data['spielerzahl']) AND $data['bretter_max'] <= $data['spielerzahl']) {
@@ -346,4 +319,47 @@ function cms_team_spielersuche($data, $postdata) {
 		$treffer[$id]['last_name'] = $name[0];
 	}
 	return $treffer;
+}
+
+/**
+ * get all players of a club that are eligible to participate in this tournament
+ *
+ * @param array $data
+ * @return array
+ */
+function mod_tournaments_make_teamaufstellung_club_players($data) {
+	if (!$data['zps_code']) return [];
+
+	$sql = 'SELECT ZPS, IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr) AS Mgl_Nr
+			, Geschlecht, Geburtsjahr, DWZ, FIDE_Elo
+			, contacts.contact_id, contact
+			, CONCAT(ZPS, "-", IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr)) AS player_pass_dsb
+			, SUBSTRING_INDEX(Spielername, ",", 1) AS last_name
+			, SUBSTRING_INDEX(SUBSTRING_INDEX(Spielername, ",", 2), ",", -1) AS first_name
+		FROM dwz_spieler
+		LEFT JOIN contacts_identifiers ok
+			ON dwz_spieler.ZPS = ok.identifier 
+		LEFT JOIN contacts USING (contact_id)
+		WHERE ZPS = "%s"
+		AND (ISNULL(Status) OR Status != "P")
+		AND Geschlecht IN("%s")
+		AND Geburtsjahr <= %d AND Geburtsjahr >= %d
+		AND ok.current = "yes"
+		ORDER BY Spielername';
+	$sql = sprintf($sql
+		, $data['zps_code']
+		, implode('","', $data['geschlecht'])
+		, date('Y') - $data['alter_min']
+		, date('Y') - $data['alter_max']
+	);
+	$players = wrap_db_fetch($sql, 'Mgl_Nr');
+	foreach ($players as $id => $player) {
+		// remove registered players from list
+		foreach ($data['spieler'] AS $registered_players) {
+			if (empty($registered_players['player_pass_dsb'])) continue;
+			if ($registered_players['player_pass_dsb'] !== $player['player_pass_dsb']) continue;
+			unset($players[$id]);
+		}
+	}
+	return $players;
 }
