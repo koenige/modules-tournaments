@@ -64,7 +64,7 @@
 <tr><td colspan="%%% if guest_players_allowed %%%7%%% else %%%6%%% endif %%%" class="heading">Spieler hinzufügen</td></tr>
 %%% if neu_treffer %%%
 %%% elseif neu_treffer_ohne_rang %%%
-%%% elseif neu_spieler_nicht_gefunden %%%
+%%% elseif new_player_not_found %%%
 %%% else %%%
 %%% loop vereinsspieler %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
@@ -77,7 +77,7 @@
 %%% endif %%%
 %%% loop end %%%
 %%% endif %%%
-<tr%%% if neu_treffer_ohne_rang %%% class="error"%%% elseif neu_spieler_nicht_gefunden %%% class="error"%%% endif %%%>
+<tr%%% if neu_treffer_ohne_rang %%% class="error"%%% elseif new_player_not_found %%% class="error"%%% endif %%%>
 <td%%% if post_rang %%% %%% else %%% %%% if neu_treffer %%% class="error" %%% endif %%%%%% endif %%%>
 <input type="number" class="rangno" name="rang[neu]" value="%%% item post_rang htmlspecialchars %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
 
@@ -109,12 +109,12 @@
 <td>
 <span class="nobr"><input type="text" name="first_name" value="%%% item post_vorname htmlspecialchars %%%" title="%%% text First name %%%" placeholder="%%% text First name %%%"> 
 <input type="text" name="last_name" value="%%% item post_nachname htmlspecialchars %%%" title="%%% text Last name %%%" placeholder="%%% text Last name %%%"></span><br>
-%%% if neu_spieler_nicht_gefunden | neu_spieler_hinzufuegen | new_player_more_data %%%<p class="error">Es wurde kein Spieler beim <abbr title="Deutscher Schachbund">DSB</abbr> mit diesen Angaben gefunden. 
-%%% if neu_spieler_hinzufuegen %%%<input type="submit" value="Als DWZ-losen Spieler hinzufügen" name="ergaenzen">
+%%% if new_player_not_found | new_player_add | new_player_more_data %%%<p class="error">Es wurde kein Spieler beim <abbr title="Deutscher Schachbund">DSB</abbr> mit diesen Angaben gefunden. 
+%%% if new_player_add %%%<input type="submit" value="Als DWZ-losen Spieler hinzufügen" name="ergaenzen">
 %%% elseif new_player_more_data %%%Bitte füllen Sie alle vier Felder aus, dann können Sie den Spieler oder die Spielerin als DWZ-losen Spieler hinzufügen.
 %%% endif %%%
 <input type="submit" value="Suche abbrechen" name="abbruch"></p>
-%%% elseif date_of_birth_falsch %%%
+%%% elseif date_of_birth_wrong %%%
 <p class="error">Bitte prüfe das Geburtsdatum. Wir können es nicht verarbeiten.</p>
 %%% endif %%%
 <p class="explanation">Für weitere Spieler: Bitte Vornamen und Nachnamen eingeben, nach der Spielerin bzw. dem Spieler wird in der DWZ-Datenbank des Schachbunds gesucht.</p></td>

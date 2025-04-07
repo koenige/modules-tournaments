@@ -142,9 +142,9 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 						// Keinen Spieler gefunden
 						if (wrap_setting('tournaments_player_pool')) {
 							// DSB-Mitgliedschaft erforderlich
-							$data['neu_spieler_nicht_gefunden'] = true;
+							$data['new_player_not_found'] = true;
 						} elseif (!empty($postdata['date_of_birth']) AND !zz_check_date($postdata['date_of_birth'])) {
-							$data['date_of_birth_falsch'] = true;
+							$data['date_of_birth_wrong'] = true;
 						} else {
 							// Turniere ohne erforderliche DSB-Mitgliedschaft:
 							// Option, Spieler hinzuzufügen
@@ -153,7 +153,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 							foreach ($required_fields as $required_field)
 								if (empty($postdata[$required_field])) $complete = false;
 							if ($complete)
-								$data['neu_spieler_hinzufuegen'] = true;
+								$data['new_player_add'] = true;
 							else
 								$data['new_player_more_data'] = true;
 						}
