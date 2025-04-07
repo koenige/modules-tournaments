@@ -170,6 +170,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	$sql = sprintf($sql, $internal ? 1 : 'NULL', $event['event_id']);
 	$event['events'] = wrap_db_fetch($sql, 'event_id');
 	foreach ($event['events'] as $event_id => $program_item) {
+		if (!$event['freiplatz']) $event['freiplatz'] = NULL;
 		if ($event['offen'] OR $event['freiplatz']) {
 			if ($program_item['event_category_id'] !== wrap_category_id('event/deadline')) continue;
 			if ($program_item['date_begin'] > date('Y-m-d')) {
@@ -279,6 +280,8 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 			, ($event['date_end'] >= date('Y-m-d')) ? sprintf('%d, ', wrap_category_id('participation-status/verified')) : ''
 		);
 		$event['einzelteilnehmerliste'] = wrap_db_fetch($sql, '', 'single value');
+		if (!$event['einzelteilnehmerliste'])
+			$event['einzelteilnehmerliste'] = NULL;
 	}
 	if ($internal) $event['tabellenstaende'] = [];
 	if ($event['tabellenstaende']) {
