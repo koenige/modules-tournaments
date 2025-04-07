@@ -92,7 +92,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 					if ($spieler) {
 						$spieler['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
 						$spieler['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
-						$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no);
+						$ops = mf_tournaments_team_player_insert($spieler, $data, $rangliste_no);
 						if ($ops) $changed = true;
 					}
 					continue;
@@ -119,7 +119,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 					$spieler['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
 					$spieler['Geschlecht'] = strtoupper($postdata['geschlecht']);
 					$spieler['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
-					$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no);
+					$ops = mf_tournaments_team_player_insert($spieler, $data, $rangliste_no);
 					if ($ops) $changed = true;
 					// Spieler in eigener Personentabelle suchen
 					// Falls nicht vorhanden, ergänzen
@@ -167,7 +167,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 				]);
 				if ($spieler) {
 					$spieler['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
-					$ops = cms_team_spieler_insert($spieler, $data, $rangliste_no);
+					$ops = mf_tournaments_team_player_insert($spieler, $data, $rangliste_no);
 					if ($ops) $changed = true;
 				}
 			} elseif (substr($code, 0, 4) === 'tln_') {
@@ -217,7 +217,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
  * @param int $rangliste_no
  * @return bool
  */
-function cms_team_spieler_insert($spieler, $data, $rangliste_no) {
+function mf_tournaments_team_player_insert($spieler, $data, $rangliste_no) {
 	wrap_include('zzform/editing', 'custom');
 	
 	// Test, ob Spieler noch hinzugefügt werden darf
@@ -294,7 +294,7 @@ function cms_team_spielersuche($data, $postdata) {
 			ON dwz_spieler.ZPS = ok.identifier 
 		LEFT JOIN contacts USING (contact_id)
 		WHERE (ISNULL(Status) OR Status != "P")
-		AND (Spielername LIKE "%s" OR Spielername LIKE "%s")
+		AND (Spielername LIKE _latin1"%s" OR Spielername LIKE _latin1"%s")
 		AND CONCAT(ZPS, "-", IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr)) NOT IN ("%s")
 		AND ok.current = "yes"
 		%s
