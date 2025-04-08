@@ -427,6 +427,8 @@ table.spieler td.show-more {
 }
 input.rangno	{ width: 3em; }
 input.geburt	{ width: 6em; }
+.player-search-abort
+				{ float: right; }
 
 /* team-aufstellung.template.txt */
 .results p.error
