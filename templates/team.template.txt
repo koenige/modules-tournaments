@@ -128,9 +128,9 @@ nicht abschließend geprüft.)</em></p>
 %%% if bilder %%%
 <h3>Teamphoto</h3>
 
-<p class="teamphoto">
+<p class="teamphoto js-gallery">
 %%% loop bilder 1 %%%
-<img src="%%% setting mediadblink_base_url %%%/%%% item base_filename %%%.600.%%% item preview_extension %%%" alt="">
+<a class="js-img" href="%%% setting mediadblink_base_url %%%/%%% item base_filename %%%.1600.%%% item preview_extension %%%"><img src="%%% setting mediadblink_base_url %%%/%%% item base_filename %%%.600.%%% item preview_extension %%%" alt=""></a>
 %%% loop end %%%
 </p>
 %%% endif %%%

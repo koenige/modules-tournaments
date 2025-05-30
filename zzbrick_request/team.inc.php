@@ -95,6 +95,8 @@ function mod_tournaments_team($vars, $settings, $data) {
 	$data = array_merge($data, wrap_db_fetch($sql));
 
 	$data['bilder'] = mf_mediadblink_media([$data['event_identifier'], 'Website'], [], 'group', $data['team_id']);
+	if ($data['bilder'] and wrap_package('magnificpopup'))
+		$page['extra']['magnific_popup'] = true;
 
 	// Prev/Next-Navigation
 	$sql = 'SELECT team_id, identifier
