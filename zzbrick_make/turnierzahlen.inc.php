@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -68,7 +68,7 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 	
 	$sql = 'SELECT participation_id, contacts.contact_id
 			, contact, identifier
-			, CONCAT(last_name, ", ", first_name) AS contact_last_first
+			, CONCAT(last_name, ", ", first_name) AS player_last_first
 			, t_dwz, t_elo
 			, participations.remarks
 		FROM participations
@@ -81,17 +81,14 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 	$participations = wrap_db_fetch($sql, 'participation_id');
 
 	$contact_ids = [];
-	foreach ($participations as $participation) {
+	foreach ($participations as $participation)
 		$contact_ids[] = $participation['contact_id'];
-	}
 
-	$rating_systems = ['dwz', 'elo'];
-
-	if ($contact_ids) {
-		wrap_package_activate('ratings');
-		$ratings['DSB'] = mf_ratings_rating_dsb($contact_ids);
-		$ratings['FIDE'] = mf_ratings_rating_fide($contact_ids);
-	}
+	$rating_systems = [
+		'dsb' => 'dwz',
+		'fide' => 'elo'
+	];
+	$ratings = $contact_ids ? mf_ratings_contact($contact_ids) : [];
 
 	wrap_setting('log_username', 'Turnierzahlen '.implode('/', $vars));
 
@@ -107,33 +104,30 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 			foreach ($rating_systems as $system)
 				$line['m_'.$system] = $participation['t_'.$system];
 		}
+		if (!array_key_exists($participation['contact_id'], $ratings)) continue;
+		$rating = $ratings[$participation['contact_id']]; // shortcut
+
 		$status = 'not_found';
-		foreach ($ratings as $federation => $ratings_per_sys) {
-			if (!array_key_exists($participation['contact_id'], $ratings_per_sys)) {
-				continue;
+		foreach ($rating_systems as $confederation => $system) {
+			if (!array_key_exists($confederation.'_'.$system, $rating)) continue;
+			$status = 'found';
+			$line['t_'.$system] = $rating[$confederation.'_'.$system];
+			if ($participation['t_'.$system].'' !== $line['t_'.$system].'') {
+				$data['changes'][] = [
+					'contact' => $participation['contact'],
+					'system' => $system,
+					'old_rating' => $participation['t_'.$system],
+					'new_rating' => $line['t_'.$system],
+					'link' => wrap_path('contacts_profile[person]', $participation['identifier'], false) // @todo remove ,false
+				];
 			}
-			if ($status === 'not_found') $status = 'exists';
-			foreach ($rating_systems as $system) {
-				if (empty($ratings_per_sys[$participation['contact_id']][$system])) continue;
-				$line['t_'.$system] = $ratings_per_sys[$participation['contact_id']][$system];
-				if ($participation['t_'.$system].'' !== $line['t_'.$system].'') {
-					$data['changes'][] = [
-						'contact' => $participation['contact'],
-						'system' => $system,
-						'old_rating' => $participation['t_'.$system],
-						'new_rating' => $line['t_'.$system],
-						'link' => wrap_path('contacts_profile[person]', $participation['identifier'], false) // @todo remove ,false
-					];
-				}
-				$status = 'found';
-			}
-			if (empty($ratings_per_sys[$participation['contact_id']]['contact_last_first'])) continue;
-			if ($ratings_per_sys[$participation['contact_id']]['contact_last_first'] === $participation['contact_last_first']) continue;
+			if (empty($rating[$confederation.'_player_last_first'])) continue;
+			if ($rating[$confederation.'_player_last_first'] === $participation['player_last_first']) continue;
 			$data['abweichungen'][] = [
 				'contact' => $participation['contact'],
-				'federation' => $federation,
+				'federation' => strtoupper($confederation),
 				'contact_id' => $participation['contact_id'],
-				'contact_last_first' => $ratings_per_sys[$participation['contact_id']]['contact_last_first'],
+				'player_last_first' => $rating[$confederation.'_player_last_first'],
 				'link' => wrap_path('contacts_profile[person]', $participation['identifier'], false) // @todo remove ,false
 			];
 		}
