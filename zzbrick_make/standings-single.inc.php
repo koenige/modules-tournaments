@@ -195,6 +195,7 @@ function mod_tournaments_make_standings_write_single($event_id, $round_no, $tabe
 class mod_tournaments_make_standings_single {
 	var $buchholz = [];
 	var $buchholzSpieler = [];
+    var $buchholzSpielerFein = [];
 	var $round_no = 0;
 	var $win = 1;
 	var $draw = 0.5;
