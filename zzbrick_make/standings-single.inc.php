@@ -9,7 +9,7 @@
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
- * @copyright Copyright © 2012-2022, 2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022, 2024-2025 Gustaf Mossakowski
  * @copyright Copyright © 2014, 2022 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
@@ -19,17 +19,17 @@
  * Berechne den Tabellenstand einer Runde eines Einzelturniers
  *
  * @param array $event
- * @param int $runde_no
+ * @param int $round_no
  * @return void
  * @todo return Anzahl der geänderten Datensätze, ggf.
  */
-function mod_tournaments_make_standings_calculate_single($event, $runde_no) {
+function mod_tournaments_make_standings_calculate_single($event, $round_no) {
 	// gibt es überhaupt Partien in der Runde, die schon gespielt wurden?
 	$sql = 'SELECT COUNT(*)
 		FROM partien
 		WHERE event_id = %d AND runde_no = %d
 		AND NOT ISNULL(weiss_ergebnis)';
-	$sql = sprintf($sql, $event['event_id'], $runde_no);
+	$sql = sprintf($sql, $event['event_id'], $round_no);
 	$anzahl_partien = wrap_db_fetch($sql, '', 'single value');
 	if (!$anzahl_partien) return false;
 
@@ -40,18 +40,22 @@ function mod_tournaments_make_standings_calculate_single($event, $runde_no) {
 
 	// Spieler auslesen
 	$tabelleeinzeln = new mod_tournaments_make_standings_single();
-	$tabelleeinzeln->setAktRunde($runde_no);
+	$tabelleeinzeln->setCurrentRound($round_no);
 	$tabelle = $tabelleeinzeln->getSpieler($event['event_id']);
 
 	// Turnierwertungen
 	$turnierwertungen = mod_tournaments_make_standings_get_scoring($event['event_id']);
 	if (in_array(wrap_category_id('turnierwertungen/3p'), array_keys($turnierwertungen))) {
-		$tabelleeinzeln->setSieg(3);
-		$tabelleeinzeln->setRemis(1);
+		$tabelleeinzeln->setWin(3);
+		$tabelleeinzeln->setDraw(1);
+	} elseif (in_array(wrap_category_id('turnierwertungen/3-2-1'), array_keys($turnierwertungen))) {
+		$tabelleeinzeln->setWin(3);
+		$tabelleeinzeln->setDraw(2);
+		$tabelleeinzeln->setLoss(1);
 	}
 	foreach ($turnierwertungen as $id => $turnierwertung) {
 		if (!function_exists($function = 'mf_tournaments_make_single_'.$turnierwertung['path'])) continue;
-		$wertungen[$id] = $function($event['event_id'], $runde_no, $tabelle, $tabelleeinzeln);
+		$wertungen[$id] = $function($event['event_id'], $round_no, $tabelle, $tabelleeinzeln);
 	}
 
 	$niedrig_besser = [
@@ -100,18 +104,18 @@ function mod_tournaments_make_standings_calculate_single($event, $runde_no) {
  * Aktualisiere den Tabellenstand einer Runde eines Einzelturniers
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @param array $tabelle Daten, berechnet aus mod_tournaments_make_standings_calculate_single()
  * @return void
  * @todo return Anzahl der geänderten Datensätze, ggf.
  */
-function mod_tournaments_make_standings_write_single($event_id, $runde_no, $tabelle) {
+function mod_tournaments_make_standings_write_single($event_id, $round_no, $tabelle) {
 	// Bestehenden Tabellenstand aus Datenbank auslesen
 	$sql = 'SELECT person_id, tabellenstand_id
 		FROM tabellenstaende
 		WHERE event_id = %d
 		AND runde_no = %d';
-	$sql = sprintf($sql, $event_id, $runde_no);
+	$sql = sprintf($sql, $event_id, $round_no);
 	$tabellenstaende = wrap_db_fetch($sql, '_dummy_', 'key/value');
 
 	// Werte für Partien gewonnen, unentschieden, verloren auslesen
@@ -134,7 +138,7 @@ function mod_tournaments_make_standings_write_single($event_id, $runde_no, $tabe
 		AND usergroup_id = /*_ID usergroups spieler _*/
 		GROUP BY person_id
 	';
-	$sql = sprintf($sql, $event_id, $runde_no);
+	$sql = sprintf($sql, $event_id, $round_no);
 	$guv = wrap_db_fetch($sql, 'person_id');
 	$punktspalten = ['g', 'u', 'v'];
 
@@ -149,7 +153,7 @@ function mod_tournaments_make_standings_write_single($event_id, $runde_no, $tabe
 		$line = [
 			'tabellenstand_id' => $tabellenstaende[$stand['person_id']] ?? NULL,
 			'event_id' => $event_id,
-			'runde_no' => $runde_no,
+			'runde_no' => $round_no,
 			'person_id' => $stand['person_id'],
 			'platz_no' => $stand['platz_no']
 		];
@@ -191,20 +195,25 @@ function mod_tournaments_make_standings_write_single($event_id, $runde_no, $tabe
 class mod_tournaments_make_standings_single {
 	var $buchholz = [];
 	var $buchholzSpieler = [];
-	var $runde_no = 0;
-	var $sieg = 1;
-	var $remis = 0.5;
+	var $round_no = 0;
+	var $win = 1;
+	var $draw = 0.5;
+	var $loss = 0;
 
-	function setAktRunde($runde) {
-		$this->runde_no = $runde;
+	function setCurrentRound($round_no) {
+		$this->round_no = $round_no;
 	}
 
-	function setSieg($punkte) {
-		$this->sieg = $punkte;
+	function setWin($points) {
+		$this->win = $points;
 	}
 
-	function setRemis($punkte) {
-		$this->remis = $punkte;
+	function setDraw($points) {
+		$this->draw = $points;
+	}
+
+	function setLoss($points) {
+		$this->loss = $points;
 	}
 
 	function getSpieler($event_id) {
@@ -223,11 +232,11 @@ class mod_tournaments_make_standings_single {
 		static $round_results = [];
 		if (!$round_results) {
 			$sql = 'SELECT person_id, runde_no, partiestatus_category_id, gegner_id
-					, (CASE ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE 0 END) AS ergebnis
+					, (CASE ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE %s END) AS ergebnis
 				FROM partien_einzelergebnisse
 				WHERE runde_no <= %d
 				ORDER BY runde_no';
-			$sql = sprintf($sql, $this->sieg, $this->remis, $this->runde_no);
+			$sql = sprintf($sql, $this->win, $this->draw, $this->loss, $this->round_no);
 			$round_results = wrap_db_fetch($sql, ['person_id', 'runde_no']);
 		}
 		if (!array_key_exists($person_id, $round_results)) return [];
@@ -247,7 +256,7 @@ class mod_tournaments_make_standings_single {
 		$buchholzsumme = [];
 
 		$results = $this->getRoundResults($person_id);
-		for ($round = 1; $round <= $this->runde_no; $round++) {
+		for ($round = 1; $round <= $this->round_no; $round++) {
 			if (!array_key_exists($round, $results))
 				$buchholzsumme[$round] = 0; // for Buchholz cut
 			elseif ($results[$round]['gegner_id'] === NULL)
@@ -297,7 +306,7 @@ class mod_tournaments_make_standings_single {
 		$sql = 'SELECT own_scores.person_id
 				, CONCAT(own_scores.gegner_id, "-", own_scores.runde_no) AS _index
 				, IF(opponents_scores.partiestatus_category_id = /*_ID categories partiestatus/kampflos _*/ AND %d = 1, %s,
-					CASE opponents_scores.ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE 0 END
+					CASE opponents_scores.ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE %s END
 				) AS buchholz
 				, opponents_scores.runde_no AS runde_gegner
 			FROM partien_einzelergebnisse own_scores
@@ -310,8 +319,8 @@ class mod_tournaments_make_standings_single {
 			AND own_scores.partiestatus_category_id != %d
 			ORDER BY own_scores.runde_no, own_scores.gegner_id, opponents_scores.runde_no';
 		$sql = sprintf($sql
-			, $count_bye_as_draw, $this->remis
-			, $this->sieg, $this->remis, $this->runde_no, $this->runde_no
+			, $count_bye_as_draw, $this->draw
+			, $this->win, $this->draw, $this->loss, $this->round_no, $this->round_no
 			// FIDE 2012: exclude all byes, calculate individually
 			, $correction === 'fide-2012' ? wrap_category_id('partiestatus/kampflos') : 0
 		);
@@ -321,8 +330,8 @@ class mod_tournaments_make_standings_single {
 			// Falls weniger Runden als aktuelle Runde, pro Runde 0.5 Punkte addieren
 			foreach ($opponent_scores as $person_id => $scores) {
 				foreach (array_keys($scores) as $opponent) {
-					while (count($opponent_scores[$person_id][$opponent]) < $this->runde_no) {
-						$opponent_scores[$person_id][$opponent][] = $this->remis;
+					while (count($opponent_scores[$person_id][$opponent]) < $this->round_no) {
+						$opponent_scores[$person_id][$opponent][] = $this->draw;
 					}
 				}
 			}
@@ -334,13 +343,13 @@ class mod_tournaments_make_standings_single {
 				$opponent_scores[$person_id][$opponent] = array_sum($scores);
 			}
 			// Testen ob nicht gepaart wurde
-			if (count($opponent_scores[$person_id]).'' === $this->runde_no.'') continue;
+			if (count($opponent_scores[$person_id]).'' === $this->round_no.'') continue;
 			$existing_rounds = [];
 			foreach (array_keys($opponent_scores[$person_id]) as $opponent) {
 				$existing_round = explode('-', $opponent);
 				$existing_rounds[] = $existing_round[1];
 			}
-			for ($round = 1; $round <= $this->runde_no; $round++) {
+			for ($round = 1; $round <= $this->round_no; $round++) {
 				if (in_array($round, $existing_rounds)) continue;
 				if ($correction === 'fide-2012') {
 					// SPR + (1 – SfPR) + 0.5 * (n – R)
@@ -353,7 +362,7 @@ class mod_tournaments_make_standings_single {
 					$sfpr = array_key_exists($round, $round_data)
 						? $round_data[$round]['ergebnis'] : 0;
 					$opponent_scores[$person_id]['bye-'.$round]
-						= $spr + 1 - $sfpr + $this->remis * ($this->runde_no - $round);
+						= $spr + 1 - $sfpr + $this->draw * ($this->round_no - $round);
 				} else {
 					// Wichtig für Streichergebnisse!
 					$opponent_scores[$person_id]['bye-'.$round] = 0;
@@ -370,16 +379,16 @@ class mod_tournaments_make_standings_single {
  * Brettpunkte für Einzelturniere berechnen
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @return array Liste person_id => value
  */
-function mf_tournaments_make_single_pkt($event_id, $runde_no) {
+function mf_tournaments_make_single_pkt($event_id, $round_no) {
 	$sql = 'SELECT person_id, SUM(ergebnis) AS punkte
 		FROM partien_einzelergebnisse
 		WHERE runde_no <= %d
 		AND NOT ISNULL(person_id)
 		GROUP BY person_id';
-	$sql = sprintf($sql, $runde_no);
+	$sql = sprintf($sql, $round_no);
 	return wrap_db_fetch($sql, '_dummy_', 'key/value');
 }
 
@@ -388,10 +397,10 @@ function mf_tournaments_make_single_pkt($event_id, $runde_no) {
  * = Ergebnis x Punktzahl der Gegner nach der aktuellen Runde
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @return array Liste person_id => value
  */
-function mf_tournaments_make_single_sobo($event_id, $runde_no) {
+function mf_tournaments_make_single_sobo($event_id, $round_no) {
 	$sql = 'SELECT own_scores.person_id
 			, SUM(opponents_scores.ergebnis * own_scores.ergebnis) AS sb
 		FROM partien_einzelergebnisse own_scores
@@ -403,7 +412,7 @@ function mf_tournaments_make_single_sobo($event_id, $runde_no) {
 		AND NOT ISNULL(own_scores.person_id)
 		GROUP BY own_scores.person_id
 		ORDER BY sb DESC, person_id';
-	$sql = sprintf($sql, $runde_no, $runde_no);
+	$sql = sprintf($sql, $round_no, $round_no);
 	$wertungen = wrap_db_fetch($sql, ['person_id', 'sb'], 'key/value');
 	return $wertungen;
 }
@@ -412,11 +421,28 @@ function mf_tournaments_make_single_sobo($event_id, $runde_no) {
  * Drei-Punkte-Regelung für Einzelturniere berechnen
  *
  * @param int $event_id
+ * @param int $round_no
+ * @return array Liste person_id => value
+ */
+function mf_tournaments_make_single_3p($event_id, $round_no) {
+	$sql = 'SELECT person_id, SUM(IF(ergebnis = 1, 3, IF(ergebnis = 0.5, 1, 0))) AS punkte
+		FROM partien_einzelergebnisse
+		WHERE runde_no <= %d
+		AND NOT ISNULL(person_id)
+		GROUP BY person_id';
+	$sql = sprintf($sql, $round_no);
+	return wrap_db_fetch($sql, '_dummy_', 'key/value');
+}
+
+/**
+ * 3-2-1-Punkte-Regelung für Einzelturniere berechnen
+ *
+ * @param int $event_id
  * @param int $runde_no
  * @return array Liste person_id => value
  */
-function mf_tournaments_make_single_3p($event_id, $runde_no) {
-	$sql = 'SELECT person_id, SUM(IF(ergebnis = 1, 3, IF(ergebnis = 0.5, 1, 0))) AS punkte
+function mf_tournaments_make_single_3_2_1($event_id, $runde_no) {
+	$sql = 'SELECT person_id, SUM(IF(ergebnis = 1, 3, IF(ergebnis = 0.5, 2, 1))) AS punkte
 		FROM partien_einzelergebnisse
 		WHERE runde_no <= %d
 		AND NOT ISNULL(person_id)
@@ -429,17 +455,17 @@ function mf_tournaments_make_single_3p($event_id, $runde_no) {
  * Fortschrittswertung für Einzelturniere berechnen
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @param array $tabelle
  * @return array Liste person_id => value
  */
-function mf_tournaments_make_single_fort($event_id, $runde_no, $tabelle) {
+function mf_tournaments_make_single_fort($event_id, $round_no, $tabelle) {
 	$sql = 'SELECT person_id, SUM((%d - runde_no + 1) * ergebnis) AS punkte
 		FROM partien_einzelergebnisse
 		WHERE runde_no <= %d
 		AND NOT ISNULL(person_id)
 		GROUP BY person_id';
-	$sql = sprintf($sql, $runde_no, $runde_no);
+	$sql = sprintf($sql, $round_no, $round_no);
 	$wertungen = wrap_db_fetch($sql, '_dummy_', 'key/value');
 	foreach (array_keys($tabelle) as $person_id) {
 		if (array_key_exists($person_id, $wertungen)) continue;
@@ -455,10 +481,10 @@ function mf_tournaments_make_single_fort($event_id, $runde_no, $tabelle) {
  * Schnitt nur über Ergebnisse gegen einen Gegner, falls Freilos wird Runde
  * nicht gewertet! = NOT ISNULL(partien_einzelergebnisse.gegner_id)
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @return array Liste person_id => value
  */
-function mf_tournaments_make_single_performance($event_id, $runde_no) {
+function mf_tournaments_make_single_performance($event_id, $round_no) {
 	$sql = 'SELECT partien_einzelergebnisse.person_id
 			, ROUND(SUM(IFNULL(IFNULL(t_elo, t_dwz), 0))/COUNT(partie_id)) AS wertung
 		FROM partien_einzelergebnisse
@@ -472,7 +498,7 @@ function mf_tournaments_make_single_performance($event_id, $runde_no) {
 		AND NOT ISNULL(partien_einzelergebnisse.gegner_id)
 		GROUP BY partien_einzelergebnisse.person_id
 	';
-	$sql = sprintf($sql, $runde_no);
+	$sql = sprintf($sql, $round_no);
 	return wrap_db_fetch($sql, '_dummy_', 'key/value');
 }
 
@@ -480,17 +506,17 @@ function mf_tournaments_make_single_performance($event_id, $runde_no) {
  * Gewinnpartien für Einzelturniere berechnen
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @param array $tabelle
  * @return array Liste person_id => value
  */
-function mf_tournaments_make_single_sw($event_id, $runde_no, $tabelle) {
+function mf_tournaments_make_single_sw($event_id, $round_no, $tabelle) {
 	$sql = 'SELECT person_id, SUM(ergebnis) AS punkte
 		FROM partien_einzelergebnisse
 		WHERE ergebnis = 1
 		AND runde_no <= %d
 		GROUP BY person_id';
-	$sql = sprintf($sql, $runde_no);
+	$sql = sprintf($sql, $round_no);
 	$wertungen = wrap_db_fetch($sql, '_dummy_', 'key/value');
 	foreach (array_keys($tabelle) as $person_id) {
 		if (array_key_exists($person_id, $wertungen)) continue;
@@ -503,10 +529,10 @@ function mf_tournaments_make_single_sw($event_id, $runde_no, $tabelle) {
  * gespielte Partien für Einzelturniere berechnen
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @return array Liste person_id => value
  */
-function mf_tournaments_make_single_gespielte_partien($event_id, $runde_no) {
+function mf_tournaments_make_single_gespielte_partien($event_id, $round_no) {
 	$sql = 'SELECT person_id, COUNT(partie_id) AS partien
 		FROM participations
 		LEFT JOIN persons USING (contact_id)
@@ -519,7 +545,7 @@ function mf_tournaments_make_single_gespielte_partien($event_id, $runde_no) {
 		AND participations.usergroup_id = /*_ID usergroups spieler _*/
 		GROUP BY person_id
 		ORDER BY COUNT(partie_id)';
-	$sql = sprintf($sql, $event_id, $runde_no);
+	$sql = sprintf($sql, $event_id, $round_no);
 	return wrap_db_fetch($sql, '_dummy_', 'key/value');
 }
 
@@ -527,11 +553,11 @@ function mf_tournaments_make_single_gespielte_partien($event_id, $runde_no) {
  * Platz in Setzliste berechnen
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @param array $tabelle
  * @return array Liste person_id => value
  */
-function mf_tournaments_make_single_rg($event_id, $runde_no, $tabelle) {
+function mf_tournaments_make_single_rg($event_id, $round_no, $tabelle) {
 	foreach ($tabelle as $person_id => $stand) {
 		$wertungen[$person_id] = $stand['setzliste_no'];
 	}
@@ -542,13 +568,13 @@ function mf_tournaments_make_single_rg($event_id, $runde_no, $tabelle) {
  * Buchholz mit Korrektur in Setzliste berechnen
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @param array $tabelle
  * @param object $tabelleeinzeln
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function mf_tournaments_make_single_bhz($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function mf_tournaments_make_single_bhz($event_id, $round_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach (array_keys($tabelle) as $person_id) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholz($event_id, $person_id, 'Buchholz');
@@ -560,13 +586,13 @@ function mf_tournaments_make_single_bhz($event_id, $runde_no, $tabelle, $tabelle
  * Buchholz mit einer Streichwertung in Setzliste berechnen
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @param array $tabelle
  * @param object $tabelleeinzeln
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function mf_tournaments_make_single_bhz_1st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function mf_tournaments_make_single_bhz_1st($event_id, $round_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach (array_keys($tabelle) as $person_id) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholz($event_id, $person_id, 'Buchholz Cut 1');
@@ -578,13 +604,13 @@ function mf_tournaments_make_single_bhz_1st($event_id, $runde_no, $tabelle, $tab
  * Buchholz mit zwei Streichwertungen in Setzliste berechnen
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @param array $tabelle
  * @param object $tabelleeinzeln
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function mf_tournaments_make_single_bhz_2st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function mf_tournaments_make_single_bhz_2st($event_id, $round_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach (array_keys($tabelle) as $person_id) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholz($event_id, $person_id, 'Buchholz Cut 2');
@@ -596,13 +622,13 @@ function mf_tournaments_make_single_bhz_2st($event_id, $runde_no, $tabelle, $tab
  * Buchholz gemittelt in Setzliste berechnen
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @param array $tabelle
  * @param object $tabelleeinzeln
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function mf_tournaments_make_single_bhz_m($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function mf_tournaments_make_single_bhz_m($event_id, $round_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach (array_keys($tabelle) as $person_id) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholz($event_id, $person_id, 'Median Buchholz');
@@ -614,13 +640,13 @@ function mf_tournaments_make_single_bhz_m($event_id, $runde_no, $tabelle, $tabel
  * Verfeinerte Buchholz für Tabelle berechnen
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @param array $tabelle
  * @param object $tabelleeinzeln
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function mf_tournaments_make_single_bhz_ii($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function mf_tournaments_make_single_bhz_ii($event_id, $round_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach (array_keys($tabelle) as $person_id) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Buchholz');
@@ -632,13 +658,13 @@ function mf_tournaments_make_single_bhz_ii($event_id, $runde_no, $tabelle, $tabe
  * Verfeinerte Buchholz, eine Streichwertung, für Tabelle berechnen
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @param array $tabelle
  * @param object $tabelleeinzeln
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function mf_tournaments_make_single_bhz_ii_1st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function mf_tournaments_make_single_bhz_ii_1st($event_id, $round_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach (array_keys($tabelle) as $person_id) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Buchholz Cut 1');
@@ -650,13 +676,13 @@ function mf_tournaments_make_single_bhz_ii_1st($event_id, $runde_no, $tabelle, $
  * Verfeinerte Buchholz, zwei Streichwertungen, für Tabelle berechnen
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @param array $tabelle
  * @param object $tabelleeinzeln
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function mf_tournaments_make_single_bhz_ii_2st($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function mf_tournaments_make_single_bhz_ii_2st($event_id, $round_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach (array_keys($tabelle) as $person_id) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Buchholz Cut 2');
@@ -668,13 +694,13 @@ function mf_tournaments_make_single_bhz_ii_2st($event_id, $runde_no, $tabelle, $
  * Verfeinerte Buchholz, gemittelt, für Tabelle berechnen
  *
  * @param int $event_id
- * @param int $runde_no
+ * @param int $round_no
  * @param array $tabelle
  * @param object $tabelleeinzeln
  * @return array Liste person_id => value
  * @todo ggf. optimieren, dass alle Feinwertungen auf einmal berechnet werden
  */
-function mf_tournaments_make_single_bhz_ii_m($event_id, $runde_no, $tabelle, $tabelleeinzeln) {
+function mf_tournaments_make_single_bhz_ii_m($event_id, $round_no, $tabelle, $tabelleeinzeln) {
 	$wertungen = [];
 	foreach (array_keys($tabelle) as $person_id) {
 		$wertungen[$person_id] = $tabelleeinzeln->getBuchholzsumme($event_id, $person_id, 'Median Buchholz');
