@@ -33,11 +33,9 @@ function mod_tournaments_tournamentphotos($vars, $settings, $event) {
 	$photos = mf_mediadblink_media(
 		[$event['year'], $event['main_series_path'], 'Website/Spieler'], [], 'person', array_keys($event['spieler'])
 	);
-	if (!$photos) {
+	if (!$photos AND !$event['running'])
 		// while event is running, do not send 404 error mails if no photos are there yet
-		if ($event['running']) wrap_setting('error_ignore_404');
 		$page['status'] = 404;
-	}
 	foreach ($photos as $id => $photo)
 		$event['spieler'][$id] += $photo;
 
