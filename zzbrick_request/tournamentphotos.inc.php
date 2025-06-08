@@ -36,7 +36,7 @@ function mod_tournaments_tournamentphotos($vars, $settings, $event) {
 	if (!$photos) {
 		// while event is running, do not send 404 error mails if no photos are there yet
 		if ($event['running']) wrap_setting('error_ignore_404');
-		return false;
+		$page['status'] = 404;
 	}
 	foreach ($photos as $id => $photo)
 		$event['spieler'][$id] += $photo;
