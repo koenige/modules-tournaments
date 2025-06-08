@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015-2016, 2018-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2015-2016, 2018-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -33,10 +33,13 @@ function mod_tournaments_tournamentphotos($vars, $settings, $event) {
 	$photos = mf_mediadblink_media(
 		[$event['year'], $event['main_series_path'], 'Website/Spieler'], [], 'person', array_keys($event['spieler'])
 	);
-	if (!$photos) return false;
-	foreach ($photos as $id => $photo) {
-		$event['spieler'][$id] += $photo;
+	if (!$photos) {
+		// while event is running, do not send 404 error mails if no photos are there yet
+		if ($event['running']) wrap_setting('error_ignore_404');
+		return false;
 	}
+	foreach ($photos as $id => $photo)
+		$event['spieler'][$id] += $photo;
 
 	$page['title'] = 'Teilnehmerphotos '.$event['event'].' '.$event['year'];
 	$page['breadcrumbs'][]['title'] = 'Photos der Teilnehmer';
