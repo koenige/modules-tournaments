@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -86,6 +86,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 			LEFT JOIN tournaments USING (event_id)
 			WHERE event_id IN (%s)
 			AND team_status IN ("Teilnehmer", "Teilnahmeberechtigt")
+			AND spielfrei = "nein"
 			AND team LIKE "%%%s%%"';
 		$sql = sprintf($sql, implode(',', array_keys($events)), wrap_db_escape($event['q']));
 		$event['teams'] = wrap_db_fetch($sql, 'team_id');
