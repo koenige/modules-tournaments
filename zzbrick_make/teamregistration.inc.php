@@ -90,7 +90,7 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 				$data['post_guest_player'] = mf_tournaments_guest_player($data, $postdata, $code, false);
 				// Neuer Spieler nicht aus Vereinsliste wird ergänzt
 				if (!empty($postdata['auswahl']) AND $rank_no) {
-					$player = mf_ratings_player_data_dsb($postdata['auswahl']);
+					$player = mf_ratings_player_data_dsb_pass($postdata['auswahl']);
 					if ($player) {
 						$player['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
 						$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
@@ -99,7 +99,7 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 					}
 					continue;
 				} elseif (!empty($postdata['auswahl']) AND empty($postdata['abbruch'])) {
-					$player = mf_ratings_player_data_dsb($postdata['auswahl']);
+					$player = mf_ratings_player_data_dsb_pass($postdata['auswahl']);
 					$data['neu_treffer_ohne_rang'] = true;
 					$data['neu_ZPS'] = $player['ZPS'];
 					$data['neu_Mgl_Nr'] = $player['Mgl_Nr'];
@@ -163,8 +163,8 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 				}
 			} elseif (str_starts_with($code, 'dsb_id_') AND $rank_no) {
 				$player_id_dsb = substr($code, 7);
-				if (empty($data['vereinsspieler'][$player_id_dsb])) continue;
-				$player = mf_ratings_player_data_dsb(
+				if (!array_key_exists($player_id_dsb, $data['vereinsspieler'])) continue;
+				$player = mf_ratings_player_data_dsb_pass(
 					$data['vereinsspieler'][$player_id_dsb]['player_pass_dsb']
 				);
 				if ($player) {
@@ -331,12 +331,12 @@ function mod_tournaments_make_teamregistration_club_players($data) {
 		FROM dwz_spieler
 		LEFT JOIN contacts_identifiers ok
 			ON dwz_spieler.ZPS = ok.identifier 
+			AND ok.current = "yes"
 		LEFT JOIN contacts USING (contact_id)
 		WHERE ZPS = "%s"
 		AND (ISNULL(Status) OR Status != "P")
 		AND Geschlecht IN ("%s")
 		AND Geburtsjahr <= %d AND Geburtsjahr >= %d
-		AND ok.current = "yes"
 		ORDER BY Spielername';
 	$sql = sprintf($sql
 		, $data['zps_code']
