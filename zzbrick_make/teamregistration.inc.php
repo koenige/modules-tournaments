@@ -324,7 +324,7 @@ function mod_tournaments_make_teamregistration_club_players($data) {
 	if ($data['geschlecht'] === ['W']) $filters['sex'] = 'female';
 	if ($data['geschlecht'] === ['M']) $filters['sex'] = 'male';
 
-	return mf_ratings_players_list_dsb($filters);
+	return mf_ratings_players_dsb($filters);
 }
 
 /**
