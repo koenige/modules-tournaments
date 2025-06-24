@@ -69,32 +69,32 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 	$changed = false; // es kann sein, dass zuviele Spieler angegeben werden
 	if (!empty($_POST)) {
 		$postdata = $_POST; // wird von zzform ggf. überschrieben
-		foreach ($postdata['rang'] as $code => $rangliste_no) {
+		foreach ($postdata['rank'] as $code => $rank_no) {
 			// Nur Integer werden akzeptiert (warum auch immer da Leute was anderes eingeben)
-			if ($rangliste_no) {
-				$rangliste_no = trim($rangliste_no);
-				if (substr($rangliste_no, -1) === '.') {
-					$rangliste_no = substr($rangliste_no, 0, -1);
+			if ($rank_no) {
+				$rank_no = trim($rank_no);
+				if (substr($rank_no, -1) === '.') {
+					$rank_no = substr($rank_no, 0, -1);
 				}
-				if (!wrap_is_int($rangliste_no)) {
+				if (!wrap_is_int($rank_no)) {
 					$data['error_board_no_numbers'] = true;
 					continue;
 				}
-				if ($rangliste_no < 0) {
+				if ($rank_no < 0) {
 					$data['error_board_no_bigger_zero'] = true;
 					continue;
 				}
 			}
-			if ($code === 'neu' AND $data['add']) {
-				if ($rangliste_no) $data['post_rang'] = $rangliste_no;
+			if ($code === 'new' AND $data['add']) {
+				if ($rank_no) $data['post_rang'] = $rank_no;
 				$data['post_guest_player'] = mf_tournaments_guest_player($data, $postdata, $code, false);
 				// Neuer Spieler nicht aus Vereinsliste wird ergänzt
-				if (!empty($postdata['auswahl']) AND $rangliste_no) {
+				if (!empty($postdata['auswahl']) AND $rank_no) {
 					$player = mf_ratings_player_data_dsb($postdata['auswahl']);
 					if ($player) {
 						$player['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
 						$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
-						$ops = mf_tournaments_team_player_insert($player, $data, $rangliste_no);
+						$ops = mf_tournaments_team_player_insert($player, $data, $rank_no);
 						if ($ops) $changed = true;
 					}
 					continue;
@@ -121,7 +121,7 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 					$player['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
 					$player['Geschlecht'] = strtoupper($postdata['geschlecht']);
 					$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
-					$ops = mf_tournaments_team_player_insert($player, $data, $rangliste_no);
+					$ops = mf_tournaments_team_player_insert($player, $data, $rank_no);
 					if ($ops) $changed = true;
 					// Spieler in eigener Personentabelle suchen
 					// Falls nicht vorhanden, ergänzen
@@ -161,24 +161,24 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 						}
 					}
 				}
-			} elseif (substr($code, 0, 4) === 'zps_' AND $rangliste_no) {
-				$id = substr($code, 4);
-				if (empty($data['vereinsspieler'][$id])) continue;
-				$player = mf_ratings_player_data_dsb([
-					$data['vereinsspieler'][$id]['player_pass_dsb']
-				]);
+			} elseif (str_starts_with($code, 'dsb_id_') AND $rank_no) {
+				$player_id_dsb = substr($code, 7);
+				if (empty($data['vereinsspieler'][$player_id_dsb])) continue;
+				$player = mf_ratings_player_data_dsb(
+					$data['vereinsspieler'][$player_id_dsb]['player_pass_dsb']
+				);
 				if ($player) {
 					$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
-					$ops = mf_tournaments_team_player_insert($player, $data, $rangliste_no);
+					$ops = mf_tournaments_team_player_insert($player, $data, $rank_no);
 					if ($ops) $changed = true;
 				}
 			} elseif (substr($code, 0, 4) === 'tln_') {
 				$participation_id = substr($code, 4); 
-				if ($rangliste_no) {
+				if ($rank_no) {
 					// Rangliste geändert
 					$line = [
 						'participation_id' => $participation_id,
-						'rang_no' => $rangliste_no,
+						'rang_no' => $rank_no,
 						'gastspieler' => mf_tournaments_guest_player($data, $postdata, $code)
 					];
 					$result = zzform_update('participations', $line, E_USER_ERROR);
@@ -216,10 +216,10 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
  *
  * @param array $player
  * @param array $data
- * @param int $rangliste_no
+ * @param int $rank_no
  * @return bool
  */
-function mf_tournaments_team_player_insert($player, $data, $rangliste_no) {
+function mf_tournaments_team_player_insert($player, $data, $rank_no) {
 	wrap_include('zzform/editing', 'custom');
 	
 	// Test, ob Spieler noch hinzugefügt werden darf
@@ -243,7 +243,7 @@ function mf_tournaments_team_player_insert($player, $data, $rangliste_no) {
 		'event_id' => $data['event_id'],
 		'team_id' => $data['team_id'],
 		'contact_id' => $contact_id,
-		'rang_no' => $rangliste_no,
+		'rang_no' => $rank_no,
 		't_vorname' => $player['first_name'],
 		't_nachname' => $player['last_name'],
 		// bei Nicht-DSB-Mitgliedern nicht vorhandene Daten
@@ -321,7 +321,8 @@ function cms_team_spielersuche($data, $post) {
 function mod_tournaments_make_teamregistration_club_players($data) {
 	if (!$data['zps_code']) return [];
 
-	$sql = 'SELECT ZPS, IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr) AS Mgl_Nr
+	$sql = 'SELECT PID AS player_id_dsb
+			, ZPS, IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr) AS Mgl_Nr
 			, Geschlecht, Geburtsjahr, DWZ, FIDE_Elo
 			, contacts.contact_id, contact
 			, CONCAT(ZPS, "-", IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr)) AS player_pass_dsb
@@ -343,7 +344,7 @@ function mod_tournaments_make_teamregistration_club_players($data) {
 		, date('Y') - $data['alter_min']
 		, date('Y') - $data['alter_max']
 	);
-	$players = wrap_db_fetch($sql, 'Mgl_Nr');
+	$players = wrap_db_fetch($sql, 'player_id_dsb');
 	foreach ($players as $id => $player) {
 		// remove registered players from list
 		foreach ($data['spieler'] AS $registered_players) {

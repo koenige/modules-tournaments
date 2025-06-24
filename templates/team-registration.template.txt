@@ -30,7 +30,7 @@
 <table>
 <thead>
 <tr>
-<th>Rang</th> <th>ZPS</th> <th>Vorname / Nachname</th> <th><abbr title="Geschlecht">G.</abbr></th>
+<th>Rang</th> <th>Spielerpass</th> <th>Vorname / Nachname</th> <th><abbr title="Geschlecht">G.</abbr></th>
 <th>Geburt</th> <th>DWZ</th> %%% if guest_players_allowed %%% <th><abbr title="Gastspieler/in">Gast</abbr></th> %%% endif %%%
 </thead>
 <tfoot>
@@ -41,7 +41,7 @@
 %%% loop spieler %%%
 %%% if participation_id %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
-<td><input type="number" class="rangno" name="rang[tln_%%% item participation_id %%%]" value="%%% item rang_no %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
+<td><input type="number" class="rangno" name="rank[tln_%%% item participation_id %%%]" value="%%% item rang_no %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
 <td>%%% item player_pass_dsb %%%</td>
 <td>%%% item person %%%</td>
 <td>%%% item geschlecht %%%</td>
@@ -68,18 +68,18 @@
 %%% else %%%
 %%% loop vereinsspieler %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
-<td><input type="number" class="rangno" name="rang[zps_%%% item Mgl_Nr %%%]" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
+<td><input type="number" class="rangno" name="rank[dsb_id_%%% item player_id_dsb %%%]" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
 <td>%%% item ZPS %%%-%%% item Mgl_Nr %%%</td>
 <td>%%% item first_name %%% %%% item last_name %%%</td> <td>%%% item Geschlecht %%%</td>
 <td>%%% item Geburtsjahr %%%</td> <td>%%% item DWZ %%%</td>
 %%% if main__guest_players_allowed %%%
-<td><input type='checkbox' name='guest_player[zps_%%% item Mgl_Nr %%%]'%%% item gastspieler " checked" %%%></td>
+<td><input type='checkbox' name='guest_player[dsb_id_%%% item player_id_dsb %%%]'%%% item gastspieler " checked" %%%></td>
 %%% endif %%%
 %%% loop end %%%
 %%% endif %%%
 <tr%%% if neu_treffer_ohne_rang %%% class="error"%%% elseif new_player_not_found %%% class="error"%%% endif %%%>
 <td%%% if post_rang %%% %%% else %%% %%% if new_matches %%% class="error" %%% endif %%%%%% endif %%%>
-<input type="number" class="rangno" name="rang[neu]" value="%%% item post_rang htmlspecialchars %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
+<input type="number" class="rangno" name="rank[new]" value="%%% item post_rang htmlspecialchars %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
 
 %%% if new_matches %%%
 <td></td>
