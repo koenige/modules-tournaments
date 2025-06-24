@@ -124,9 +124,9 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 					// Falls nicht vorhanden, ergänzen
 					// Teilnahme ergänzen
 				} elseif (empty($postdata['cancel'])) {
-					// Suche in dwz_spieler
+					// search for
 					// first_name, last_name, sex, date_of_birth
-					$data['new_matches'] = cms_team_spielersuche($data, $postdata);
+					$data['new_matches'] = mod_tournaments_make_teamregistration_playersearch($data, $postdata);
 					$data['redirect'] = false;
 					$data['post_date_of_birth'] = $postdata['date_of_birth'];
 					if (!count($data['new_matches'])) {
@@ -259,48 +259,19 @@ function mf_tournaments_team_player_insert($player, $data, $rank_no) {
  *		sex, date_of_birth, last_name, first_name
  * @return array
  */
-function cms_team_spielersuche($data, $post) {
-	// create WHERE conditions
-	$where = [];
-	if ($post['sex'] === 'female')
-		$where[] = 'Geschlecht = "W"';
-	elseif ($post['sex'] === 'male')
-		$where[] = 'Geschlecht = "M"';
+function mod_tournaments_make_teamregistration_playersearch($data, $post) {
+	$filters = [];
+	if ($data['alter_min']) $filters['min_age'] = $data['alter_min'];
+	if ($data['alter_max']) $filters['max_age'] = $data['alter_max'];
+	$filters['sex'] = $post['sex'];
 	if ($post['date_of_birth'] AND $date = zz_check_date($post['date_of_birth']))
-		$where[] = sprintf('Geburtsjahr = %d', substr($date, 0, 4));
-	if ($data['alter_min'] AND $data['alter_max'])
-		$where[] = sprintf('Geburtsjahr <= %d AND Geburtsjahr >= %d', 
-			date('Y') - $data['alter_min'], date('Y') - $data['alter_max']
-		);
+		$filters['date_of_birth'] = $date;
 	if ($data['club_players'])
-		$where[] = sprintf('PID NOT IN (%s)', implode(',', array_keys($data['club_players'])));
-	$playername = $post['last_name'] ? $post['last_name'].'%,' : '%,';
-	$playername .= $post['first_name'] ? $post['first_name'].'%' : '%';
-	// in case someone mixed up the fields
-	$playername_r = $post['first_name'] ? $post['first_name'].'%,' : '%,';
-	$playername_r .= $post['last_name'] ? $post['last_name'].'%' : '%';
+		$filters['player_id_dsb_excluded'] = array_keys($data['club_players']);
+	$filters['last_name'] = $post['last_name'];
+	$filters['first_name'] = $post['first_name'];
 	
-	// start search
-	$sql = 'SELECT PID AS player_id_dsb
-			, SUBSTRING_INDEX(Spielername, ",", 1) AS last_name
-			, SUBSTRING_INDEX(SUBSTRING_INDEX(Spielername, ",", 2), ",", -1) AS first_name
-			, Geburtsjahr AS birth_year
-			, contact AS club_contact
-		FROM dwz_spieler
-		LEFT JOIN contacts_identifiers ok
-			ON dwz_spieler.ZPS = ok.identifier 
-			AND ok.current = "yes"
-		LEFT JOIN contacts USING (contact_id)
-		WHERE (ISNULL(Status) OR Status != "P")
-		AND (Spielername LIKE _latin1"%s" OR Spielername LIKE _latin1"%s")
-		%s
-		ORDER BY Spielername';
-	$sql = sprintf($sql
-		, wrap_db_escape($playername)
-		, wrap_db_escape($playername_r)
-		, $where ? sprintf('AND %s', implode(' AND ', $where)) : ''
-	);
-	return wrap_db_fetch($sql, 'player_id_dsb');
+	return mf_ratings_players_dsb($filters);
 }
 
 /**
