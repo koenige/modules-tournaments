@@ -62,7 +62,7 @@
 %%% if add %%%
 <tbody>
 <tr><td colspan="%%% if guest_players_allowed %%%7%%% else %%%6%%% endif %%%" class="heading">Spieler hinzufügen</td></tr>
-%%% if neu_treffer %%%
+%%% if new_matches %%%
 %%% elseif neu_treffer_ohne_rang %%%
 %%% elseif new_player_not_found %%%
 %%% else %%%
@@ -78,15 +78,15 @@
 %%% loop end %%%
 %%% endif %%%
 <tr%%% if neu_treffer_ohne_rang %%% class="error"%%% elseif new_player_not_found %%% class="error"%%% endif %%%>
-<td%%% if post_rang %%% %%% else %%% %%% if neu_treffer %%% class="error" %%% endif %%%%%% endif %%%>
+<td%%% if post_rang %%% %%% else %%% %%% if new_matches %%% class="error" %%% endif %%%%%% endif %%%>
 <input type="number" class="rangno" name="rang[neu]" value="%%% item post_rang htmlspecialchars %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
 
-%%% if neu_treffer %%%
+%%% if new_matches %%%
 <td></td>
 <td colspan="4" class="reselect">
 <select name="auswahl">
 <option value="">Nichts ausgewählt</option>
-%%% loop neu_treffer %%%
+%%% loop new_matches %%%
 <option value="%%% item unique_id %%%">%%% item first_name %%% %%% item last_name %%% (%%% item Geburtsjahr %%%) – %%% item contact %%%</option>
 %%% loop end %%%
 </select>
@@ -97,12 +97,12 @@
 
 %%% elseif neu_treffer_ohne_rang %%%
 <td>%%% item neu_ZPS %%%-%%% item neu_Mgl_Nr %%%</td>
-<td>%%% item neu_vorname %%% %%% item neu_nachname %%%
+<td>%%% item new_first_name %%% %%% item new_last_name %%%
 <p class="error explanation">Bitte geben Sie eine Ranglistennummer an!</p>
 <input type="hidden" name="auswahl" value="%%% item neu_ZPS %%%-%%% item neu_Mgl_Nr %%%">
 </td> <td>%%% item neu_Geschlecht %%%</td>
 <td><input type="hidden" name="date_of_birth" value="%%% item post_date_of_birth htmlspecialchars %%%">
-%%% item neu_Geburtsjahr %%%</td> <td>%%% item neu_DWZ %%%</td>
+%%% item new_birth_year %%%</td> <td>%%% item new_dwz_dsb %%%</td>
 
 %%% else %%%
 <td></td>

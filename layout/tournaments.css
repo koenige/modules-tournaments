@@ -418,7 +418,7 @@ table.spieler td.show-more {
 				{ margin-left: -2em; }
 
 
-/* team-aufstellung.template.txt */
+/* team-registration.template.txt */
 /* internal: team meldung */
 .hinweisbox		{ float: left; max-width: 24em; padding: 0 1.5em 1em 0; }
 .hauptbox		{ float: left; max-width: 34.5em; }
@@ -430,7 +430,7 @@ input.geburt	{ width: 6em; }
 .player-search-abort
 				{ float: right; }
 
-/* team-aufstellung.template.txt */
+/* team-registration.template.txt */
 .results p.error
 				{ max-width: 25em; }
 .results p.explanation
@@ -448,7 +448,7 @@ span.komplett	{ color: green; font-weight: bold; }
 span.unvollstaendig	{ color: red; font-weight: bold; }
 
 
-/* team-aufstellung.template.txt */
+/* team-registration.template.txt */
 /* team-intern.template.txt */
 /* etc. */
 p.fuss			{ clear: both; padding: 1.5em 0; text-align: center; 
