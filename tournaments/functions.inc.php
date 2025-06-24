@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -736,12 +736,12 @@ function mf_tournaments_team_club_board_members($contact_ids) {
 
 
 /**
- * Team-Meldung komplett?
+ * team registration complete?
  *
  * @param array $data
  * @return bool
  */
-function mf_tournaments_team_application_complete($data) {
+function mf_tournaments_team_registration_complete($data) {
 	if ((!empty($data['betreuer_komplett']) OR !empty($data['virtual']))
 		AND (!empty($data['reisedaten_komplett']) OR !empty($data['virtual']))
 		AND !empty($data['aufstellung_komplett'])

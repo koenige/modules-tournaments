@@ -130,7 +130,7 @@ function mod_tournaments_teaminternal($vars, $settings, $data) {
 	// Team + Vereinsbetreuer auslesen
 	$data = array_merge($data, mf_tournaments_team_participants([$data['team_id'] => $data['contact_id']], $data));
 
-	$data['komplett'] = mf_tournaments_team_application_complete($data);
+	$data['komplett'] = mf_tournaments_team_registration_complete($data);
 	if ($data['meldung'] === 'komplett') $data['pdfupload'] = true;
 
 	$page['query_strings'][] = 'spaeter';

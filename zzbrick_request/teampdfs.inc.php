@@ -370,7 +370,7 @@ function mf_tournaments_pdf_teams($event, $params) {
 		} else {
 			$teams[$team_id]['bookings'] = [];
 		}
-		$teams[$team_id]['komplett'] = mf_tournaments_team_application_complete($teams[$team_id]);
+		$teams[$team_id]['komplett'] = mf_tournaments_team_registration_complete($teams[$team_id]);
 		if (!empty($params['check_uploads'])) {
 			$filename = sprintf('%s/teampdfs/%s%%s.pdf', wrap_setting('media_folder'), $teams[$team_id]['team_identifier']);
 			$filenames = [

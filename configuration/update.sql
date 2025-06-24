@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2021-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2021-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -70,3 +70,6 @@
 /* 2024-05-26-1 */	ALTER TABLE `tournaments_identifiers` CHANGE `identifier` `identifier` varchar(24) COLLATE 'latin1_general_cs' NOT NULL AFTER `tournament_id`;
 /* 2024-05-26-2 */	ALTER TABLE `tournaments` DROP `turnierkennung`;
 /* 2024-08-19-1 */	UPDATE categories SET parameters = REPLACE(parameters, '&tournaments_members_only=1', '&tournaments_player_pool=confederation') WHERE parameters LIKE '%&tournaments_members_only=1%';
+/* 2025-06-24-1 */	UPDATE access SET access_key = 'tournaments_team_registration' WHERE access_key = 'tournaments_team_application';
+/* 2025-06-24-2 */	UPDATE _settings SET setting_key = 'tournaments_team_registration_path', explanation = 'path to internal team registration' WHERE setting_key = 'tournaments_team_application_path';
+/* 2025-06-24-3 */	UPDATE webpages SET parameters = REPLACE(parameters, '&access=tournaments_team_registration', '&access=tournaments_team_application') WHERE parameters LIKE '%&access=tournaments_team_application%';

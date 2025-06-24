@@ -54,7 +54,7 @@ $zz['fields'][4]['field_name'] = 'team';
 $zz['fields'][4]['append_next'] = true;
 $zz['fields'][4]['list_append_next'] = true;
 $zz['fields'][4]['link'] = [
-	'area' => 'tournaments_team_application',
+	'area' => 'tournaments_team_registration',
 	'fields' => ['identifier']
 ];
 $zz['fields'][4]['unless']['export_mode']['list_prefix'] = '<strong>';
