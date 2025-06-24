@@ -557,6 +557,8 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 	if ($club_event)
 		$club_board_members = mf_tournaments_team_club_board_members($contact_ids);
 
+	// @deprecated use sex instead of geschlecht
+	// @deprecated use birth_year instead of geburtsjahr
 	$sql = 'SELECT team_id, participation_id, persons.person_id, contacts.contact_id
 			, usergroups.usergroup
 			, usergroups.identifier AS group_identifier
@@ -566,7 +568,9 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 				WHEN sex = "diverse" THEN "D"
 				ELSE NULL END
 			) AS geschlecht
+			, sex
 			, YEAR(date_of_birth) AS geburtsjahr
+			, YEAR(date_of_birth) AS birth_year
 			, t_dwz, t_elo, t_fidetitel, rang_no, brett_no
 			, IF(gastspieler = "ja", 1, NULL) AS gastspieler
 			, (SELECT identification FROM contactdetails
