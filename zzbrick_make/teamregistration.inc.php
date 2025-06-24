@@ -87,7 +87,7 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 				$data['post_guest_player'] = mf_tournaments_guest_player($data, $postdata, $code, false);
 				// Neuer Spieler nicht aus Vereinsliste wird ergänzt
 				if (!empty($postdata['matching_id']) AND $rank_no) {
-					$player = mf_ratings_player_data_dsb_id($postdata['matching_id']);
+					$player = mf_ratings_players_dsb(['player_id_dsb' => $postdata['matching_id']]);
 					if ($player) {
 						$player['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
 						$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
@@ -96,7 +96,7 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 					}
 					continue;
 				} elseif (!empty($postdata['matching_id']) AND empty($postdata['cancel'])) {
-					$player = mf_ratings_player_data_dsb_id($postdata['matching_id']);
+					$player = mf_ratings_players_dsb(['player_id_dsb' => $postdata['matching_id']]);
 					$data['new_match_without_rank'] = true;
 					$data['new_player_pass_dsb'] = $player['player_pass_dsb'];
 					$data['new_player_id_dsb'] = $player['player_id_dsb'];
@@ -156,7 +156,7 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 			} elseif (str_starts_with($code, 'dsb_id_') AND $rank_no) {
 				$player_id_dsb = substr($code, 7);
 				if (!array_key_exists($player_id_dsb, $data['club_players'])) continue;
-				$player = mf_ratings_player_data_dsb_id($player_id_dsb);
+				$player = mf_ratings_players_dsb(['player_id_dsb' => $player_id_dsb]);
 				if ($player) {
 					$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
 					$success = mf_tournaments_team_player_insert($player, $data, $rank_no);
