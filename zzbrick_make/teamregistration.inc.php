@@ -312,12 +312,49 @@ function cms_team_spielersuche($data, $post) {
 function mod_tournaments_make_teamregistration_club_players($data) {
 	if (!$data['zps_code']) return [];
 
+	$filters = [];
+	$filters['club_code_dsb'] = $data['zps_code'];
+	$filters['player_id_dsb_excluded'] = [];
+	foreach ($data['spieler'] as $player) {
+		if (empty($player['player_id_dsb'])) continue;
+		$filters['player_id_dsb_excluded'][] = $player['player_id_dsb'];
+	}
+	if ($data['alter_min']) $filters['min_age'] = $data['alter_min'];
+	if ($data['alter_max']) $filters['max_age'] = $data['alter_max'];
+	if ($data['geschlecht'] === ['W']) $filters['sex'] = 'female';
+	if ($data['geschlecht'] === ['M']) $filters['sex'] = 'male';
+
+	return mf_ratings_players_list_dsb($filters);
+}
+
+/**
+ * get a list of active players from German Chess Federation (DSB) database
+ *
+ * @param array $filters
+ * @return array
+ */
+function mf_ratings_players_list_dsb($filters = []) {
+	$where = [];
+	if (!empty($filters['club_code_dsb']))
+		$where[] = sprintf('ZPS = "%s"', wrap_db_escape($filters['club_code_dsb']));
+	if (!empty($filters['player_id_dsb_excluded']))
+		$where[] = sprintf('PID NOT IN (%s)', wrap_db_escape(implode(',', $filters['player_id_dsb_excluded'])));
+	if (!empty($filters['min_age']))
+		$where[] = sprintf('Geburtsjahr <= %d', date('Y') - $filters['min_age']);
+	if (!empty($filters['max_age']))
+		$where[] = sprintf('Geburtsjahr >= %d', date('Y') - $filters['max_age']);
+	if (!empty($filters['sex']) AND $filters['sex'] === 'male')
+		$where[] = 'Geschlecht = "M"';
+	if (!empty($filters['sex']) AND $filters['sex'] === 'female')
+		$where[] = 'Geschlecht = "W"';
+
 	$sql = 'SELECT PID AS player_id_dsb
 			, CONCAT(ZPS, "-", IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr)) AS player_pass_dsb
 			, (CASE dwz_spieler.Geschlecht WHEN "M" THEN "male" WHEN "W" THEN "female" ELSE "" END) AS sex
 			, Geburtsjahr AS birth_year
 			, DWZ AS dwz_dsb
-			, contacts.contact_id, contact
+			, contacts.contact_id AS club_contact_id
+			, contact AS club_contact
 			, SUBSTRING_INDEX(Spielername, ",", 1) AS last_name
 			, SUBSTRING_INDEX(SUBSTRING_INDEX(Spielername, ",", 2), ",", -1) AS first_name
 		FROM dwz_spieler
@@ -325,27 +362,13 @@ function mod_tournaments_make_teamregistration_club_players($data) {
 			ON dwz_spieler.ZPS = ok.identifier 
 			AND ok.current = "yes"
 		LEFT JOIN contacts USING (contact_id)
-		WHERE ZPS = "%s"
-		AND (ISNULL(Status) OR Status != "P")
-		AND Geschlecht IN ("%s")
-		AND Geburtsjahr <= %d AND Geburtsjahr >= %d
+		WHERE (ISNULL(Status) OR Status != "P")
+		%s
 		ORDER BY Spielername';
 	$sql = sprintf($sql
-		, $data['zps_code']
-		, implode('","', $data['geschlecht'])
-		, date('Y') - $data['alter_min']
-		, date('Y') - $data['alter_max']
+		, $where ? sprintf(' AND %s ', implode(' AND ', $where)) : ''
 	);
-	$players = wrap_db_fetch($sql, 'player_id_dsb');
-	foreach ($players as $id => $player) {
-		// remove registered players from list
-		foreach ($data['spieler'] AS $registered_players) {
-			if (empty($registered_players['player_pass_dsb'])) continue;
-			if ($registered_players['player_pass_dsb'] !== $player['player_pass_dsb']) continue;
-			unset($players[$id]);
-		}
-	}
-	return $players;
+	return wrap_db_fetch($sql, 'player_id_dsb');
 }
 
 /**
