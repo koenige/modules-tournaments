@@ -104,7 +104,7 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 					$data['new_last_name'] = $player['last_name'];
 					$data['new_sex'] = $player['sex'];
 					$data['new_birth_year'] = $player['birth_year'];
-					$data['new_dwz_dsb'] = $player['dwz_dsb'];
+					$data['new_dsb_dwz'] = $player['dsb_dwz'];
 					$data['redirect'] = false;
 					continue;
 				}
@@ -238,7 +238,7 @@ function mf_tournaments_team_player_insert($player, $data, $rank_no) {
 		// bei Nicht-DSB-Mitgliedern nicht vorhandene Daten
 		'club_contact_id' => $player['club_contact_id'] ?? '',
 		't_verein' => $player['club_contact'] ?? '',
-		't_dwz' => $player['dwz_dsb'] ?? '',
+		't_dwz' => $player['dsb_dwz'] ?? '',
 		't_elo' => $player['elo_fide'] ?? '',
 		't_fidetitel' => $player['fide_title'] ?? '',
 		'gastspieler' => $player['guest_player']

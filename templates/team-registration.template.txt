@@ -71,7 +71,7 @@
 <td><input type="number" class="rangno" name="rank[dsb_id_%%% item player_id_dsb %%%]" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
 <td>%%% item player_pass_dsb %%%</td>
 <td>%%% item first_name %%% %%% item last_name %%%</td> <td>%%% switch sex %%%%%% case male %%%M%%% case female %%%W%%% case diverse %%%D%%%switch end %%%</td>
-<td>%%% item birth_year %%%</td> <td>%%% item dwz_dsb %%%</td>
+<td>%%% item birth_year %%%</td> <td>%%% item dsb_dwz %%%</td>
 %%% if main__guest_players_allowed %%%
 <td><input type='checkbox' name='guest_player[dsb_id_%%% item player_id_dsb %%%]'%%% item gastspieler " checked" %%%></td>
 %%% endif %%%
@@ -102,7 +102,7 @@
 <input type="hidden" name="matching_id" value="%%% item new_player_id_dsb %%%">
 </td> <td>%%% switch new_sex %%%%%% case male %%%M%%% case female %%%W%%% case diverse %%%D%%%switch end %%%</td>
 <td><input type="hidden" name="date_of_birth" value="%%% item post_date_of_birth htmlspecialchars %%%">
-%%% item new_birth_year %%%</td> <td>%%% item new_dwz_dsb %%%</td>
+%%% item new_birth_year %%%</td> <td>%%% item new_dsb_dwz %%%</td>
 
 %%% else %%%
 <td></td>
