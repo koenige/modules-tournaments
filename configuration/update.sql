@@ -72,4 +72,5 @@
 /* 2024-08-19-1 */	UPDATE categories SET parameters = REPLACE(parameters, '&tournaments_members_only=1', '&tournaments_player_pool=confederation') WHERE parameters LIKE '%&tournaments_members_only=1%';
 /* 2025-06-24-1 */	UPDATE access SET access_key = 'tournaments_team_registration' WHERE access_key = 'tournaments_team_application';
 /* 2025-06-24-2 */	UPDATE _settings SET setting_key = 'tournaments_team_registration_path', explanation = 'path to internal team registration' WHERE setting_key = 'tournaments_team_application_path';
-/* 2025-06-24-3 */	UPDATE webpages SET parameters = REPLACE(parameters, '&access=tournaments_team_registration', '&access=tournaments_team_application') WHERE parameters LIKE '%&access=tournaments_team_application%';
+/* 2025-06-24-3 */	UPDATE webpages SET parameters = REPLACE(parameters, '&access=tournaments_team_application', '&access=tournaments_team_registration') WHERE parameters LIKE '%&access=tournaments_team_application%';
+/* 2025-06-24-4 */	UPDATE webpages SET content = REPLACE(content, '%%% make teamaufstellung ', '%%% make teamregistration ') WHERE content LIKE '%\%\%\% make teamaufstellung %';

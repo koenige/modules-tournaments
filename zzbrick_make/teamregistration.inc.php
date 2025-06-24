@@ -14,15 +14,15 @@
 
 
 /**
- * Bearbeiten der Mannschaftsaufstellung
+ * Editing of the team registration
  *
  * @param array $vars
- * 		[0]: Jahr
+ * 		[0]: year
  * 		[1]: event identifier
- * 		[2]: Teamkennung
+ * 		[2]: team identifier
  * @return array $page
  */
-function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
+function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 	wrap_include('validate', 'zzform');
 	wrap_include('zzform/editing', 'ratings');
 
@@ -52,7 +52,7 @@ function mod_tournaments_make_teamaufstellung($vars, $settings, $data) {
 
 	// Aktuelle Mitglieder auslesen
 	// besser als nichts, eigentlich werden vergangene Mitglieder gesucht
-	$data['vereinsspieler'] = mod_tournaments_make_teamaufstellung_club_players($data);
+	$data['vereinsspieler'] = mod_tournaments_make_teamregistration_club_players($data);
 	foreach ($data['vereinsspieler'] as $player)
 		if ($player['player_pass_dsb'])
 			$data['player_passes_dsb'][] = $player['player_pass_dsb'];
@@ -320,7 +320,7 @@ function cms_team_spielersuche($data, $postdata) {
  * @param array $data
  * @return array
  */
-function mod_tournaments_make_teamaufstellung_club_players($data) {
+function mod_tournaments_make_teamregistration_club_players($data) {
 	if (!$data['zps_code']) return [];
 
 	$sql = 'SELECT ZPS, IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr) AS Mgl_Nr
