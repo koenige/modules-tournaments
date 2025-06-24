@@ -584,7 +584,16 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 				WHEN spielberechtigt = "ja" THEN "status-yes"
 				ELSE NULL
 				END) AS status, spielberechtigt
-			, contacts_identifiers.identifier AS player_pass_dsb
+			, (SELECT identifier FROM contacts_identifiers
+				WHERE contacts_identifiers.contact_id = contacts.contact_id
+				AND contacts_identifiers.current = "yes"
+				AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+			) AS player_pass_dsb
+			, (SELECT identifier FROM contacts_identifiers
+				WHERE contacts_identifiers.contact_id = contacts.contact_id
+				AND contacts_identifiers.current = "yes"
+				AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/id_dsb _*/
+			) AS player_id_dsb
 		FROM participations
 		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN contacts USING (contact_id)
@@ -593,12 +602,8 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 		LEFT JOIN categories
 			ON categories.category_id = contactdetails.provider_category_id
 			AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&type=phone%%")
-		LEFT JOIN contacts_identifiers
-			ON contacts_identifiers.contact_id = persons.contact_id
-			AND contacts_identifiers.current = "yes"
-			AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 		WHERE team_id IN (%s)
-		GROUP BY participation_id, contact_identifier_id
+		GROUP BY participation_id, contacts.contact_id
 		ORDER BY %s';
 	$sql = sprintf($sql
 		, implode(',', array_keys($team_ids))
