@@ -54,16 +54,13 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 
 	// Aktuelle Mitglieder auslesen
 	// besser als nichts, eigentlich werden vergangene Mitglieder gesucht
-	$data['vereinsspieler'] = mod_tournaments_make_teamregistration_club_players($data);
-	foreach ($data['vereinsspieler'] as $player)
-		if ($player['player_pass_dsb'])
-			$data['player_passes_dsb'][] = $player['player_pass_dsb'];
+	$data['club_players'] = mod_tournaments_make_teamregistration_club_players($data);
 	
 	$data['add'] = true;
 	if (!empty($data['spielerzahl']) AND $data['bretter_max'] <= $data['spielerzahl']) {
 		$data['add'] = false;
 	}
-	if (!$data['add']) unset($data['vereinsspieler']);
+	if (!$data['add']) unset($data['club_players']);
 	
 	$data['redirect'] = true;
 	$changed = false; // es kann sein, dass zuviele Spieler angegeben werden
@@ -86,28 +83,28 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 				}
 			}
 			if ($code === 'new' AND $data['add']) {
-				if ($rank_no) $data['post_rang'] = $rank_no;
+				if ($rank_no) $data['post_rank'] = $rank_no;
 				$data['post_guest_player'] = mf_tournaments_guest_player($data, $postdata, $code, false);
 				// Neuer Spieler nicht aus Vereinsliste wird ergänzt
-				if (!empty($postdata['auswahl']) AND $rank_no) {
-					$player = mf_ratings_player_data_dsb_pass($postdata['auswahl']);
+				if (!empty($postdata['matching_id']) AND $rank_no) {
+					$player = mf_ratings_player_data_dsb_id($postdata['matching_id']);
 					if ($player) {
 						$player['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
 						$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
-						$ops = mf_tournaments_team_player_insert($player, $data, $rank_no);
-						if ($ops) $changed = true;
+						$success = mf_tournaments_team_player_insert($player, $data, $rank_no);
+						if ($success) $changed = true;
 					}
 					continue;
-				} elseif (!empty($postdata['auswahl']) AND empty($postdata['abbruch'])) {
-					$player = mf_ratings_player_data_dsb_pass($postdata['auswahl']);
-					$data['neu_treffer_ohne_rang'] = true;
-					$data['neu_ZPS'] = $player['ZPS'];
-					$data['neu_Mgl_Nr'] = $player['Mgl_Nr'];
+				} elseif (!empty($postdata['matching_id']) AND empty($postdata['cancel'])) {
+					$player = mf_ratings_player_data_dsb_id($postdata['matching_id']);
+					$data['new_match_without_rank'] = true;
+					$data['new_player_pass_dsb'] = $player['player_pass_dsb'];
+					$data['new_player_id_dsb'] = $player['player_id_dsb'];
 					$data['new_first_name'] = $player['first_name'];
 					$data['new_last_name'] = $player['last_name'];
-					$data['neu_Geschlecht'] = $player['Geschlecht'];
-					$data['new_birth_year'] = $player['Geburtsjahr'];
-					$data['new_dwz_dsb'] = $player['DWZ'];
+					$data['new_sex'] = $player['sex'];
+					$data['new_birth_year'] = $player['birth_year'];
+					$data['new_dwz_dsb'] = $player['dwz_dsb'];
 					$data['redirect'] = false;
 					continue;
 				}
@@ -119,28 +116,23 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 					$player['first_name'] = $postdata['first_name'];
 					$player['last_name'] = $postdata['last_name'];
 					$player['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
-					$player['Geschlecht'] = strtoupper($postdata['geschlecht']);
+					$player['sex'] = $postdata['sex'];
 					$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
-					$ops = mf_tournaments_team_player_insert($player, $data, $rank_no);
-					if ($ops) $changed = true;
+					$success = mf_tournaments_team_player_insert($player, $data, $rank_no);
+					if ($success) $changed = true;
 					// Spieler in eigener Personentabelle suchen
 					// Falls nicht vorhanden, ergänzen
 					// Teilnahme ergänzen
-				} elseif (empty($postdata['abbruch'])) {
+				} elseif (empty($postdata['cancel'])) {
 					// Suche in dwz_spieler
 					// first_name, last_name, sex, date_of_birth
 					$data['new_matches'] = cms_team_spielersuche($data, $postdata);
 					$data['redirect'] = false;
 					$data['post_date_of_birth'] = $postdata['date_of_birth'];
 					if (!count($data['new_matches'])) {
-						$data['post_vorname'] = $postdata['first_name'];
-						$data['post_nachname'] = $postdata['last_name'];
-						if ($postdata['geschlecht'] === 'm')
-							$data['post_geschlecht_m'] = true;
-						elseif ($postdata['geschlecht'] === 'w')
-							$data['post_geschlecht_w'] = true;
-						elseif ($postdata['geschlecht'] === 'd')
-							$data['post_geschlecht_d'] = true;
+						$data['post_first_name'] = $postdata['first_name'];
+						$data['post_last_name'] = $postdata['last_name'];
+						$data['post_sex'] = $postdata['sex'];
 						// Keinen Spieler gefunden
 						if (wrap_setting('tournaments_player_pool')) {
 							// DSB-Mitgliedschaft erforderlich
@@ -150,7 +142,7 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 						} else {
 							// Turniere ohne erforderliche DSB-Mitgliedschaft:
 							// Option, Spieler hinzuzufügen
-							$required_fields = ['first_name', 'last_name', 'geschlecht', 'date_of_birth'];
+							$required_fields = ['first_name', 'last_name', 'sex', 'date_of_birth'];
 							$complete = true;
 							foreach ($required_fields as $required_field)
 								if (empty($postdata[$required_field])) $complete = false;
@@ -163,19 +155,17 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 				}
 			} elseif (str_starts_with($code, 'dsb_id_') AND $rank_no) {
 				$player_id_dsb = substr($code, 7);
-				if (!array_key_exists($player_id_dsb, $data['vereinsspieler'])) continue;
-				$player = mf_ratings_player_data_dsb_pass(
-					$data['vereinsspieler'][$player_id_dsb]['player_pass_dsb']
-				);
+				if (!array_key_exists($player_id_dsb, $data['club_players'])) continue;
+				$player = mf_ratings_player_data_dsb_id($player_id_dsb);
 				if ($player) {
 					$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
-					$ops = mf_tournaments_team_player_insert($player, $data, $rank_no);
-					if ($ops) $changed = true;
+					$success = mf_tournaments_team_player_insert($player, $data, $rank_no);
+					if ($success) $changed = true;
 				}
 			} elseif (substr($code, 0, 4) === 'tln_') {
 				$participation_id = substr($code, 4); 
 				if ($rank_no) {
-					// Rangliste geändert
+					// rankings changed
 					$line = [
 						'participation_id' => $participation_id,
 						'rang_no' => $rank_no,
@@ -184,7 +174,7 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 					$result = zzform_update('participations', $line, E_USER_ERROR);
 					if ($result) $changed = true;
 				} else {
-					// Aus Rangliste gelöscht
+					// deleted from rankings
 					$ids = zzform_delete('participations', $participation_id);
 					if ($ids) $changed = true;
 				}
@@ -237,7 +227,6 @@ function mf_tournaments_team_player_insert($player, $data, $rank_no) {
 	// 1. Abgleich: gibt es schon Paßnr.? Alles andere zu unsicher
 	$contact_id = mf_ratings_person_add($player);
 
-	// direkte Speicherung in participations
 	$line = [
 		'usergroup_id' => wrap_id('usergroups', 'spieler'),
 		'event_id' => $data['event_id'],
@@ -249,9 +238,9 @@ function mf_tournaments_team_player_insert($player, $data, $rank_no) {
 		// bei Nicht-DSB-Mitgliedern nicht vorhandene Daten
 		'club_contact_id' => $player['club_contact_id'] ?? '',
 		't_verein' => $player['club_contact'] ?? '',
-		't_dwz' => $player['DWZ'] ?? '',
-		't_elo' => $player['FIDE_Elo'] ?? '',
-		't_fidetitel' => $player['FIDE_Titel'] ?? '',
+		't_dwz' => $player['dwz_dsb'] ?? '',
+		't_elo' => $player['elo_fide'] ?? '',
+		't_fidetitel' => $player['fide_title'] ?? '',
 		'gastspieler' => $player['guest_player']
 	];
 	if (wrap_category_id('participations/registration', 'check')) {
@@ -271,45 +260,47 @@ function mf_tournaments_team_player_insert($player, $data, $rank_no) {
  * @return array
  */
 function cms_team_spielersuche($data, $post) {
-	// Suchparameter zusammenbauen
-	$where = '';
-	if ($post['geschlecht'])
-		$where .= sprintf(' AND Geschlecht = "%s"', wrap_db_escape(strtoupper($post['geschlecht'])));
+	// create WHERE conditions
+	$where = [];
+	if ($post['sex'] === 'female')
+		$where[] = 'Geschlecht = "W"';
+	elseif ($post['sex'] === 'male')
+		$where[] = 'Geschlecht = "M"';
 	if ($post['date_of_birth'] AND $date = zz_check_date($post['date_of_birth']))
-		$where .= sprintf(' AND Geburtsjahr = %d', substr($date, 0, 4));
-	else
-		$where .= sprintf(' AND Geburtsjahr <= %d AND Geburtsjahr >= %d', 
+		$where[] = sprintf('Geburtsjahr = %d', substr($date, 0, 4));
+	if ($data['alter_min'] AND $data['alter_max'])
+		$where[] = sprintf('Geburtsjahr <= %d AND Geburtsjahr >= %d', 
 			date('Y') - $data['alter_min'], date('Y') - $data['alter_max']
 		);
+	if ($data['club_players'])
+		$where[] = sprintf('PID NOT IN (%s)', implode(',', array_keys($data['club_players'])));
 	$playername = $post['last_name'] ? $post['last_name'].'%,' : '%,';
 	$playername .= $post['first_name'] ? $post['first_name'].'%' : '%';
-	// Für die Doofies auch falsch herum:
+	// in case someone mixed up the fields
 	$playername_r = $post['first_name'] ? $post['first_name'].'%,' : '%,';
 	$playername_r .= $post['last_name'] ? $post['last_name'].'%' : '%';
 	
-	//	Suche starten
-	$sql = 'SELECT CONCAT(ZPS, "-", IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr)) AS unique_id
-			, ZPS, Mgl_Nr, Spielername, Geschlecht, Geburtsjahr, DWZ, FIDE_Elo
-			, contact
+	// start search
+	$sql = 'SELECT PID AS player_id_dsb
 			, SUBSTRING_INDEX(Spielername, ",", 1) AS last_name
 			, SUBSTRING_INDEX(SUBSTRING_INDEX(Spielername, ",", 2), ",", -1) AS first_name
+			, Geburtsjahr AS birth_year
+			, contact AS club_contact
 		FROM dwz_spieler
 		LEFT JOIN contacts_identifiers ok
 			ON dwz_spieler.ZPS = ok.identifier 
+			AND ok.current = "yes"
 		LEFT JOIN contacts USING (contact_id)
 		WHERE (ISNULL(Status) OR Status != "P")
 		AND (Spielername LIKE _latin1"%s" OR Spielername LIKE _latin1"%s")
-		AND CONCAT(ZPS, "-", IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr)) NOT IN ("%s")
-		AND ok.current = "yes"
 		%s
 		ORDER BY Spielername';
 	$sql = sprintf($sql
 		, wrap_db_escape($playername)
 		, wrap_db_escape($playername_r)
-		, !empty($data['player_passes_dsb']) ? implode('","', $data['player_passes_dsb']) : ''
-		, $where
+		, $where ? sprintf('AND %s', implode(' AND ', $where)) : ''
 	);
-	return wrap_db_fetch($sql, 'unique_id');
+	return wrap_db_fetch($sql, 'player_id_dsb');
 }
 
 /**
@@ -322,10 +313,11 @@ function mod_tournaments_make_teamregistration_club_players($data) {
 	if (!$data['zps_code']) return [];
 
 	$sql = 'SELECT PID AS player_id_dsb
-			, ZPS, IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr) AS Mgl_Nr
-			, Geschlecht, Geburtsjahr, DWZ, FIDE_Elo
-			, contacts.contact_id, contact
 			, CONCAT(ZPS, "-", IF(Mgl_Nr < 100, LPAD(Mgl_Nr, 3, "0"), Mgl_Nr)) AS player_pass_dsb
+			, (CASE dwz_spieler.Geschlecht WHEN "M" THEN "male" WHEN "W" THEN "female" ELSE "" END) AS sex
+			, Geburtsjahr AS birth_year
+			, DWZ AS dwz_dsb
+			, contacts.contact_id, contact
 			, SUBSTRING_INDEX(Spielername, ",", 1) AS last_name
 			, SUBSTRING_INDEX(SUBSTRING_INDEX(Spielername, ",", 2), ",", -1) AS first_name
 		FROM dwz_spieler

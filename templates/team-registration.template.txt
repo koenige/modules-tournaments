@@ -44,8 +44,8 @@
 <td><input type="number" class="rangno" name="rank[tln_%%% item participation_id %%%]" value="%%% item rang_no %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
 <td>%%% item player_pass_dsb %%%</td>
 <td>%%% item person %%%</td>
-<td>%%% item geschlecht %%%</td>
-<td>%%% item geburtsjahr %%%</td>
+<td>%%% switch sex %%%%%% case male %%%M%%% case female %%%W%%% case diverse %%%D%%%switch end %%%</td>
+<td>%%% item birth_year %%%</td>
 <td>%%% item t_dwz %%%</td>
 %%% if main__guest_players_allowed %%%
 <td><input type='checkbox' name='guest_player[tln_%%% item participation_id %%%]'%%% item gastspieler " checked" %%%></td>
@@ -63,71 +63,71 @@
 <tbody>
 <tr><td colspan="%%% if guest_players_allowed %%%7%%% else %%%6%%% endif %%%" class="heading">Spieler hinzufügen</td></tr>
 %%% if new_matches %%%
-%%% elseif neu_treffer_ohne_rang %%%
+%%% elseif new_match_without_rank %%%
 %%% elseif new_player_not_found %%%
 %%% else %%%
-%%% loop vereinsspieler %%%
+%%% loop club_players %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
 <td><input type="number" class="rangno" name="rank[dsb_id_%%% item player_id_dsb %%%]" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
-<td>%%% item ZPS %%%-%%% item Mgl_Nr %%%</td>
-<td>%%% item first_name %%% %%% item last_name %%%</td> <td>%%% item Geschlecht %%%</td>
-<td>%%% item Geburtsjahr %%%</td> <td>%%% item DWZ %%%</td>
+<td>%%% item player_pass_dsb %%%</td>
+<td>%%% item first_name %%% %%% item last_name %%%</td> <td>%%% switch sex %%%%%% case male %%%M%%% case female %%%W%%% case diverse %%%D%%%switch end %%%</td>
+<td>%%% item birth_year %%%</td> <td>%%% item dwz_dsb %%%</td>
 %%% if main__guest_players_allowed %%%
 <td><input type='checkbox' name='guest_player[dsb_id_%%% item player_id_dsb %%%]'%%% item gastspieler " checked" %%%></td>
 %%% endif %%%
 %%% loop end %%%
 %%% endif %%%
-<tr%%% if neu_treffer_ohne_rang %%% class="error"%%% elseif new_player_not_found %%% class="error"%%% endif %%%>
-<td%%% if post_rang %%% %%% else %%% %%% if new_matches %%% class="error" %%% endif %%%%%% endif %%%>
-<input type="number" class="rangno" name="rank[new]" value="%%% item post_rang htmlspecialchars %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
+<tr%%% if new_match_without_rank %%% class="error"%%% elseif new_player_not_found %%% class="error"%%% endif %%%>
+<td%%% if post_rank %%% %%% else %%% %%% if new_matches %%% class="error" %%% endif %%%%%% endif %%%>
+<input type="number" class="rangno" name="rank[new]" value="%%% item post_rank htmlspecialchars %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
 
 %%% if new_matches %%%
 <td></td>
 <td colspan="4" class="reselect">
-<select name="auswahl">
+<select name="matching_id">
 <option value="">Nichts ausgewählt</option>
 %%% loop new_matches %%%
-<option value="%%% item unique_id %%%">%%% item first_name %%% %%% item last_name %%% (%%% item Geburtsjahr %%%) – %%% item contact %%%</option>
+<option value="%%% item player_id_dsb %%%">%%% item first_name %%% %%% item last_name %%% (%%% item birth_year %%%) – %%% item club_contact %%%</option>
 %%% loop end %%%
 </select>
 <input type="hidden" name="date_of_birth" value="%%% item post_date_of_birth htmlspecialchars %%%">
 <p class="explanation">Bitte wählen Sie einen der Spieler aus!</p>
-<p><input type="submit" value="Auswahl abbrechen" name="abbruch"></p>
+<p><input type="submit" value="Auswahl abbrechen" name="cancel"></p>
 </td>
 
-%%% elseif neu_treffer_ohne_rang %%%
-<td>%%% item neu_ZPS %%%-%%% item neu_Mgl_Nr %%%</td>
+%%% elseif new_match_without_rank %%%
+<td>%%% item new_player_pass_dsb %%%</td>
 <td>%%% item new_first_name %%% %%% item new_last_name %%%
 <p class="error explanation">Bitte geben Sie eine Ranglistennummer an!</p>
-<input type="hidden" name="auswahl" value="%%% item neu_ZPS %%%-%%% item neu_Mgl_Nr %%%">
-</td> <td>%%% item neu_Geschlecht %%%</td>
+<input type="hidden" name="matching_id" value="%%% item new_player_id_dsb %%%">
+</td> <td>%%% switch new_sex %%%%%% case male %%%M%%% case female %%%W%%% case diverse %%%D%%%switch end %%%</td>
 <td><input type="hidden" name="date_of_birth" value="%%% item post_date_of_birth htmlspecialchars %%%">
 %%% item new_birth_year %%%</td> <td>%%% item new_dwz_dsb %%%</td>
 
 %%% else %%%
 <td></td>
 <td>
-<span class="nobr"><input type="text" name="first_name" value="%%% item post_vorname htmlspecialchars %%%" title="%%% text First name %%%" placeholder="%%% text First name %%%"> 
-<input type="text" name="last_name" value="%%% item post_nachname htmlspecialchars %%%" title="%%% text Last name %%%" placeholder="%%% text Last name %%%"></span><br>
+<span class="nobr"><input type="text" name="first_name" value="%%% item post_first_name htmlspecialchars %%%" title="%%% text First name %%%" placeholder="%%% text First name %%%"> 
+<input type="text" name="last_name" value="%%% item post_last_name htmlspecialchars %%%" title="%%% text Last name %%%" placeholder="%%% text Last name %%%"></span><br>
 %%% if new_player_not_found | new_player_add | new_player_more_data %%%<p class="error">Es wurde kein Spieler beim <abbr title="Deutscher Schachbund">DSB</abbr> mit diesen Angaben gefunden. 
 %%% if new_player_add %%%<br><input type="submit" value="Als DWZ-losen Spieler hinzufügen" name="ergaenzen">
 %%% elseif new_player_more_data %%%Bitte füllen Sie alle vier Felder aus, dann können Sie den Spieler oder die Spielerin als DWZ-losen Spieler hinzufügen.
 %%% endif %%%
-<input type="submit" value="Suche abbrechen" name="abbruch" class="player-search-abort"></p>
+<input type="submit" value="Suche abbrechen" name="cancel" class="player-search-abort"></p>
 %%% elseif date_of_birth_wrong %%%
 <p class="error">Bitte prüfe das Geburtsdatum. Wir können es nicht verarbeiten.</p>
 %%% endif %%%
 <p class="explanation">Für weitere Spieler: Bitte Vornamen und Nachnamen eingeben, nach der Spielerin bzw. dem Spieler wird in der DWZ-Datenbank des Schachbunds gesucht.</p></td>
 <td>
 %%% if geschlecht_nur_w %%%
-W<input type="hidden" name="geschlecht" value="w">
+W<input type="hidden" name="geschlecht" value="female">
 %%% elseif geschlecht_nur_m %%%
-M<input type="hidden" name="geschlecht" value="m">
+M<input type="hidden" name="geschlecht" value="male">
 %%% else %%%
-<select name="geschlecht">
-<option value="m"%%% item post_geschlecht_m " selected"%%%>M</option>
-<option value="w"%%% item post_geschlecht_w " selected"%%%>W</option>
-<option value="d"%%% item post_geschlecht_d " selected"%%%>D</option>
+<select name="sex">
+<option value="male"%%% switch post_sex %%%%%% case male %%% selected%%% switch end %%%>M</option>
+<option value="female"%%% switch post_sex %%%%%% case female %%% selected%%% switch end %%%>W</option>
+<option value="diverse"%%% switch post_sex %%%%%% case diverse %%% selected%%% switch end %%%>D</option>
 </select>
 %%% endif %%%
 </td>
