@@ -30,12 +30,11 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 	if (count($params) === 3 AND $params[2] === 'suche') unset($params[2]);
 	if (count($params) !== 2) return false;
 	
-	// Termin
 	$sql = 'SELECT events.event_id
 			, IF(ISNULL(main_series.category) OR main_series.category = "", series.category, main_series.category) AS main_series
 			, IFNULL(main_series.category_short, series.category_short) AS main_series_short
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
-			, SUBSTRING_INDEX(event_categories.path, "/", -1) AS event_category
+			, events_categories.category_id
 		FROM events
 		JOIN categories series
 			ON events.series_category_id = series.category_id
@@ -64,12 +63,12 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 	$event['teilnehmer'] = false;
 	foreach ($events as $einzeltermin) {
 		if ($einzeltermin['teilnehmerliste']) $event['teilnehmer'] = true;
-		switch ($einzeltermin['event_category']) {
-		case 'einzel':
+		switch ($einzeltermin['category_id']) {
+		case wrap_category_id('events/single'):
 			$einzel = true;
 			$event['teilnehmer'] = true;
 			break;
-		case 'mannschaft':
+		case wrap_category_id('events/team'):
 			$mannschaft = true;
 			break;
 		default:
@@ -77,6 +76,7 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 		}
 	}
 	$event['q'] = (isset($_GET['q']) AND !is_array($_GET['q'])) ? htmlspecialchars($_GET['q']) : '';
+	$event['q'] = trim($event['q']);
 	
 	if ($event['q'] AND $mannschaft) {
 		$sql = 'SELECT team_id
