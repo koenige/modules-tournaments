@@ -478,7 +478,7 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
  *
  * @param mixed $team_ids (int = eine Team-ID, array = mehrere Team-IDs)
  * @param array $event
- *		int dauer_tage, int bretter_min
+ *		int duration_days, int bretter_min
  * @return array $daten
  */
 function mf_tournaments_team_bookings($team_ids, $event) {
@@ -511,8 +511,8 @@ function mf_tournaments_team_bookings($team_ids, $event) {
 		$teams[$team_id]['bookings'] = $bookings_per_team;
 		foreach ($bookings_per_team as $booking_id => $booking) {
 			// Bedingung für komplett:
-			// min. min_spieler * dauer_tage für Teilnehmer
-			// min. dauer_tage für Betreuer
+			// min. min_spieler * duration_days für Teilnehmer
+			// min. duration_days für Betreuer
 			if ($booking['kosten_status'] === 'status-no' OR $booking['kosten_status'] === 'status-exempt') {
 				$teams[$team_id]['bookings'][$booking_id]['betrag'] = 0;
 				$teams[$team_id]['bookings'][$booking_id]['gelöscht'] = true;
@@ -527,8 +527,8 @@ function mf_tournaments_team_bookings($team_ids, $event) {
 			$teams[$team_id]['betrag'] += $booking['betrag'];
 			$teams[$team_id]['betrag_waehrung'] = $booking['betrag_waehrung'];
 		}
-		if ($teams[$team_id]['tage_betreuer'] >= $event['dauer_tage']
-			AND $teams[$team_id]['tage_teilnehmer'] >= ($event['dauer_tage'] * $event['bretter_min'])) {
+		if ($teams[$team_id]['tage_betreuer'] >= $event['duration_days']
+			AND $teams[$team_id]['tage_teilnehmer'] >= ($event['duration_days'] * $event['bretter_min'])) {
 			$teams[$team_id]['buchung_komplett'] = true;	
 		}
 	}

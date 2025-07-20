@@ -46,7 +46,7 @@ $zz['fields'][3]['sql'] = sprintf('SELECT costs.cost_id, product
 	WHERE categories.parameters LIKE "%%&teilnehmer=1%%"
 	AND event_id = %d
 ', $brick['data']['event_id']);
-$zz['fields'][5]['default'] = $brick['data']['dauer_tage'];
+$zz['fields'][5]['default'] = $brick['data']['duration_days'];
 $zz['fields'][6]['required'] = true;
 $zz['fields'][7]['required'] = true;
 // Bankkonto

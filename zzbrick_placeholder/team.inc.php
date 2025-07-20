@@ -28,7 +28,7 @@ function mod_tournaments_placeholder_team($brick) {
 			, SUBSTRING_INDEX(events.identifier, "/", -1) AS event_idf
 			, IFNULL(place, places.contact) AS place
 			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
-			, DATEDIFF(date_end, date_begin) AS dauer_tage
+			, DATEDIFF(date_end, date_begin) AS duration_days
 			, date_begin
 			, events.identifier AS event_identifier
 			, series_category_id
