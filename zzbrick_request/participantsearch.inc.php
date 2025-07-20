@@ -20,9 +20,13 @@
  * @param array $settings
  */
 function mod_tournaments_participantsearch($params, $settings, $event) {
-	if (!empty($_GET['q'])) wrap_setting('cache', false);
+	if (!empty($_GET['q'])) {
+		wrap_setting('cache', false);
+		if (!empty($_SERVER['HTTP_USER_AGENT']) AND strstr($_SERVER['HTTP_USER_AGENT'], 'bot'))
+			wrap_quit(403, wrap_text('Bots are not allowed to perform searches.'));
+	}
 
-	$internal = !empty($settings['internal']) ? true : false;
+	$internal = $settings['internal'] ?? false;
 	if (count($params) === 3 AND $params[2] === 'suche') unset($params[2]);
 	if (count($params) !== 2) return false;
 	
