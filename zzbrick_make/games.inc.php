@@ -32,7 +32,7 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 	$tisch_no = false;
 	$brett_no = false;
 	$runde_no = false;
-	$where = false;
+	$where = '';
 	$live = false;
 
 	// Variablen prüfen
@@ -93,8 +93,6 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 		JOIN partien USING (event_id)
 		JOIN tournaments USING (event_id)
 		LEFT JOIN paarungen USING (paarung_id)
-		JOIN categories
-			ON events.event_category_id = categories.category_id
 		WHERE events.event_id = %d
 		%s
 		GROUP BY events.event_id
