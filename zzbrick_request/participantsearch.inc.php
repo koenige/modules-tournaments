@@ -45,8 +45,9 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = /*_SETTING website_id _*/
-		LEFT JOIN categories event_categories
-			ON event_categories.category_id = events.event_category_id
+		LEFT JOIN events_categories
+			ON events_categories.event_id = events.event_id
+			AND events_categories.type_category_id = /*_ID categories events _*/
 		WHERE (main_series.path = "reihen/%s" OR SUBSTRING_INDEX(series.path, "/", -1) = "%s")
 		AND IFNULL(event_year, YEAR(date_begin)) = %d
 	';

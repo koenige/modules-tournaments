@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2015, 2017, 2019-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2015, 2017, 2019-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -25,14 +25,7 @@ $zz['fields'][1]['type'] = 'id';
 $zz['fields'][2]['title'] = 'Termin';
 $zz['fields'][2]['field_name'] = 'event_id';
 $zz['fields'][2]['type'] = 'select';
-$zz['fields'][2]['sql'] = 'SELECT event_id
-		, CONCAT(event, " ", IFNULL(event_year, YEAR(date_begin))) AS event
-		, identifier
-	FROM /*_PREFIX_*/events
-	LEFT JOIN /*_PREFIX_*/categories
-		ON /*_PREFIX_*/events.event_category_id = /*_PREFIX_*/categories.category_id
-	WHERE /*_PREFIX_*/categories.parameters LIKE "%&tournament=1%"
-	ORDER BY identifier';
+$zz['fields'][2]['sql'] = wrap_sql_query('tournaments_zzform_event');
 $zz['fields'][2]['display_field'] = 'event';
 $zz['fields'][2]['if']['where']['hide_in_list'] = true;
 $zz['fields'][2]['if']['where']['hide_in_form'] = true;

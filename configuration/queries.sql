@@ -12,7 +12,7 @@
 
 
 -- tournaments_event_id --
-SELECT event_id, identifier
+SELECT events.event_id, identifier
 , IF(date_begin > CURDATE(), 1, NULL) AS future_event
 , IF(date_begin <= CURDATE() AND date_end >= CURDATE(), 1, NULL) AS running_event
 , IF(IFNULL(date_end, date_begin) < CURDATE(), 1, NULL) AS past_event
@@ -24,7 +24,10 @@ SELECT event_id, identifier
 , (SELECT COUNT(*) FROM categories c WHERE main_category_id = series.category_id) AS series
 , (SELECT COUNT(*) FROM events t
 	LEFT JOIN categories t_series ON t.series_category_id = t_series.category_id
-	LEFT JOIN categories t_eventtype ON t.event_category_id = t_eventtype.category_id
+	LEFT JOIN events_categories t_ec
+		ON t_ec.event_id = t.event_id
+		AND t_ec.type_category_id = /*_ID categories events _*/
+	LEFT JOIN categories t_eventtype ON t_ec.category_id = t_eventtype.category_id
 	WHERE t_series.main_category_id = events.series_category_id
 	AND IFNULL(t.event_year, YEAR(t.date_begin)) = IFNULL(events.event_year, YEAR(events.date_begin))
 	AND t_eventtype.parameters LIKE "%%&tournaments_type_single=1%%"
@@ -44,12 +47,15 @@ FROM events
 LEFT JOIN tournaments USING (event_id)
 LEFT JOIN categories series
 	ON events.series_category_id = series.category_id
+LEFT JOIN events_categories
+	ON events_categories.event_id = events.event_id
+	AND events_categories.type_category_id = /*_ID categories events _*/
 LEFT JOIN categories eventtype
-	ON events.event_category_id = eventtype.category_id
-WHERE event_id = %d;
+	ON events_categories.category_id = eventtype.category_id
+WHERE events.event_id = %d;
 
 -- tournaments_event --
-SELECT event_id, identifier
+SELECT events.event_id, identifier
 , IF(date_begin > CURDATE(), 1, NULL) AS future_event
 , IF(date_begin <= CURDATE() AND date_end >= CURDATE(), 1, NULL) AS running_event
 , IF(IFNULL(date_end, date_begin) < CURDATE(), 1, NULL) AS past_event
@@ -61,7 +67,10 @@ SELECT event_id, identifier
 , (SELECT COUNT(*) FROM categories c WHERE main_category_id = series.category_id) AS series
 , (SELECT COUNT(*) FROM events t
 	LEFT JOIN categories t_series ON t.series_category_id = t_series.category_id
-	LEFT JOIN categories t_eventtype ON t.event_category_id = t_eventtype.category_id
+	LEFT JOIN events_categories t_ec
+		ON t_ec.event_id = t.event_id
+		AND t_ec.type_category_id = /*_ID categories events _*/
+	LEFT JOIN categories t_eventtype ON t_ec.category_id = t_eventtype.category_id
 	WHERE t_series.main_category_id = events.series_category_id
 	AND IFNULL(t.event_year, YEAR(t.date_begin)) = IFNULL(events.event_year, YEAR(events.date_begin))
 	AND t_eventtype.parameters LIKE "%%&tournaments_type_single=1%%"
@@ -75,8 +84,11 @@ FROM events
 LEFT JOIN tournaments USING (event_id)
 LEFT JOIN categories series
 	ON events.series_category_id = series.category_id
+LEFT JOIN events_categories
+	ON events_categories.event_id = events.event_id
+	AND events_categories.type_category_id = /*_ID categories events _*/
 LEFT JOIN categories eventtype
-	ON events.event_category_id = eventtype.category_id
+	ON events_categories.category_id = eventtype.category_id
 WHERE identifier = '%s';
 
 -- /* @todo Punkte der Spieler berechnen (wie?) */ --
@@ -182,3 +194,16 @@ SELECT team_id
 , IF(meldung IN ('offen','teiloffen','komplett'), 1, NULL) AS team_application_active
 FROM teams
 WHERE team_id = %d;
+
+-- tournaments_zzform_event --
+SELECT /*_PREFIX_*/events.event_id
+	, CONCAT(event, " ", IFNULL(event_year, YEAR(date_begin))) AS event
+	, identifier
+FROM /*_PREFIX_*/events
+LEFT JOIN /*_PREFIX_*/events_categories
+	ON /*_PREFIX_*/events_categories.event_id = /*_PREFIX_*/events.event_id
+	AND /*_PREFIX_*/events_categories.type_category_id = /*_ID categories events _*/
+LEFT JOIN /*_PREFIX_*/categories
+	ON /*_PREFIX_*/events_categories.category_id = /*_PREFIX_*/categories.category_id
+WHERE /*_PREFIX_*/categories.parameters LIKE "%&tournament=1%"
+ORDER BY identifier;

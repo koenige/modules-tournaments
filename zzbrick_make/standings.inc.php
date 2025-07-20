@@ -114,15 +114,18 @@ function mod_tournaments_make_standings_round($vars) {
 	if (count($vars) === 3 AND is_numeric($vars[2])) $round_no = $vars[2];
 	elseif (count($vars) !== 2) return false;
 
-	$sql = 'SELECT event_id, events.identifier
+	$sql = 'SELECT events.event_id, events.identifier
 			, runden, bretter_min
 			, tournament_id
 			, (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id) AS rounds_played
 			, categories.parameters
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
+		LEFT JOIN events_categories
+			ON events_categories.event_id = events.event_id
+			AND events_categories.type_category_id = /*_ID categories events _*/
 		LEFT JOIN categories
-			ON events.event_category_id = categories.category_id
+			ON events_categories.category_id = categories.category_id
 		WHERE events.identifier = "%d/%s"';
 	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
 	$event = wrap_db_fetch($sql);

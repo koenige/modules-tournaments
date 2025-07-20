@@ -34,7 +34,7 @@ function mod_tournaments_tournamentstats($vars) {
 
 	// @todo weitere Status zu normal, zeitueberschreitung hinzufügen: adjudication, rules infraction
 	// Alle Turniere
-	$sql = 'SELECT event_id
+	$sql = 'SELECT events.event_id
 			, IFNULL(series.category_short, event) AS event
 			, events.identifier
 			, (SELECT COUNT(*) FROM participations WHERE event_id = events.event_id AND status_category_id = /*_ID categories participation-status/participant _*/ AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = /*_ID usergroups spieler _*/) AS tn_total
@@ -55,8 +55,11 @@ function mod_tournaments_tournamentstats($vars) {
 			, eventtypes.parameters AS eventtypes_parameters
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
+		LEFT JOIN events_categories
+			ON events_categories.event_id = events.event_id
+			AND events_categories.type_category_id = /*_ID categories events _*/
 		LEFT JOIN categories eventtypes
-			ON events.event_category_id = eventtypes.category_id
+			ON events_categories.category_id = eventtypes.category_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
 		LEFT JOIN categories main_series

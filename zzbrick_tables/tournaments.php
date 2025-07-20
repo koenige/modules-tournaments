@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -23,14 +23,7 @@ $zz['fields'][1]['type'] = 'id';
 $zz['fields'][2]['field_name'] = 'event_id';
 $zz['fields'][2]['type'] = 'write_once';
 $zz['fields'][2]['type_detail'] = 'select';
-$zz['fields'][2]['sql'] = 'SELECT event_id
-		, CONCAT(event, " ", IFNULL(event_year, YEAR(date_begin))) AS event
-		, identifier
-	FROM /*_PREFIX_*/events
-	LEFT JOIN /*_PREFIX_*/categories
-		ON /*_PREFIX_*/events.event_category_id = /*_PREFIX_*/categories.category_id
-	WHERE /*_PREFIX_*/categories.parameters LIKE "%&tournament=1%"
-	ORDER BY identifier';
+$zz['fields'][2]['sql'] = wrap_sql_query('tournaments_zzform_event');
 $zz['fields'][2]['display_field'] = 'turnier';
 $zz['fields'][2]['search'] = 'CONCAT(/*_PREFIX_*/events.event, " ", IFNULL(event_year, YEAR(date_begin)))';
 $zz['fields'][2]['unique'] = true;
@@ -398,6 +391,9 @@ $zz['sql'] = 'SELECT /*_PREFIX_*/tournaments.*
 		ON /*_PREFIX_*/tournaments.modus_category_id = modus.category_id
 	LEFT JOIN /*_PREFIX_*/categories turnierformen
 		ON /*_PREFIX_*/tournaments.turnierform_category_id = turnierformen.category_id
+	LEFT JOIN /*_PREFIX_*/events_categories
+		ON /*_PREFIX_*/events_categories.event_id = /*_PREFIX_*/tournaments.event_id
+		AND /*_PREFIX_*/events_categories.type_category_id = /*_ID categories events _*/
 ';
 $zz['sqlorder'] = ' ORDER BY /*_PREFIX_*/events.date_begin DESC, /*_PREFIX_*/events.time_begin DESC,
 	/*_PREFIX_*/events.identifier';
@@ -441,10 +437,10 @@ $zz['filter'][1]['where'] = 'IFNULL(event_year, YEAR(date_begin))';
 $zz['filter'][1]['depends_on'] = 2;
 
 $zz['conditions'][1]['scope'] = 'record';
-$zz['conditions'][1]['where'] = 'events.event_category_id = /*_ID categories events/team _*/';
+$zz['conditions'][1]['where'] = '/*_PREFIX_*/events_categories.category_id = /*_ID categories events/team _*/';
 
 $zz['conditions'][2]['scope'] = 'record';
-$zz['conditions'][2]['where'] = 'events.event_category_id = /*_ID categories events/single _*/';
+$zz['conditions'][2]['where'] = '/*_PREFIX_*/events_categories.category_id = /*_ID categories events/single _*/';
 
 $zz['record']['copy'] = true;
 
