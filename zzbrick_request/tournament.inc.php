@@ -93,7 +93,6 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 
 	if (!empty($event['turnierform']))
 		$event[str_replace('-', '_', $event['turnierform'])] = true;
-	$event[str_replace('-', '_', $event['event_category'])] = true;
 	
 	if (!empty($event['show_main_tournament_archive'])) {
 		// series, series_path
@@ -267,7 +266,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 			$event['team_abgesagt'] = true;
 	}
 
-	if (!empty($event['einzel'])) {
+	if (wrap_setting('tournaments_type_single')) {
 		$sql = 'SELECT COUNT(*) FROM participations
 			WHERE event_id = %d
 			AND usergroup_id = /*_ID usergroups spieler _*/

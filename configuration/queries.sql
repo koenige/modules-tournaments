@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2023-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2023-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -27,7 +27,7 @@ SELECT event_id, identifier
 	LEFT JOIN categories t_eventtype ON t.event_category_id = t_eventtype.category_id
 	WHERE t_series.main_category_id = events.series_category_id
 	AND IFNULL(t.event_year, YEAR(t.date_begin)) = IFNULL(events.event_year, YEAR(events.date_begin))
-	AND t_eventtype.parameters LIKE "%%&single=1%%"
+	AND t_eventtype.parameters LIKE "%%&tournaments_type_single=1%%"
 ) AS includes_single_tournaments
 , (SELECT COUNT(*) FROM participations
 	LEFT JOIN events p_events USING (event_id)
@@ -64,7 +64,7 @@ SELECT event_id, identifier
 	LEFT JOIN categories t_eventtype ON t.event_category_id = t_eventtype.category_id
 	WHERE t_series.main_category_id = events.series_category_id
 	AND IFNULL(t.event_year, YEAR(t.date_begin)) = IFNULL(events.event_year, YEAR(events.date_begin))
-	AND t_eventtype.parameters LIKE "%%&single=1%%"
+	AND t_eventtype.parameters LIKE "%%&tournaments_type_single=1%%"
 ) AS includes_single_tournaments
 , (SELECT COUNT(*) FROM participations
 	WHERE participations.event_id = events.event_id

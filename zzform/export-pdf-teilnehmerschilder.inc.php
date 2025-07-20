@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017-2020, 2022-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2017-2020, 2022-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -216,7 +216,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				$logo['filename'] = mf_tournaments_p_qrcode($line['participation_id']);
 				$logo['height_factor'] = 1.35;
 				$logo['width_factor'] = 1.35;
-			} elseif (!empty($line['federation_abbr']) AND $event['event_category'] === 'mannschaft') {
+			} elseif (!empty($line['federation_abbr']) AND wrap_setting('tournaments_type_team')) {
 				// @todo better do this via parameters and not event_category
 				$logo['filename'] = sprintf('%s/flaggen/%s.png', wrap_setting('media_folder'), wrap_filename($line['federation_abbr']));
 				$logo['border'] = true;

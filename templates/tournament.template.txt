@@ -133,7 +133,7 @@
 <h2>%%% if tabelle %%%Tabelle%%% else %%%Teilnehmer%%% endif %%%</h2>
 
 %%% if offen %%%
-%%% if einzel %%%
+%%% if setting tournaments_type_single %%%
 <p><strong>Dieses Turnier ist ein offenes Turnier! <a href="%%% setting events_public_url %%%#anmeldung">Jetzt melden!</a></strong></p>
 %%% else %%%
 <p><strong>Dieses Turnier ist ein offenes Turnier!
@@ -147,7 +147,7 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% endif %%%</p>
 %%% endif %%%
 %%% elseif freiplatz %%%
-%%% if einzel %%%
+%%% if setting tournaments_type_single %%%
 <p><strong>Für dieses Turnier gibt es Freiplätze. <a href="%%% setting events_public_url %%%#anmeldung">Jetzt bewerben!</a></strong></p>
 %%% endif %%%
 %%% endif %%%
