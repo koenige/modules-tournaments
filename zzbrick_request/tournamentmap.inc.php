@@ -22,9 +22,6 @@
  * @return array $page
  */
 function mod_tournaments_tournamentmap($vars, $settings, $event) {
-	if (str_ends_with(end($vars), '.geojson'))
-		return mod_tournaments_tournamentmap_json($vars);
-
 	wrap_package_activate('clubs'); // CSS, fullscreen #map
 
 	$federation = count($vars) === 3 ? array_pop($vars) : '';
@@ -77,10 +74,7 @@ function mod_tournaments_tournamentmap($vars, $settings, $event) {
 	return $page;
 }
 
-function mod_tournaments_tournamentmap_json($params) {
-	$last_param = array_pop($params);
-	if (str_ends_with($last_param, '.geojson')) $last_param = substr($last_param, 0, -8);
-	$params[] = $last_param;
+function mod_tournaments_tournamentmap_json($params, $setting, $event) {
 	$federation = count($params) === 3 ? array_pop($params) : '';
 	if (count($params) !== 2) return false;
 	
