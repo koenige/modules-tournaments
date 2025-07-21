@@ -45,11 +45,10 @@ function mod_tournaments_tournamentmap($vars, $settings, $event) {
 		AND (ISNULL(teams.team_id) OR teams.meldung = "komplett" OR teams.meldung = "teiloffen")
 		AND NOT ISNULL(participations.club_contact_id)
 		AND categories.main_category_id = %d
-		AND usergroup_id = %d
+		AND usergroup_id = /*_ID usergroups spieler _*/
 		%s';
 	$sql = sprintf($sql,
 		$event['year'], $event['series_category_id'],
-		wrap_id('usergroups', 'spieler'),
 		($federation ? sprintf(
 			'AND (contacts.contact_id IN (%s) OR country_id = %d)',
 			implode(',', array_keys($contact_ids)), $event['country_id']) : '')
@@ -74,7 +73,7 @@ function mod_tournaments_tournamentmap($vars, $settings, $event) {
 	return $page;
 }
 
-function mod_tournaments_tournamentmap_json($params, $setting, $event) {
+function mod_tournaments_tournamentmap_json($params, $settings, $event) {
 	$federation = count($params) === 3 ? array_pop($params) : '';
 	if (count($params) !== 2) return false;
 	
@@ -110,15 +109,15 @@ function mod_tournaments_tournamentmap_json($params, $setting, $event) {
 		ORDER BY ok.identifier';
 	$organisationen = wrap_db_fetch($sql, 'contact_id');
 
-	$sql = 'SELECT participations.participation_id AS tt_id
-			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
-			, CONCAT(event, " ", IFNULL(events.event_year, YEAR(events.date_begin))) AS turniername
+	$sql = 'SELECT participations.participation_id
+			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS player
+			, CONCAT(event, " ", IFNULL(events.event_year, YEAR(events.date_begin))) AS event_name
 			, zps.identifier AS player_pass_dsb
 			, IFNULL(participations.club_contact_id, teams.club_contact_id) AS club_contact_id
 			, fide.identifier AS player_id_fide
 			, t_verein AS verein
 			, t_dwz AS dwz, t_elo AS elo
-			, participations.setzliste_no AS teilnehmer_nr
+			, participations.setzliste_no AS seedlist_no
 			, events.identifier AS event_identifier
 			, CONCAT(teams.team, IFNULL(CONCAT(" ", team_no), "")) AS team
 			, teams.identifier AS team_identifier
@@ -153,25 +152,25 @@ function mod_tournaments_tournamentmap_json($params, $setting, $event) {
 			, implode(',', array_keys($contact_ids))
 		) : ''
 	);
-	$spieler = wrap_db_fetch($sql, 'tt_id');
+	$players = wrap_db_fetch($sql, 'participation_id');
 
-	foreach ($spieler as $id => $person) {
+	foreach ($players as $id => $person) {
 		if (!empty($organisationen[$person['club_contact_id']])) {
-			$spieler[$id] = array_merge($person, $organisationen[$person['club_contact_id']]);
+			$players[$id] = array_merge($person, $organisationen[$person['club_contact_id']]);
 		}
-		if (empty($spieler[$id]['latitude']) AND !empty($person['club_contact_id'])) {
+		if (empty($players[$id]['latitude']) AND !empty($person['club_contact_id'])) {
 			if ($person['year'] > date('Y') - 6) {
 				// just log errors for players in the last 6 years
 				wrap_log(sprintf(
 					'Keine Koordinaten für Verein %s (Org-ID %s), Spieler %s beim Turnier %s.', 
-					(isset($spieler[$id]['contact']) ? $spieler[$id]['contact'] : 'unbekannt'),
-					$person['club_contact_id'], $spieler[$id]['spieler'], $spieler[$id]['turniername']
+					(isset($players[$id]['contact']) ? $players[$id]['contact'] : 'unbekannt'),
+					$person['club_contact_id'], $players[$id]['player'], $players[$id]['event_name']
 				));
 			}
 		}
 	}
 	$data = [];
-	foreach ($spieler as $person) {
+	foreach ($players as $person) {
 		if (empty($person['contact_id'])) continue;
 		if (empty($data[$person['contact_id']])) {
 			$data[$person['contact_id']] = [
@@ -182,23 +181,22 @@ function mod_tournaments_tournamentmap_json($params, $setting, $event) {
 				'longitude' => $person['longitude'],
 				'latitude' => $person['latitude'],
 				'altitude' => 0,
-				'spieler' => []
+				'players' => []
 			];
 		}
-		$data[$person['contact_id']]['spieler'][] = [
-			'spieler' => $person['spieler'],
+		$data[$person['contact_id']]['players'][] = [
+			'player' => $person['player'],
 			'player_pass_dsb' => !empty($person['Mgl_Nr']) ? $person['zps']."-".$person['Mgl_Nr'] : $person['player_pass_dsb'],
 			'dwz' => $person['dwz'],
 			'player_id_fide' => $person['player_id_fide'],
 			'elo' => $person['elo'],
-			'teilnehmer_nr' => !empty($person['teilnehmer_nr']) ? $person['teilnehmer_nr'] : '',
-			'turnier' => $person['turniername'],
+			'seedlist_no' => $person['seedlist_no'] ?? '',
+			'event_name' => $person['event_name'],
 			'event_identifier' => $person['event_identifier'],
 			'team' => $person['team'],
 			'team_identifier' => $person['team_identifier']
 		];
 	}
-	unset($spieler);
 	if (empty($data)) return false;
 	$page['text'] = wrap_template('tournamentmap-json', $data);
 	$page['content_type'] = 'js';

@@ -5,14 +5,14 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2016, 2020-2021, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2016, 2020-2021, 2024-2025 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 var locations = {"type": "FeatureCollection", "features": [
 %%% loop start %%%
 %%% if longitude & latitude %%%
 {"type":"Feature","id":"%%% item id %%%","properties":{"org":"%%% item title wrap_js_escape %%%","identifier":"%%% item identifier %%%",
-"description":"%%% loop spieler %%%<li>%%% if teilnehmer_nr %%%<a href='/%%% item event_identifier %%%/spieler/%%% item teilnehmer_nr %%%.html'>%%% endif %%%<strong>%%% item spieler %%%</strong>%%% item teilnehmer_nr </a> %%%%%% if dwz %%% <abbr title='Deutsche Wertungszahl'>DWZ</abbr>: %%% comment condition if player_pass_dsb <a href='http://www.schachbund.de/spieler.html?zps=%/%% item player_pass_dsb %/%%'>%%%%%% comment condition endif %%%%%% item dwz %%%%%% comment item player_pass_dsb </a> %%%%%% endif %%%%%% if elo %%%%%% if dwz %%%, %%% endif %%%<abbr title='Internationale Wertungszahl nach Arpad Elö'>Elo</abbr>: %%% path ratings_fide_profile player_id_fide "html=<a href='%s'>" %%%%%% item elo %%%%%% path ratings_fide_profile player_id_fide "html=</a>" %%%%%% endif %%% (%%% item turnier %%%%%% if team %%% <a href='/%%% item team_identifier %%%/'>%%% item team wrap_html_escape %%%</a>%%% endif %%%)</li>%%% loop end %%%"
+"description":"%%% loop players %%%<li>%%% if seedlist_no %%%<a href='%%% path tournaments_playercard event_identifier seedlist_no %%%'>%%% endif %%%<strong>%%% item player %%%</strong>%%% item seedlist_no </a> %%%%%% if dwz %%% <abbr title='Deutsche Wertungszahl'>DWZ</abbr>: %%% comment condition if player_pass_dsb <a href='http://www.schachbund.de/spieler.html?zps=%/%% item player_pass_dsb %/%%'>%%%%%% comment condition endif %%%%%% item dwz %%%%%% comment item player_pass_dsb </a> %%%%%% endif %%%%%% if elo %%%%%% if dwz %%%, %%% endif %%%<abbr title='Internationale Wertungszahl nach Arpad Elö'>Elo</abbr>: %%% path ratings_fide_profile player_id_fide "html=<a href='%s'>" %%%%%% item elo %%%%%% path ratings_fide_profile player_id_fide "html=</a>" %%%%%% endif %%% (%%% item event_name %%%%%% if team %%% <a href='/%%% item team_identifier %%%/'>%%% item team wrap_html_escape %%%</a>%%% endif %%%)</li>%%% loop end %%%"
 %%% if website %%%,"website":"%%% item website %%%"%%% endif %%%
 },"geometry": {"type":"Point","coordinates": [%%% item longitude %%%,%%% item latitude %%%] } }%%% loopposition first|middle "," %%% 
 %%% endif %%%
