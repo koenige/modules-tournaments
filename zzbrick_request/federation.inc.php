@@ -22,7 +22,7 @@
  *		string [2]: 'lv'
  *		string [3]: Kennung Organisation
  */
-function mod_tournaments_federation($vars, $settings, $event) {
+function mod_tournaments_federation($vars, $settings, $data) {
 	if (count($vars) !== 3) return false;
 
 	$sql = 'SELECT contact_id, contact
@@ -42,22 +42,20 @@ function mod_tournaments_federation($vars, $settings, $event) {
 		, wrap_db_escape($vars[2])
 		, wrap_db_escape($vars[2])
 	);
-	$data = wrap_db_fetch($sql);
-	if (!$data) return false;
+	$federation = wrap_db_fetch($sql);
+	if (!$federation) return false;
+	$data += $federation;
 	if ($vars[2] === $data['zps_code']) {
 		$path = wrap_path('tournaments_federation', [$vars[0].'/'.$vars[1], $data['identifier']]);
 		return wrap_redirect($path, 303);
 	}
-	$data['year'] = intval($vars[0]);
 
 	$sql = 'SELECT events.event_id, event, events.identifier AS event_identifier
 			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
-			, main_series.category AS main_series, date_end
-			, main_series.category_short AS main_series_short
-			, IF(LENGTH(main_series.path) > 7, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "/", SUBSTRING_INDEX(main_series.path, "/", -1)), NULL) AS main_event_path
+			, date_end
 			, IF((SELECT COUNT(*) FROM participations
 				WHERE event_id = events.event_id AND usergroup_id = /*_ID usergroups spieler _*/), NULL, 1
-			) AS keine_daten
+			) AS no_data
 			, IF((SELECT COUNT(*) FROM teams
 				WHERE team_status IN ("Teilnehmer", "Teilnahmeberechtigt") AND event_id = events.event_id
 				AND NOT ISNULL(teams.setzliste_no)), 1, 
@@ -72,13 +70,16 @@ function mod_tournaments_federation($vars, $settings, $event) {
 			, IF(tournaments.tabellenstand_runde_no = tournaments.runden
 				AND (SELECT COUNT(*) FROM partien
 				WHERE event_id = events.event_id AND ISNULL(weiss_ergebnis)) = 0, 1, NULL) AS endstand
-			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, tournaments.tabellenstand_runde_no AS runde_no
 			, IF(spielerphotos = "ja", 1, NULL) AS spielerphotos
+			, IF(types.parameters LIKE "%%&tournaments_type_single=1%%", 1, NULL) AS single_tournament
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN categories turnierformen
-			ON tournaments.turnierform_category_id = turnierformen.category_id
+		LEFT JOIN events_categories
+			ON events_categories.event_id = events.event_id
+			AND events_categories.type_category_id = /*_ID categories events _*/
+		LEFT JOIN categories types
+			ON events_categories.category_id = types.category_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
 		LEFT JOIN categories main_series
@@ -92,14 +93,9 @@ function mod_tournaments_federation($vars, $settings, $event) {
 	$sql = sprintf($sql, wrap_db_escape($vars[1]), $vars[0]);
 	$data['events'] = wrap_db_fetch($sql, 'event_id');
 	if (!$data['events']) return false;
-	$main_series = reset($data['events']);
-	$data['main_series_short'] = $main_series['main_series_short'];
-	$data['main_event_path'] = $main_series['main_event_path'];
-	$data['main_series'] = $main_series['main_series'];
-	$data['turnierform'] = $main_series['turnierform'];
 
 	$data['map'] = false;
-	if ($data['turnierform'] !== 'e') {
+	if (wrap_setting('tournaments_type_team')) {
 		$data['anzahl_teams'] = 0;
 		$sql = 'SELECT teams.team_id, teams.identifier AS team_identifier
 				, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
@@ -147,7 +143,6 @@ function mod_tournaments_federation($vars, $settings, $event) {
 		foreach ($data['events'] as $event_id => $event) {
 			if (!$event_date_end) $event_date_end = $event['date_end'];
 			elseif ($event_date_end < $event['date_end']) $event_date_end = $event['date_end'];
-			$data['events'][$event_id]['e'] = true;
 			if ($event['spielerphotos']) $spielerphotos = true;
 		}
 		$sql = 'SELECT participation_id, setzliste_no, persons.person_id
@@ -192,7 +187,7 @@ function mod_tournaments_federation($vars, $settings, $event) {
 		}
 
 		if ($data['year'] >= wrap_setting('dem_spielerphotos_aus_mediendb') AND $spielerphotos) {
-			$photos = mf_mediadblink_media([$data['main_event_path'], 'Website/Spieler'], [], 'person', $player_ids);
+			$photos = mf_mediadblink_media([$data['identifier'], 'Website/Spieler'], [], 'person', $player_ids);
 			foreach ($spieler as $event_id => $event_players) {
 				foreach ($event_players as $participation_id => $player) {
 					if (!array_key_exists($player['person_id'], $photos)) continue;
@@ -217,7 +212,7 @@ function mod_tournaments_federation($vars, $settings, $event) {
 		if ($sub_orgs) $data['map'] = true;
 	}
 
-	$bilder = mf_mediadblink_media([$data['main_event_path'], 'Website/Delegation']);
+	$bilder = mf_mediadblink_media([$data['identifier'], 'Website/Delegation']);
 	// @todo add Landesverband below Organisations
 	$data_filename = strtolower(wrap_filename($data['contact_abbr']));
 	foreach ($bilder as $bild) {
@@ -228,7 +223,7 @@ function mod_tournaments_federation($vars, $settings, $event) {
 
 	$page['breadcrumbs'][] = ['title' => $data['country']];
 	$page['dont_show_h1'] = true;
-	$page['title'] = $data['main_series_short'].' '.$data['year'].', Teilnehmer aus '.$data['country'];
+	$page['title'] = $data['series_short'].' '.$data['year'].', Teilnehmer aus '.$data['country'];
 	$page['text'] = wrap_template('federation', $data);
 	if (in_array('magnificpopup', wrap_setting('modules')))
 		$page['extra']['magnific_popup'] = true;
