@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2016, 2018-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2016, 2018-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -20,9 +20,11 @@
  *		int [0]: Jahr
  *		string [1]: Terminkennung
  *		(string [2]: (optional) 'live')
+ * @param array $settings
+ * @param array $data
  * @return array
  */
-function mod_tournaments_livegames($vars) {
+function mod_tournaments_livegames($vars, $settings, $data) {
 	wrap_include('pgn', 'chess');
 
 	if (count($vars) !== 2) return false;
@@ -35,7 +37,6 @@ function mod_tournaments_livegames($vars) {
 			AND usergroup_id = /*_ID usergroups spieler _*/) AS teilnehmer
 			, (SELECT MAX(runde_no) FROM partien
 			WHERE partien.event_id = tournaments.event_id) AS aktuelle_runde_no
-			, main_series.category AS main_series
 			, IF((DATE_SUB(CURDATE(), INTERVAL /*_SETTING live_games_show_for_days _*/ DAY) <= date_end), 1, NULL) AS current
 		FROM tournaments
 		LEFT JOIN events USING (event_id)
@@ -48,82 +49,88 @@ function mod_tournaments_livegames($vars) {
 		AND NOT ISNULL(livebretter)
 		ORDER BY series.sequence';
 	$sql = sprintf($sql, wrap_db_escape($vars[1]), $vars[0]);
-	$tournaments = wrap_db_fetch($sql, 'event_id');
-	if ($tournaments) return mod_tournaments_livegames_series($tournaments);
+	$data['tournaments'] = wrap_db_fetch($sql, 'event_id');
+	if ($data['tournaments']) return mod_tournaments_livegames_series($data);
 	
 	// Einzelnes Turnier?
-	$sql = 'SELECT events.event_id, livebretter, events.identifier
-			, event, IFNULL(event_year, YEAR(date_begin)) AS year
+	$sql = 'SELECT event_id, livebretter
 			, (SELECT COUNT(*) FROM participations
 			WHERE participations.event_id = tournaments.event_id
 			AND usergroup_id = /*_ID usergroups spieler _*/) AS teilnehmer
 			, (SELECT MAX(runde_no) FROM partien
 			WHERE partien.event_id = tournaments.event_id) AS aktuelle_runde_no
-			, main_series.category AS main_series
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
 		FROM tournaments
-		LEFT JOIN events USING (event_id)
-		LEFT JOIN categories series
-			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
-		WHERE events.identifier = "%d/%s"
+		WHERE tournaments.event_id = %d
 		AND NOT ISNULL(livebretter)';
-	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
-	$turnier = wrap_db_fetch($sql);
-	if ($turnier) return mod_tournaments_livegames_turnier($turnier);
-	return false;
+	$sql = sprintf($sql, $data['event_id']);
+	$tournament = wrap_db_fetch($sql);
+	if (!$tournament) return false;
+	
+	$data += $tournament;
+	return mod_tournaments_livegames_tournament($data);
 }
 
-function mod_tournaments_livegames_turnier($turnier) {
-	$rundendaten = mod_tournaments_livegames_rundendaten([$turnier['event_id']]);
-	unset($rundendaten[$turnier['event_id']][$turnier['aktuelle_runde_no']]['runde_no']);
-	unset($rundendaten[$turnier['event_id']][$turnier['aktuelle_runde_no']]['main_event_id']);
-	$turnier += $rundendaten[$turnier['event_id']][$turnier['aktuelle_runde_no']];
-	unset($rundendaten);
+/**
+ * show live chess boards for a single tournament
+ *
+ * @param array $tournament
+ * @return array
+ */
+function mod_tournaments_livegames_tournament($tournament) {
+	$rounds = mod_tournaments_livegames_rounds([$tournament['event_id']]);
+	unset($rounds[$tournament['event_id']][$tournament['aktuelle_runde_no']]['runde_no']);
+	unset($rounds[$tournament['event_id']][$tournament['aktuelle_runde_no']]['main_event_id']);
+	$tournament += $rounds[$tournament['event_id']][$tournament['aktuelle_runde_no']];
+	unset($rounds);
 
-	$turnier = mod_tournaments_livegames_bretter($turnier);
-	$turnier['last_update'] = substr($turnier['last_update'], 11, 5);
+	$tournament = mod_tournaments_livegames_bretter($tournament);
+	$tournament['last_update'] = substr($tournament['last_update'], 11, 5);
 	
 	$page['breadcrumbs'][]['title'] = 'Livepartien';
-	$page['title'] = 'Livepartien '.$turnier['event'].' '.$turnier['year'];
+	$page['title'] = 'Livepartien '.$tournament['event'].' '.$tournament['year'];
 	$page['head'] = wrap_template('livegames-head');
-	$page['text'] = wrap_template('livegames-tournament', $turnier);
+	$page['text'] = wrap_template('livegames-tournament', $tournament);
 	return $page;
 }
 
-function mod_tournaments_livegames_series($tournaments) {
-	$series = reset($tournaments);
+/**
+ * show links to tournaments of a series with live games
+ *
+ * @param array $data
+ * @return array
+ */
+function mod_tournaments_livegames_series($data) {
+	$rounds = mod_tournaments_livegames_rounds(array_keys($data['tournaments']));
 
-	$rundendaten = mod_tournaments_livegames_rundendaten(array_keys($tournaments));
 	$has_rounds = false;
-	foreach ($tournaments AS $event_id => $turnier) {
+	foreach ($data['tournaments'] AS $event_id => $turnier) {
 		if (empty($turnier['aktuelle_runde_no'])) continue;
 		$has_rounds = true;
 		if (!$turnier['current']) {
-			unset($tournaments[$event_id]);
+			unset($data['tournaments'][$event_id]);
 			continue;
 		}
-		unset($rundendaten[$event_id][$turnier['aktuelle_runde_no']]['runde_no']);
-		unset($rundendaten[$event_id][$turnier['aktuelle_runde_no']]['main_event_id']);
-		if (!empty($rundendaten[$event_id])) {
-			$tournaments[$event_id] += $rundendaten[$event_id][$turnier['aktuelle_runde_no']];
+		unset($rounds[$event_id][$turnier['aktuelle_runde_no']]['runde_no']);
+		unset($rounds[$event_id][$turnier['aktuelle_runde_no']]['main_event_id']);
+		if (!empty($rounds[$event_id])) {
+			$data['tournaments'][$event_id] += $rounds[$event_id][$turnier['aktuelle_runde_no']];
 		}
 	}
 	if (!$has_rounds) return false;
-	if (!$tournaments) wrap_quit(410, wrap_text('The tournament is over. All live games are integrated into the <a href="../">tournament pages</a>.'));
+	if (!$data['tournaments'])
+		wrap_quit(410, wrap_text('The tournament is over. All live games are integrated into the <a href="../">tournament pages</a>.'));
 
-	$tournaments['last_update'] = '';
-	foreach ($tournaments as $event_id => $turnier) {
+	$data['tournaments']['last_update'] = '';
+	foreach ($data['tournaments'] as $event_id => $turnier) {
 		if (!is_numeric($event_id)) continue;
-		$tournaments[$event_id] = mod_tournaments_livegames_bretter($turnier);
-		if ($tournaments[$event_id]['last_update'] > $tournaments['last_update'])
-			$tournaments['last_update'] = $tournaments[$event_id]['last_update'];
+		$data['tournaments'][$event_id] = mod_tournaments_livegames_bretter($turnier);
+		if ($data['tournaments'][$event_id]['last_update'] > $data['tournaments']['last_update'])
+			$data['tournaments']['last_update'] = $data['tournaments'][$event_id]['last_update'];
 	}
-	$tournaments['last_update'] = substr($tournaments['last_update'], 11, 5);
+	$data['tournaments']['last_update'] = substr($data['tournaments']['last_update'], 11, 5);
 	$page['breadcrumbs'][]['title'] = 'Livepartien';
-	$page['title'] = 'Livepartien '.$series['main_series'].' '.$series['year'];
-	$page['text'] = wrap_template('livegames-series', $tournaments);
+	$page['title'] = 'Livepartien '.$data['main_series_long'].' '.$data['year'];
+	$page['text'] = wrap_template('livegames-series', $data['tournaments']);
 	return $page;
 }
 
@@ -193,7 +200,7 @@ function mod_tournaments_livegames_bretter($turnier) {
 	return $turnier;
 }
 
-function mod_tournaments_livegames_rundendaten($tournament_ids) {
+function mod_tournaments_livegames_rounds($tournament_ids) {
 	// Aktuelle Runde, Daten
 	$sql = 'SELECT event_id, runde_no, main_event_id,
 			CASE DAYOFWEEK(events.date_begin) WHEN 1 THEN "So"
@@ -210,6 +217,5 @@ function mod_tournaments_livegames_rundendaten($tournament_ids) {
 		WHERE main_event_id IN (%s)
 		AND event_category_id = /*_ID categories event/round _*/';
 	$sql = sprintf($sql, implode(',', $tournament_ids));
-	$rundendaten = wrap_db_fetch($sql, ['main_event_id', 'runde_no']);
-	return $rundendaten;
+	return wrap_db_fetch($sql, ['main_event_id', 'runde_no']);
 }
