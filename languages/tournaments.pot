@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2020-2024 Gustaf Mossakowski
+# @copyright Copyright © 2020-2025 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 msgid ""
@@ -13,14 +13,62 @@ msgstr ""
 "Project-Id-Version: Zugzwang Project -- tournaments module\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Gustaf Mossakowski <gustaf@koenige.org>\n"
 "Language-Team: \n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.12\n"
+
+#: templates/empty-tournament.template.txt
+msgid "Empty Tournament"
+msgstr ""
+
+#: templates/empty-tournament.template.txt
+msgid "Empty the tournament"
+msgstr ""
+
+#: templates/empty-tournament.template.txt
+msgid "In emergencies, if data has been imported incorrectly, an entire tournament can be deleted here: games, pairings, players (if added via import), teams."
+msgstr ""
+
+#: templates/empty-tournament.template.txt
+msgid "These records would be deleted:"
+msgstr ""
+
+#: templates/empty-tournament.template.txt
+msgid "%s game"
+msgid_plural "%s games"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/empty-tournament.template.txt
+msgid "%s pairing"
+msgid_plural "%s pairings"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/empty-tournament.template.txt
+msgid "%s standing"
+msgid_plural "%s standings"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/empty-tournament.template.txt
+msgid "%s player"
+msgid_plural "%s players"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/empty-tournament.template.txt
+msgid "%s team"
+msgid_plural "%s teams"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/empty-tournament.template.txt
+msgid "These records were deleted:"
+msgstr ""
 
 #: zzbrick_forms/rounds.inc.php
 msgid "Rounds"
