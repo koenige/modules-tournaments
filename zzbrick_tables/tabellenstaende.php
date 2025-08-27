@@ -113,7 +113,7 @@ $zz['sql'] = 'SELECT tabellenstaende.*
 ';
 $zz['sqlorder'] = ' ORDER BY events.date_begin, events.identifier, runde_no, platz_no';
 
-$zz['subtitle']['event_id']['sql'] = 'SELECT event FROM events';
+$zz['subtitle']['event_id']['sql'] = 'SELECT event_id, event FROM events';
 $zz['subtitle']['event_id']['var'] = ['event'];
 
 $zz['subtitle']['runde_no']['value'] = true;

@@ -273,7 +273,7 @@ $zz['sql'] = 'SELECT partien.*
 		AND schwarz.usergroup_id = /*_ID usergroups spieler _*/';
 $zz['sqlorder'] = ' ORDER BY events.date_begin, events.identifier, runde_no, brett_no';
 
-$zz['subtitle']['event_id']['sql'] = 'SELECT event FROM events';
+$zz['subtitle']['event_id']['sql'] = 'SELECT event_id, event FROM events';
 $zz['subtitle']['event_id']['var'] = ['event'];
 
 $zz['subtitle']['runde_no']['value'] = true;
