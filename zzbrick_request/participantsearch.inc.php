@@ -38,9 +38,6 @@ function mod_tournaments_participantsearch($params, $settings, $data) {
 		FROM events
 		JOIN categories series
 			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
-			AND main_series.path != "reihen"
 		LEFT JOIN tournaments USING (event_id)
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
@@ -48,10 +45,10 @@ function mod_tournaments_participantsearch($params, $settings, $data) {
 		LEFT JOIN events_categories
 			ON events_categories.event_id = events.event_id
 			AND events_categories.type_category_id = /*_ID categories events _*/
-		WHERE (main_series.path = "reihen/%s" OR SUBSTRING_INDEX(series.path, "/", -1) = "%s")
-		AND IFNULL(event_year, YEAR(date_begin)) = %d
+		WHERE events.event_id = %d OR main_event_id = %d
+		AND events.event_category_id = /*_ID categories event/event _*/
 	';
-	$sql = sprintf($sql, wrap_db_escape($params[1]), wrap_db_escape($params[1]), $params[0]);
+	$sql = sprintf($sql, $data['event_id'], $data['event_id']);
 	$events = wrap_db_fetch($sql, 'event_id');
 	if (!$events) return false;
 	if ($internal) $data['intern'] = true;

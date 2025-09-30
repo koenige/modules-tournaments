@@ -16,14 +16,13 @@
 /**
  * Übersicht der Spieler/Teams eines Turniers nach Landesverband
  *
- * @param array $vars
+ * @param array $params
  *		int [0]: Jahr
  *		string [1]: Kennung Reihe
- *		string [2]: 'lv'
- *		string [3]: Kennung Organisation
+ *		string [2]: Kennung Organisation
  */
-function mod_tournaments_federation($vars, $settings, $data) {
-	if (count($vars) !== 3) return false;
+function mod_tournaments_federation($params, $settings, $data) {
+	if (count($params) !== 3) return false;
 
 	$sql = 'SELECT contact_id, contact
 			, IFNULL(country, contact_short) AS country
@@ -39,14 +38,14 @@ function mod_tournaments_federation($vars, $settings, $data) {
 		AND contacts_contacts.relation_category_id = /*_ID categories relation/member _*/
 		AND contacts_contacts.main_contact_id = /*_SETTING clubs_confederation_contact_id _*/';
 	$sql = sprintf($sql
-		, wrap_db_escape($vars[2])
-		, wrap_db_escape($vars[2])
+		, wrap_db_escape($params[2])
+		, wrap_db_escape($params[2])
 	);
 	$federation = wrap_db_fetch($sql);
 	if (!$federation) return false;
 	$data += $federation;
-	if ($vars[2] === $data['zps_code']) {
-		$path = wrap_path('tournaments_federation', [$vars[0].'/'.$vars[1], $data['identifier']]);
+	if ($params[2] === $data['zps_code']) {
+		$path = wrap_path('tournaments_federation', [$params[0].'/'.$params[1], $data['identifier']]);
 		return wrap_redirect($path, 303);
 	}
 
@@ -82,15 +81,13 @@ function mod_tournaments_federation($vars, $settings, $data) {
 			ON events_categories.category_id = types.category_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON main_series.category_id = series.main_category_id
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = /*_SETTING website_id _*/
-		WHERE main_series.path = "reihen/%s"
-		AND IFNULL(events.event_year, YEAR(events.date_begin)) = %d
-		ORDER BY series.sequence';
-	$sql = sprintf($sql, wrap_db_escape($vars[1]), $vars[0]);
+		WHERE main_event_id = %d
+		AND events.event_category_id = /*_ID categories event/event _*/
+		ORDER BY series.sequence, events.identifier';
+	$sql = sprintf($sql, $data['event_id']);
 	$data['events'] = wrap_db_fetch($sql, 'event_id');
 	if (!$data['events']) return false;
 

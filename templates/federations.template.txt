@@ -9,7 +9,7 @@
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Übersicht der Landesverbände + Medaillenspiegel
-<br><a href="../">%%% item main_series %%% (%%% item main_series_short %%%) %%% item year %%%</a></h1>
+<br><a href="../">%%% item main_series_long %%% (%%% item series_short %%%) %%% item year %%%</a></h1>
 
 <div class="results">
 <table class="medals">

@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015-2016, 2019-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2015-2016, 2019-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -16,24 +16,23 @@
 /**
  * Doppelte Spieler finden
  *
- * @param array $vars
- *	[0]: Jahr des Turniers
- *	[1]: Kennung des Turniers
+ * @param array $params
+ * @param array $settings
+ * @param array $event
  * @return array $page
  */
-function mod_tournaments_duplicateplayers($vars) {
-	$sql = 'SELECT event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year, main_series.category AS series
+function mod_tournaments_duplicateplayers($params, $settings, $event) {
+	$sql = 'SELECT event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year
 		FROM events
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
-		WHERE main_series.path = "reihen/%s"
-		AND IFNULL(event_year, YEAR(date_begin)) = %d
+		WHERE main_event_id = %d
+		AND event_category_id = /*_ID categories event/event _*/
+		ORDER BY series.sequence, events.identifier
 	';
-	$sql = sprintf($sql, wrap_db_escape($vars[1]), $vars[0]);
-	$turniere = wrap_db_fetch($sql, 'event_id');
-	if (!$turniere) return false;
+	$sql = sprintf($sql, $event['event_id']);
+	$tournaments = wrap_db_fetch($sql, 'event_id');
+	if (!$tournaments) return false;
 
 	$sql = 'SELECT contact_id
 		FROM participations
@@ -42,9 +41,9 @@ function mod_tournaments_duplicateplayers($vars) {
 		GROUP BY contact_id
 		HAVING COUNT(contact_id) > 1
 	';
-	$sql = sprintf($sql, implode(',', array_keys($turniere)));
-	$doppelte = wrap_db_fetch($sql, '_dummy_', 'single value');
-	if (!$doppelte) {
+	$sql = sprintf($sql, implode(',', array_keys($tournaments)));
+	$duplicates = wrap_db_fetch($sql, '_dummy_', 'single value');
+	if (!$duplicates) {
 		$data['keine_doppelten'] = true;
 	} else {
 		$sql = 'SELECT participation_id, contact_id
@@ -64,8 +63,8 @@ function mod_tournaments_duplicateplayers($vars) {
 	 		ORDER BY t_nachname, t_namenszusatz, t_vorname, team, team_no
 	 	';
 	 	$sql = sprintf($sql
-	 		, implode(',', $doppelte)
-			, implode(',', array_keys($turniere))
+	 		, implode(',', $duplicates)
+			, implode(',', array_keys($tournaments))
 	 	);
 	 	$data = wrap_db_fetch($sql, ['contact_id', 'participation_id'], 'list contact_id turniere');
 	 	foreach ($data as $id => $spieler) {
@@ -75,10 +74,8 @@ function mod_tournaments_duplicateplayers($vars) {
 	 	}
 	}
 	
-	$turnier = reset($turniere);
-	
 	$page['breadcrumbs'][]['title'] = 'Doppelt gemeldete Spieler';
-	$page['title'] = $turnier['series'].' '.$turnier['year'].':<br> Doppelt gemeldete Spieler';
+	$page['title'] = $event['main_series_long'].' '.$event['year'].':<br> Doppelt gemeldete Spieler';
 	$page['text'] = wrap_template('duplicateplayers', $data);
 	return $page;
 }

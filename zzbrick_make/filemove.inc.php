@@ -19,10 +19,10 @@ function mod_tournaments_make_filemove() {
 
 	// Laufende Turniere auslesen
 	// for C24, put JSON files to server 2 DAYs before start
-	$sql = 'SELECT event_id
+	$sql = 'SELECT events.event_id
 			, events.identifier
 			, REPLACE(events.identifier, "/", "-") AS path
-			, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "-", IF(main_series.path != "reihen", SUBSTRING_INDEX(main_series.path, "/", -1), SUBSTRING_INDEX(series.path, "/", -1))) AS main_series
+			, REPLACE(main_events.identifier, "/", "-") AS main_series_path
 			, tournaments.urkunde_parameter AS parameters
 			, IFNULL((SELECT setting_value FROM _settings
 				WHERE setting_key = "canonical_hostname"
@@ -33,10 +33,8 @@ function mod_tournaments_make_filemove() {
 		FROM tournaments
 		JOIN events USING (event_id)
 		LEFT JOIN websites USING (website_id)
-		LEFT JOIN categories series
-			ON series.category_id = events.series_category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
+		LEFT JOIN events main_events
+			ON events.main_event_id = main_events.event_id
 		WHERE events.date_begin <= DATE_ADD(CURDATE(), INTERVAL 2 DAY)
 		AND events.date_end >= CURDATE()
 		ORDER BY events.identifier';
@@ -232,7 +230,7 @@ function mod_tournaments_make_filemove_scandir($folder) {
  */
 function mod_tournaments_make_filemove_bulletin_pgn($tournament) {
 	if (empty($tournament['parameters']['pgn_bulletin_file_template'])) return;
-	$bulletin_dir = wrap_setting('media_folder').wrap_setting('pgn_bulletin_folder').'/'.$tournament['main_series'];
+	$bulletin_dir = wrap_setting('media_folder').wrap_setting('pgn_bulletin_folder').'/'.$tournament['main_series_path'];
 	if (!file_exists($bulletin_dir)) return;
 
 	$s_filename = sprintf('%s/%s.pgn', $bulletin_dir, $tournament['parameters']['pgn_bulletin_file_template']);

@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2017-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -204,11 +204,6 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
     // "src": "//player.twitch.tv/?channel="
     // no event tag here
 	
-	$sql = 'SELECT event_id FROM events
-		WHERE identifier = "%d/%s"';
-	$sql = sprintf($sql, $event['year'], $event['main_series_path']);
-	$series_event_id = wrap_db_fetch($sql, '', 'single value');
-	
 	$sql = 'SELECT category_id, category_short
 		FROM categories WHERE main_category_id = /*_ID categories titel _*/';
 	$fidetitel = wrap_db_fetch($sql, '_dummy_', 'key/value');
@@ -226,7 +221,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		AND DATE_SUB(CONCAT(events.date_begin, " ", events.time_begin), INTERVAL 2 HOUR) <= NOW()
 		ORDER BY events.date_begin DESC, events.time_begin DESC
 		LIMIT 1';
-	$sql = sprintf($sql, $series_event_id);
+	$sql = sprintf($sql, $event['main_event_id']);
 	$data['videoSources'] = wrap_db_fetch($sql, '_dummy_', 'numeric');
 	foreach ($data['videoSources'] as $index => $source) {
 		$url = parse_url($source['event']);

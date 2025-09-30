@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -24,17 +24,17 @@ function mod_tournaments_placeholder_team($brick) {
 	}
 
 	$sql = 'SELECT team_id, team, team_no, meldung
-			, events.event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year
+			, events.event_id, events.event, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 			, SUBSTRING_INDEX(events.identifier, "/", -1) AS event_idf
 			, IFNULL(place, places.contact) AS place
-			, CONCAT(date_begin, IFNULL(CONCAT("/", date_end), "")) AS duration
-			, DATEDIFF(date_end, date_begin) AS duration_days
-			, date_begin
+			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
+			, DATEDIFF(events.date_end, events.date_begin) AS duration_days
+			, events.date_begin
 			, events.identifier AS event_identifier
-			, series_category_id
+			, events.series_category_id
 			, main_series.category_short AS main_series
-			, IF(LENGTH(main_series.path) > 7, SUBSTRING_INDEX(main_series.path, "/", -1), NULL) AS main_series_path
-			, IF(LENGTH(main_series.path) > 7, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "/", SUBSTRING_INDEX(main_series.path, "/", -1)), NULL) AS main_event_path
+			, IF(ISNULL(main_series.main_category_id), NULL, SUBSTRING_INDEX(main_series.path, "/", -1)) AS main_series_path
+			, main_events.identifier AS main_event_path
 			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, turnierformen.parameters AS tournament_form_parameters
 			, club_contact_id AS contact_id, clubs.contact
@@ -67,6 +67,8 @@ function mod_tournaments_placeholder_team($brick) {
 			ON tournaments.turnierform_category_id = turnierformen.category_id
 		LEFT JOIN categories place_categories
 			ON places.contact_category_id = place_categories.category_id
+	    LEFT JOIN events main_events
+	    	ON events.main_event_id = main_events.event_id
 		WHERE teams.identifier = "%d/%s/%s"
 		AND spielfrei = "nein"';
 	$sql_team = sprintf($sql, $year, wrap_db_escape($identifier), wrap_db_escape($team_idf));

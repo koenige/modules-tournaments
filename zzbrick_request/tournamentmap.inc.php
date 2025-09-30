@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2008, 2012, 2014-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2008, 2012, 2014-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -16,15 +16,16 @@
 /**
  * Displays players on a Leaflet map
  *
- * @param array $vars
- *		[0]: Jahr
- *		[0]: event identifier
+ * @param array $params
+ *		[0]: year
+ *		[1]: event identifier
+ *		[2]: federation identifier (optional)
  * @return array $page
  */
-function mod_tournaments_tournamentmap($vars, $settings, $event) {
+function mod_tournaments_tournamentmap($params, $settings, $event) {
 	wrap_package_activate('clubs'); // CSS, fullscreen #map
 
-	$federation = count($vars) === 3 ? array_pop($vars) : '';
+	$federation = count($params) === 3 ? array_pop($params) : '';
 	if ($federation) {
 		$contact_ids = mod_tournaments_tournamentmap_federation($federation);
 		// no member organisations?
@@ -36,20 +37,18 @@ function mod_tournaments_tournamentmap($vars, $settings, $event) {
 	$sql = 'SELECT COUNT(*)
 		FROM participations
 		LEFT JOIN events USING (event_id)
-		LEFT JOIN categories
-			ON events.series_category_id = categories.category_id
 		LEFT JOIN contacts
 			ON participations.club_contact_id = contacts.contact_id
 		LEFT JOIN teams USING (team_id)
-		WHERE IFNULL(events.event_year, YEAR(events.date_begin)) = %d
+		WHERE main_event_id = %d
+		AND events.event_category_id = /*_ID categories event/event _*/
 		AND (ISNULL(teams.team_id) OR teams.meldung = "komplett" OR teams.meldung = "teiloffen")
 		AND NOT ISNULL(participations.club_contact_id)
-		AND categories.main_category_id = %d
 		AND usergroup_id = /*_ID usergroups spieler _*/
 		%s';
-	$sql = sprintf($sql,
-		$event['year'], $event['series_category_id'],
-		($federation ? sprintf(
+	$sql = sprintf($sql
+		, $event['event_id']
+		, ($federation ? sprintf(
 			'AND (contacts.contact_id IN (%s) OR country_id = %d)',
 			implode(',', array_keys($contact_ids)), $event['country_id']) : '')
 	);
@@ -125,10 +124,6 @@ function mod_tournaments_tournamentmap_json($params, $settings, $event) {
 		FROM participations
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN teams USING (team_id)
-		LEFT JOIN categories series
-			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
 		LEFT JOIN contacts_identifiers zps
 			ON participations.contact_id = zps.contact_id
 			AND zps.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
@@ -137,15 +132,14 @@ function mod_tournaments_tournamentmap_json($params, $settings, $event) {
 			ON participations.contact_id = fide.contact_id
 			AND fide.identifier_category_id = /*_ID categories identifiers/id_fide _*/
 			AND fide.current = "yes"
-		WHERE main_series.path = "reihen/%s"
-		AND IFNULL(events.event_year, YEAR(events.date_begin)) = %d
+		WHERE main_event_id = %d
 		AND (ISNULL(teams.team_id) OR teams.meldung = "komplett" OR teams.meldung = "teiloffen")
 		AND usergroup_id = /*_ID usergroups spieler _*/
 		%s
-		ORDER BY t_nachname, t_vorname
+		ORDER BY t_nachname, t_vorname, events.identifier
 	';
 	$sql = sprintf($sql,
-		wrap_db_escape($params[1]), $params[0],
+		$event['event_id'],
 		$federation ? sprintf(
 			' AND (participations.club_contact_id IN (%s) OR teams.club_contact_id IN (%s)) '
 			, implode(',', array_keys($contact_ids))

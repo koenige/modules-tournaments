@@ -16,18 +16,17 @@
 /**
  * Übersicht der Live-Partien
  *
- * @param array $vars
+ * @param array $params
  *		int [0]: Jahr
  *		string [1]: Terminkennung
- *		(string [2]: (optional) 'live')
  * @param array $settings
  * @param array $data
  * @return array
  */
-function mod_tournaments_livegames($vars, $settings, $data) {
+function mod_tournaments_livegames($params, $settings, $data) {
 	wrap_include('pgn', 'chess');
 
-	if (count($vars) !== 2) return false;
+	if (count($params) !== 2) return false;
 
 	// alle Turniere der Reihe ausgeben
 	$sql = 'SELECT events.event_id, livebretter, events.identifier
@@ -42,13 +41,10 @@ function mod_tournaments_livegames($vars, $settings, $data) {
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
-		WHERE main_series.path = "reihen/%s"
-		AND IFNULL(event_year, YEAR(date_begin)) = %d
+		WHERE main_event_id = %d
 		AND NOT ISNULL(livebretter)
 		ORDER BY series.sequence';
-	$sql = sprintf($sql, wrap_db_escape($vars[1]), $vars[0]);
+	$sql = sprintf($sql, $data['event_id']);
 	$data['tournaments'] = wrap_db_fetch($sql, 'event_id');
 	if ($data['tournaments']) return mod_tournaments_livegames_series($data);
 	

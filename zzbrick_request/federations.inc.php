@@ -16,18 +16,13 @@
 /**
  * Übersicht der der Landesverbände
  *
- * @param array $vars
+ * @param array $params
  *		int [0]: Jahr
  *		string [1]: Kennung Reihe
- *		string [2]: 'lv'
  */
-function mod_tournaments_federations($vars) {
-	if (count($vars) !== 2) return false;
-
+function mod_tournaments_federations($params, $settings, $event) {
 	// Event
 	$sql = 'SELECT events.event_id, IFNULL(event_year, YEAR(date_begin)) AS year
-			, main_series.category AS main_series
-			, main_series.category_short AS main_series_short
 			, events.identifier
 			, urkunde_parameter
 			, tournaments.tabellenstaende
@@ -37,25 +32,21 @@ function mod_tournaments_federations($vars) {
 		LEFT JOIN tournaments USING (event_id)
 		JOIN categories series
 			ON events.series_category_id = series.category_id
-		JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = /*_SETTING website_id _*/
-		WHERE main_series.path = "reihen/%s"
-		AND IFNULL(event_year, YEAR(date_begin)) = %d';
-	$sql = sprintf($sql, wrap_db_escape($vars[1]), $vars[0]);
+		WHERE events.main_event_id = %d';
+	$sql = sprintf($sql, $event['event_id']);
 	$events = wrap_db_fetch($sql, 'event_id');
 	if (!$events) return false;
-	$event = reset($events);
 
 	// Landesverbände ohne Sonderverbände
 	$lv = mf_tournaments_federations();
 	if (!$lv) return false;
-	$lv['year'] = intval($vars[0]);
 
-	$lv['main_series'] = $event['main_series'];
-	$lv['main_series_short'] = $event['main_series_short'];
+	$lv['year'] = $event['year'];
+	$lv['main_series_long'] = $event['main_series_long'];
+	$lv['series_short'] = $event['series_short'];
 
 	$standard_platzurkunden = wrap_setting('platzurkunden');
 
@@ -197,7 +188,7 @@ function mod_tournaments_federations($vars) {
 	
 	$page['breadcrumbs'][]['title'] = 'Landesverbände';
 	$page['dont_show_h1'] = true;
-	$page['title'] = $lv['main_series_short'].' '.$lv['year'].', Landesverbände';
+	$page['title'] = $lv['series_short'].' '.$lv['year'].', Landesverbände';
 	$page['text'] = wrap_template('federations', $lv);
 	return $page;
 }

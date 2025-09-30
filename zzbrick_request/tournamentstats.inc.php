@@ -16,21 +16,11 @@
 /**
  * Gibt statistische Informationen zu einem Turnier aus
  *
- * @param array $vars = Kennung der Veranstaltung
+ * @param array $params = Kennung der Veranstaltung
  * @return array $page
  */
-function mod_tournaments_tournamentstats($vars) {
-	if (count($vars) !== 2) return false;
-
-	$sql = 'SELECT category AS series
-			, category_short AS series_short
-			, SUBSTRING(path, 8) AS series_path
-		FROM categories
-		WHERE path = "reihen/%s"';
-	$sql = sprintf($sql, $vars[1]);
-	$data = wrap_db_fetch($sql);
-	if (!$data) return false;
-	$data['year'] = intval($vars[0]);
+function mod_tournaments_tournamentstats($params, $setting, $data) {
+	if (count($params) !== 2) return false;
 
 	// @todo weitere Status zu normal, zeitueberschreitung hinzufügen: adjudication, rules infraction
 	// Alle Turniere
@@ -62,14 +52,12 @@ function mod_tournaments_tournamentstats($vars) {
 			ON events_categories.category_id = eventtypes.category_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
-		WHERE main_series.path = "reihen/%s"
-		AND IFNULL(events.event_year, YEAR(events.date_begin)) = %d
+		WHERE main_event_id = %d
+		AND events.event_category_id = /*_ID categories event/event _*/
 		AND (ISNULL(tournaments.urkunde_parameter) OR tournaments.urkunde_parameter NOT LIKE "%%statistik=0%%")
 		ORDER BY series.sequence
 	';
-	$sql = sprintf($sql, wrap_db_escape($vars[1]), $vars[0]);
+	$sql = sprintf($sql, $data['event_id']);
 	$data['turniere'] = wrap_db_fetch($sql, 'event_id');
 	if (empty($data['turniere'])) return false;
 	$data['summe_total'] = 0;
@@ -177,14 +165,12 @@ function mod_tournaments_tournamentstats($vars) {
 	$data['laengste_partien'] = wrap_db_fetch($sql, 'partie_id');
 
 	// check if there's a statistic for last and/or next year
-	$sql = 'SELECT IFNULL(event_year, YEAR(events.date_begin)) AS year
+	$sql = 'SELECT IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN categories series
-			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
-		WHERE main_series.path = "reihen/%s"
+		LEFT JOIN events main_events
+			ON events.main_event_id = main_events.event_id
+		WHERE main_events.series_category_id = /*_ID categories series/%s _*/
 		AND (ISNULL(tournaments.urkunde_parameter) OR tournaments.urkunde_parameter NOT LIKE "%%statistik=0%%")
 		AND (
 			(SELECT COUNT(team_id) FROM participations LEFT JOIN teams USING (team_id) WHERE participations.event_id = events.event_id AND teams.team_status = "Teilnehmer") > 0
@@ -192,7 +178,7 @@ function mod_tournaments_tournamentstats($vars) {
 		)
 		ORDER BY IFNULL(events.event_year, YEAR(events.date_begin))
 	';
-	$sql = sprintf($sql, wrap_db_escape($vars[1]));
+	$sql = sprintf($sql, wrap_db_escape($params[1]));
 	$data['all_years'] = wrap_db_fetch($sql, 'year');
 	$data = array_merge($data, wrap_get_prevnext_flat($data['all_years'], $data['year'], false));
 	if (!empty($data['_next_year'])) {
@@ -207,8 +193,6 @@ function mod_tournaments_tournamentstats($vars) {
 	}
 
 	$page['text'] = wrap_template('tournamentstats', $data);
-	$page['breadcrumbs'][] = ['title' => $data['year'], 'url_path' => '../../'];
-	$page['breadcrumbs'][] = ['title' => $data['series_short'], 'url_path' => '../'];
 	$page['breadcrumbs'][]['title'] = 'Turnierstatistik';
 	$page['dont_show_h1'] = true;
 	$page['title'] = 'Turnierstatistik '.$data['series_short'].' '.$data['year'];

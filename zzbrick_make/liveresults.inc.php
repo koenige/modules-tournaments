@@ -15,45 +15,33 @@
  */
 
 
-function mod_tournaments_make_liveresults($params) {
+function mod_tournaments_make_liveresults($params, $settings, $event) {
 	wrap_setting('cache', false);
 	if (count($params) !== 2) return false;
 
-	$sql = 'SELECT event_id, event, IFNULL(event_year, YEAR(date_begin)) AS year
-			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
-			, tournament_id
-		FROM events
-		LEFT JOIN tournaments USING (event_id)
-		WHERE identifier = "%d/%s"
-		AND takes_place = "yes"';
-	$sql = sprintf($sql, $params[0], wrap_db_escape($params[1]));
-	$event = wrap_db_fetch($sql);
-	if (!empty($event['tournament_id'])) {
-		return mod_tournament_make_liveresults_tournament($params);
-	}
+	$sql = 'SELECT tournament_id
+		FROM tournaments
+		WHERE event_id = %d';
+	$sql = sprintf($sql, $event['event_id']);
+	$tournament_id = wrap_db_fetch($sql, '', 'single value');
+	if ($tournament_id)
+		return mod_tournament_make_liveresults_tournament($event);
+	
 	// Test, ob es eine Turnierreihe ist
 	$sql = 'SELECT event_id, event, events.identifier
-			, (SELECT MAX(runde_no) FROM partien WHERE event_id = events.event_id AND ISNULL(weiss_ergebnis)) AS runde_no
+			, (SELECT MAX(runde_no) FROM partien
+				WHERE event_id = events.event_id AND ISNULL(weiss_ergebnis)
+			) AS runde_no
 		FROM events
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
-		WHERE IFNULL(event_year, YEAR(date_begin)) = %d
-		AND main_series.path = "reihen/%s"';
-	$sql = sprintf($sql, $params[0], wrap_db_escape($params[1]));
+		WHERE main_event_id = %d
+		AND events.event_category_id = /*_ID categories event/event _*/
+		ORDER BY series.sequence, events.identifier';
+	$sql = sprintf($sql, $event['event_id']);
 	$tournaments = wrap_db_fetch($sql, 'event_id');
 	if (!$tournaments) return false;
-	if (!$event) {
-		$event['year'] = intval($params[0]);
-		$sql = 'SELECT category_id, category
-			FROM categories
-			WHERE SUBSTRING_INDEX(path, "/", -1) = "%s"';
-		$sql = sprintf($sql, wrap_db_escape($params[1]));
-		$series = wrap_db_fetch($sql);
-		if (!$series) return false;
-		$event['event'] = $series['category'];
-	}
+
 	$page['breadcrumbs'][]['title'] = 'Liveergebnisse';
 	$page['text'] = wrap_template('liveresults-overview', $tournaments);
 	$page['title'] = 'Liveergebnisse <br><a href="../">'.$event['event'].'</a>';
@@ -63,45 +51,19 @@ function mod_tournaments_make_liveresults($params) {
 /**
  * Eingabe von Turnierergebnissen live
  *
- * @param array $params
- *		[0]: Altersklasse (Spalte dateiname aus turnier_status)
+ * @param array $event
  * @return array $page
  */
-function mod_tournament_make_liveresults_tournament($params) {
-	if (count($params) !== 2) return false;
-	
+function mod_tournament_make_liveresults_tournament($event) {
 	// @todo return false wenn Runde komplett (aber wann ist Runde komplett?)
-	$sql = 'SELECT event_id, event, events.identifier, IFNULL(event_year, YEAR(date_begin)) AS year
-			, (SELECT MAX(runde_no) FROM partien WHERE event_id = events.event_id) AS runde_no
-			, (SELECT COUNT(*) FROM partien WHERE event_id = events.event_id) AS partien
-			, series_category_id
-			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform_kennung
-			, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
-		FROM events
-		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN categories turnierformen
-			ON turnierformen.category_id = tournaments.turnierform_category_id
-		WHERE events.identifier = "%d/%s"';
-	$sql = sprintf($sql, $params[0], wrap_db_escape($params[1]));
-	$event = wrap_db_fetch($sql);
-	if (!$event) return false;
-	
-	$sql = 'SELECT IFNULL(events.identifier
-			, CONCAT("%d", SUBSTRING(series.path, LENGTH(SUBSTRING_INDEX(series.path, "/", 1)) + 1))
-		) AS identifier
-		FROM categories series
-		LEFT JOIN categories sub_series
-			ON sub_series.main_category_id = series.category_id
-		LEFT JOIN events
-			ON series.category_id = events.series_category_id
-			AND IFNULL(event_year, YEAR(events.date_begin)) = %d
-		WHERE sub_series.category_id = %d
-	';
-	$sql = sprintf($sql, $params[0], $params[0], $event['series_category_id']);
-	$series_identifier = wrap_db_fetch($sql, '', 'single value');
-	if ($series_identifier === $params[0])
-		$series_identifier = false;
+	$sql = 'SELECT MAX(runde_no) FROM partien WHERE event_id = %d';
+	$sql = sprintf($sql, $event['event_id']);
+	$event['runde_no'] = wrap_db_fetch($sql, '', 'single value');
 
+	$sql = 'SELECT COUNT(*) FROM partien WHERE event_id = %d';
+	$sql = sprintf($sql, $event['event_id']);
+	$event['partien'] = wrap_db_fetch($sql, '', 'single value');
+		
 	$sql = 'SELECT partien.partie_id, partien.brett_no
 			, IF(partiestatus_category_id = /*_ID categories partiestatus/haengepartie _*/, 0.5,
 				CASE weiss_ergebnis
@@ -247,11 +209,10 @@ function mod_tournament_make_liveresults_tournament($params) {
 	if ($updated) return wrap_redirect_change();
 
 	$page['dont_show_h1'] = true;
-	if ($series_identifier AND substr($series_identifier, -7) !== '/reihen') {
-		$page['breadcrumbs'][] = ['title' => 'Liveergebnisse', 'url_path' => wrap_path('tournaments_liveresults', $series_identifier)];
+	if ($event['main_event_path']) {
+		$page['breadcrumbs'][] = ['title' => 'Liveergebnisse', 'url_path' => wrap_path('tournaments_liveresults', $event['main_event_path'])];
 		$page['breadcrumbs'][]['title'] = $event['event'];
 	} else {
-		$page['breadcrumbs'][] = ['title' => $event['event'], 'url_path' => '../'];
 		$page['breadcrumbs'][]['title'] = 'Liveergebnisse';
 	}
 	$page['text'] = wrap_template('liveresults', $event);

@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2005, 2012-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2005, 2012-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -166,7 +166,6 @@ function mod_tournaments_games_series($event, $settings) {
 	if ($settings['request'] !== 'gesamt') return false;
 	if ($settings['content_type'] !== 'pgn') return false;
 
-	$identifier = explode('/', $event['identifier']);
 	$sql = 'SELECT events.event_id
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
@@ -183,23 +182,22 @@ function mod_tournaments_games_series($event, $settings) {
 		JOIN events_websites
 			ON events_websites.event_id = events.event_id
 			AND events_websites.website_id = %d
-		WHERE IFNULL(event_year, YEAR(events.date_begin)) = %d
-		AND main_series.path = "reihen/%s"
+		WHERE main_event_id = %d
 		AND (tournaments.notationspflicht = "ja"
 			OR addresses.country_id = /*_ID countries -- _*/
 		)
+		ORDER BY events.identifier
 	';
 	$sql = sprintf($sql
 		, $event['website_id']
-		, $identifier[0]
-		, wrap_db_escape($identifier[1])
+		, $event['event_id']
 	);
-	$events = wrap_db_fetch($sql, 'event_id');
+	$events = wrap_db_fetch($sql, 'event_id', 'single value');
 	if (!$events) return false;
 
 	$games = [];
-	foreach ($events as $sub_event)
-		$games = array_merge($games, mod_tournaments_games_pgn($sub_event['event_id']));
+	foreach ($events as $event_id)
+		$games = array_merge($games, mod_tournaments_games_pgn($event_id));
 	if (!$games) return false;
 
 	$settings['send_as'] = $event['year'].' '.$event['series_short'];

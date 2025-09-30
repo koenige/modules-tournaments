@@ -5,11 +5,11 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2015-2018, 2020-2021, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2015-2018, 2020-2021, 2024-2025 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Turnierstatistik
-<br><a href="../">%%% item series %%% (%%% item series_short %%%) %%% item year %%%</a></h1>
+<br><a href="../">%%% item main_series_long %%% (%%% item series_short %%%) %%% item year %%%</a></h1>
 
 <h2>Turniere</h2>
 
