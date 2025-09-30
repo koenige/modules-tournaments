@@ -20,7 +20,62 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.7\n"
+
+#: templates/empty-tournament.template.txt
+msgid "Empty Tournament"
+msgstr "Turnier leeren"
+
+#: templates/empty-tournament.template.txt
+msgid "Empty the tournament"
+msgstr "Leeren des Turniers"
+
+#: templates/empty-tournament.template.txt
+msgid ""
+"In emergencies, if data has been imported incorrectly, an entire tournament "
+"can be deleted here: games, pairings, players (if added via import), teams."
+msgstr ""
+"In Notfällen, wenn Daten fehlerhaft importiert wurden, kann hier ein ganzes "
+"Turnier gelöscht werden: Spiele, Paarungen, Spieler (falls über den Import "
+"hinzugefügt), Mannschaften."
+
+#: templates/empty-tournament.template.txt
+msgid "These records would be deleted:"
+msgstr "Diese Einträge würden gelöscht:"
+
+#: templates/empty-tournament.template.txt
+msgid "%s game"
+msgid_plural "%s games"
+msgstr[0] "%s Partie"
+msgstr[1] "%s Partien"
+
+#: templates/empty-tournament.template.txt
+msgid "%s pairing"
+msgid_plural "%s pairings"
+msgstr[0] "%s Paarung"
+msgstr[1] "%s Paarungen"
+
+#: templates/empty-tournament.template.txt
+msgid "%s standing"
+msgid_plural "%s standings"
+msgstr[0] "%s Tabellenstand"
+msgstr[1] "%s Tabellenstände"
+
+#: templates/empty-tournament.template.txt
+msgid "%s player"
+msgid_plural "%s players"
+msgstr[0] "%s Spieler"
+msgstr[1] "%s Spieler"
+
+#: templates/empty-tournament.template.txt
+msgid "%s team"
+msgid_plural "%s teams"
+msgstr[0] "%s Team"
+msgstr[1] "%s Teams"
+
+#: templates/empty-tournament.template.txt
+msgid "These records were deleted:"
+msgstr "Diese Einträge wurden gelöscht:"
 
 #: zzbrick_forms/rounds.inc.php
 msgid "Rounds"

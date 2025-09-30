@@ -473,6 +473,16 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 		$sql = sprintf($sql, implode(',', array_keys($standings)));
 		$wertungskategorie = wrap_db_fetch($sql);
 		foreach ($wertungen as $ts_id => $wertung) {
+			if (!array_key_exists($wertungskategorie['category_id'], $wertung)) {
+				wrap_error(wrap_text(
+					'Missing rating for category ID %d in tournament %s.',
+					['values' => [
+						$wertungskategorie['category_id'],
+						$event['identifier']
+					]]
+				));
+				continue;
+			}
 			$event['teams'][$standings[$ts_id]]['wertung'] 
 				= $wertung[$wertungskategorie['category_id']]['wertung'];
 		}

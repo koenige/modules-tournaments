@@ -109,7 +109,7 @@ $zz['sql'] = 'SELECT paarungen.*
 	ORDER BY events.date_begin, events.identifier, paarungen.runde_no, tisch_no
 ';
 
-$zz['subtitle']['event_id']['sql'] = 'SELECT event FROM events';
+$zz['subtitle']['event_id']['sql'] = 'SELECT event_id, event FROM events';
 $zz['subtitle']['event_id']['var'] = ['event'];
 
 $zz['subtitle']['runde_no']['value'] = true;

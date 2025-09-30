@@ -1,0 +1,32 @@
+# tournaments module
+# HTML output: message to players during tournament
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2025 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+<h1>%%% text Empty Tournament %%%
+<br><a href="../../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
+
+<p>%%% text In emergencies, if data has been imported incorrectly, an entire tournament can be deleted here: games, pairings, players (if added via import), teams. %%%</p>
+
+%%% if entries_deleted %%%
+<p>%%% text These records were deleted: %%%</p>
+%%% else %%%
+<p>%%% text These records would be deleted: %%%</p>
+%%% endif %%%
+
+<ul>
+<li>%%% item games_deleted "%s / " %%%%%% text "%s games" games_count %%%</li>
+<li>%%% item pairings_deleted "%s / " %%%%%% text "%s pairings" pairings_count %%%</li>
+<li>%%% item standings_deleted "%s / " %%%%%% text "%s standings" standings_count %%%</li>
+<li>%%% item players_deleted "%s / " %%%%%% text "%s players" players_count %%%</li>
+<li>%%% item teams_deleted "%s / " %%%%%% text "%s teams" teams_count %%%</li>
+</ul>
+
+<form method="POST">
+<input type="submit" name="delete" value="%%% text Empty the tournament %%%">
+</form>
