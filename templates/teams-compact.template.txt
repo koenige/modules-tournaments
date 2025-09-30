@@ -36,8 +36,8 @@
 <td class="number">%%% item dwz_schnitt %%%</td>
 %%% endif %%%
 %%% if m-v | m-s %%%
-<td>%%% if main_series_path & federation_identifier %%%
-<a href="%%% path tournaments_federation main_series_path federation_identifier %%%">
+<td>%%% if main__main_event_path & federation_identifier %%%
+<a href="%%% path tournaments_federation main__main_event_path federation_identifier %%%">
 %%% endif %%%
 <abbr title="%%% item country %%%">%%% item federation_abbr %%%</abbr>
 %%% if main_series_path & federation_identifier %%%

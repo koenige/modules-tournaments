@@ -414,16 +414,14 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 	$sql = 'SELECT teams.team_id
 			, team, team_no, teams.identifier AS team_identifier, team_status
 			, setzliste_no
-			, IF(LENGTH(main_series.path) > 7, CONCAT(IFNULL(events.event_year, YEAR(events.date_begin)), "/", SUBSTRING_INDEX(main_series.path, "/", -1)), NULL) AS main_series_path
 			, platz_no, tabellenstand_id
 			, teams.club_contact_id
-			, (SELECT place FROM addresses WHERE addresses.contact_id = teams.club_contact_id ORDER BY address_id LIMIT 1) AS place
+			, (SELECT place FROM addresses
+				WHERE addresses.contact_id = teams.club_contact_id
+				ORDER BY address_id LIMIT 1
+			) AS place
 		FROM teams
 		LEFT JOIN events USING (event_id)
-		LEFT JOIN categories series
-			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
 		LEFT JOIN tabellenstaende
 			ON teams.team_id = tabellenstaende.team_id
 			AND (tabellenstaende.runde_no = %d OR ISNULL(tabellenstaende.runde_no))
