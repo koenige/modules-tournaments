@@ -123,10 +123,6 @@ function mod_tournaments_startranking_single($event) {
 		LEFT JOIN addresses
 			ON places.contact_id = addresses.contact_id
 		LEFT JOIN events USING (event_id)
-		LEFT JOIN categories series
-			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
 		LEFT JOIN events qualification
 			ON participations.qualification_event_id = qualification.event_id
 		WHERE events.event_id = %d
@@ -186,10 +182,6 @@ function mod_tournaments_startranking_team($event) {
 		LEFT JOIN addresses
 			ON IFNULL(places.contact_id, organisationen.contact_id) = addresses.contact_id
 		LEFT JOIN events USING (event_id)
-		LEFT JOIN categories series
-			ON events.series_category_id = series.category_id
-		LEFT JOIN categories main_series
-			ON series.main_category_id = main_series.category_id
 		WHERE event_id = %d
 		AND team_status = "Teilnehmer"
 		AND spielfrei = "nein"
