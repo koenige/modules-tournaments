@@ -18,8 +18,10 @@
  *
  * @param array $params
  * @param array $settings
+ * @param array $data
+ * @return array
  */
-function mod_tournaments_participantsearch($params, $settings, $event) {
+function mod_tournaments_participantsearch($params, $settings, $data) {
 	if (!empty($_GET['q'])) {
 		wrap_setting('cache', false);
 		if (!empty($_SERVER['HTTP_USER_AGENT']) AND strstr($_SERVER['HTTP_USER_AGENT'], 'bot'))
@@ -31,8 +33,6 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 	if (count($params) !== 2) return false;
 	
 	$sql = 'SELECT events.event_id
-			, IF(ISNULL(main_series.category) OR main_series.category = "", series.category, main_series.category) AS main_series
-			, IFNULL(main_series.category_short, series.category_short) AS main_series_short
 			, IF(teilnehmerliste = "ja", 1, NULL) AS teilnehmerliste
 			, events_categories.category_id
 		FROM events
@@ -54,20 +54,18 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 	$sql = sprintf($sql, wrap_db_escape($params[1]), wrap_db_escape($params[1]), $params[0]);
 	$events = wrap_db_fetch($sql, 'event_id');
 	if (!$events) return false;
-	$event = reset($events);
-	$event['year'] = $params[0];
-	if ($internal) $event['intern'] = true;
+	if ($internal) $data['intern'] = true;
 	
 	// Mannschafts- oder Einzelturnier?
 	$einzel = false;
 	$mannschaft = false;
-	$event['teilnehmer'] = false;
-	foreach ($events as $einzeltermin) {
-		if ($einzeltermin['teilnehmerliste']) $event['teilnehmer'] = true;
-		switch ($einzeltermin['category_id']) {
+	$data['teilnehmer'] = false;
+	foreach ($events as $event) {
+		if ($event['teilnehmerliste']) $data['teilnehmer'] = true;
+		switch ($event['category_id']) {
 		case wrap_category_id('events/single'):
 			$einzel = true;
-			$event['teilnehmer'] = true;
+			$data['teilnehmer'] = true;
 			break;
 		case wrap_category_id('events/team'):
 			$mannschaft = true;
@@ -76,10 +74,10 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 			break;
 		}
 	}
-	$event['q'] = (isset($_GET['q']) AND !is_array($_GET['q'])) ? htmlspecialchars($_GET['q']) : '';
-	$event['q'] = trim($event['q']);
+	$data['q'] = (isset($_GET['q']) AND !is_array($_GET['q'])) ? htmlspecialchars($_GET['q']) : '';
+	$data['q'] = trim($data['q']);
 	
-	if ($event['q'] AND $mannschaft) {
+	if ($data['q'] AND $mannschaft) {
 		$sql = 'SELECT team_id
 				, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
 				, teams.identifier AS team_identifier
@@ -93,16 +91,16 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 			AND team_status IN ("Teilnehmer", "Teilnahmeberechtigt")
 			AND spielfrei = "nein"
 			AND team LIKE "%%%s%%"';
-		$sql = sprintf($sql, implode(',', array_keys($events)), wrap_db_escape($event['q']));
-		$event['teams'] = wrap_db_fetch($sql, 'team_id');
+		$sql = sprintf($sql, implode(',', array_keys($events)), wrap_db_escape($data['q']));
+		$data['teams'] = wrap_db_fetch($sql, 'team_id');
 		if ($internal AND wrap_access('tournaments_teams')) {
-			foreach ($event['teams'] as $team_id => $team) {
-				$event['teams'][$team_id]['teilnehmerliste'] = true;
-				$event['teams'][$team_id]['intern'] = true;
+			foreach ($data['teams'] as $team_id => $team) {
+				$data['teams'][$team_id]['teilnehmerliste'] = true;
+				$data['teams'][$team_id]['intern'] = true;
 			}
 		}
 		
-		if ($event['teilnehmer']) {
+		if ($data['teilnehmer']) {
 			$sql = 'SELECT DISTINCT person_id
 					, IF(ISNULL(t_vorname),
 						contact,
@@ -137,15 +135,15 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 				)';
 			$sql = sprintf($sql
 				, implode(',', array_keys($events))
-				, wrap_db_escape($event['q'])
-				, wrap_db_escape($event['q'])
-				, wrap_db_escape($event['q'])
-				, wrap_db_escape($event['q'])
+				, wrap_db_escape($data['q'])
+				, wrap_db_escape($data['q'])
+				, wrap_db_escape($data['q'])
+				, wrap_db_escape($data['q'])
 			);
-			$event['spieler'] = wrap_db_fetch($sql, 'person_id');
+			$data['spieler'] = wrap_db_fetch($sql, 'person_id');
 		}
 	}
-	if ($event['q'] AND $einzel) {
+	if ($data['q'] AND $einzel) {
 		$sql = 'SELECT DISTINCT participation_id, person_id
 				, IF(ISNULL(t_vorname),
 					contact,
@@ -176,21 +174,19 @@ function mod_tournaments_participantsearch($params, $settings, $event) {
 			)';
 		$sql = sprintf($sql
 			, implode(',', array_keys($events))
-			, wrap_db_escape($event['q'])
-			, wrap_db_escape($event['q'])
-			, wrap_db_escape($event['q'])
-			, wrap_db_escape($event['q'])
+			, wrap_db_escape($data['q'])
+			, wrap_db_escape($data['q'])
+			, wrap_db_escape($data['q'])
+			, wrap_db_escape($data['q'])
 		);
-		$event['spieler'] = wrap_db_fetch($sql, 'participation_id');
+		$data['spieler'] = wrap_db_fetch($sql, 'participation_id');
 	}
-	$event['teamsuche'] = $mannschaft;
+	$data['teamsuche'] = $mannschaft;
 
 	$page['query_strings'] = ['q'];
-	$page['breadcrumbs'][] = ['title' => $event['year'], 'url_path' => '../../'];
-	$page['breadcrumbs'][] = ['title' => $event['main_series'], 'url_path' => '../'];
 	$page['breadcrumbs'][]['title'] = 'Suche';
 	$page['dont_show_h1'] = true;
-	$page['title'] = $event['main_series_short'].' '.$event['year'].', Suche nach Spielerinnen, Spielern oder Teams';
-	$page['text'] = wrap_template('participantsearch', $event);
+	$page['title'] = $data['series_short'].' '.$data['year'].', Suche nach Spielerinnen, Spielern oder Teams';
+	$page['text'] = wrap_template('participantsearch', $data);
 	return $page;
 }

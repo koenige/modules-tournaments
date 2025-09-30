@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2016, 2020-2022, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2012-2016, 2020-2022, 2024-2025 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>%%% if teilnehmer %%%
@@ -13,7 +13,7 @@ Suche nach Teilnehmern oder Teams
 %%% else %%%
 Suche nach Teams
 %%% endif %%%
-<br><a href="../">%%% item main_series %%% (%%% item main_series_short %%%) %%% item year %%%</a></h1>
+<br><a href="../">%%% item main_series_long %%% (%%% item series_short %%%) %%% item year %%%</a></h1>
 
 <form method="GET" action="" id="suche" accept-charset="utf-8">
 <p><input type="search" size="30" name="q" value="%%% item q %%%"><input type="submit" value="suche"></p></form>
