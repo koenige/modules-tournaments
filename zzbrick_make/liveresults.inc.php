@@ -10,7 +10,7 @@
  * @author Erik Kothe
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2008 Erik Kothe
- * @copyright Copyright © 2008, 2012, 2014, 2016-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2008, 2012, 2014, 2016-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -248,7 +248,7 @@ function mod_tournament_make_liveresults_tournament($params) {
 
 	$page['dont_show_h1'] = true;
 	if ($series_identifier AND substr($series_identifier, -7) !== '/reihen') {
-		$page['breadcrumbs'][] = ['title' => 'Liveergebnisse', 'url_path' => '../../../'.$series_identifier.'/liveergebnisse/'];
+		$page['breadcrumbs'][] = ['title' => 'Liveergebnisse', 'url_path' => wrap_path('tournaments_liveresults', $series_identifier)];
 		$page['breadcrumbs'][]['title'] = $event['event'];
 	} else {
 		$page['breadcrumbs'][] = ['title' => $event['event'], 'url_path' => '../'];
