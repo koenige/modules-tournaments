@@ -22,7 +22,7 @@
  */
 function mod_tournaments_make_gamestrigger() {
 	$sql = 'SELECT DISTINCT tournaments.event_id, rounds.runde_no,
-			IF(rounds.date_begin >= CURDATE() AND rounds.time_begin > CURTIME(), NULL, 1) AS running
+			IF(CONCAT(rounds.date_begin, " ", rounds.time_begin) >= NOW(), NULL, 1) AS running
 			, events.identifier
 		FROM tournaments
 		JOIN events USING (event_id)
@@ -35,6 +35,7 @@ function mod_tournaments_make_gamestrigger() {
 		WHERE NOT ISNULL(livebretter)
 		AND events.date_begin <= CURDATE() AND events.date_end >= CURDATE()
 		AND NOT ISNULL(partien.partie_id)
+		HAVING running = 1
 		ORDER BY tournaments.event_id, rounds.runde_no
 	';
 	// in SQL-Abfrage werden alle Runden ausgegeben, wrap_db_fetch() speichert
@@ -44,7 +45,6 @@ function mod_tournaments_make_gamestrigger() {
 
 	$data = [];
 	foreach ($tournaments as $event_id => $tournament) {
-		if (!$tournament['running']) continue;
 		// @todo maybe disable next two lines to reduce server load
 		$url = wrap_path('tournaments_job_games', $tournament['identifier'].'/'.$tournament['runde_no'], false);
 		wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien')]);
