@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -28,7 +28,6 @@ function mod_tournaments_federations($vars) {
 	$sql = 'SELECT events.event_id, IFNULL(event_year, YEAR(date_begin)) AS year
 			, main_series.category AS main_series
 			, main_series.category_short AS main_series_short
-			, SUBSTRING_INDEX(turnierformen.path, "/", -1) AS turnierform
 			, events.identifier
 			, urkunde_parameter
 			, tournaments.tabellenstaende
@@ -36,8 +35,6 @@ function mod_tournaments_federations($vars) {
 					FROM tabellenstaende ts WHERE ts.event_id = events.event_id) AS aktuelle_runde_no
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN categories turnierformen
-			ON tournaments.turnierform_category_id = turnierformen.category_id
 		JOIN categories series
 			ON events.series_category_id = series.category_id
 		JOIN categories main_series
@@ -51,7 +48,6 @@ function mod_tournaments_federations($vars) {
 	$events = wrap_db_fetch($sql, 'event_id');
 	if (!$events) return false;
 	$event = reset($events);
-	$turnierform = $event['turnierform'];
 
 	// Landesverbände ohne Sonderverbände
 	$lv = mf_tournaments_federations();
@@ -70,12 +66,12 @@ function mod_tournaments_federations($vars) {
 			$lv[$id]['plaetze'][$i]['platz'] = $i;
 			$lv[$id]['plaetze'][$i]['anzahl'] = 0;
 		}
-		if ($turnierform === 'e') {
+		if (wrap_setting('tournaments_type_single')) {
 			$lv[$id]['punktvergabe'] = true;
 		}
 	}
 	
-	if ($event['turnierform'] === 'e') {
+	if (wrap_setting('tournaments_type_single')) {
 		$sql = 'SELECT countries.country_id
 				, COUNT(participations.participation_id) AS anzahl_spieler
 			FROM events
@@ -146,7 +142,7 @@ function mod_tournaments_federations($vars) {
 		$events[$event_id] = array_merge($event, $parameter);
 	}
 
-	if ($turnierform === 'e') {
+	if (wrap_setting('tournaments_type_single')) {
 		$lv['punktvergabe'] = true;
 		foreach ($events as $event) {
 			$tabellenstaende = !empty($event['tabellenstaende'])
@@ -202,7 +198,6 @@ function mod_tournaments_federations($vars) {
 	$page['breadcrumbs'][]['title'] = 'Landesverbände';
 	$page['dont_show_h1'] = true;
 	$page['title'] = $lv['main_series_short'].' '.$lv['year'].', Landesverbände';
-	$lv[$turnierform] = true;
 	$page['text'] = wrap_template('federations', $lv);
 	return $page;
 }
