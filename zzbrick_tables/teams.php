@@ -391,7 +391,7 @@ $zz['sql'] = 'SELECT teams.*
 $zz['sqlorder'] = ' ORDER BY team_status, events.date_begin, events.identifier
 	, nachruecker_reihenfolge, vereine.contact, team_no';
 
-$zz['subtitle']['event_id']['sql'] = 'SELECT event
+$zz['subtitle']['event_id']['sql'] = 'SELECT event_id, event
 	, CONCAT(events.date_begin, IFNULL(CONCAT("/", events.date_end), "")) AS duration
 	FROM events';
 $zz['subtitle']['event_id']['var'] = ['event', 'duration'];
