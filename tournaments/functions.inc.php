@@ -32,6 +32,20 @@ function mf_tournaments_current_round($identifier) {
 }
 
 /**
+ * get live round of an event
+ *
+ * @param int $event_id
+ * @return int
+ */
+function mf_tournaments_live_round($event_id) {
+	$sql = wrap_sql_query('tournaments_live_round');
+	$sql = sprintf($sql, $event_id);
+	$round_no = wrap_db_fetch($sql, '', 'single value');
+	if (!$round_no) return NULL;
+	return $round_no;
+}
+
+/**
  * Wertet aus, ob Tisch/Brett-Kombination in Livebrettern ist
  *
  * @param string $livebretter
@@ -40,8 +54,9 @@ function mf_tournaments_current_round($identifier) {
  *		1.*-6.*
  * @param int $brett_no
  * @param int $tisch_no (optional)
+ * @return bool
  */
-function mf_tournaments_live_round($livebretter, $brett_no, $tisch_no = false) {
+function mf_tournaments_live_board($livebretter, $brett_no, $tisch_no = false) {
 	if (!$livebretter) return false;
 	if ($livebretter === '*') return true;
 	$livebretter = explode(',', $livebretter);
@@ -70,6 +85,66 @@ function mf_tournaments_live_round($livebretter, $brett_no, $tisch_no = false) {
 		}
 	}
 	return false;
+}
+
+/**
+ * Rechnet Angaben zu Livebrettern in tatsächliche Bretter um
+ *
+ * @param string $livebretter
+ *		4, 5-7, *
+ * @param int $brett_max
+ * @param int $tisch_max (optional)
+ * @return array
+ * @todo support für Mannschaftsturniere mit Tisch_no
+ */
+function mf_tournaments_live_boards($livebretter, $brett_max, $tisch_max = false) {
+	if ($livebretter === '*') {
+		if ($tisch_max) { // @todo
+//			$data = range(1, $tisch_max);
+//			return $data;
+		} else {
+			return range(1, $brett_max);
+		}
+	}
+	$data = [];
+	$livebretter = explode(',', $livebretter);
+	if (!is_array($livebretter)) $livebretter = [$livebretter];
+	foreach ($livebretter as $bretter) {
+		$bretter = trim($bretter);
+		if (strstr($bretter, '-')) {
+			$bretter_von_bis = explode('-', $bretter);
+			$bretter_von = $bretter_von_bis[0];
+			$bretter_bis = $bretter_von_bis[1];
+		} else {
+			$bretter_von = $bretter;
+			$bretter_bis = $bretter;
+		}
+		
+		if (strstr($bretter_von, '.')) {
+			// Tische und Bretter
+			$tisch_von = explode('.', $bretter_von);
+			$tisch_bis = explode('.', $bretter_bis);
+			$brett_von = $tisch_von[1];
+			$brett_bis = $tisch_bis[1];
+			$tisch_von = $tisch_von[0];
+			$tisch_bis = $tisch_bis[0];
+			for ($i = $tisch_von; $i <= $tisch_bis; $i++) {
+				if ($i === $tisch_von) {
+					$range = range($brett_von, $brett_max);
+				} elseif ($i === $tisch_bis) {
+					$range = range(1, $brett_bis);
+				} else {
+					$range = range(1, $brett_max);
+				}
+				foreach ($range as $brett) {
+					$data[] = $i.'.'.$brett;
+				}
+			}
+		} else {
+			$data = array_merge($data, range($bretter_von, $bretter_bis));
+		}
+	}
+	return $data;
 }
 
 /**
@@ -134,66 +209,6 @@ function mf_tournaments_team_rating_average_dwz($event_id, $teams, $bretter_min,
 		$event_dwz_schnitt = round(($event_dwz_schnitt / $dwz_personen), 0);
 	}
 	return [$event_dwz_schnitt, $teams];
-}
-
-/**
- * Rechnet Angaben zu Livebrettern in tatsächliche Bretter um
- *
- * @param string $livebretter
- *		4, 5-7, *
- * @param int $brett_max
- * @param int $tisch_max (optional)
- * @return array
- * @todo support für Mannschaftsturniere mit Tisch_no
- */
-function mf_tournaments_live_boards($livebretter, $brett_max, $tisch_max = false) {
-	if ($livebretter === '*') {
-		if ($tisch_max) { // @todo
-//			$data = range(1, $tisch_max);
-//			return $data;
-		} else {
-			return range(1, $brett_max);
-		}
-	}
-	$data = [];
-	$livebretter = explode(',', $livebretter);
-	if (!is_array($livebretter)) $livebretter = [$livebretter];
-	foreach ($livebretter as $bretter) {
-		$bretter = trim($bretter);
-		if (strstr($bretter, '-')) {
-			$bretter_von_bis = explode('-', $bretter);
-			$bretter_von = $bretter_von_bis[0];
-			$bretter_bis = $bretter_von_bis[1];
-		} else {
-			$bretter_von = $bretter;
-			$bretter_bis = $bretter;
-		}
-		
-		if (strstr($bretter_von, '.')) {
-			// Tische und Bretter
-			$tisch_von = explode('.', $bretter_von);
-			$tisch_bis = explode('.', $bretter_bis);
-			$brett_von = $tisch_von[1];
-			$brett_bis = $tisch_bis[1];
-			$tisch_von = $tisch_von[0];
-			$tisch_bis = $tisch_bis[0];
-			for ($i = $tisch_von; $i <= $tisch_bis; $i++) {
-				if ($i === $tisch_von) {
-					$range = range($brett_von, $brett_max);
-				} elseif ($i === $tisch_bis) {
-					$range = range(1, $brett_bis);
-				} else {
-					$range = range(1, $brett_max);
-				}
-				foreach ($range as $brett) {
-					$data[] = $i.'.'.$brett;
-				}
-			}
-		} else {
-			$data = array_merge($data, range($bretter_von, $bretter_bis));
-		}
-	}
-	return $data;
 }
 
 /**

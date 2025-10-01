@@ -117,7 +117,6 @@ function mod_tournaments_make_standings_round($vars) {
 	$sql = 'SELECT events.event_id, events.identifier
 			, runden, bretter_min
 			, tournament_id
-			, (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id) AS rounds_played
 			, categories.parameters
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
@@ -131,7 +130,8 @@ function mod_tournaments_make_standings_round($vars) {
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
 	wrap_match_module_parameters('tournaments', $event['parameters']);
-
+	$event['rounds_played'] = mf_tournaments_live_round($event['event_id']);
+	
 	wrap_setting('logfile_name', $event['identifier']);
 
 	if ($round_no > $event['runden']) {

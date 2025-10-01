@@ -56,9 +56,7 @@ function mod_tournaments_make_liveresults($params, $settings, $event) {
  */
 function mod_tournament_make_liveresults_tournament($event) {
 	// @todo return false wenn Runde komplett (aber wann ist Runde komplett?)
-	$sql = 'SELECT MAX(runde_no) FROM partien WHERE event_id = %d';
-	$sql = sprintf($sql, $event['event_id']);
-	$event['runde_no'] = wrap_db_fetch($sql, '', 'single value');
+	$event['runde_no'] = mf_tournaments_live_round($event['event_id']);
 
 	$sql = 'SELECT COUNT(*) FROM partien WHERE event_id = %d';
 	$sql = sprintf($sql, $event['event_id']);

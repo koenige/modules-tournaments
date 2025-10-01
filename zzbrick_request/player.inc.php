@@ -91,7 +91,7 @@ function mod_tournaments_player($vars, $settings, $event) {
 	$log_round_error = true;
 	$data['games'] = [];
 	foreach ($games as $game) {
-		if (mf_tournaments_live_round($data['livebretter'], $game['brett_no']))
+		if (mf_tournaments_live_board($data['livebretter'], $game['brett_no']))
 			$game['live'] = true;
 		if ($game['schwarz_person_id'] === $data['person_id']) {
 			$game['spielt_schwarz'] = true;

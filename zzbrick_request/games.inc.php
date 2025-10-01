@@ -241,9 +241,7 @@ function mod_tournaments_games_file_complete($event, $settings) {
  * @param array $settings
  */
 function mod_tournaments_games_file_current($event, $settings) {
-	$sql = 'SELECT MAX(runde_no) FROM partien WHERE event_id = %d';
-	$sql = sprintf($sql, $event['event_id']);
-	$round_no = wrap_db_fetch($sql, '', 'single value');
+	$round_no = mf_tournaments_live_round($event['event_id']);
 	$games = mod_tournaments_games_pgn($event['event_id'], $round_no);
 	$settings['send_as'] .= ' Runde '.$round_no;
 	return mod_tournaments_games_pgnfile($games, $settings);
@@ -258,9 +256,7 @@ function mod_tournaments_games_file_current($event, $settings) {
  * @param array $settings
  */
 function mod_tournaments_games_file_live($event, $settings) {
-	$sql = 'SELECT MAX(runde_no) FROM partien WHERE event_id = %d';
-	$sql = sprintf($sql, $event['event_id']);
-	$round_no = wrap_db_fetch($sql, '', 'single value');
+	$round_no = mf_tournaments_live_round($event['event_id']);
 	$games = mod_tournaments_games_pgn($event['event_id'], $round_no);
 	$games = mod_tournaments_games_liveonly($games, $event);
 	$settings['send_as'] .= ' Runde '.$round_no.' (Live)';
@@ -671,7 +667,7 @@ function mod_tournaments_games_html($event, $settings) {
 	if (!$partie) return false;
 	$pgn = ['moves' => $partie['pgn']];
 	if (!$partie['weiss_ergebnis'] AND !$partie['schwarz_ergebnis'])
-		$partie['live'] = mf_tournaments_live_round($partie['livebretter'], $partie['brett_no'], $partie['tisch_no']);
+		$partie['live'] = mf_tournaments_live_board($partie['livebretter'], $partie['brett_no'], $partie['tisch_no']);
 
 	$partie = array_merge($event, $partie);
 	$partie = array_merge($partie, mf_chess_pgn_to_html($pgn));

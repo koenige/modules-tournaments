@@ -135,7 +135,7 @@ function mod_tournaments_round_single($event) {
 		if ($partie['heim_dwz'] OR $partie['auswaerts_dwz']) $event['show_dwz'] = true;
 		if ($partie['heim_elo'] OR $partie['auswaerts_elo']) $event['show_elo'] = true;
 		if ($event['livebretter']) {
-			$event['partien'][$partie_id]['live'] = mf_tournaments_live_round(
+			$event['partien'][$partie_id]['live'] = mf_tournaments_live_board(
 				$event['livebretter'], $partie['brett_no']
 			);
 		}
