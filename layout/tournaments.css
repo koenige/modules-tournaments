@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016-2018, 2020-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2016-2018, 2020-2023, 2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -33,7 +33,7 @@
 @media screen and (max-width: 640px) {
 	.infocol dd		{ margin: 0 .75em; }
 	.infocol dd p	{ margin: 0; padding: 0; }
-	.infocol_max	{ float: none; min-width: none; padding: 0 0 1em; }
+	.infocol_max	{ float: none; min-width: auto; padding: 0 0 1em; }
 	.infocol_map	{ float: none; max-width: none; padding: 0 0 1em; }
 }
 
@@ -67,7 +67,7 @@
 /* participants photos */
 
 .galerie		{ text-align: center; margin: 1em 0; }
-.galerie a		{ text-align: bottom; margin: 0 .75em .75em 0; 
+.galerie a		{ vertical-align: bottom; margin: 0 .75em .75em 0; 
 				display: inline-block; min-width: 160px; background: #E0E0E0; }
 .galerie img	{ vertical-align: bottom; }
 
@@ -95,6 +95,8 @@
 				{ background: yellow; }
 .results tbody tr:last-child td, .results tbody tr.subhead td
 				{ border-bottom: 2px solid #999; }
+.results tbody.theading tr:last-child td
+				{ border-bottom: none; }
 .results tbody tr td.no_data
 				{ text-align: center; background: white; }
 .results tbody tr.grouping td
