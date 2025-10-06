@@ -124,9 +124,9 @@
 <p class="explanation">Für weitere Spieler: Bitte Vornamen und Nachnamen eingeben, nach der Spielerin bzw. dem Spieler wird in der DWZ-Datenbank des Schachbunds gesucht.</p></td>
 <td>
 %%% if geschlecht_nur_w %%%
-W<input type="hidden" name="geschlecht" value="female">
+W<input type="hidden" name="sex" value="female">
 %%% elseif geschlecht_nur_m %%%
-M<input type="hidden" name="geschlecht" value="male">
+M<input type="hidden" name="sex" value="male">
 %%% else %%%
 <select name="sex">
 <option value="male"%%% switch post_sex %%%%%% case male %%% selected%%% switch end %%%>M</option>

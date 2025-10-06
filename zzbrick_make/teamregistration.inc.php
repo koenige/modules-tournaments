@@ -63,7 +63,7 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 	if (!$data['add']) unset($data['club_players']);
 	
 	if ($_SERVER['REQUEST_METHOD'] === 'POST')
-		$data = mod_tournaments_make_teamregistration_change($_POST, $data);
+		mod_tournaments_make_teamregistration_change($_POST, $data);
 
 	// Daten m/w? Nur ein Geschlecht, dann keine Auswahl nötig
 	if (count($data['geschlecht']) === 1) {
