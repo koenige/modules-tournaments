@@ -29,7 +29,7 @@
 <div class="results">
 <table>
 <thead>
-<tr>
+<tr class="sortable">
 <th>Rang</th> <th>Spielerpass</th> <th>Vorname / Nachname</th> <th><abbr title="Geschlecht">G.</abbr></th>
 <th>Geburt</th> <th>DWZ</th> %%% if guest_players_allowed %%% <th><abbr title="Gastspieler/in">Gast</abbr></th> %%% endif %%%
 </thead>
@@ -60,8 +60,10 @@
 %%% endif %%%
 </tbody>
 %%% if add %%%
-<tbody>
+<tbody class="theading">
 <tr><td colspan="%%% if guest_players_allowed %%%7%%% else %%%6%%% endif %%%" class="heading">Spieler hinzufügen</td></tr>
+</tbody>
+<tbody id="js-lineup">
 %%% if new_matches %%%
 %%% elseif new_match_without_rank %%%
 %%% elseif new_player_not_found %%%
@@ -145,3 +147,13 @@ M<input type="hidden" name="geschlecht" value="male">
 </form>
 </div>
 <p class="fuss"><strong><a href="../">Zurück zur Team-Übersicht</a> | <a href="../kontakt/">Weiter zum 2. Schritt: Kontaktdaten</a></strong></p>
+
+<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/core.js"></script>
+<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/widgets/sortable.js"></script>
+<script type="text/javascript">
+	var sortTableObject = vxJS.widget.sorTable(document.getElementById('js-lineup'), {
+		columnFormat: [
+			null, null, null, null, 'float', 'float'
+		]
+	});
+</script>
