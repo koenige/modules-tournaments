@@ -63,7 +63,7 @@
 <tbody class="theading">
 <tr><td colspan="%%% if guest_players_allowed %%%7%%% else %%%6%%% endif %%%" class="heading">Spieler hinzufügen</td></tr>
 </tbody>
-<tbody id="js-lineup">
+<tbody id="js-lineup" class="theading">
 %%% if new_matches %%%
 %%% elseif new_match_without_rank %%%
 %%% elseif new_player_not_found %%%
@@ -79,6 +79,8 @@
 %%% endif %%%
 %%% loop end %%%
 %%% endif %%%
+</tbody>
+<tbody>
 <tr%%% if new_match_without_rank %%% class="error"%%% elseif new_player_not_found %%% class="error"%%% endif %%%>
 <td%%% if post_rank %%% %%% else %%% %%% if new_matches %%% class="error" %%% endif %%%%%% endif %%%>
 <input type="number" class="rangno" name="rank[new]" value="%%% item post_rank htmlspecialchars %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
