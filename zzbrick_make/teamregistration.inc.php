@@ -62,127 +62,8 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 	}
 	if (!$data['add']) unset($data['club_players']);
 	
-	$data['redirect'] = true;
-	$changed = false; // es kann sein, dass zuviele Spieler angegeben werden
-	if (!empty($_POST)) {
-		$postdata = $_POST; // wird von zzform ggf. überschrieben
-		foreach ($postdata['rank'] as $code => $rank_no) {
-			// Nur Integer werden akzeptiert (warum auch immer da Leute was anderes eingeben)
-			if ($rank_no) {
-				$rank_no = trim($rank_no);
-				if (substr($rank_no, -1) === '.') {
-					$rank_no = substr($rank_no, 0, -1);
-				}
-				if (!wrap_is_int($rank_no)) {
-					$data['error_board_no_numbers'] = true;
-					continue;
-				}
-				if ($rank_no < 0) {
-					$data['error_board_no_bigger_zero'] = true;
-					continue;
-				}
-			}
-			if ($code === 'new' AND $data['add']) {
-				if ($rank_no) $data['post_rank'] = $rank_no;
-				$data['post_guest_player'] = mf_tournaments_guest_player($data, $postdata, $code, false);
-				// Neuer Spieler nicht aus Vereinsliste wird ergänzt
-				if (!empty($postdata['matching_id']) AND $rank_no) {
-					$player = mf_ratings_players_dsb(['player_id_dsb' => $postdata['matching_id']]);
-					if ($player) {
-						$player['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
-						$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
-						$success = mf_tournaments_team_player_insert($player, $data, $rank_no);
-						if ($success) $changed = true;
-					}
-					continue;
-				} elseif (!empty($postdata['matching_id']) AND empty($postdata['cancel'])) {
-					$player = mf_ratings_players_dsb(['player_id_dsb' => $postdata['matching_id']]);
-					$data['new_match_without_rank'] = true;
-					$data['new_player_pass_dsb'] = $player['player_pass_dsb'];
-					$data['new_player_id_dsb'] = $player['player_id_dsb'];
-					$data['new_first_name'] = $player['first_name'];
-					$data['new_last_name'] = $player['last_name'];
-					$data['new_sex'] = $player['sex'];
-					$data['new_birth_year'] = $player['birth_year'];
-					$data['new_dsb_dwz'] = $player['dsb_dwz'];
-					$data['redirect'] = false;
-					continue;
-				}
-				if (empty($postdata['first_name']) AND empty($postdata['last_name'])) {
-					// Fehler: mindestens ein Namensteil muß angegeben werden
-				} elseif (!empty($postdata['ergaenzen'])) {
-					// Spieler ohne DSB-Mitgliedschaft wird ergänzt
-					$player = [];
-					$player['first_name'] = $postdata['first_name'];
-					$player['last_name'] = $postdata['last_name'];
-					$player['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
-					$player['sex'] = $postdata['sex'];
-					$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
-					$success = mf_tournaments_team_player_insert($player, $data, $rank_no);
-					if ($success) $changed = true;
-					// Spieler in eigener Personentabelle suchen
-					// Falls nicht vorhanden, ergänzen
-					// Teilnahme ergänzen
-				} elseif (empty($postdata['cancel'])) {
-					// search for
-					// first_name, last_name, sex, date_of_birth
-					$data['new_matches'] = mod_tournaments_make_teamregistration_playersearch($data, $postdata);
-					$data['redirect'] = false;
-					$data['post_date_of_birth'] = $postdata['date_of_birth'];
-					if (!count($data['new_matches'])) {
-						$data['post_first_name'] = $postdata['first_name'];
-						$data['post_last_name'] = $postdata['last_name'];
-						$data['post_sex'] = $postdata['sex'];
-						// Keinen Spieler gefunden
-						if (wrap_setting('tournaments_player_pool')) {
-							// DSB-Mitgliedschaft erforderlich
-							$data['new_player_not_found'] = true;
-						} elseif (!empty($postdata['date_of_birth']) AND !zz_check_date($postdata['date_of_birth'])) {
-							$data['date_of_birth_wrong'] = true;
-						} else {
-							// Turniere ohne erforderliche DSB-Mitgliedschaft:
-							// Option, Spieler hinzuzufügen
-							$required_fields = ['first_name', 'last_name', 'sex', 'date_of_birth'];
-							$complete = true;
-							foreach ($required_fields as $required_field)
-								if (empty($postdata[$required_field])) $complete = false;
-							if ($complete)
-								$data['new_player_add'] = true;
-							else
-								$data['new_player_more_data'] = true;
-						}
-					}
-				}
-			} elseif (str_starts_with($code, 'dsb_id_') AND $rank_no) {
-				$player_id_dsb = substr($code, 7);
-				if (!array_key_exists($player_id_dsb, $data['club_players'])) continue;
-				$player = mf_ratings_players_dsb(['player_id_dsb' => $player_id_dsb]);
-				if ($player) {
-					$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
-					$success = mf_tournaments_team_player_insert($player, $data, $rank_no);
-					if ($success) $changed = true;
-				}
-			} elseif (substr($code, 0, 4) === 'tln_') {
-				$participation_id = substr($code, 4); 
-				if ($rank_no) {
-					// rankings changed
-					$line = [
-						'participation_id' => $participation_id,
-						'rang_no' => $rank_no,
-						'gastspieler' => mf_tournaments_guest_player($data, $postdata, $code)
-					];
-					$result = zzform_update('participations', $line, E_USER_ERROR);
-					if ($result) $changed = true;
-				} else {
-					// deleted from rankings
-					$ids = zzform_delete('participations', $participation_id);
-					if ($ids) $changed = true;
-				}
-			}
-		}
-	}
-	if ($changed AND $data['redirect'])
-		return wrap_redirect_change();
+	if ($_SERVER['REQUEST_METHOD'] === 'POST')
+		$data = mod_tournaments_make_teamregistration_change($_POST, $data);
 
 	// Daten m/w? Nur ein Geschlecht, dann keine Auswahl nötig
 	if (count($data['geschlecht']) === 1) {
@@ -199,6 +80,160 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 
 	$page['text'] = wrap_template('team-registration', $data);
 	return $page;
+}
+
+/**
+ * Applies POSTed changes to a team's lineup registration.
+ *
+ * Parses and validates board numbers from $postdata['rank'], then:
+ * - 'new': add a new player (by DSB match via matching_id, or manual add if allowed)
+ * - 'dsb_id_<id>': add an existing club player by DSB id
+ * - 'tln_<id>': update rank of an existing participation or delete it when rank is empty
+ *
+ * Updates the database via helpers (insert/update/delete) and augments $data with
+ * UI/control flags for the template (e.g. new_matches, error_*). If changes were
+ * made and no further user interaction is required, returns a redirect response.
+ *
+ * Expected $postdata (subset):
+ * - rank[code]: string|int board number per code ('new'|'dsb_id_<id>'|'tln_<id>')
+ * - guest_player[code]: 'on'|'off'
+ * - matching_id: string|int (DSB player id when a match is chosen)
+ * - first_name, last_name, sex, date_of_birth
+ * - ergaenzen: truthy to add a non-DSB player
+ * - cancel: truthy to abort current 'new' flow
+ *
+ * Possible flags set on $data (subset):
+ * - error_board_no_numbers, error_board_no_bigger_zero
+ * - new_matches, new_match_without_rank, new_player_not_found, new_player_more_data, new_player_add
+ * - post_* helper values (e.g. post_rank, post_date_of_birth, post_guest_player)
+ *
+ * @param array $postdata Raw POST payload (must include 'rank' array for processing).
+ * @param array &$data Team/event context, mutated and augmented by this function.
+ *
+ * @return void
+ */
+ function mod_tournaments_make_teamregistration_change($postdata, &$data) {
+	if (empty($postdata['rank'])) return false;
+	if (!is_array($postdata['rank'])) return false;
+	
+	$redirect = true;
+	$changed = false; // es kann sein, dass zuviele Spieler angegeben werden
+	foreach ($postdata['rank'] as $code => $rank_no) {
+		// Nur Integer werden akzeptiert (warum auch immer da Leute was anderes eingeben)
+		if ($rank_no) {
+			$rank_no = trim($rank_no);
+			if (substr($rank_no, -1) === '.') {
+				$rank_no = substr($rank_no, 0, -1);
+			}
+			if (!wrap_is_int($rank_no)) {
+				$data['error_board_no_numbers'] = true;
+				continue;
+			}
+			if ($rank_no < 0) {
+				$data['error_board_no_bigger_zero'] = true;
+				continue;
+			}
+		}
+		if ($code === 'new' AND $data['add']) {
+			if ($rank_no) $data['post_rank'] = $rank_no;
+			$data['post_guest_player'] = mf_tournaments_guest_player($data, $postdata, $code, false);
+			// Neuer Spieler nicht aus Vereinsliste wird ergänzt
+			if (!empty($postdata['matching_id']) AND $rank_no) {
+				$player = mf_ratings_players_dsb(['player_id_dsb' => $postdata['matching_id']]);
+				if ($player) {
+					$player['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
+					$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
+					$success = mf_tournaments_team_player_insert($player, $data, $rank_no);
+					if ($success) $changed = true;
+				}
+				continue;
+			} elseif (!empty($postdata['matching_id']) AND empty($postdata['cancel'])) {
+				$player = mf_ratings_players_dsb(['player_id_dsb' => $postdata['matching_id']]);
+				$data['new_match_without_rank'] = true;
+				$data['new_player_pass_dsb'] = $player['player_pass_dsb'];
+				$data['new_player_id_dsb'] = $player['player_id_dsb'];
+				$data['new_first_name'] = $player['first_name'];
+				$data['new_last_name'] = $player['last_name'];
+				$data['new_sex'] = $player['sex'];
+				$data['new_birth_year'] = $player['birth_year'];
+				$data['new_dsb_dwz'] = $player['dsb_dwz'];
+				$redirect = false;
+				continue;
+			}
+			if (empty($postdata['first_name']) AND empty($postdata['last_name'])) {
+				// Fehler: mindestens ein Namensteil muß angegeben werden
+			} elseif (!empty($postdata['ergaenzen'])) {
+				// Spieler ohne DSB-Mitgliedschaft wird ergänzt
+				$player = [];
+				$player['first_name'] = $postdata['first_name'];
+				$player['last_name'] = $postdata['last_name'];
+				$player['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
+				$player['sex'] = $postdata['sex'];
+				$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
+				$success = mf_tournaments_team_player_insert($player, $data, $rank_no);
+				if ($success) $changed = true;
+				// Spieler in eigener Personentabelle suchen
+				// Falls nicht vorhanden, ergänzen
+				// Teilnahme ergänzen
+			} elseif (empty($postdata['cancel'])) {
+				// search for
+				// first_name, last_name, sex, date_of_birth
+				$data['new_matches'] = mod_tournaments_make_teamregistration_playersearch($data, $postdata);
+				$redirect = false;
+				$data['post_date_of_birth'] = $postdata['date_of_birth'];
+				if (!count($data['new_matches'])) {
+					$data['post_first_name'] = $postdata['first_name'];
+					$data['post_last_name'] = $postdata['last_name'];
+					$data['post_sex'] = $postdata['sex'];
+					// Keinen Spieler gefunden
+					if (wrap_setting('tournaments_player_pool')) {
+						// DSB-Mitgliedschaft erforderlich
+						$data['new_player_not_found'] = true;
+					} elseif (!empty($postdata['date_of_birth']) AND !zz_check_date($postdata['date_of_birth'])) {
+						$data['date_of_birth_wrong'] = true;
+					} else {
+						// Turniere ohne erforderliche DSB-Mitgliedschaft:
+						// Option, Spieler hinzuzufügen
+						$required_fields = ['first_name', 'last_name', 'sex', 'date_of_birth'];
+						$complete = true;
+						foreach ($required_fields as $required_field)
+							if (empty($postdata[$required_field])) $complete = false;
+						if ($complete)
+							$data['new_player_add'] = true;
+						else
+							$data['new_player_more_data'] = true;
+					}
+				}
+			}
+		} elseif (str_starts_with($code, 'dsb_id_') AND $rank_no) {
+			$player_id_dsb = substr($code, 7);
+			if (!array_key_exists($player_id_dsb, $data['club_players'])) continue;
+			$player = mf_ratings_players_dsb(['player_id_dsb' => $player_id_dsb]);
+			if ($player) {
+				$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
+				$success = mf_tournaments_team_player_insert($player, $data, $rank_no);
+				if ($success) $changed = true;
+			}
+		} elseif (substr($code, 0, 4) === 'tln_') {
+			$participation_id = substr($code, 4); 
+			if ($rank_no) {
+				// rankings changed
+				$line = [
+					'participation_id' => $participation_id,
+					'rang_no' => $rank_no,
+					'gastspieler' => mf_tournaments_guest_player($data, $postdata, $code)
+				];
+				$result = zzform_update('participations', $line, E_USER_ERROR);
+				if ($result) $changed = true;
+			} else {
+				// deleted from rankings
+				$ids = zzform_delete('participations', $participation_id);
+				if ($ids) $changed = true;
+			}
+		}
+	}
+	if ($changed AND $redirect)
+		return wrap_redirect_change();
 }
 
 /**
