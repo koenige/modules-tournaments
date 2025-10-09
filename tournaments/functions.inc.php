@@ -440,6 +440,7 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 	$sql = 'SELECT contacts.contact_id
 			, country_id
 			, contacts_identifiers.identifier AS zps_code
+			, parameters
 	    FROM contacts
 		LEFT JOIN contacts_identifiers
 			ON contacts_identifiers.contact_id = contacts.contact_id
@@ -452,6 +453,10 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 
 	// merge contacts and federations
 	foreach ($contacts as $contact_id => $contact) {
+		if ($contact['parameters']) {
+			parse_str($contact['parameters'], $contact['parameters']);
+			if (!empty($contact['parameters']['tournaments_contact_without_federation'])) continue;
+		}
 		$fed_code = $contact['zps_code'] ? substr($contact['zps_code'], 0, 1) : '';
 		if ($fed_code AND array_key_exists($fed_code, $federations_by_zps)) {
 			$contacts[$contact_id] = array_merge($contact, $federations_by_zps[$fed_code]);
