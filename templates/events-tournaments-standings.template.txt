@@ -1,0 +1,41 @@
+# tournaments module
+# HTML output: standings for tournaments on events page
+#
+# Part of »Zugzwang Project«
+# https://www.zugzwang.org/modules/tournaments
+#
+# @author Gustaf Mossakowski <gustaf@koenige.org>
+# @copyright Copyright © 2025 Gustaf Mossakowski
+# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
+#
+%%% if tabelle %%%
+<a href="/%%% item identifier %%%/tabelle/">Endstand</a> nach %%% item runden %%% Runden: 
+(%%% item teams "%d Teams" 0 "" %%%%%% if teams & spieler %%%, %%% elseif teams & spielerinnen %%%, %%% endif %%%%%% item spieler "%d Spieler" 0 "" %%%%%% if spieler & spielerinnen %%%, %%% endif %%%%%% item spielerinnen "%d Spielerinnen" 0 "" 1 "%d Spielerin" %%%)
+<ul>
+%%% loop tabelle %%%
+<li>%%% item platz_no %%%. 
+%%% if person %%%
+%%% if setzliste_no %%%<a href="/%%% item identifier %%%/spieler/%%% item setzliste_no %%%/">%%% endif %%%%%% item person %%%%%% if setzliste_no %%%</a>%%% endif %%% %%% item verein " (%s)" %%%
+%%% elseif team_identifier %%%
+<a href="/%%% item team_identifier %%%/">%%% item team %%%</a>
+%%% else %%%
+%%% item team %%%
+%%% endif %%%
+</li>
+%%% loop end %%%
+</ul>
+%%% loop tabellen %%%
+<a href="/%%% item identifier %%%/tabelle/%%% item kennung_tab %%%/">Endstand %%% item untertitel %%%</a> nach %%% item runden %%% Runden: 
+<ul>
+%%% loop weitere_tabelle %%%
+<li>%%% item rang_no %%%. (%%% item platz_no %%%.) 
+%%% if person %%%
+%%% if setzliste_no %%%<a href="/%%% item identifier %%%/spieler/%%% item setzliste_no %%%/">%%% endif %%%%%% item person %%%%%% if setzliste_no %%%</a>%%% endif %%% %%% item verein " (%s)" %%%
+%%% else %%%
+<a href="/%%% item team_identifier %%%/">%%% item team %%%</a>
+%%% endif %%%
+</li>
+%%% loop end %%%
+</ul>
+%%% loop end %%%
+%%% endif %%%
