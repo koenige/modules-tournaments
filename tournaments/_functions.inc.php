@@ -107,6 +107,9 @@ function mf_tournaments_final_standings($event_ids) {
 	}
 
 	foreach ($tabellenstaende as $fkennung => $ids) {
+		// @todo check why this happens?
+		foreach ($ids as $index => $id)
+			if (!$id) unset($ids[$index]);
 		if ($fkennung === 'gesamt') {
 			$filter[$fkennung]['where'][] = 'platz_no <= 3';
 		} else {
