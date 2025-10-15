@@ -36,8 +36,11 @@ if (wrap_access('tournaments_teams_registrations', $brick['data']['event_rights'
 		'field_name' => 'frei',
 		'value' => 'betreuer'
 	];
-	if (!empty($_GET['add']['frei']))
+	if (!empty($_GET['add']['frei'])) {
+		$free_entry = true;
 		$_GET['add']['usergroup_id'] = wrap_id('usergroups', $_GET['add']['frei']);
+		unset($_GET['add']['frei']);
+	}
 }
 
 $zz['footer']['text'] = wrap_template('team-kontakt', $brick['data']);
@@ -60,7 +63,8 @@ foreach ($zz['fields'] as $no => $field) {
 
 	case 'contact_id':
 		$zz['fields'][$no]['unless']['export_mode']['list_append_next'] = false;
-		if (!empty($_GET['add']['frei'])) break; // allow here to add people from contacts
+		if (!empty($free_entry)) break; // allow here to add people from contacts
+		if (!empty($_POST['zz_fields']['frei'])) break;
 		if (wrap_setting('tournaments_player_pool') === 'club'
 			AND !wrap_access('tournaments_teams_registrations', $brick['data']['event_rights'])
 		) {
