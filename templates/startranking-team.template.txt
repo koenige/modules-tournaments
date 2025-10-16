@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2014, 2016, 2019-2024 Gustaf Mossakowski
+# @copyright Copyright © 2012-2014, 2016, 2019-2025 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Startrangliste
@@ -77,9 +77,9 @@
 <p>(Rot: Veranstaltungsort; blau: Teilnehmer)</p>
 </div>
 %%% endif %%%
-<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/core.js"></script>
-<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/widgets/sortable.js"></script>
-<script type="text/javascript">
+%%% script vxjs/src/core.js %%%
+%%% script vxjs/src/widgets/sortable.js %%%
+<script>
 	var sortTableObject = vxJS.widget.sorTable(document.getElementById('teams'), {
 		columnFormat: ["float", null, null, %%% if meldeliste %%%null%%% else %%%"float"
 %%% endif %%%

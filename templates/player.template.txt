@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2014-2024 Gustaf Mossakowski
+# @copyright Copyright © 2014-2025 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>%%% item fidetitel_lang "<abbr title='%s'>" %%%%%% item t_fidetitel "%s" %%%%%% item fidetitel_lang "</abbr>" %%% %%% item name %%%
@@ -104,4 +104,4 @@ keine
 <p><a href="gruesse/">Brett-Nachricht schreiben</a></p>
 %%% endif %%%
 %%% endif %%%
-<script src="%%% setting behaviour_path %%%/default/link-rel-nav.js"></script>
+%%% script default/link-rel-nav.js %%%

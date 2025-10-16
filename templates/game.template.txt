@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2005, 2012-2022, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2005, 2012-2022, 2024-2025 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 # List of fields:
@@ -20,11 +20,11 @@
 %%% if partie_id %%%
 <div id="partie_%%% item partie_id %%%">
 %%% endif %%%
-<script type="text/javascript">
+<script>
 var baseurl = '%%% setting behaviour_path %%%/ltpgnviewer/';
 var imgoffset = 1; // number of img src in HTML code before board
 </script>
-<script src="%%% setting behaviour_path %%%/ltpgnviewer/ltpgnviewer.js" type="text/javascript"></script>
+%%% script ltpgnviewer/ltpgnviewer.js %%%
 
 <h1>Partie: %%% item weiss %%%–%%% item schwarz %%% %%% item live " (Live)" %%%
 <br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
@@ -193,7 +193,7 @@ SAN letters: <input type=text name="SAN" value="KQRBNP" size=7>
 Stand: <span class="LastUpdate">%%% item last_update %%%</span> Uhr.</p>
 %%% endif %%%
 %%% endif %%%
-<script type="text/javascript">
+<script>
 	SetPgnMoveText('%%% item pgn %%%');
 	Init('');
 	MoveForward(%%% item move %%%);
@@ -202,7 +202,7 @@ Stand: <span class="LastUpdate">%%% item last_update %%%</span> Uhr.</p>
 <p>Partie nicht gefunden.</p>
 %%% endif %%%
 </div>
-<script type="text/javascript">
+<script>
 %%% if partie_id %%%
 var partie_id = %%% item partie_id %%%; 
 %%% endif %%%
@@ -229,8 +229,8 @@ document.onkeyup = Navigate;
 
 </script>
 %%% if live %%%
-<script type="text/javascript" src="%%% setting behaviour_path %%%/tournaments/livegame.js"></script>
-<script type="text/javascript">
+%%% script tournaments/livegame.js %%%
+<script>
 
 var gamedata;
 var lastmove;

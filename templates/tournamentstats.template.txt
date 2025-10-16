@@ -116,11 +116,11 @@ Spielerinnen und Spieler ohne Wertung werden bei der Berechnung des Schnitts nic
 %%% if next %%%<p class="next"><a href="%%% item next %%%">Statistik des Turniers im folgenden Jahr</a></p>%%% endif %%%
 </div>
 
-<script src="%%% setting behaviour_path %%%/default/link-rel-nav.js"></script>
+%%% script default/link-rel-nav.js %%%
+%%% script vxjs/src/core.js %%%
+%%% script vxjs/src/widgets/sortable.js %%%
 
-<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/core.js"></script>
-<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/widgets/sortable.js"></script>
-<script type="text/javascript">
+<script>
 	var sortTableObject = vxJS.widget.sorTable(document.getElementById('js-statistik'), {
 		columnFormat: [
 			null, %%% if summe_teams %%%'float', %%% endif %%%

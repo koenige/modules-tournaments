@@ -50,9 +50,9 @@ Punktevergabe: 1. Platz = 10 Punkte, 2. Platz = 9 Punkte, 3. Platz = 8 Punkte, 4
 </em></p>
 %%% endif %%%
 
-<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/core.js"></script>
-<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/widgets/sortable.js"></script>
-<script type="text/javascript">
+%%% script vxjs/src/core.js %%%
+%%% script vxjs/src/widgets/sortable.js %%%
+<script>
 	var sortTableObject = vxJS.widget.sorTable(document.getElementById('laender'), {
 		columnFormat: [null, "float"%%% if punktvergabe %%%
 , "float", "float", "float", "float", "float", "float"

@@ -161,7 +161,7 @@ nicht abschließend geprüft.)</em></p>
 <div class="mapverein">
 <div id="mapverein"> </div>
 %%% template leaflet-js %%%
-<script type="text/javascript">
+<script>
 	%%% template leaflet-tiles-mapbox %%%
 
 	var map = L.map('mapverein', {scrollWheelZoom: false}).addLayer(tiles);
@@ -205,5 +205,5 @@ nicht abschließend geprüft.)</em></p>
 </div>
 %%% endif %%%
 %%% endif %%%
-<script src="%%% setting behaviour_path %%%/default/link-rel-nav.js"></script>
+%%% script default/link-rel-nav.js %%%
 %%% endif %%%

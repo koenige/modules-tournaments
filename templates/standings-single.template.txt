@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2014-2021, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2014-2021, 2024-2025 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Tabellenstand nach der %%% item runde_no %%%. Runde%%% item untertitel ": %s" %%%%%% item endstand " (Endstand)" %%%%%% item live " (LIVE!)" %%%
@@ -95,4 +95,4 @@ Bei den anderen können sich die Platzierungen durch die Feinwertungen ebenfalls
 %%% endif %%%
 </div>
 </nav>
-<script src="%%% setting behaviour_path %%%/default/link-rel-nav.js"></script>
+%%% script default/link-rel-nav.js %%%

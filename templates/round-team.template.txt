@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2016, 2020-2021, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2012-2016, 2020-2021, 2024-2025 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Ergebnisse %%% item round_event %%%%%% item live " (Live)" %%%
@@ -59,5 +59,5 @@ Stand: %%% item live_date wrap_date %%%, %%% item live_date wrap_time %%% Uhr. <
 </div>
 </nav>
 %%% unless live %%%
-<script src="%%% setting behaviour_path %%%/default/link-rel-nav.js"></script>
+%%% script default/link-rel-nav.js %%%
 %%% endif %%%

@@ -150,9 +150,9 @@ M<input type="hidden" name="sex" value="male">
 </div>
 <p class="fuss"><strong><a href="../">Zurück zur Team-Übersicht</a> | <a href="../kontakt/">Weiter zum 2. Schritt: Kontaktdaten</a></strong></p>
 
-<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/core.js"></script>
-<script type="text/javascript" src="%%% setting behaviour_path %%%/vxjs/src/widgets/sortable.js"></script>
-<script type="text/javascript">
+%%% script vxjs/src/core.js %%%
+%%% script vxjs/src/widgets/sortable.js %%%
+<script>
 	var sortTableObject = vxJS.widget.sorTable(document.getElementById('js-lineup'), {
 		columnFormat: [
 			null, null, null, null, 'float', 'float'
