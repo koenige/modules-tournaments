@@ -32,6 +32,7 @@ function mod_tournaments_tournamentmap($params, $settings, $event) {
 		if (count($contact_ids) < 2) return false;
 		$event = array_merge($event, reset($contact_ids));
 	}
+	if (count($params) !== 2) return false;
 
 	// do we have players?
 	$sql = 'SELECT COUNT(*)
