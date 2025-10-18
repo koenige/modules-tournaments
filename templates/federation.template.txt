@@ -19,7 +19,7 @@
 <div class="datenspalte">
 <div class="results">
 %%% if map %%%
-<p><a href="../../herkunftsorte/%%% item identifier %%%/">-> Herkunftsorte der Spieler auf der Karte</a></p>
+<p><a href="../../herkunftsorte/%%% item federation_identifier %%%/">-> Herkunftsorte der Spieler auf der Karte</a></p>
 %%% endif %%%
 <table class="lv js-gallery">
 %%% loop events %%%

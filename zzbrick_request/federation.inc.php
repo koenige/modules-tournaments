@@ -14,12 +14,12 @@
 
 
 /**
- * Übersicht der Spieler/Teams eines Turniers nach Landesverband
+ * Overview of players/teams of a tournament by federation
  *
  * @param array $params
- *		int [0]: Jahr
- *		string [1]: Kennung Reihe
- *		string [2]: Kennung Organisation
+ *		int [0]: year
+ *		string [1]: identifier series event
+ *		string [2]: identifier federation
  */
 function mod_tournaments_federation($params, $settings, $data) {
 	if (count($params) !== 3) return false;
@@ -27,7 +27,8 @@ function mod_tournaments_federation($params, $settings, $data) {
 	$sql = 'SELECT contact_id, contact
 			, IFNULL(country, contact_short) AS country
 			, country_id
-			, SUBSTRING(ok.identifier, 1, 1) AS zps_code, contacts.identifier
+			, SUBSTRING(ok.identifier, 1, 1) AS zps_code
+			, contacts.identifier AS federation_identifier
 			, contact_abbr
 		FROM contacts
 		LEFT JOIN contacts_identifiers ok USING (contact_id)
@@ -45,7 +46,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 	if (!$federation) return false;
 	$data += $federation;
 	if ($params[2] === $data['zps_code']) {
-		$path = wrap_path('tournaments_federation', [$params[0].'/'.$params[1], $data['identifier']]);
+		$path = wrap_path('tournaments_federation', [$params[0].'/'.$params[1], $data['federation_identifier']]);
 		return wrap_redirect($path, 303);
 	}
 
