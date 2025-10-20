@@ -6,23 +6,19 @@
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
 # @author Erik Kothe <kontakt@erikkothe.de>
-# @copyright Copyright © 2015, 2020 Gustaf Mossakowski
+# @copyright Copyright © 2015, 2020, 2025 Gustaf Mossakowski
 # @copyright Copyright © 2017 Erik Kothe
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
-# List of fields:
-# event_id, livebretter, identifier, event, year, teilnehmer,
-# aktuelle_runde_no, main_series, main_series_path, runde_wochentag,
-# runde_beginn, runde_time_begin, runde_time_end, last_update,
-# bretter, livebretter_nos, livepaarungen { partie_id, runde_no, brett_no,
-# halbzuege, pgn, weiss_ergebnis, schwarz_ergebnis, weiss, schwarz, WhiteElo,
-# BlackElo, weiss_setzliste_no, schwarz_setzliste_no, last_update,
-# aktuelle_zuege }
-#
-<script src="/_behaviour/chessboardjs/js/json3.min.js"></script>
-<script src="/_behaviour/chessboardjs/js/jquery-1.10.1.min.js"></script>
-<script src="/_behaviour/chessboardjs/js/chessboard.js"></script>
-<script src="/_behaviour/chess.js/chess.min.js"></script>
+%%% position head %%%
+	<link rel="stylesheet" href="/_behaviour/chessboardjs/css/chessboard.css">
+	<link rel="stylesheet" href="/interaktiv/livebretter/multiboard/multiboard.css">
+
+%%% position text %%%
+%%% script chessboardjs/js/json3.min.js %%%
+%%% script chessboardjs/js/jquery-1.10.1.min.js %%%
+%%% script chessboardjs/js/chessboard.js %%%
+%%% script chess.js/chess.min.js %%%
 <script src="/interaktiv/livebretter/multiboard/multiboard.js"></script>
 <script src="/interaktiv/livebretter/multiboard/jquery.countdownTimer.js"></script>
 <img style="display:none;" class="refreshloader" src="/interaktiv/livebretter/multiboard/loader.gif">

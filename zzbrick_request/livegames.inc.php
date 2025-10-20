@@ -84,7 +84,6 @@ function mod_tournaments_livegames_tournament($tournament) {
 	
 	$page['breadcrumbs'][]['title'] = 'Livepartien';
 	$page['title'] = 'Livepartien '.$tournament['event'].' '.$tournament['year'];
-	$page['head'] = wrap_template('livegames-head');
 	$page['text'] = wrap_template('livegames-tournament', $tournament);
 	return $page;
 }
