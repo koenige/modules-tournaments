@@ -107,5 +107,5 @@ Aus diesem Landesverband spielen keine Teams bei diesem Turnier mit.
  an.</p>
 </div>
 %%% if map %%%
-<p><a href="../../herkunftsorte/%%% item identifier %%%/">-> Herkunftsorte der Spieler auf der Karte</a></p>
+<p><a href="../../herkunftsorte/%%% item federation_identifier %%%/">-> Herkunftsorte der Spieler auf der Karte</a></p>
 %%% endif %%%
