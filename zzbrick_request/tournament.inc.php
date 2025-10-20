@@ -66,6 +66,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	$sql = sprintf($sql, $event['event_id'], $sql_condition);
 	$tournament = wrap_db_fetch($sql);
 	if (!$tournament) return false;
+	if (!$tournament['freiplatz']) $tournament['freiplatz'] = NULL;
 	$event = array_merge($event, $tournament);
 
 	wrap_setting('tournaments_public_url', sprintf('https://%s%s/%s/'
