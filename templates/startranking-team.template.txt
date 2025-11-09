@@ -18,11 +18,14 @@
 <table>
 <thead>
 <tr class="sortable"><th>Nr.</th>
-<th>%%% if m-a %%%Land
-%%% elseif m-v %%%Verein
-%%% elseif m-s %%%Schule
-%%% endif %%%
-%%% unless m-a %%%%%% if country %%%<th>Land</th>%%% endif %%%%%% endif %%%
+<th>
+%%% switch turnierform %%%
+%%% case m-a %%%Land
+%%% case m-v %%%Verein
+%%% if country %%%<th>Land</th>%%% endif %%%
+%%% case m-s %%%Schule
+%%% if country %%%<th>Land</th>%%% endif %%%
+%%% switch - %%%
 %%% if dwz_schnitt %%%<th>Ø&nbsp;DWZ</th>%%% endif %%%
 %%% if meldeliste %%%
 <th>Meldung</th>
@@ -35,7 +38,8 @@
 <td>%%% item setzliste_no %%%</td>
 <td>%%% if team_identifier %%%<a href="../../../%%% item team_identifier %%%/">%%% endif %%%
 %%% item team %%% %%% item team_no %%%%%% if team_identifier %%%</a>%%% endif %%%</td>
-%%% unless m-a %%%
+%%% switch turnierform %%%
+%%% case m-a %%%%%% default %%%
 %%% if country %%%
 <td>%%% if main_event_path & federation_identifier %%%
 <a href="%%% path tournaments_federation main_event_path federation_identifier %%%">
@@ -47,7 +51,7 @@
 %%% endif %%%
 </td>
 %%% endif %%%
-%%% endif %%%
+%%% switch - %%%
 %%% if dwz_schnitt %%%
 <td class="number">%%% item dwz_schnitt %%%</td>
 %%% endif %%%

@@ -33,7 +33,6 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 	$event += wrap_db_fetch($sql);
 
 	wrap_setting('logfile_name', $event['identifier']);
-	$event[str_replace('-', '_', $event['turnierform'])] = true;
 
 	$page['dont_show_h1'] = true;
 
