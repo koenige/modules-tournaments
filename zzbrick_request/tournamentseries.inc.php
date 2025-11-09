@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -82,14 +82,12 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 			ON events_places.contact_id = places.contact_id
 		LEFT JOIN addresses
 			ON addresses.contact_id = places.contact_id
-		WHERE series.main_category_id = %d
-		AND IFNULL(event_year, YEAR(date_begin)) = %d
-		AND NOT ISNULL(events_websites.website_id)
+		WHERE events.main_event_id = %d
+		AND events.event_category_id = /*_ID categories event/event _*/
 		ORDER BY series.sequence, date_begin, events.identifier';
 	$sql = sprintf($sql
 		, $event['website_id']
-		, $event['series_category_id']
-		, $event['year']
+		, $event['event_id']
 	);
 	$event['tournaments'] = wrap_db_fetch($sql, 'event_id');
 	if ($event['series_parameter'])
