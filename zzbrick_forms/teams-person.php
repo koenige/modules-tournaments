@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014, 2016-2017, 2019-2020, 2022-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2014, 2016-2017, 2019-2020, 2022-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -20,6 +20,7 @@ if (!in_array($brick['data']['meldung'], ['offen', 'teiloffen']))
 
 $data = $brick['data'];
 // Team + Vereinsbetreuer auslesen
+wrap_include('team', 'tournaments');
 $data = array_merge($data, mf_tournaments_team_participants([$data['team_id'] => $data['contact_id']], $data, false));
 
 $zz = zzform_include('persons', [], 'forms');

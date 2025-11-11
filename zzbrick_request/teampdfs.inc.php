@@ -321,6 +321,8 @@ function mf_tournaments_pdf_event_accounts($event_id) {
  * @return array
  */
 function mf_tournaments_pdf_teams($event, $params) {
+	wrap_include('team', 'tournament');
+
 	// team_identifier is more specific
 	if (!empty($params['team_identifier']))
 		$where = sprintf('teams.identifier = "%s"', wrap_db_escape($params['team_identifier']));

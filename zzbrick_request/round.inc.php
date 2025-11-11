@@ -157,6 +157,8 @@ function mod_tournaments_round_single($event) {
  * @return array
  */
 function mod_tournaments_round_team($event) {
+	wrap_include('team', 'tournaments');
+
 	$sql = 'SELECT DISTINCT paarungen.runde_no
 		FROM paarungen
 		WHERE paarungen.event_id = %d
@@ -190,7 +192,7 @@ function mod_tournaments_round_team($event) {
 	$event['paarungen'] = wrap_db_fetch($sql, 'paarung_id');
 	if (!$event['paarungen']) return [];
 
-	$lineup = mf_tournaments_lineup($event);
+	$lineup = mf_tournaments_team_lineup($event);
 	if (!$lineup) {
 		$sql = wrap_sql_query('tournaments_games');
 		$sql = sprintf($sql, $event['event_id'], sprintf('runde_no = %d', $event['runde_no']));

@@ -161,6 +161,8 @@ function mod_tournaments_startranking_single($event) {
 }
 	
 function mod_tournaments_startranking_team($event) {
+	wrap_include('team', 'tournaments');
+
 	$sql = 'SELECT team_id
 			, team, team_no
 			, IF(NOT ISNULL(teams.setzliste_no), teams.identifier, "") AS team_identifier, team_status

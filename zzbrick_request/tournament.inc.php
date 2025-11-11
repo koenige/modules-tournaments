@@ -412,6 +412,8 @@ function mod_tournaments_tournament_players_compact($event) {
  * @return string
  */
 function mod_tournaments_tournament_teams_compact(&$event, $internal) {
+	wrap_include('team', 'tournaments');
+
 	$sql = 'SELECT teams.team_id
 			, team, team_no, teams.identifier AS team_identifier, team_status
 			, setzliste_no

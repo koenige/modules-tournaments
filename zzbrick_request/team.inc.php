@@ -14,6 +14,8 @@
 
 
 function mod_tournaments_team($vars, $settings, $data) {
+	wrap_include('team', 'tournaments');
+
 	$sql = 'SELECT setzliste_no
 			, platz_no
 			, teams.identifier AS team_identifier
@@ -167,7 +169,7 @@ function mod_tournaments_team($vars, $settings, $data) {
 			$round = $data;
 			$round['runde_no'] = $paarung['runde_no'];
 			$round['identifier'] = $round['event_identifier'];
-			$data['paarungen'][$paarung_id]['lineup'] = mf_tournaments_lineup($round);
+			$data['paarungen'][$paarung_id]['lineup'] = mf_tournaments_team_lineup($round);
 		}
 	}
 

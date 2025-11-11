@@ -191,6 +191,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	}
 
 	if (wrap_setting('tournaments_type_team')) {
+		wrap_include('team', 'tournaments');
 		list($dwz_schnitt, $team_ids) 
 			= mf_tournaments_team_rating_average_dwz($event['event_id'], $team_ids, $event['bretter_min'], $event['pseudo_dwz']);
 	}
