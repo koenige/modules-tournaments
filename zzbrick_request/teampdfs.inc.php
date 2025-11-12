@@ -13,7 +13,6 @@
  */
 
 
-
 function mod_tournaments_teampdfs($params, $settings, $event) {
 	if (!$event) return false;
 	if (count($params) < 2) return false;
@@ -36,7 +35,12 @@ function mod_tournaments_teampdfs($params, $settings, $event) {
 	    WHERE event_id = %d';
 	$sql = sprintf($sql, $event['event_id']);
 	$event += wrap_db_fetch($sql);
-	$event += mf_tournaments_pdf_event_accounts($event['event_id']);
+
+	// bank accounts
+	wrap_include('event', 'shop');
+	$accounts = mf_shop_event_bankaccounts($event['event_id']);
+	foreach ($accounts as $account_id => $account)
+		$event['konten_'.strtolower($account['category'])][$account_id] = $account;
 	
 	$params = [
 		'team_identifier' => count($params) === 3 ? implode('/', $params) : false,
@@ -279,36 +283,6 @@ function mod_tournaments_teampdfs_draft(&$pdf, $daten) {
 	$pdf->setFont('DejaVu', '', 10);
 	$pdf->SetTextColor(0, 0, 0);
 	$pdf->SetXY($current_x, $current_y);
-}
-
-/**
- * Liest Konten zu Termin aus
- *
- * @param int $event_id
- * @return array
- *		array 'konten_veranstalter',
- *		array 'konten_ausrichter'
- * @todo in Termin-Funktionsskript verschieben
- */
-function mf_tournaments_pdf_event_accounts($event_id) {
-	$sql = 'SELECT bankaccount_id
-			, roles.category AS bankaccount_category
-			, IFNULL(holder, contact) AS holder, iban, bic, bank
-		FROM events_bankaccounts
-		LEFT JOIN bankaccounts USING (bankaccount_id)
-		LEFT JOIN categories roles
-			ON events_bankaccounts.role_category_id = roles.category_id
-		LEFT JOIN contacts
-			ON contacts.contact_id = bankaccounts.holder_contact_id
-		WHERE event_id = %d';
-	$sql = sprintf($sql, $event_id);
-	$konten = wrap_db_fetch($sql, 'bankaccount_id');
-	$event = [];
-	if (!$konten) return $event;
-	foreach ($konten as $id => $konto) {
-		$event['konten_'.strtolower($konto['bankaccount_category'])][$id] = $konto;
-	}
-	return $event;
 }
 
 /**
