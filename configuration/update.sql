@@ -74,3 +74,5 @@
 /* 2025-06-24-2 */	UPDATE _settings SET setting_key = 'tournaments_team_registration_path', explanation = 'path to internal team registration' WHERE setting_key = 'tournaments_team_application_path';
 /* 2025-06-24-3 */	UPDATE webpages SET parameters = REPLACE(parameters, '&access=tournaments_team_application', '&access=tournaments_team_registration') WHERE parameters LIKE '%&access=tournaments_team_application%';
 /* 2025-06-24-4 */	UPDATE webpages SET content = REPLACE(content, '%%% make teamaufstellung ', '%%% make teamregistration ') WHERE content LIKE '%\%\%\% make teamaufstellung %';
+/* 2025-11-11-1 */	UPDATE eventtexts SET eventtext = REPLACE(eventtext, 'number_spacing_iban', 'iban_format') WHERE eventtext LIKE "%number_spacing_iban%";
+/* 2025-11-11-2 */	UPDATE eventtexts SET eventtext = REPLACE(eventtext, 'item inhaber', 'item holder') WHERE eventtext LIKE "%item inhaber%";
