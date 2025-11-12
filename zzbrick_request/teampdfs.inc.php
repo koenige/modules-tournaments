@@ -321,7 +321,7 @@ function mf_tournaments_pdf_event_accounts($event_id) {
  * @return array
  */
 function mf_tournaments_pdf_teams($event, $params) {
-	wrap_include('team', 'tournament');
+	wrap_include('team', 'tournaments');
 
 	// team_identifier is more specific
 	if (!empty($params['team_identifier']))

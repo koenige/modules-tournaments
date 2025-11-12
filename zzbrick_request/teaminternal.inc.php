@@ -14,7 +14,7 @@
 
 
 function mod_tournaments_teaminternal($vars, $settings, $data) {
-	wrap_include('team', 'tournament');
+	wrap_include('team', 'tournaments');
 
 	$sql = 'SELECT datum_anreise, TIME_FORMAT(uhrzeit_anreise, "%%H:%%i") AS uhrzeit_anreise
 			, datum_abreise, TIME_FORMAT(uhrzeit_abreise, "%%H:%%i") AS uhrzeit_abreise
