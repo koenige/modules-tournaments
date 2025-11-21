@@ -102,7 +102,7 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->setFont('DejaVu', 'B', 14);
 		$pdf->write(19, $event['event']);
 		$pdf->setFont('DejaVu', '', 14);
-		$pdf->write(19, ', '.html_entity_decode(wrap_date($event['duration']), ENT_QUOTES, 'UTF-8'));
+		$pdf->write(19, ', '.html_entity_decode(wrap_date_plain($event['duration']), ENT_QUOTES, 'UTF-8'));
 		$pdf->Ln();
 		$pdf->Ln();
 		$pdf->Ln();
@@ -212,9 +212,9 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->write(18, '3. An- und Abreise');
 		$pdf->setFont('DejaVu', '', $settings['font_size']);
 		$pdf->Ln();
-		$pdf->write(14, 'Anreise am '.wrap_date($team['datum_anreise']).' um '.$team['uhrzeit_anreise'].' Uhr');
+		$pdf->write(14, 'Anreise am '.wrap_date_plain($team['datum_anreise']).' um '.$team['uhrzeit_anreise'].' Uhr');
 		$pdf->Ln();
-		$pdf->write(14, 'Abreise am '.wrap_date($team['datum_abreise']).' um '.$team['uhrzeit_abreise'].' Uhr');
+		$pdf->write(14, 'Abreise am '.wrap_date_plain($team['datum_abreise']).' um '.$team['uhrzeit_abreise'].' Uhr');
 		$pdf->Ln();
 		$pdf->Ln();
 
@@ -238,8 +238,8 @@ function mod_tournaments_teampdfs_pdf($event, $return = 'send') {
 		$pdf->Ln();
 		$pdf->Ln();
 		$pdf->Ln();
-		$pdf->Cell(265, 14, wrap_date($team['meldung_datum']));
-		$pdf->Cell(265, 14, wrap_date($team['meldung_datum']));
+		$pdf->Cell(265, 14, wrap_date_plain($team['meldung_datum']));
+		$pdf->Cell(265, 14, wrap_date_plain($team['meldung_datum']));
 		$pdf->Ln();
 		$y_pos = $pdf->GetY();
 		$x_pos = $pdf->GetX();

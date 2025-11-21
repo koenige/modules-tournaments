@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2013-2014, 2017-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2013-2014, 2017-2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -100,7 +100,7 @@ durch die Turnierleitung bekanntgegeben.\n"
 		$pdf->setFont('DejaVu', 'B', 14);
 		$pdf->write(19, $event['event']);
 		$pdf->setFont('DejaVu', '', 14);
-		$pdf->write(19, ', '.html_entity_decode(wrap_date($event['duration']), ENT_QUOTES, 'UTF-8'));
+		$pdf->write(19, ', '.html_entity_decode(wrap_date_plain($event['duration']), ENT_QUOTES, 'UTF-8'));
 		$pdf->Ln();
 		$pdf->Ln();
 		$pdf->Ln();
@@ -162,7 +162,7 @@ durch die Turnierleitung bekanntgegeben.\n"
 		$pdf->setX($x_pos+265);
 		$pdf->setFont('DejaVu', '', 9);
 		$pdf->MultiCell(0, 14, sprintf($doc['info'],
-			wrap_date($event['ratings_updated']),
+			wrap_date_plain($event['ratings_updated']),
 			$event['pseudo_dwz']
 		));
 		if ($pdf->getY() > $bottom_y) $bottom_y = $pdf->getY();
@@ -178,7 +178,7 @@ durch die Turnierleitung bekanntgegeben.\n"
 		$pdf->Ln();
 		$pdf->Ln();
 		$pdf->Ln();
-		$pdf->Cell(265, 14, wrap_date($event['date_begin']));
+		$pdf->Cell(265, 14, wrap_date_plain($event['date_begin']));
 		$pdf->Ln();
 		$y_pos = $pdf->GetY();
 		$x_pos = $pdf->GetX();

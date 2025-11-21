@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2023, 2025 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -156,7 +156,7 @@ function Header()
 		$last_contact = $line['contact'];
 		$pdf->setFont('FiraSans-SemiBold', '', 11);
 		$pdf->MultiCell($half, 6, 'Von: '.$line['absender'].' <'.$line['email'].'>', 0, 'L');
-		$pdf->MultiCell($half, 6, 'Datum: '.wrap_date($line['eintragszeit']).' '.wrap_time($line['eintragszeit']), 0, 'L');
+		$pdf->MultiCell($half, 6, 'Datum: '.wrap_date_plain($line['eintragszeit']).' '.wrap_time($line['eintragszeit']), 0, 'L');
 		$pdf->setFont('OpenSansEmoji', '', 11);
 		$pdf->MultiCell($half, 6, trim($line['nachricht']), 0, 'L');
 	}
