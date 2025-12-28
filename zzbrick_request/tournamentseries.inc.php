@@ -31,7 +31,6 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
 		WHERE events.event_id = %d
-		AND ISNULL(main_event_id)
 	';
 	$sql = sprintf($sql, $event['event_id']);
 	$event = array_merge($event, wrap_db_fetch($sql));
