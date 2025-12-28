@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2024 Gustaf Mossakowski
+# @copyright Copyright © 2012-2025 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>%%% item event %%%<br>
@@ -64,7 +64,7 @@
  · <a href="partien/%%% item runde_no %%%-live.pgn" title="Herunterladen der Live-Partien der %%% item runde_no %%%. Runde im Format PGN (Portable Game Notation)">Live [PGN]</a>
 %%% endif %%%
 %%% elseif internal %%%
-%%% if paarungen | partien %%%
+%%% if partien %%%
  · <a href="partien/%%% item runde_no %%%.pgn">Leere PGN</a>
  · <a href="partien/%%% item runde_no %%%-utf8.pgn">Leere PGN, UTF-8</a>
 %%% endif %%%
@@ -115,7 +115,7 @@
 </dl>
 %%% endif %%%
 <div class="tournament_links">
-%%% if partien %%%
+%%% if pgn_full %%%
 <p><a href="%%% setting tournaments_public_url %%%partien/gesamt.pgn">Partien aller Runden [PGN]</a>
 <br><a href="%%% setting tournaments_public_url %%%partien/gesamt-utf8.pgn">Partien aller Runden [PGN, Unicode UTF-8]</a></p>
 %%% endif %%%

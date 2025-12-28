@@ -199,7 +199,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	$letzte_dauer = '';
 	foreach ($event['events'] as $event_id => $program_item) {
 		if ($event['livebretter']) $event['events'][$event_id]['livebretter'] = true;
-		if ($program_item['pgn']) $event['partien'] = true;
+		if ($program_item['pgn']) $event['pgn_full'] = true;
 		else $event['events'][$event_id]['pgn'] = NULL;
 		if ($program_item['duration'] === $letzte_dauer) {
 			$event['events'][$event_id]['dauer_gleich'] = true;
