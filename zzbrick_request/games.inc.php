@@ -463,7 +463,6 @@ function mod_tournaments_games_pgn($event_id, $round_no = false, $brett_no = fal
 	if ($tisch_no) $where[] = sprintf('paarungen.tisch_no = %d', $tisch_no);
 	
 	wrap_db_charset('latin1');
-	wrap_setting('character_set', 'iso-8859-1');
 
 	$sql = 'SELECT partien.partie_id
 			, events.event, IFNULL(events.event_year, YEAR(events.date_begin)) AS year
