@@ -487,6 +487,7 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 			$event['teams'][$standings[$ts_id]]['wertung'] 
 				= $wertung[$wertungskategorie['category_id']]['wertung'];
 		}
+		$event['standings'] = true;
 	}
 
 	$dwz_sort = false;
