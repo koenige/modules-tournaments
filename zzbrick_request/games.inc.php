@@ -139,12 +139,16 @@ function mod_tournaments_games_pgnfile($data, $settings) {
  * @param array $settings
  */
 function mod_tournaments_games_pgn_send($page, $settings) {
+	// normalize line endings to CRLF
+	$page['text'] = str_replace(["\r\n", "\r", "\n"], "\n", $page['text']);
 	$page['text'] = str_replace("\n", "\r\n", $page['text']);
 	$page['headers']['filename'] = sprintf('%s.pgn', $settings['send_as']);
 	if ($settings['character_set'] !== 'iso-8859-1') {
 		$page['text'] = mb_convert_encoding($page['text'], $settings['character_set'], 'ISO-8859-1');
 		$page['headers']['filename'] = mb_convert_encoding($page['headers']['filename'], $settings['character_set'], 'ISO-8859-1');
 	}
+	$page['text'] = trim($page['text']);
+	$page['text'] .= "\r\n";
 	wrap_setting('character_set', $settings['character_set']);
 	$page['query_strings'] = $settings['qs'] ?? [];
 	$page['content_type'] = 'pgn';
