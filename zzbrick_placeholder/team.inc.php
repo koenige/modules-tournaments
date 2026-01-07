@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -46,6 +46,7 @@ function mod_tournaments_placeholder_team($brick) {
 			, place_categories.parameters
 			, tournaments.urkunde_parameter AS tournament_parameters
 			, series.parameters AS series_parameters
+			, teams.identifier AS team_identifier
 		FROM teams
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN tournaments USING (event_id)
@@ -107,27 +108,32 @@ function mod_tournaments_placeholder_team($brick) {
 		wrap_match_module_parameters('tournaments', $team['tournament_parameters'], false);
 
 
-	$bc_template = '<a href="'.wrap_setting('events_internal_path').'/%s/">%s</a>';
 	if (!empty($brick['local_settings']['internal']) AND empty($brick['local_settings']['no_team_breadcrumbs'])) {
-		$brick['page']['breadcrumbs'][] = sprintf(
-			$bc_template, $team['year'], $team['year']
-		);
+		$zz_page['breadcrumb_placeholder'][0] = [
+			'title' => $team['year'],
+			'url_path' => $team['year']
+		];
 		if ($team['main_series_path']) {
-			$brick['page']['breadcrumbs'][] = sprintf(
-				$bc_template, $team['year'].'/'.$team['main_series_path'], $team['main_series']
-			);
+			$zz_page['breadcrumb_placeholder'][1] = [
+				'title' => $team['main_series'],
+				'url_path' => $team['year'].'/'.$team['main_series_path']
+			];
 		}
-		$brick['page']['breadcrumbs'][] = sprintf(
-			$bc_template, $team['event_identifier'], $team['event']
-		);
-		if (!empty($brick['vars'][4]) OR $brick['parameter'])
-			$brick['page']['breadcrumbs'][] = sprintf(
-				$bc_template, implode('/', [$year, $identifier, $team_idf]), $team['team']
-			);
+		$zz_page['breadcrumb_placeholder'][2] = [
+			'title' => $team['event'],
+			'url_path' => $team['event_identifier']
+		];
+		if (!empty($brick['vars'][4]) OR $brick['parameter']) {
+			$zz_page['breadcrumb_placeholder'][3] = [
+				'title' => $team['team'],
+				'url_path' => $team['team_identifier']
+			];
+		}
 	} else {
-		$brick['page']['breadcrumbs'][] = sprintf(
-			$bc_template, $team['event_identifier'], $team['event']
-		);
+		$zz_page['breadcrumb_placeholder'][0] = [
+			'title' => $team['event'],
+			'url_path' => sprintf('/%s/', $team['event_identifier'])
+		];
 	}
 
 	$brick['page']['dont_show_h1'] = true;
