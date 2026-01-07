@@ -378,7 +378,8 @@ function mod_tournaments_games_file_game_team($event, $round_no, $table_no, $boa
  * Auslesen einer Live-Partie als JSON
  */
 function mod_tournaments_games_json($event, $settings) {
-	wrap_setting('cache', false);
+	if (!$event['running']) // JSON files are only used while tournament is running
+		wrap_setting('cache', false);
 
 	if (!strstr($settings['request'], '-')) return false;
 	if (substr_count($settings['request'], '-') === 1) {
