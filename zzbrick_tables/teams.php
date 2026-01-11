@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -409,7 +409,7 @@ $zz['filter'][1]['sql'] = 'SELECT DISTINCT meldung, meldung AS titel
 	FROM teams
 	ORDER BY meldung';
 
-$zz['if']['multi']['record']['delete'] = true;
+$zz['if']['batch_mode']['record']['delete'] = true;
 
 $zz['hooks']['after_update'][] = 'mf_tournaments_standings_update';
 
