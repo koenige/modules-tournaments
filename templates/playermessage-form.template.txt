@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2022, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2022, 2024, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <div>
@@ -16,7 +16,7 @@
 
 <form method="POST" action="">
 <p><label for="sent_date">Nachrichten vor diesem Datum als »verteilt« markieren«:
-<br><input type="text" value="%%% item current_time wrap_date %%% %%% item current_time wrap_time %%%" name="sent_date" id="sent_date"></label></p>
+<br><input type="text" value="%%% item current_time format=date %%% %%% item current_time format=time %%%" name="sent_date" id="sent_date"></label></p>
 <p><input type="submit" value="Nachrichten als »verteilt« markieren"></p>
 </form>
 <hr>

@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2023 Gustaf Mossakowski
+# @copyright Copyright © 2023, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <table>
@@ -45,7 +45,7 @@
 %%% endif %%%</td>
 %%% endif %%%
 %%% if wertung %%%
-<td class="number">%%% item wertung result_format %%%</td>
+<td class="number">%%% item wertung format=result_format %%%</td>
 %%% endif %%%
 </tr>
 %%% loop end %%%

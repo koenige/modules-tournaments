@@ -5,12 +5,12 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012, 2014, 2016, 2020, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2012, 2014, 2016, 2020, 2024, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 %%% if head %%%
 <h1>Kontakt: <a href="../">%%% item team %%% %%% item team_no %%%</a>
-<br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> <em>in %%% item place %%%</em></h1>
+<br><a href="../../">%%% item event %%% %%% item duration format=date %%%</a> <em>in %%% item place %%%</em></h1>
 
 <p>Von den Betreuern vor Ort und die Verantwortlichen zuhause brauchen wir ein 
 paar Daten, um mit ihnen Kontakt aufzunehmen. Bitte geben Sie möglichst Handynummer

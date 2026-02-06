@@ -5,11 +5,11 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2021, 2023-2025 Gustaf Mossakowski
+# @copyright Copyright © 2012-2021, 2023-2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Tabellenstand nach der %%% item runde_no %%%. Runde%%% item endstand " (Endstand)" %%%%%% item live " (LIVE!)" %%%
-<br><a href="../%%% item pfad %%%">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
+<br><a href="../%%% item pfad %%%">%%% item event %%% %%% item duration format=date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
 <div class="results">
 <table>
@@ -62,7 +62,7 @@
 		<td class="tm bxv">%%% item spiele_v %%%</td>
 %%% endif %%%
 		%%% loop wertungen %%%
-		<td class="tm">%%% item wertung result_format %%%</td>
+		<td class="tm">%%% item wertung format=result_format %%%</td>
 		%%% loop end %%%
 	</tr>
 %%% loop end %%%

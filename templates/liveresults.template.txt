@@ -5,12 +5,12 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012, 2014, 2016-2017, 2022, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2012, 2014, 2016-2017, 2022, 2024, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <div class="liveresults">
 <h1>Liveergebnisse
-<br><a href="../">%%% item event %%% %%% item duration wrap_date %%%</a>%%% if runde_no %%%, %%% item runde_no %%%. Runde%%% endif %%%</h1>
+<br><a href="../">%%% item event %%% %%% item duration format=date %%%</a>%%% if runde_no %%%, %%% item runde_no %%%. Runde%%% endif %%%</h1>
 <p>Ergebniseintragung des Ergebnisses von Weiß: <code>0</code> = verloren, 
 <code>5</code>, <code>R</code> oder <code>r</code> = Remis, 
 <code>1</code> = gewonnen, <code>+</code> kampflos gewonnen, <code>-</code> kampflos verloren, <code>=</code> kampflos Remis.
@@ -27,7 +27,7 @@
 <tbody>
 %%% loop ergebnisse %%%
 %%% if heim_team %%%
-<tr class="teamname"><td>%%% item tisch_no %%%</td><td colspan="2">%%% item heim_team %%%–%%% item auswaerts_team %%%</td><td colspan="2">%%% item heim_ergebnis result_format %%%:%%% item auswaerts_ergebnis result_format %%%</td></tr>
+<tr class="teamname"><td>%%% item tisch_no %%%</td><td colspan="2">%%% item heim_team %%%–%%% item auswaerts_team %%%</td><td colspan="2">%%% item heim_ergebnis format=result_format %%%:%%% item auswaerts_ergebnis format=result_format %%%</td></tr>
 %%% endif %%%
 %%% loop partien %%%
 <tr class='%%% loopposition uneven "un" %%%even%%% item gespeichert " grau"%%%'>
@@ -56,7 +56,7 @@ spielfrei
 spielfrei
 %%% endif %%%
 </td>
-<td>%%% if gespeichert %%%%%% item weiss_ergebnis result_format %%%:%%% item schwarz_ergebnis result_format %%%%%% endif %%%</td>
+<td>%%% if gespeichert %%%%%% item weiss_ergebnis format=result_format %%%:%%% item schwarz_ergebnis format=result_format %%%%%% endif %%%</td>
 <td>
 <input type="text" name="%%% item partie_id %%%" size="1" maxlength="1" value="%%% item weiss_ergebnis %%%">
 </td></tr>

@@ -5,11 +5,11 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2022, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2012-2022, 2024, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>%%% item team %%% %%% item team_no %%%
-<br><a href="../">%%% item event %%% %%% item duration wrap_date %%%</a> <em>in %%% item place %%%</em></h1>
+<br><a href="../">%%% item event %%% %%% item duration format=date %%%</a> <em>in %%% item place %%%</em></h1>
 
 %%% if abfrage_teilnahme %%%
 
@@ -122,14 +122,14 @@ bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absage
 <tbody>
 <tr class="uneven"><td>
 %%% if datum_anreise %%%
-%%% item datum_anreise wrap_date %%%%%% item uhrzeit_anreise ", %s Uhr" %%%
+%%% item datum_anreise format=date %%%%%% item uhrzeit_anreise ", %s Uhr" %%%
 %%% else %%%
 Noch nicht angegeben.
 %%% endif %%%
 </td>
 <td>
 %%% if datum_abreise %%%
-%%% item datum_abreise wrap_date %%%%%% item uhrzeit_abreise ", %s Uhr" %%%
+%%% item datum_abreise format=date %%%%%% item uhrzeit_abreise ", %s Uhr" %%%
 %%% else %%%
 Noch nicht angegeben.
 %%% endif %%%
@@ -151,7 +151,7 @@ Noch nicht angegeben.
 </thead>
 <tfoot>
 <tr>
-<td colspan="6"></td><td class="number"><strong>%%% item betrag wrap_money %%%&nbsp;%%% item betrag_waehrung %%%</strong></td>
+<td colspan="6"></td><td class="number"><strong>%%% item betrag format=money %%%&nbsp;%%% item betrag_waehrung %%%</strong></td>
 <td></td>
 </tr>
 </tfoot>
@@ -160,11 +160,11 @@ Noch nicht angegeben.
 <tr class='%%% loopposition uneven "un" %%%even'>
 <td>%%% item gelöscht "<del>" %%%%%% item gruppe %%%%%% item gelöscht "</del>" %%%</td>
 <td>%%% item gelöscht "<del>" %%%%%% item booking %%%%%% item gelöscht "</del>" %%%</td>
-<td class="number">%%% item gelöscht "<del>" %%%%%% item price wrap_money %%%&nbsp;%%% item currency %%%%%% item gelöscht "</del>" %%%</td>
+<td class="number">%%% item gelöscht "<del>" %%%%%% item price format=money %%%&nbsp;%%% item currency %%%%%% item gelöscht "</del>" %%%</td>
 <td class="number">%%% item gelöscht "<del>" %%%%%% item anzahl_tage %%%%%% item gelöscht "</del>" %%%</td>
 <td class="number">%%% item gelöscht "<del>" %%%%%% item anzahl_weiblich %%%%%% item gelöscht "</del>" %%%</td>
 <td class="number">%%% item gelöscht "<del>" %%%%%% item anzahl_maennlich %%%%%% item gelöscht "</del>" %%%</td>
-<td class="number">%%% item betrag wrap_money %%%&nbsp;%%% item betrag_waehrung %%%</td>
+<td class="number">%%% item betrag format=money %%%&nbsp;%%% item betrag_waehrung %%%</td>
 <td><span class="%%% item kosten_status %%%">&nbsp;</span></td>
 </tr>
 %%% if anmerkungen %%%

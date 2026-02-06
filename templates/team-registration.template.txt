@@ -5,16 +5,16 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2017, 2021-2022, 2024-2025 Gustaf Mossakowski
+# @copyright Copyright © 2012-2017, 2021-2022, 2024-2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Aufstellung: <a href="../">%%% item team %%% %%% item team_no %%%</a>
-<br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> <em>in %%% item place %%%</em></h1>
+<br><a href="../../">%%% item event %%% %%% item duration format=date %%%</a> <em>in %%% item place %%%</em></h1>
 
 %%% if hinweis_aufstellung %%%
 <div class="hinweisbox">
 <h3>Hinweise</h3>
-%%% item hinweis_aufstellung markdown %%%
+%%% item hinweis_aufstellung format=markdown %%%
 </div>
 %%% endif %%%
 
@@ -83,7 +83,7 @@
 <tbody>
 <tr%%% if new_match_without_rank %%% class="error"%%% elseif new_player_not_found %%% class="error"%%% endif %%%>
 <td%%% if post_rank %%% %%% else %%% %%% if new_matches %%% class="error" %%% endif %%%%%% endif %%%>
-<input type="number" class="rangno" name="rank[new]" value="%%% item post_rank htmlspecialchars %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
+<input type="number" class="rangno" name="rank[new]" value="%%% item post_rank format=htmlspecialchars %%%" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
 
 %%% if new_matches %%%
 <td></td>
@@ -94,7 +94,7 @@
 <option value="%%% item player_id_dsb %%%">%%% item first_name %%% %%% item last_name %%% (%%% item birth_year %%%) – %%% item club_contact %%%</option>
 %%% loop end %%%
 </select>
-<input type="hidden" name="date_of_birth" value="%%% item post_date_of_birth htmlspecialchars %%%">
+<input type="hidden" name="date_of_birth" value="%%% item post_date_of_birth format=htmlspecialchars %%%">
 <p class="explanation">Bitte wählen Sie einen der Spieler aus!</p>
 <p><input type="submit" value="Auswahl abbrechen" name="cancel"></p>
 </td>
@@ -105,14 +105,14 @@
 <p class="error explanation">Bitte geben Sie eine Ranglistennummer an!</p>
 <input type="hidden" name="matching_id" value="%%% item new_player_id_dsb %%%">
 </td> <td>%%% switch new_sex %%%%%% case male %%%M%%% case female %%%W%%% case diverse %%%D%%%switch end %%%</td>
-<td><input type="hidden" name="date_of_birth" value="%%% item post_date_of_birth htmlspecialchars %%%">
+<td><input type="hidden" name="date_of_birth" value="%%% item post_date_of_birth format=htmlspecialchars %%%">
 %%% item new_birth_year %%%</td> <td>%%% item new_dsb_dwz %%%</td>
 
 %%% else %%%
 <td></td>
 <td>
-<span class="nobr"><input type="text" name="first_name" value="%%% item post_first_name htmlspecialchars %%%" title="%%% text First name %%%" placeholder="%%% text First name %%%"> 
-<input type="text" name="last_name" value="%%% item post_last_name htmlspecialchars %%%" title="%%% text Last name %%%" placeholder="%%% text Last name %%%"></span><br>
+<span class="nobr"><input type="text" name="first_name" value="%%% item post_first_name format=htmlspecialchars %%%" title="%%% text First name %%%" placeholder="%%% text First name %%%"> 
+<input type="text" name="last_name" value="%%% item post_last_name format=htmlspecialchars %%%" title="%%% text Last name %%%" placeholder="%%% text Last name %%%"></span><br>
 %%% if new_player_not_found | new_player_add | new_player_more_data %%%<p class="error">Es wurde kein Spieler beim <abbr title="Deutscher Schachbund">DSB</abbr> mit diesen Angaben gefunden. 
 %%% if new_player_add %%%<br><input type="submit" value="Als DWZ-losen Spieler hinzufügen" name="ergaenzen">
 %%% elseif new_player_more_data %%%Bitte füllen Sie alle vier Felder aus, dann können Sie den Spieler oder die Spielerin als DWZ-losen Spieler hinzufügen.
@@ -135,7 +135,7 @@ M<input type="hidden" name="sex" value="male">
 </select>
 %%% endif %%%
 </td>
-<td class="number"><input type="text" name="date_of_birth" class="geburt" value="%%% item post_date_of_birth htmlspecialchars %%%"></td> 
+<td class="number"><input type="text" name="date_of_birth" class="geburt" value="%%% item post_date_of_birth format=htmlspecialchars %%%"></td> 
 <td></td>
 %%% endif %%%
 

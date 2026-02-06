@@ -7,11 +7,11 @@
 # @author Erik Kothe <kontakt@erikkothe.de>
 # @author Gustaf Mossakowski <gustaf@koenige.org>
 # @copyright Copyright © 2018-2022 Erik Kothe
-# @copyright Copyright © 2022, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2022, 2024, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Brett-Nachricht an <a href="../">%%% item contact %%%</a>
-<br><a href="../../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
+<br><a href="../../../">%%% item event %%% %%% item duration format=date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
 %%% if news_inactive %%%
 <p>Für dieses Jahr sind die Brettgrüße geschlossen.</p>
@@ -36,11 +36,11 @@ Ihrem Spam-Ordner nach.</p>
 
 %%% unless hide_form %%%
 <form action="" method="post">
-<textarea name="message" cols="50" rows="10">%%% item message wrap_html_escape %%%</textarea><br><br>
+<textarea name="message" cols="50" rows="10">%%% item message format=html_escape %%%</textarea><br><br>
 
-<label for="sender">Absender:<br><input type="text" name="sender" required id="sender" value="%%% item sender wrap_html_escape %%%"></label>
+<label for="sender">Absender:<br><input type="text" name="sender" required id="sender" value="%%% item sender format=html_escape %%%"></label>
 <br><br>
-<label for="mail">E-Mail:<br><input type="text" name="mail" required id="mail" value="%%% item mail wrap_html_escape %%%"></label>
+<label for="mail">E-Mail:<br><input type="text" name="mail" required id="mail" value="%%% item mail format=html_escape %%%"></label>
 <br><small>(Die E-Mail-Adresse ist erforderlich, da dorthin eine E-Mail geschickt wird, damit der Gruß freigeschaltet werden kann. Sie wird nach dem Turnier gelöscht.) </small>
 <br><br>
 <input type="submit" value="Senden">

@@ -5,12 +5,12 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2021 Gustaf Mossakowski
+# @copyright Copyright © 2021, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h2>Nachrichten</h2>
 %%% loop start %%%
 <h3>%%% item title %%%</h3>
-%%% item abstract markdown %%%
-<p><em>%%% item date wrap_date %%%</em></p>
+%%% item abstract format=markdown %%%
+<p><em>%%% item date format=date %%%</em></p>
 %%% loop end %%%

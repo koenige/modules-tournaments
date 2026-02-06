@@ -7,11 +7,11 @@
 # @author Erik Kothe <kontakt@erikkothe.de>
 # @author Gustaf Mossakowski <gustaf@koenige.org>
 # @copyright Copyright © 2017 Erik Kothe
-# @copyright Copyright © 2017, 2021-2022, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2017, 2021-2022, 2024, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Brett-Nachricht wg. fehlender Spielerbilder
-<br><a href="../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
+<br><a href="../">%%% item event %%% %%% item duration format=date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
 %%% if sent_messages %%%
 
@@ -52,7 +52,7 @@
 <p><label for="sender_mail">E-Mail Absender:<br>
 <input type="text" value="%%% item sender_mail %%%" name="sender_mail" id="sender_mail" size="32"></label></p>
 <p><label for="msg">Nachricht:<br>
-<textarea name="msg" id="msg" rows="10" cols="60" data-noescape="1">%%% item msg wrap_html_escape %%%</textarea></p>
+<textarea name="msg" id="msg" rows="10" cols="60" data-noescape="1">%%% item msg format=html_escape %%%</textarea></p>
 
 <input name="action" value="Teilnehmernachrichten schreiben" type="submit">
 </form>

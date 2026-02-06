@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012, 2015-2025 Gustaf Mossakowski
+# @copyright Copyright © 2012, 2015-2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Ergebnisse aus dem Landesverband %%% item country %%%
@@ -25,7 +25,7 @@
 %%% loop events %%%
 <thead>
 <tr><td colspan="5">
-<h2><a href="../../../../%%% item event_identifier %%%/">%%% item event %%%</a><em>, %%% item duration wrap_date %%%
+<h2><a href="../../../../%%% item event_identifier %%%/">%%% item event %%%</a><em>, %%% item duration format=date %%%
 %%% if teams | spieler %%%
 %%% if endstand %%%
 , Endstand:
@@ -59,7 +59,7 @@
 	<td class="tz">%%% item platz_no %%%</td>
 	<td class="tuz">%%% item setzliste_no %%%</td>
 	<td>%%% if teilnehmerliste %%%<a href="../../../../%%% item team_identifier %%%/">%%% endif %%%%%% item team %%%%%% if teilnehmerliste %%%</a>%%% endif %%%</td>
-	<td class="tz">%%% item mp result_format %%% : %%% item mp_gegner result_format %%%</td>
+	<td class="tz">%%% item mp format=result_format %%% : %%% item mp_gegner format=result_format %%%</td>
 </tr>
 %%% loop end %%%
 %%% elseif spieler %%%
@@ -80,7 +80,7 @@
 %%% endif %%%
 	<td>%%% if setzliste_no %%%<a href="../../../../%%% item event_identifier %%%/spieler/%%% item setzliste_no %%%/">%%% endif %%%%%% item person %%%%%% item setzliste_no "</a>" %%%</td>
 	<td>%%% item verein %%%</td>
-	<td class="tz">%%% item punkte result_format %%%<span class="longer"> / %%% item runde_no %%%</span></td>
+	<td class="tz">%%% item punkte format=result_format %%%<span class="longer"> / %%% item runde_no %%%</span></td>
 </tr>
 %%% loop end %%%
 %%% endif %%%

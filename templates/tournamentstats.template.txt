@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2015-2018, 2020-2021, 2024-2025 Gustaf Mossakowski
+# @copyright Copyright © 2015-2018, 2020-2021, 2024-2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Turnierstatistik
@@ -49,16 +49,16 @@
 <th class="tz">%%% item summe_w %%%</th>
 <th></th>
 <th></th>
-<th class="tz">%%% item summe_partien wrap_number %%%</th>
+<th class="tz">%%% item summe_partien format=number %%%</th>
 %%% if summe_zuege %%%
-<th class="tz">%%% item summe_zuege wrap_number %%%</th>
+<th class="tz">%%% item summe_zuege format=number %%%</th>
 <th class="tz">%%% item summe_zuege_pro_partie %%%</th>
 %%% endif %%%
-<th class="tz">%%% item quote_siege_weiss wrap_percent %%%</th>
-<th class="tz">%%% item quote_remis wrap_percent %%%</th>
-<th class="tz">%%% item quote_siege_schwarz wrap_percent %%%</th>
+<th class="tz">%%% item quote_siege_weiss format=percent %%%</th>
+<th class="tz">%%% item quote_remis format=percent %%%</th>
+<th class="tz">%%% item quote_siege_schwarz format=percent %%%</th>
 %%% comment <th class="tz">--- item summe_tn_nachrichten ---</th> %%%
-<th class="tz">%%% item summe_average_age wrap_number %%%</th>
+<th class="tz">%%% item summe_average_age format=number %%%</th>
 </tr>
 </tfoot>
 <tbody id="js-statistik">
@@ -73,16 +73,16 @@
 <td class="tz">%%% item tn_w %%%</td>
 <td class="tz">%%% item dwz_schnitt %%%</td>
 <td class="tz">%%% item elo_schnitt %%%</td>
-<td class="tz">%%% item partien wrap_number %%%</td>
+<td class="tz">%%% item partien format=number %%%</td>
 %%% if summe_zuege %%%
-<td class="tz"><span class="sortonly">%%% item zuege %%%</span> %%% item zuege wrap_number %%%</td>
+<td class="tz"><span class="sortonly">%%% item zuege %%%</span> %%% item zuege format=number %%%</td>
 <td class="tz">%%% item zuege_pro_partie %%%</td>
 %%% endif %%%
-<td class="tz">%%% item quote_siege_weiss wrap_percent %%%</td>
-<td class="tz">%%% item quote_remis wrap_percent %%%</td>
-<td class="tz">%%% item quote_siege_schwarz wrap_percent %%%</td>
+<td class="tz">%%% item quote_siege_weiss format=percent %%%</td>
+<td class="tz">%%% item quote_remis format=percent %%%</td>
+<td class="tz">%%% item quote_siege_schwarz format=percent %%%</td>
 %%% comment <td class="tz">--- item tn_nachrichten ---</td> %%%
-<td class="tz">%%% item average_age wrap_number %%%%%% if different_year %%% <abbr title="Dieses Turnier fand nicht im Turnierjahr statt.">*</abbr>%%% endif %%%</td>
+<td class="tz">%%% item average_age format=number %%%%%% if different_year %%% <abbr title="Dieses Turnier fand nicht im Turnierjahr statt.">*</abbr>%%% endif %%%</td>
 </tr>
 %%% loop end %%%
 </tbody>

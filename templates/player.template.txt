@@ -5,11 +5,11 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2014-2025 Gustaf Mossakowski
+# @copyright Copyright © 2014-2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>%%% item fidetitel_lang "<abbr title='%s'>" %%%%%% item t_fidetitel "%s" %%%%%% item fidetitel_lang "</abbr>" %%% %%% item name %%%
-<br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
+<br><a href="../../">%%% item event %%% %%% item duration format=date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
 <div class="playercard">
 %%% if bilder %%%
@@ -44,7 +44,7 @@ keine
 </td></tr>
 <tr><th>Jahrgang:</th><td>%%% item geburtsjahr %%%</td></tr>
 <tr><th>Platz:</th><td>%%% if platz_no %%%<a href="../../tabelle/#s%%% item setzliste_no %%%">%%% item platz_no %%%.</a>%%% endif %%% (Setzliste <a href="../#s%%% item setzliste_no %%%">%%% item setzliste_no %%%</a>)</td></tr>
-<tr><th>Punkte:</th><td>%%% if hat_punkte %%%%%% item punkte result_format %%%%%% else %%%–%%% endif %%%</td></tr>
+<tr><th>Punkte:</th><td>%%% if hat_punkte %%%%%% item punkte format=result_format %%%%%% else %%%–%%% endif %%%</td></tr>
 </table>
 </div>
 
@@ -78,11 +78,11 @@ keine
 	%%% if spielt_schwarz %%% <span class="shorter">%%% item heim_dwz "(%s)" %%%</span>%%% endif %%%</td>
 	<td class="tm">%%% if partie %%%<a href="../../partien/%%% item runde_no %%%-%%% item brett_no %%%/">%%% endif %%%
 	%%% if heim_ergebnis | auswaerts_ergebnis %%%
-	%%% item heim_ergebnis result_format %%% : %%% item auswaerts_ergebnis result_format %%%
+	%%% item heim_ergebnis format=result_format %%% : %%% item auswaerts_ergebnis format=result_format %%%
 	%%% elseif live %%%
 	LIVE
 	%%% else %%%
-	%%% item heim_ergebnis result_format %%% : %%% item auswaerts_ergebnis result_format %%%
+	%%% item heim_ergebnis format=result_format %%% : %%% item auswaerts_ergebnis format=result_format %%%
 	%%% endif %%%
 	 %%% item haengepartie "(<abbr title="Hängepartie">H</abbr>)" %%%%%% item partie "</a>" %%%</td>
 	<td class="ta">%%% item schwarz_gewinnt "<strong>" %%%

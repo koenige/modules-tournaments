@@ -5,11 +5,11 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2025 Gustaf Mossakowski
+# @copyright Copyright © 2012-2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>%%% item event %%%<br>
-%%% item duration wrap_date %%% %%% item place "<em>in %s</em>"%%%</h1>
+%%% item duration format=date %%% %%% item place "<em>in %s</em>"%%%</h1>
 
 %%% if team_abgesagt %%%
 <p class="error">Schade. Wir haben Deine Absage erhalten.</p>
@@ -40,7 +40,7 @@
 %%% loop events %%%
 <dd>
 %%% if faellt_aus %%%<del>%%% endif %%%
-<strong>%%% item dauer_gleich "<span style='visibility: hidden;'>" %%%%%% item duration wrap_date %%%%%% item dauer_gleich "</span>" %%%</strong> 
+<strong>%%% item dauer_gleich "<span style='visibility: hidden;'>" %%%%%% item duration format=date %%%%%% item dauer_gleich "</span>" %%%</strong> 
 %%% if time_begin %%%
 %%% item time_begin %%%
 %%% if time_end %%%
@@ -88,7 +88,7 @@
 %%% if series %%%
 <dt>Reihe:</dt>
 <dd><strong>%%% item series %%%</strong> (<a href="%%% setting events_path %%%/%%% item series_path %%%/archiv/">Archiv</a>)</dd>
-<dd>%%% item series_description markdown %%%</dd>
+<dd>%%% item series_description format=markdown %%%</dd>
 %%% endif %%%
 %%% if runden %%%
 <dt>Modus:</dt>
@@ -97,7 +97,7 @@
 %%% if bedenkzeit %%%
 <dd>Bedenkzeit pro Spieler und Partie: 
 %%% loop bedenkzeit %%%
-%%% item bedenkzeit minutes_format %%% Minuten %%% item zuege " für %d Züge" %%%%%% loopposition last " für den Rest der Partie" %%%%%% item zeitbonus " (%d Sekunden Zeitbonus pro Zug)" 0 "" 1 " (1 Sekunde Zeitbonus pro Zug)" %%%%%% loopposition first|middle ", " %%%
+%%% item bedenkzeit format=minutes_format %%% Minuten %%% item zuege " für %d Züge" %%%%%% loopposition last " für den Rest der Partie" %%%%%% item zeitbonus " (%d Sekunden Zeitbonus pro Zug)" 0 "" 1 " (1 Sekunde Zeitbonus pro Zug)" %%%%%% loopposition first|middle ", " %%%
 %%% loop end %%%
 </dd>
 %%% endif %%%
@@ -218,7 +218,7 @@ Plätze frei sind oder eine Warteliste existiert.
 <dt>%%% item role_category %%%:</dt>
 %%% loop organisations %%%
 <dd><strong>
-%%% if url %%%%%% loop url 1 %%%<a href="%%% item identification wrap_punycode_decode %%%">%%% loop end %%%%%% endif %%%
+%%% if url %%%%%% loop url 1 %%%<a href="%%% item identification format=punycode_decode %%%">%%% loop end %%%%%% endif %%%
 %%% item contact %%% %%% if url %%%</a>%%% endif %%%</strong></dd>
 %%% loop end %%%
 %%% endif %%%
@@ -240,7 +240,7 @@ Plätze frei sind oder eine Warteliste existiert.
 <dt>%%% item role_category %%%:</dt>
 %%% loop organisations %%%
 <dd><strong>
-%%% if url %%%%%% loop url 1 %%%<a href="%%% item identification wrap_punycode_decode %%%">%%% loop end %%%%%% endif %%%
+%%% if url %%%%%% loop url 1 %%%<a href="%%% item identification format=punycode_decode %%%">%%% loop end %%%%%% endif %%%
 %%% item contact %%% %%% if url %%%</a>%%% endif %%%</strong></dd>
 %%% if addresses %%%
 %%% loop addresses %%%
@@ -253,7 +253,7 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% loop mail %%%
 <dd>%%% item mailto %%%</dd>
 %%% loop end %%%
-%%% item description markdown "<dd>%s</dd>" %%%
+%%% item description format=markdown "<dd>%s</dd>" %%%
 %%% loop end %%%
 %%% switch end %%%
 %%% loop end %%%

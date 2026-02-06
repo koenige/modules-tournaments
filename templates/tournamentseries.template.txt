@@ -5,11 +5,11 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2014-2024 Gustaf Mossakowski
+# @copyright Copyright © 2014-2024, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>%%% item event %%%
-<br>%%% item duration wrap_date %%% %%% item place "<em>in %s</em>" %%%</h1>
+<br>%%% item duration format=date %%% %%% item place "<em>in %s</em>" %%%</h1>
 
 %%% if internal %%%
 <div class="infocol">
@@ -31,7 +31,7 @@
 %%% if tournaments %%%
 <ul class="tournaments">
 %%% loop tournaments %%%
-<li>%%% item duration wrap_date %%%%%% unless date_end %%%%%% item time_begin wrap_time ", %s Uhr" %%%%%% endif %%%: 
+<li>%%% item duration format=date %%%%%% unless date_end %%%%%% item time_begin format=time ", %s Uhr" %%%%%% endif %%%: 
 %%% if tournaments %%%<strong>%%% endif %%%
 <a href="../../%%% item identifier %%%/">%%% item event %%%</a>
 %%% if tournaments %%%</strong>%%% endif %%%
@@ -40,7 +40,7 @@
 <p><em>Qualifikation:</em></p>
 <ul>
 %%% loop tournaments %%%
-<li>%%% item duration wrap_date %%%%%% unless date_end %%%%%% item time_begin wrap_time ", %s Uhr" %%%%%% endif %%%: <a href="../../%%% item identifier %%%/">%%% item event %%%</a>
+<li>%%% item duration format=date %%%%%% unless date_end %%%%%% item time_begin format=time ", %s Uhr" %%%%%% endif %%%: <a href="../../%%% item identifier %%%/">%%% item event %%%</a>
 %%% unless place_equal %%%%%% item place " in %s" %%%%%% endif %%%
 %%% loop end %%%
 </ul>

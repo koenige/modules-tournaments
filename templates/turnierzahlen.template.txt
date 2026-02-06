@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2015-2017, 2020, 2022, 2024-2025 Gustaf Mossakowski
+# @copyright Copyright © 2015-2017, 2020, 2022, 2024-2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Aktualisierung der Wertungszahlen
@@ -46,7 +46,7 @@ und dann die Daten direkt aus der DWZ-Datenbank zu bekommen.</p>
 %%% if changes %%%
 <ul>
 %%% loop changes %%%
-<li><strong>Update</strong> %%% item link "<a href='%s'>" %%%%%% item contact %%%%%% item link "</a>" %%%: %%% item system strtoupper %%% %%% if old_rating %%%%%% item old_rating %%% => %%% else %%% neu %%% endif %%%%%% item new_rating %%%</li>
+<li><strong>Update</strong> %%% item link "<a href='%s'>" %%%%%% item contact %%%%%% item link "</a>" %%%: %%% item system format=strtoupper %%% %%% if old_rating %%%%%% item old_rating %%% => %%% else %%% neu %%% endif %%%%%% item new_rating %%%</li>
 %%% loop end %%%
 </ul>
 %%% endif %%%

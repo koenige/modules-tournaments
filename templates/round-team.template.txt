@@ -5,18 +5,18 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2016, 2020-2021, 2024-2025 Gustaf Mossakowski
+# @copyright Copyright © 2012-2016, 2020-2021, 2024-2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>Ergebnisse %%% item round_event %%%%%% item live " (Live)" %%%
-<br><a href="../../">%%% item event %%% %%% item duration wrap_date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
+<br><a href="../../">%%% item event %%% %%% item duration format=date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
 %%% if live %%%
 <p>Liveergebnisse: Die Ergebnisse sind vorläufig und ohne Gewähr.<br>
-Stand: %%% item live_date wrap_date %%%, %%% item live_date wrap_time %%% Uhr. <!-- Diese Seite wird minütlich automatisch aktualisiert. --></p>
+Stand: %%% item live_date format=date %%%, %%% item live_date format=time %%% Uhr. <!-- Diese Seite wird minütlich automatisch aktualisiert. --></p>
 %%% endif %%%
 
-<p>%%% item wochentag %%%, %%% item date_begin wrap_date %%% %%% item time_begin %%%%%% item time_end "–%s" %%%
+<p>%%% item wochentag %%%, %%% item date_begin format=date %%% %%% item time_begin %%%%%% item time_end "–%s" %%%
 %%% if time_begin | time_end %%% Uhr%%% endif %%%</p>
 
 </div>
@@ -27,7 +27,7 @@ Stand: %%% item live_date wrap_date %%%, %%% item live_date wrap_time %%% Uhr. <
 <tr>
 	<th class="tz">%%% item tisch_no %%%</th>
 	<th class="th" colspan="2">%%% item heim_kennung "<a href='../../../../%s/'>" %%%%%% item heim_team %%%%%% item heim_kennung "</a>" %%%</th>
-	<th class="tm">%%% item heim_m_ergebnis result_format %%% : %%% item auswaerts_m_ergebnis result_format %%%</th>
+	<th class="tm">%%% item heim_m_ergebnis format=result_format %%% : %%% item auswaerts_m_ergebnis format=result_format %%%</th>
 	<th class="ta" colspan="2">%%% item auswaerts_kennung "<a href='../../../../%s/'>" %%%%%% item auswaerts_team %%%%%% item auswaerts_kennung "</a>" %%%</th>
 </tr>
 </thead>
@@ -37,7 +37,7 @@ Stand: %%% item live_date wrap_date %%%, %%% item live_date wrap_time %%% Uhr. <
 		<td class="tz">%%% item brett_no %%%</td>
 		<td><span class="%%% item heim_farbe %%%">&nbsp;</span></td>
 		<td class="th">%%% item heim_spieler %%% %%% item heim_gastspieler "<abbr title='Gastspielerin'>(G)</abbr> " %%%</td>
-		<td class="tm">%%% if partie %%%<a href="../../partien/%%% item runde_no %%%-%%% item tisch_no %%%-%%% item brett_no %%%/">%%% endif %%%%%% item heim_ergebnis result_format %%% : %%% item auswaerts_ergebnis result_format %%% %%% item haengepartie "(<abbr title="Hängepartie">H</abbr>)" %%%%%% item partie "</a>" %%%</td>
+		<td class="tm">%%% if partie %%%<a href="../../partien/%%% item runde_no %%%-%%% item tisch_no %%%-%%% item brett_no %%%/">%%% endif %%%%%% item heim_ergebnis format=result_format %%% : %%% item auswaerts_ergebnis format=result_format %%% %%% item haengepartie "(<abbr title="Hängepartie">H</abbr>)" %%%%%% item partie "</a>" %%%</td>
 		<td class="ta">%%% item auswaerts_spieler %%% %%% item auswaerts_gastspieler "<abbr title='Gastspielerin'>(G)</abbr> " %%%</td>
 		<td><span class="%%% item auswaerts_farbe %%%">&nbsp;</span></td>
 	</tr>

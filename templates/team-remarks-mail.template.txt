@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2017, 2020-2022, 2024 Gustaf Mossakowski
+# @copyright Copyright © 2017, 2020-2022, 2024, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 Subject: %%% item event %%% %%% item year %%% %%% item team %%% %%% item team_no %%%
@@ -13,7 +13,7 @@ Subject: %%% item event %%% %%% item year %%% %%% item team %%% %%% item team_no
 Über die Website %%% setting hostname %%% ist eine neue Benachrichtigung
 eingegangen:
 
-Turnier:  %%% item event %%%, %%% item place_contact %%%, %%% item duration wrap_date %%% 
+Turnier:  %%% item event %%%, %%% item place_contact %%%, %%% item duration format=date_plain %%% 
           %%% setting host_base %%%%%% item event_link %%% 
 %%% if team %%%
 Team:     %%% item team %%% %%% item team_no %%% 
