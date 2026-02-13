@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -48,12 +48,12 @@ function mod_tournaments_federations($params, $settings, $event) {
 	$lv['main_series_long'] = $event['main_series_long'];
 	$lv['series_short'] = $event['series_short'];
 
-	$standard_platzurkunden = wrap_setting('platzurkunden');
+	$placement_count = wrap_setting('certificates_placement_count');
 
 	foreach ($lv as $id => $verband) {
 		if (!is_numeric($id)) continue;
 		$lv[$id]['punkte'] = 0;
-		for ($i = 1; $i <= $standard_platzurkunden; $i++) {
+		for ($i = 1; $i <= $placement_count; $i++) {
 			$lv[$id]['plaetze'][$i]['platz'] = $i;
 			$lv[$id]['plaetze'][$i]['anzahl'] = 0;
 		}
@@ -168,7 +168,7 @@ function mod_tournaments_federations($params, $settings, $event) {
 				$sql = sprintf($sql,
 					$event['aktuelle_runde_no'], $event['event_id'],
 					(!empty($filter['where']) ? ' AND '.implode(' AND ', $filter['where']) : ''),
-					$standard_platzurkunden
+					$placement_count
 				);
 				$tabellenstand = wrap_db_fetch($sql, 'participation_id');
 				$punkte = 10;
