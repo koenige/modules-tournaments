@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -80,7 +80,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		, $event['events_path']
 		, $event['identifier']
 	));
-	wrap_setting('logfile_name', $event['identifier']);
+	wrap_setting('log_filename', $event['identifier']);
 	if (!$internal AND !$event['tournament_id']) {
 		return wrap_redirect(
 			sprintf('%s/%s/', wrap_setting('events_path'), implode('/', $vars)), 307);

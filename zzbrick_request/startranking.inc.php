@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -32,7 +32,7 @@ function mod_tournaments_startranking($vars, $settings, $event) {
 	$sql = sprintf($sql, $event['event_id']);
 	$event += wrap_db_fetch($sql);
 
-	wrap_setting('logfile_name', $event['identifier']);
+	wrap_setting('log_filename', $event['identifier']);
 
 	$page['dont_show_h1'] = true;
 

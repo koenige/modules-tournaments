@@ -9,7 +9,7 @@
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
- * @copyright Copyright © 2012-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2026 Gustaf Mossakowski
  * @copyright Copyright © 2014 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
@@ -68,7 +68,7 @@ function mod_tournaments_make_standings_overview($vars) {
 	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
-	wrap_setting('logfile_name', $event['identifier']);
+	wrap_setting('log_filename', $event['identifier']);
 
 	$sql = 'SELECT events.event_id, events.runde_no
 			, (SELECT COUNT(*) FROM partien
@@ -132,7 +132,7 @@ function mod_tournaments_make_standings_round($vars) {
 	wrap_match_module_parameters('tournaments', $event['parameters']);
 	$event['rounds_played'] = mf_tournaments_live_round($event['event_id']);
 	
-	wrap_setting('logfile_name', $event['identifier']);
+	wrap_setting('log_filename', $event['identifier']);
 
 	if ($round_no > $event['runden']) {
 		wrap_error(sprintf('Tabellenstand-Update: Runde %d/%d nicht möglich (Termin %d/%s)',
