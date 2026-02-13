@@ -34,9 +34,9 @@
 DWZ: %%% comment condition if player_pass_dsb <a href="http://www.schachbund.de/spieler.html?zps=%%/% item player_pass_dsb %%/%"> %%%
 %%% comment condition endif %%%
 %%% item t_dwz %%%%%% comment item player_pass_dsb "</a>" %%%%%% if t_elo %%%, Elo: 
-%%% path ratings_fide_profile player_id_fide "html=<a href="%s">" %%%
+%%% path ratings_fide_profile player_id_fide html="<a href='%s'>" %%%
 %%% item t_elo %%%
-%%% path ratings_fide_profile player_id_fide "html=</a>" %%%
+%%% path ratings_fide_profile player_id_fide html="</a>" %%%
 %%% endif %%%
 %%% else %%%
 keine

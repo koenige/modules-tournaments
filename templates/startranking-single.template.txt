@@ -70,9 +70,9 @@
 %%% endif %%%
 %%% if zeige_elo %%%
 <td class="number">
-%%% path ratings_fide_profile player_id_fide "html=<a href="%s">" %%%
+%%% path ratings_fide_profile player_id_fide html="<a href='%s'>" %%%
 %%% item t_elo %%%
-%%% path ratings_fide_profile player_id_fide "html=</a>" %%%</td>
+%%% path ratings_fide_profile player_id_fide html=</a> %%%</td>
 %%% endif %%%
 %%% if qualification_col %%%
 <td>%%% if qualification_event %%%<a href="/%%% item qualification_event_identifier %%%/tabelle/">%%% item qualification_event %%% %%% item qualification_year %%%</a>

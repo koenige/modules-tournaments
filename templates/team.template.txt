@@ -75,9 +75,9 @@
 %%% comment condition endif %%%
 %%% item t_dwz %%%%%% comment item player_pass_dsb "</a>" %%%</td>
 <td class="number">
-%%% path ratings_fide_profile player_id_fide "html=<a href="%s">" %%%
+%%% path ratings_fide_profile player_id_fide html="<a href='%s'>" %%%
 %%% item t_elo %%%
-%%% path ratings_fide_profile player_id_fide "html=</a>" %%%</td>
+%%% path ratings_fide_profile player_id_fide html="</a>" %%%</td>
 %%% if guest_players_allowed %%%
 <td>%%% item gastspieler "Gast" %%%</td>
 %%% endif %%%
