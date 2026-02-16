@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -184,7 +184,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 			}
 		}
 
-		if ($data['year'] >= wrap_setting('dem_spielerphotos_aus_mediendb') AND $spielerphotos) {
+		if ($data['year'] >= wrap_setting('tournaments_player_photos_mediadb') AND $spielerphotos) {
 			$photos = mf_mediadblink_media([$data['identifier'], 'Website/Spieler'], [], 'person', $player_ids);
 			foreach ($spieler as $event_id => $event_players) {
 				foreach ($event_players as $participation_id => $player) {

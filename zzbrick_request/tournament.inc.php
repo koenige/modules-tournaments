@@ -295,7 +295,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	}
 
 	if ($event['spielerphotos']) {
-		$event['photouebersicht'] = $event['year'] >= wrap_setting('dem_spielerphotos_aus_mediendb') ? true : false;
+		$event['photouebersicht'] = $event['year'] >= wrap_setting('tournaments_player_photos_mediadb') ? true : false;
 	}
 
 	$page['text'] = wrap_template('tournament', $event);
