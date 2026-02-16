@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2021-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2021-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -77,3 +77,4 @@
 /* 2025-11-11-1 */	UPDATE eventtexts SET eventtext = REPLACE(eventtext, 'number_spacing_iban', 'iban_format') WHERE eventtext LIKE "%number_spacing_iban%";
 /* 2025-11-11-2 */	UPDATE eventtexts SET eventtext = REPLACE(eventtext, 'item inhaber', 'item holder') WHERE eventtext LIKE "%item inhaber%";
 /* 2026-02-16-1 */	UPDATE _settings SET setting_key = 'tournaments_player_photos_mediadb' WHERE setting_key = 'dem_spielerphotos_aus_mediendb';
+/* 2026-02-16-2 */	UPDATE _settings SET setting_key = 'tournaments_filemove_begin_before_round_mins' WHERE setting_key = 'filemove_begin_before_round_mins';

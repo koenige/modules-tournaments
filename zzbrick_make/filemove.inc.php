@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2016-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -46,7 +46,7 @@ function mod_tournaments_make_filemove() {
 			, runde_no
 			, main_event_id, date_begin, time_begin
 			, IF(NOW() > DATE_SUB(CONCAT(date_begin, " ", time_begin),
-				INTERVAL /*_SETTING filemove_begin_before_round_mins _*/ MINUTE), "past", "future") AS type
+				INTERVAL /*_SETTING tournaments_filemove_begin_before_round_mins _*/ MINUTE), "past", "future") AS type
 		FROM events
 		WHERE main_event_id IN (%s)
 		AND event_category_id = /*_ID categories event/round _*/
