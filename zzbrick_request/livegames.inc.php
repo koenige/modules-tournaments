@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2016, 2018-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2016, 2018-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -36,7 +36,7 @@ function mod_tournaments_livegames($params, $settings, $data) {
 			AND usergroup_id = /*_ID usergroups spieler _*/) AS teilnehmer
 			, (SELECT MAX(runde_no) FROM partien
 			WHERE partien.event_id = tournaments.event_id) AS aktuelle_runde_no
-			, IF((DATE_SUB(CURDATE(), INTERVAL /*_SETTING live_games_show_for_days _*/ DAY) <= date_end), 1, NULL) AS current
+			, IF((DATE_SUB(CURDATE(), INTERVAL /*_SETTING tournaments_live_games_show_for_days _*/ DAY) <= date_end), 1, NULL) AS current
 		FROM tournaments
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories series

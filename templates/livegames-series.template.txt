@@ -8,21 +8,12 @@
 # @copyright Copyright © 2014-2016, 2018, 2020-2021, 2024, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
-# List of fields:
-# { event_id, livebretter, identifier, event, year, teilnehmer,
-# aktuelle_runde_no, main_series, runde_wochentag, runde_beginn,
-# runde_time_begin, runde_time_end, last_update, bretter,
-# livebretter_nos, livepaarungen { partie_id, runde_no, brett_no, halbzuege,
-# pgn, weiss_ergebnis, schwarz_ergebnis, weiss, schwarz, WhiteElo, BlackElo,
-# weiss_setzliste_no, schwarz_setzliste_no, last_update, identifier,
-# aktuelle_zuege } }, last_update
-#
 <div style="margin-top: 1em;">
 
 <div class="abstract">
 <p>Alle Live-Partienübertragungen. Letzte Aktualisierung: %%% item last_update %%% Uhr.
-%%% if setting live_pgn_delay_mins %%%
-Die Partien werden mit %%% setting live_pgn_delay_mins %%% Minuten Verzögerung übertragen!
+%%% if setting tournaments_live_pgn_delay_mins %%%
+Die Partien werden mit %%% setting tournaments_live_pgn_delay_mins %%% Minuten Verzögerung übertragen!
 %%% else %%%
 Die Partien werden ohne Verzögerung übertragen!
 %%% endif %%%

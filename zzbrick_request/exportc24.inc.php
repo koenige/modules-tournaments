@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2017-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -160,7 +160,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 	$turnier = wrap_db_fetch($sql);
 
 	$sql = 'SELECT events.runde_no
-			, ROUND(UNIX_TIMESTAMP(CONCAT(events.date_begin, " ", events.time_begin)) * 1000) + (/*_SETTING live_pgn_delay_mins _*/ * 60) * 1000 AS startDate
+			, ROUND(UNIX_TIMESTAMP(CONCAT(events.date_begin, " ", events.time_begin)) * 1000) + (/*_SETTING tournaments_live_pgn_delay_mins _*/ * 60) * 1000 AS startDate
 		FROM events
 		WHERE events.main_event_id = %d
 		AND NOT ISNULL(runde_no)

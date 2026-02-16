@@ -78,3 +78,10 @@
 /* 2025-11-11-2 */	UPDATE eventtexts SET eventtext = REPLACE(eventtext, 'item inhaber', 'item holder') WHERE eventtext LIKE "%item inhaber%";
 /* 2026-02-16-1 */	UPDATE _settings SET setting_key = 'tournaments_player_photos_mediadb' WHERE setting_key = 'dem_spielerphotos_aus_mediendb';
 /* 2026-02-16-2 */	UPDATE _settings SET setting_key = 'tournaments_filemove_begin_before_round_mins' WHERE setting_key = 'filemove_begin_before_round_mins';
+/* 2026-02-16-3 */	UPDATE _settings SET setting_key = 'tournaments_live_cache_control_age' WHERE setting_key = 'live_cache_control_age';
+/* 2026-02-16-4 */	UPDATE _settings SET setting_key = 'tournaments_live_folders_days' WHERE setting_key = 'live_folders_days';
+/* 2026-02-16-5 */	UPDATE _settings SET setting_key = 'tournaments_live_games_show_for_days' WHERE setting_key = 'live_games_show_for_days';
+/* 2026-02-16-6 */	UPDATE _settings SET setting_key = 'tournaments_live_pgn_delay_mins' WHERE setting_key = 'live_pgn_delay_mins';
+/* 2026-02-16-7 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&live_pgn_delay_mins=', '&tournaments_live_pgn_delay_mins=') WHERE urkunde_parameter LIKE '%&live_pgn_delay_mins=%';
+/* 2026-02-16-8 */	UPDATE _settings SET setting_key = 'tournaments_live_pgn_offset_mins' WHERE setting_key = 'live_pgn_offset_mins';
+/* 2026-02-16-9 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&live_pgn_offset_mins=', '&tournaments_live_pgn_offset_mins=') WHERE urkunde_parameter LIKE '%&live_pgn_offset_mins=%';

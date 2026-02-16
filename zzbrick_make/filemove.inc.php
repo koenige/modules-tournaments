@@ -122,8 +122,8 @@ function mod_tournaments_make_filemove_queue($tournament, $parameters = []) {
 	$source = sprintf($pgn_live, $tournament['path']);
 	if ($merged_source = mod_tournaments_make_filemove_concat_pgn($source))
 		$source = $merged_source;
-	if (!empty($parameters['live_pgn_offset_mins'])) {
-		$new_time = filemtime($source) + $parameters['live_pgn_offset_mins'] * 60;
+	if (!empty($parameters['tournaments_live_pgn_offset_mins'])) {
+		$new_time = filemtime($source) + $parameters['tournaments_live_pgn_offset_mins'] * 60;
 		touch($source, $new_time, $new_time);
 		clearstatcache();
 	}
@@ -148,7 +148,7 @@ function mod_tournaments_make_filemove_queue($tournament, $parameters = []) {
 function mod_tournaments_make_filemove_final_pgn($tournament) {
 	$now = time();
 	$live_pgn = $tournament['final_dir'].'/'.$tournament['current_round']['runde_no'].'-live.pgn';
-	$pgn_delay = wrap_setting('live_pgn_delay_mins') * 60;
+	$pgn_delay = wrap_setting('tournaments_live_pgn_delay_mins') * 60;
 
 	$files = array_diff(scandir($tournament['queue_dir']), ['.', '..']);
 	foreach ($files as $file) {

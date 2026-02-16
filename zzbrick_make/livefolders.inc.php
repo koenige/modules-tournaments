@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016, 2020-2021, 2023-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2016, 2020-2021, 2023-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -28,8 +28,8 @@ function mod_tournaments_make_livefolders() {
 		FROM tournaments
 		LEFT JOIN events USING (event_id)
 		WHERE NOT ISNULL(livebretter)
-		AND DATE_SUB(events.date_begin, INTERVAL /*_SETTING live_folders_days _*/ DAY) <= CURDATE()
-		AND DATE_ADD(events.date_end, INTERVAL /*_SETTING live_folders_days _*/ DAY) >= CURDATE()';
+		AND DATE_SUB(events.date_begin, INTERVAL /*_SETTING tournaments_live_folders_days _*/ DAY) <= CURDATE()
+		AND DATE_ADD(events.date_end, INTERVAL /*_SETTING tournaments_live_folders_days _*/ DAY) >= CURDATE()';
 	$running = wrap_db_fetch($sql, '_dummy_', 'key/value');
 
 	// get all existing folders

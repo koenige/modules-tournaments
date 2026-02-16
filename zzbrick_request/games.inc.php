@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2005, 2012-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2005, 2012-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -265,7 +265,7 @@ function mod_tournaments_games_file_live($event, $settings) {
 	$games = mod_tournaments_games_liveonly($games, $event);
 	$settings['send_as'] .= ' Runde '.$round_no.' (Live)';
 	wrap_setting('cache_age', 1);
-	wrap_cache_header(sprintf('Cache-Control: max-age=%d', wrap_setting('live_cache_control_age')));
+	wrap_cache_header(sprintf('Cache-Control: max-age=%d', wrap_setting('tournaments_live_cache_control_age')));
 	return mod_tournaments_games_pgnfile($games, $settings);
 }
 
@@ -279,7 +279,7 @@ function mod_tournaments_games_file_live($event, $settings) {
  * @param array $settings
  */
 function mod_tournaments_games_file_liveraw($event, $settings) {
-	wrap_cache_header(sprintf('Cache-Control: max-age=%d', wrap_setting('live_cache_control_age')));
+	wrap_cache_header(sprintf('Cache-Control: max-age=%d', wrap_setting('tournaments_live_cache_control_age')));
 	for ($i = 1; $i <= $event['runden']; $i++) {
 		$pgn = sprintf($settings['pgn_path'], $event['identifier'], $i.'-live');
 		if (!file_exists($pgn)) continue;
