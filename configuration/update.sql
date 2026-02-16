@@ -76,4 +76,4 @@
 /* 2025-06-24-4 */	UPDATE webpages SET content = REPLACE(content, '%%% make teamaufstellung ', '%%% make teamregistration ') WHERE content LIKE '%\%\%\% make teamaufstellung %';
 /* 2025-11-11-1 */	UPDATE eventtexts SET eventtext = REPLACE(eventtext, 'number_spacing_iban', 'iban_format') WHERE eventtext LIKE "%number_spacing_iban%";
 /* 2025-11-11-2 */	UPDATE eventtexts SET eventtext = REPLACE(eventtext, 'item inhaber', 'item holder') WHERE eventtext LIKE "%item inhaber%";
-/* 2025-02-16-1 */	UPDATE _settings SET setting_key = 'tournaments_player_photos_mediadb' WHERE setting_key = 'dem_spielerphotos_aus_mediendb';
+/* 2026-02-16-1 */	UPDATE _settings SET setting_key = 'tournaments_player_photos_mediadb' WHERE setting_key = 'dem_spielerphotos_aus_mediendb';
