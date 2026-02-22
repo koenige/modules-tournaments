@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2023-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2023-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -101,10 +101,10 @@ AND CONCAT(date_begin, ' ', time_begin) = (
     WHERE e2.main_event_id = events.main_event_id
     AND e2.event_category_id = /*_ID categories event/round _*/
     AND CONCAT(e2.date_begin, ' ', e2.time_begin) < DATE_SUB(NOW(), INTERVAL /*_SETTING tournaments_live_round_mins _*/ MINUTE)
+    AND (SELECT COUNT(*) FROM partien WHERE partien.event_id = e2.main_event_id AND partien.runde_no = e2.runde_no) > 0
 )
-AND (SELECT COUNT(*) FROM partien WHERE partien.event_id = events.main_event_id AND partien.runde_no = events.runde_no) > 0
 AND event_category_id = /*_ID categories event/round _*/
-AND main_event_id = %d
+AND main_event_id = %d;
 
 -- /* @todo Punkte der Spieler berechnen (wie?) */ --
 -- tournaments_games --
