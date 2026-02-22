@@ -142,10 +142,10 @@ function mod_tournaments_make_standings_round($vars) {
 		return $page;
 	}
 	if ($round_no > $event['rounds_played']) {
-		$page['text'] = wrap_text(sprintf(
-			'Standings update for round %d impossible: So far only %d rounds have been played.'
-			, $round_no, $event['rounds_played']
-		));
+		$page['text'] = wrap_text(
+			'Standings update for round %d impossible: So far only %d rounds have been played.',
+			['values' => [$round_no, $event['rounds_played']]]
+		);
 		$page['status'] = 404;
 		return $page;
 	}
@@ -158,10 +158,10 @@ function mod_tournaments_make_standings_round($vars) {
 	$sql = sprintf($sql, $event['event_id'], $round_no);
 	$games_played_in_round = wrap_db_fetch($sql, '', 'single value');
 	if (!$games_played_in_round) {
-		$page['text'] = wrap_text(sprintf(
-			'Standings update for round %d impossible: No games were played in this round.'
-			, $round_no, $event['rounds_played']
-		));
+		$page['text'] = wrap_text(
+			'Standings update for round %d impossible: No games were played in this round.',
+			['values' => [$round_no, $event['rounds_played']]]
+		);
 		$page['status'] = 404;
 		return $page;
 	}

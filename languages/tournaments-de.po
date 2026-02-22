@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2020-2024 Gustaf Mossakowski
+# @copyright Copyright © 2020-2024, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 msgid ""
@@ -136,7 +136,7 @@ msgstr[0] ""
 "Aktualisierung der Rangliste für Runde %d unmöglich: Bislang wurde nur %d "
 "Runde gespielt."
 msgstr[1] ""
-"Aktualisierung der Rangliste für Runde %d unmöglich: Bislang wurde nur %d "
+"Aktualisierung der Rangliste für Runde %d unmöglich: Bislang wurden nur %d "
 "Runden gespielt."
 
 #: zzbrick_make/standings.inc.php
