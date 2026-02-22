@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -24,7 +24,7 @@
 function mod_tournaments_participantsearch($params, $settings, $data) {
 	if (!empty($_GET['q'])) {
 		wrap_setting('cache', false);
-		if (!empty($_SERVER['HTTP_USER_AGENT']) AND strstr($_SERVER['HTTP_USER_AGENT'], 'bot'))
+		if (wrap_http_is_bot())
 			wrap_quit(403, wrap_text('Bots are not allowed to perform searches.'));
 	}
 
