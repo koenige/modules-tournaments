@@ -22,7 +22,7 @@
 </p>
 %%% endif %%%
 <table>
-<tr><th>Verein:</th><td>%%% if verein_kennung %%%<a href="%%% if setting localhost %%%https://schach.in.local%%% else %%%https://schach.in%%%condition endif %%%/%%% item verein_kennung %%%/">%%% endif %%%%%% item t_verein %%%%%% item verein_kennung </a> %%%</td></tr>
+<tr><th>Verein:</th><td>%%% if verein_kennung %%%<a href="%%% if setting local_access %%%https://schach.in.local%%% else %%%https://schach.in%%%condition endif %%%/%%% item verein_kennung %%%/">%%% endif %%%%%% item t_verein %%%%%% item verein_kennung </a> %%%</td></tr>
 <tr><th>Land:</th><td>%%% if main_event_path & federation_identifier %%%
 <a href="%%% path tournaments_federation main_event_path federation_identifier %%%">
 %%% endif %%%

@@ -13,7 +13,7 @@
 
 %%% if team_withdrawn %%%
 <p>Dieses Team wurde zurückgezogen.</p>
-<p><a href="https://schach.in%%% if setting localhost %%%.local%%% endif %%%/%%% item contact_identifier %%%/">Weitere Infos: %%% item contact %%%</a></p>
+<p><a href="https://schach.in%%% if setting local_access %%%.local%%% endif %%%/%%% item contact_identifier %%%/">Weitere Infos: %%% item contact %%%</a></p>
 
 %%% else %%%
 
@@ -181,7 +181,7 @@ nicht abschließend geprüft.)</em></p>
 %%% if venue_contact %%%
 <p>Ort: %%% item venue_contact %%%, %%% item address %%%, %%% item postcode %%% %%% item venue_place %%%</p>
 %%% endif %%%
-<p><a href="https://schach.in%%% if setting localhost %%%.local%%% endif %%%/%%% item contact_identifier %%%/">Weitere Infos: %%% item contact %%%</a></p>
+<p><a href="https://schach.in%%% if setting local_access %%%.local%%% endif %%%/%%% item contact_identifier %%%/">Weitere Infos: %%% item contact %%%</a></p>
 
 %%% if url %%%
 %%% loop url 1 %%%
