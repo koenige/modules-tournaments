@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017-2020, 2022-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2017-2020, 2022-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -141,7 +141,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	);
 	$data = wrap_db_fetch($sql, 'participation_id');
 	if (!$data) wrap_quit(404, 'Es gibt keine Teilnehmerschilder für diese Personen.');
-	if (in_array('ratings', wrap_setting('modules'))) {
+	if (wrap_package('ratings')) {
 		wrap_package_activate('ratings');
 		$data = mf_ratings_titles($data);
 	}

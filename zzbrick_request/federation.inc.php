@@ -223,7 +223,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 	$page['dont_show_h1'] = true;
 	$page['title'] = $data['series_short'].' '.$data['year'].', Teilnehmer aus '.$data['country'];
 	$page['text'] = wrap_template('federation', $data);
-	if (in_array('magnificpopup', wrap_setting('modules')))
+	if (wrap_package('magnificpopup'))
 		$page['extra']['magnific_popup'] = true;
 	return $page;
 }

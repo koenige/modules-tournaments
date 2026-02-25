@@ -138,7 +138,7 @@ function mod_tournaments_player($vars, $settings, $event) {
 	$page['title'] = $data['t_vorname'].' '.$data['t_namenszusatz'].' '.$data['t_nachname'].' – '.$data['event'].' '.$data['year'];
 	$page['text'] = wrap_template('player', $data);
 	$page['breadcrumbs'][]['title'] = $data['name'];
-	if (in_array('magnificpopup', wrap_setting('modules')))
+	if (wrap_package('magnificpopup'))
 		$page['extra']['magnific_popup'] = true;
 	return $page;
 }
