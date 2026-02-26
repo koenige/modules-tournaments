@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2025 Gustaf Mossakowski
+ * @copyright Copyright © 2025-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -55,7 +55,10 @@ function mod_tournaments_make_emptytournament($params, $settings, $event) {
 	$event['teams_count'] = count($event['teams']);
 	
 	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-		// standings are deleted automatically
+		// standings are deleted automatically for team tournaments, not for single tournaments
+		if (wrap_setting('tournaments_type_single'))
+		$ids = zzform_delete('tabellenstaende', $event['standings']);
+		$event['standings_deleted'] = count($ids);
 		$ids = zzform_delete('partien', $event['games']);
 		$event['games_deleted'] = count($ids);
 		$ids = zzform_delete('paarungen', $event['pairings']);
