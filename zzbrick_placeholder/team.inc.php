@@ -116,7 +116,8 @@ function mod_tournaments_placeholder_team($brick) {
 		if ($team['main_series_path']) {
 			$zz_page['breadcrumb_placeholder'][1] = [
 				'title' => $team['main_series'],
-				'url_path' => $team['year'].'/'.$team['main_series_path']
+				'url_path' => $team['year'].'/'.$team['main_series_path'],
+				'extra_breadcrumb' => true
 			];
 		}
 		$zz_page['breadcrumb_placeholder'][2] = [
@@ -129,6 +130,13 @@ function mod_tournaments_placeholder_team($brick) {
 				'url_path' => $team['team_identifier']
 			];
 		}
+	} elseif (!empty($zz_page['breadcrumb_placeholder'])) {
+		$last_key = array_key_last($zz_page['breadcrumb_placeholder']);
+		$zz_page['breadcrumb_placeholder'][$last_key]['extra_breadcrumb'] = true;
+		$zz_page['breadcrumb_placeholder'][] = [
+			'title' => $team['team'],
+			'url_path' => $team['team_identifier']
+		];
 	} else {
 		$zz_page['breadcrumb_placeholder'][0] = [
 			'title' => $team['event'],
