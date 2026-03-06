@@ -73,7 +73,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 		WHERE events.event_id = %d';
 	$sql = sprintf($sql, $runde, $runde, $runde, $event['event_id']);
 	$event = array_merge($event, wrap_db_fetch($sql));
-	if (!$event['runden']) return false;
+	if (empty($event['runden'])) return false;
 	$event['runde_no'] = $runde;
 	mf_tournaments_cache($event['duration']);
 
