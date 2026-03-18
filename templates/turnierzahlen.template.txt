@@ -30,14 +30,19 @@ und dann die Daten direkt aus der DWZ-Datenbank zu bekommen.</p>
 
 %%% endif %%%
 
-%%% if fehler %%%
+%%% if errors %%%
 <ul>
-%%% loop fehler %%%
+%%% loop errors %%%
 <li>%%% if exists %%%<strong class="error">Keine Wertungszahl gefunden</strong> für
 %%% elseif not_found %%%
 <strong class="error">In keiner Datenbank</strong>:
 %%% endif %%%
-%%% item link "<a href='%s'>" %%%%%% item contact %%%%%% item link "</a>" %%%</li>
+%%% if path contacts_profile[person] %%%
+<a href="%%% path contacts_profile[person] identifier %%%">%%% item contact %%%</a>
+%%% else %%%
+%%% item contact %%%
+%%% endif %%%
+</li>
 %%% loop end %%%
 </ul>
 %%% endif %%%
@@ -46,15 +51,25 @@ und dann die Daten direkt aus der DWZ-Datenbank zu bekommen.</p>
 %%% if changes %%%
 <ul>
 %%% loop changes %%%
-<li><strong>Update</strong> %%% item link "<a href='%s'>" %%%%%% item contact %%%%%% item link "</a>" %%%: %%% item system format=strtoupper %%% %%% if old_rating %%%%%% item old_rating %%% => %%% else %%% neu %%% endif %%%%%% item new_rating %%%</li>
+<li><strong>Update</strong> 
+%%% if path contacts_profile[person] %%%
+<a href="%%% path contacts_profile[person] identifier %%%">%%% item contact %%%</a>
+%%% else %%%
+%%% item contact %%%
+%%% endif %%%: %%% item system format=strtoupper %%% %%% if old_rating %%%%%% item old_rating %%% => %%% else %%% neu %%% endif %%%%%% item new_rating %%%</li>
 %%% loop end %%%
 </ul>
 %%% endif %%%
 
-%%% if abweichungen %%%
+%%% if deviations %%%
 <ul>
-%%% loop abweichungen %%%
-<li><strong>Hinweis:</strong> Abweichender Name in %%% item federation %%%-Liste für %%% item link "<a href='%s'>" %%%%%% item contact %%%%%% item link "</a>" %%%
+%%% loop deviations %%%
+<li><strong>Hinweis:</strong> Abweichender Name in %%% item federation %%%-Liste für 
+%%% if path contacts_profile[person] %%%
+<a href="%%% path contacts_profile[person] identifier %%%">%%% item contact %%%</a>
+%%% else %%%
+%%% item contact %%%
+%%% endif %%%
  gefunden: %%% item player_last_first %%%.</li>
 %%% loop end %%%
 </ul>

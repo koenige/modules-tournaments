@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -32,8 +32,8 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 	$sql = sprintf($sql, $event['event_id']);
 	$event = array_merge($event, wrap_db_fetch($sql));
 
-	$data['abweichungen'] = [];
-	$data['fehler'] = [];
+	$data['deviations'] = [];
+	$data['errors'] = [];
 	$data['event'] = $event['event'];
 	$data['year'] = $event['year'];
 	$data['testlauf'] = true;
@@ -118,27 +118,27 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 					'system' => $system,
 					'old_rating' => $participation['t_'.$system],
 					'new_rating' => $line['t_'.$system],
-					'link' => wrap_path('contacts_profile[person]', $participation['identifier'], false) // @todo remove ,false
+					'identifier' => $participation['identifier']
 				];
 			}
 			if (empty($rating[$confederation.'_player_last_first'])) continue;
 			if ($rating[$confederation.'_player_last_first'] === $participation['player_last_first']) continue;
-			$data['abweichungen'][] = [
+			$data['deviations'][] = [
 				'contact' => $participation['contact'],
 				'federation' => strtoupper($confederation),
 				'contact_id' => $participation['contact_id'],
 				'player_last_first' => $rating[$confederation.'_player_last_first'],
-				'link' => wrap_path('contacts_profile[person]', $participation['identifier'], false) // @todo remove ,false
+				'identifier' => $participation['identifier']
 			];
 		}
 		if ($status !== 'found') {
 			// Nicht verifizierte Wertungen bleiben bestehen,
 			// Update ggf. nur bei Speicherung m_dwz, m_elo
-			$data['fehler'][] = [
+			$data['errors'][] = [
 				'contact' => $participation['contact'],
 				'contact_id' => $participation['contact_id'],
-				$status => 1,
-				'link' => wrap_path('contacts_profile[person]', $participation['identifier'], false) // @todo remove ,false
+				'identifier' => $participation['identifier'],
+				$status => 1
 			];
 			$line['remarks'] = $participation['remarks']
 				? $participation['remarks']."\n\n"
