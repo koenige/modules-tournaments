@@ -49,7 +49,7 @@
 %%% loop end %%%
 </ul>
 %%% if series_path %%%
-<p><a href="%%% setting events_path %%%/%%% item year %%%/%%% item series_path %%%/">Terminplan aller Turniere</a></p>
+<p><a href="%%% path events_event year series_path %%%">Terminplan aller Turniere</a></p>
 %%% endif %%%
 
 %%% unless internal %%%

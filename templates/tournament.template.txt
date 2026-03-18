@@ -87,7 +87,7 @@
 %%% endif %%%
 %%% if series %%%
 <dt>Reihe:</dt>
-<dd><strong>%%% item series %%%</strong> (<a href="%%% setting events_path %%%/%%% item series_path %%%/archiv/">Archiv</a>)</dd>
+<dd><strong>%%% item series %%%</strong> (<a href="%%% path events_event series_path %%%archiv/">Archiv</a>)</dd>
 <dd>%%% item series_description format=markdown %%%</dd>
 %%% endif %%%
 %%% if runden %%%

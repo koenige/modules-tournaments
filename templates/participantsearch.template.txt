@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2012-2016, 2020-2022, 2024-2025 Gustaf Mossakowski
+# @copyright Copyright © 2012-2016, 2020-2022, 2024-2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 <h1>%%% if teilnehmer %%%
@@ -24,7 +24,7 @@ Suche nach Teams
 %%% if teams %%%
 <ul>
 %%% loop teams %%%
-<li>%%% if teilnehmerliste %%%<a href="../../../%%% item team_identifier %%%/">%%% endif %%%%%% item team %%%%%% if teilnehmerliste %%%</a>%%% endif %%% (<a href="%%% if intern %%%%%% setting events_internal_path %%%%%% endif %%%/%%% item event_identifier %%%/">%%% item event %%%</a>)</li>
+<li>%%% if teilnehmerliste %%%<a href="../../../%%% item team_identifier %%%/">%%% endif %%%%%% item team %%%%%% if teilnehmerliste %%%</a>%%% endif %%% (<a href="%%% if intern %%%%%% path events_internal_event event_identifier %%%%%% else %%%/%%% item event_identifier %%%/%%% endif %%%">%%% item event %%%</a>)</li>
 %%% loop end %%%
 </ul>
 %%% else %%%
@@ -42,7 +42,7 @@ Suche nach Teams
 %%% if setzliste_no %%%</a>%%% endif %%%
  (%%% if team %%%
 <a href="../../../%%% item team_identifier %%%/">%%% item team %%%</a>, 
-%%% endif %%%<a href="%%% if intern %%%%%% setting events_internal_path %%%%%% endif %%%/%%% item event_identifier %%%/">%%% item event %%%</a>)</li>
+%%% endif %%%<a href="%%% if intern %%%%%% path events_internal_event event_identifier %%%%%% else %%%/%%% item event_identifier %%%/%%% endif %%%">%%% item event %%%</a>)</li>
 %%% loop end %%%
 </ul>
 %%% else %%%
