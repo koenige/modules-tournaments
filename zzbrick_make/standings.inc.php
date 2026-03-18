@@ -97,7 +97,7 @@ function mod_tournaments_make_standings_overview($vars) {
 }
 
 function mod_tournaments_make_standings_trigger($identifier) {
-	$url = wrap_path('tournaments_job_standings', $identifier, false);
+	$url = wrap_path('tournaments_job_standings', $identifier, ['check_rights' => false]);
 	wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/tabelle')]);
 }
 

@@ -243,7 +243,7 @@ function mod_tournaments_make_filemove_bulletin_pgn($tournament) {
 				, date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
 				, $source, $dest
 			), E_USER_NOTICE, 'cron');
-			$url = wrap_path('tournaments_job_games', $tournament['identifier'].'/'.$i, false);
+			$url = wrap_path('tournaments_job_games', $tournament['identifier'].'/'.$i, ['check_rights' => false]);
 			wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien')]);
 		}
 	}

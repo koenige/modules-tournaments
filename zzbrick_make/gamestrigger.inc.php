@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -46,12 +46,12 @@ function mod_tournaments_make_gamestrigger() {
 	$data = [];
 	foreach ($tournaments as $event_id => $tournament) {
 		// @todo maybe disable next two lines to reduce server load
-		$url = wrap_path('tournaments_job_games', $tournament['identifier'].'/'.$tournament['runde_no'], false);
+		$url = wrap_path('tournaments_job_games', $tournament['identifier'].'/'.$tournament['runde_no'], ['check_rights' => false]);
 		wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien')]);
 		$data[] = [
 			'url' => $url, 'identifier' => $tournament['identifier']
 		];
-		$url = wrap_path('tournaments_job_games', $tournament['identifier'].'/'.$tournament['runde_no'].'-live', false);
+		$url = wrap_path('tournaments_job_games', $tournament['identifier'].'/'.$tournament['runde_no'].'-live', ['check_rights' => false]);
 		wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien'), 'priority' => -5]);
 		$data[] = [
 			'url' => $url, 'identifier' => $tournament['identifier']

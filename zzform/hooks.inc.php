@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -122,12 +122,12 @@ function mf_tournaments_standings_update($ops) {
 	foreach ($events as $event_id => $identifier) {
 		if ($runde_nos) {
 			foreach ($runde_nos as $runde) {
-				$url = wrap_path('tournaments_job_standings', $identifier.'/'.$runde, false);
+				$url = wrap_path('tournaments_job_standings', $identifier.'/'.$runde, ['check_rights' => false]);
 				wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/tabelle'), 'priority' => $priority]);
 			}
 		} else {
 			// Start in der 1. Runde
-			$url = wrap_path('tournaments_job_standings', $identifier.'/1', false);
+			$url = wrap_path('tournaments_job_standings', $identifier.'/1', ['check_rights' => false]);
 			wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/tabelle'), 'priority' => $priority]);
 		}
 	}
@@ -182,7 +182,7 @@ function mf_tournaments_games_update($ops) {
 	$sql = 'SELECT identifier FROM events WHERE event_id = %d';
 	$sql = sprintf($sql, $event_id);
 	$identifier = wrap_db_fetch($sql, '', 'single value');
-	$url = wrap_path('tournaments_job_games', $identifier.'/'.$runde_no, false);
+	$url = wrap_path('tournaments_job_games', $identifier.'/'.$runde_no, ['check_rights' => false]);
 	wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien')]);
 }
 
