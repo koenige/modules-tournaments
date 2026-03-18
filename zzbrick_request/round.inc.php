@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2017, 2019-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2017, 2019-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -69,7 +69,7 @@ function mod_tournaments_round($params, $vars, $event) {
 	if (mf_tournaments_current_round($event['event_id']) < $event['runde_no']) {
 		// @todo ausgestellt, muß aber wieder an wenn keine Live–Übertragung
 //		$page['head'] .= sprintf(
-//			"\t<meta http-equiv='refresh' content='60; URL=%s%s/%s/'>\r", wrap_setting('host_base'), wrap_setting('events_path'), wrap_setting('brick_url_parameter')
+//			"\t<meta http-equiv='refresh' content='60; URL=%s%s%s/'>\r", wrap_setting('host_base'), wrap_path('events_events'), wrap_setting('brick_url_parameter')
 //		);
 		if (wrap_setting('tournaments_type_single')) {
 			$event['live_date'] = mf_tournaments_last_update($event['partien']);
