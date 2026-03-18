@@ -319,14 +319,14 @@ $zz['fields'][28]['dont_show_missing'] = true;
 $zz['fields'][28]['type'] = 'upload_image';
 $zz['fields'][28]['path'] = [
 	'root' => wrap_setting('media_folder').'/teampdfs/',
-	'webroot' => wrap_setting('media_internal_path').'/teampdfs/',
+	'webroot' => wrap_path('media_internal_folder', 'teampdfs'),
 	'field1' => 'identifier',
 	'string1' => '.',
 	'string2' => 'pdf'
 ];
 $zz['fields'][28]['input_filetypes'] = ['pdf'];
 $zz['fields'][28]['link'] = [
-	'string1' => wrap_setting('media_internal_path').'/teampdfs/',
+	'string1' => wrap_path('media_internal_folder', 'teampdfs'),
 	'field1' => 'identifier',
 	'string2' => '.',
 	'string3' => 'pdf'

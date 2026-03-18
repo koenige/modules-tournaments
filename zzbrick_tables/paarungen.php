@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2015, 2017, 2019-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2015, 2017, 2019-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -117,8 +117,9 @@ $zz['subtitle']['runde_no']['prefix'] = 'Runde ';
 
 $zz['details'][0]['title'] = 'Partien';
 $zz['details'][0]['link'] = [
-	'string1' => wrap_setting('events_internal_path').'/', 'field1' => 'event_identifier',
-	'string2' => '/runde/', 'field2' => 'runde_no',
+	'area' => 'events_internal_event',
+	'fields' => ['event_identifier'],
+	'string2' => 'runde/', 'field2' => 'runde_no',
 	'string3' => '/', 'field3' => 'tisch_no',
 	'string4' => '/'
 ];

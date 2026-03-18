@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2017, 2019-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2017, 2019-2023, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -17,26 +17,30 @@ $zz = zzform_include('teams');
 
 $zz['details'][0]['title'] = 'Spieler';
 $zz['details'][0]['link'] = [
-	'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'event_identifier',
-	'string1' => '/spieler/?filter[team]=', 'field2' => 'team_id'
+	'area' => 'events_internal_event',
+	'fields' => ['event_identifier'],
+	'string1' => 'spieler/?filter[team]=', 'field2' => 'team_id'
 ];
 
 $zz['details'][1]['title'] = 'Betreuer';
 $zz['details'][1]['link'] = [
-	'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'event_identifier',
-	'string1' => '/teilnahmen/?filter[team]=', 'field2' => 'team_id'
+	'area' => 'events_internal_event',
+	'fields' => ['event_identifier'],
+	'string1' => 'teilnahmen/?filter[team]=', 'field2' => 'team_id'
 ];
 
 $zz['details'][2]['title'] = 'Buchungen';
 $zz['details'][2]['link'] = [
-	'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'event_identifier',
-	'string1' => '/buchungen/?filter[team]=', 'field2' => 'team_id'
+	'area' => 'events_internal_event',
+	'fields' => ['event_identifier'],
+	'string1' => 'buchungen/?filter[team]=', 'field2' => 'team_id'
 ];
 
 $zz['details'][3]['title'] = 'Links';
 $zz['details'][3]['link'] = [
-	'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'event_identifier',
-	'string1' => '/links/?filter[team]=', 'field2' => 'team_id'
+	'area' => 'events_internal_event',
+	'fields' => ['event_identifier'],
+	'string1' => 'links/?filter[team]=', 'field2' => 'team_id'
 ];
 
 $zz['if'][1]['details'] = false;

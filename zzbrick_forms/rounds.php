@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2017, 2019-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2017, 2019-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -36,7 +36,7 @@ if (wrap_setting('tournaments_upload_pgn')) { // 11 = author
 	$zz['fields'][11]['type'] = 'upload_image';
 	$zz['fields'][11]['path'] = [
 		'root' => wrap_setting('media_folder').'/pgn/',
-		'webroot' => wrap_setting('media_internal_path').'/pgn/',
+		'webroot' => wrap_path('media_internal_folder', 'pgn'),
 		'field1' => 'main_event_identifier', 
 		'string2' => '/',
 		'field2' => 'runde_no',
@@ -44,7 +44,7 @@ if (wrap_setting('tournaments_upload_pgn')) { // 11 = author
 	];
 	$zz['fields'][11]['input_filetypes'] = ['pgn'];
 	$zz['fields'][11]['link'] = [
-		'string1' => wrap_setting('media_internal_path').'/pgn/',
+		'string1' => wrap_path('media_internal_folder', 'pgn'),
 		'field1' => 'main_event_identifier',
 		'string2' => '/',
 		'field2' => 'runde_no',
@@ -154,24 +154,22 @@ if (wrap_access('tournaments_games', $brick['data']['event_rights']) OR wrap_acc
 	if (wrap_setting('tournaments_type_single')) {
 		$zz['details'][0]['title'] = 'Games';
 		$zz['details'][0]['link'] = [
-		// @todo use area
-			'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'identifier', 'string1' => '/'
+			'area' => 'events_internal_event',
+			'fields' => ['identifier']
 		];
 	} elseif (wrap_setting('tournaments_type_team')) {
 		$zz['details'][0]['title'] = 'Pairings';
 		$zz['details'][0]['link'] = [
-		// @todo use area
-			'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'identifier', 'string1' => '/'
+			'area' => 'events_internal_event',
+			'fields' => ['identifier']
 		];
 	}
 }
 if (wrap_access('tournaments_standings', $brick['data']['event_rights'])) {
 	$zz['details'][1]['title'] = 'Standings';
 	$zz['details'][1]['link'] = [
-	// @todo use area
-	//	'area' => 'tournaments_standings',
-	//	'fields' => ['main_event_identifier', 'runde_no']
-		'string0' => wrap_setting('events_internal_path').'/', 'field1' => 'main_event_identifier',
-		'string1' => '/tabelle/', 'field2' => 'runde_no', 'string2' => '/'
+		'area' => 'events_internal_event',
+		'fields' => ['main_event_identifier'],
+		'string1' => 'tabelle/', 'field2' => 'runde_no', 'string2' => '/'
 	];
 }

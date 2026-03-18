@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2015, 2017-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2015, 2017-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -173,7 +173,7 @@ if (wrap_setting('tournaments_upload_pgn')) {
 	$zz['fields'][23]['type'] = 'upload_image';
 	$zz['fields'][23]['path'] = [
 		'root' => wrap_setting('media_folder').'/pgn/',
-		'webroot' => wrap_setting('media_internal_path').'/pgn/',
+		'webroot' => wrap_path('media_internal_folder', 'pgn'),
 		'field1' => 'event_identifier', 
 		'string2' => '/',
 		'field2' => 'runde_no',
@@ -185,7 +185,7 @@ if (wrap_setting('tournaments_upload_pgn')) {
 	];
 	$zz['fields'][23]['if'][1]['path'] = [
 		'root' => wrap_setting('media_folder').'/pgn/',
-		'webroot' => wrap_setting('media_internal_path').'/pgn/',
+		'webroot' => wrap_path('media_internal_folder', 'pgn'),
 		'field1' => 'event_identifier', 
 		'string2' => '/',
 		'field2' => 'runde_no',
@@ -197,7 +197,7 @@ if (wrap_setting('tournaments_upload_pgn')) {
 	];
 	$zz['fields'][23]['input_filetypes'] = ['pgn'];
 	$zz['fields'][23]['link'] = [
-		'string1' => wrap_setting('media_internal_path').'/pgn/',
+		'string1' => wrap_path('media_internal_folder', 'pgn'),
 		'field1' => 'event_identifier',
 		'string2' => '/',
 		'field2' => 'runde_no',
@@ -208,7 +208,7 @@ if (wrap_setting('tournaments_upload_pgn')) {
 		'string5' => '.pgn'
 	];
 	$zz['fields'][23]['if'][1]['link'] = [
-		'string1' => wrap_setting('media_internal_path').'/pgn/',
+		'string1' => wrap_path('media_internal_folder', 'pgn'),
 		'field1' => 'event_identifier',
 		'string2' => '/',
 		'field2' => 'runde_no',

@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -94,12 +94,12 @@ foreach ($zz['fields'] as $no => $field) {
 
 $zz['page']['breadcrumbs'][] = [
 	'title' => 'Runden',
-	'url_path' => wrap_setting('events_internal_path').'/'.$brick['data']['identifier'].'/runde/'
+	'url_path' => wrap_path('events_internal_event', $brick['data']['identifier']).'runde/'
 ];
 if (count($brick['vars']) === 4) {
 	$zz['page']['breadcrumbs'][] = [
 		'title' => $zz['where']['runde_no'],
-		'url_path' => wrap_setting('events_internal_path').'/'.$brick['data']['identifier'].'/runde/'.$zz['where']['runde_no'].'/'
+		'url_path' => wrap_path('events_internal_event', $brick['data']['identifier']).'runde/'.$zz['where']['runde_no'].'/'
 	];
 	$zz['page']['breadcrumbs'][] = ['title' => 'Tisch '.$brick['vars'][3]];
 
