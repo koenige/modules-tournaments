@@ -85,3 +85,12 @@
 /* 2026-02-16-7 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&live_pgn_delay_mins=', '&tournaments_live_pgn_delay_mins=') WHERE urkunde_parameter LIKE '%&live_pgn_delay_mins=%';
 /* 2026-02-16-8 */	UPDATE _settings SET setting_key = 'tournaments_live_pgn_offset_mins' WHERE setting_key = 'live_pgn_offset_mins';
 /* 2026-02-16-9 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&live_pgn_offset_mins=', '&tournaments_live_pgn_offset_mins=') WHERE urkunde_parameter LIKE '%&live_pgn_offset_mins=%';
+/* 2026-03-18-1 */	DELETE FROM _settings WHERE setting_key = 'tournaments_federation_path';
+/* 2026-03-18-2 */	DELETE FROM _settings WHERE setting_key = 'tournaments_job_games_path';
+/* 2026-03-18-3 */	DELETE FROM _settings WHERE setting_key = 'tournaments_job_standings_path';
+/* 2026-03-18-4 */	DELETE FROM _settings WHERE setting_key = 'tournaments_list_path';
+/* 2026-03-18-5 */	DELETE FROM _settings WHERE setting_key = 'tournaments_liveresults_path';
+/* 2026-03-18-6 */	DELETE FROM _settings WHERE setting_key = 'tournaments_playercard_path';
+/* 2026-03-18-7 */	DELETE FROM _settings WHERE setting_key = 'tournaments_standings_path';
+/* 2026-03-18-8 */	DELETE FROM _settings WHERE setting_key = 'tournaments_team_registration_path';
+/* 2026-03-18-9 */	DELETE FROM _settings WHERE setting_key = 'tournaments_team_path';
