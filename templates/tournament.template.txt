@@ -59,7 +59,7 @@
 </a>
 %%% endif %%%
 %%% if pgn %%%
- · <a href="partien/%%% item runde_no %%%.pgn" title="Herunterladen der Partien der %%% item runde_no %%%. Runde im Format PGN (Portable Game Notation)">Partien [PGN]</a>
+ · <a href="%%% path tournaments_pgns identifier runde_no %%%" title="Herunterladen der Partien der %%% item runde_no %%%. Runde im Format PGN (Portable Game Notation)">Partien [PGN]</a>
 %%% if internal & livebretter %%%
  · <a href="partien/%%% item runde_no %%%-live.pgn" title="Herunterladen der Live-Partien der %%% item runde_no %%%. Runde im Format PGN (Portable Game Notation)">Live [PGN]</a>
 %%% endif %%%
@@ -116,8 +116,8 @@
 %%% endif %%%
 <div class="tournament_links">
 %%% if pgn_full %%%
-<p><a href="%%% setting tournaments_public_url %%%partien/gesamt.pgn">Partien aller Runden [PGN]</a>
-<br><a href="%%% setting tournaments_public_url %%%partien/gesamt-utf8.pgn">Partien aller Runden [PGN, Unicode UTF-8]</a></p>
+<p><a href="%%% path tournaments_pgns identifier gesamt %%%">Partien aller Runden [PGN]</a>
+<br><a href="%%% path tournaments_pgns identifier gesamt-utf8 %%%">Partien aller Runden [PGN, Unicode UTF-8]</a></p>
 %%% endif %%%
 %%% if fide_tournament_link %%%
 <p><a href="%%% item fide_tournament_link %%%">Elo-Auswertung beim Weltschachbund FIDE</a></p>

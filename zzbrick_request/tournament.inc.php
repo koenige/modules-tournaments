@@ -49,6 +49,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 			) AS events_path
 			, IF(NOT ISNULL(IFNULL(events.description, series.description)), 1, NULL) AS ausschreibung
 			, main_tournament_id
+			, events.website_id
 		FROM events
 		LEFT JOIN websites USING (website_id)
 		LEFT JOIN contacts website_org USING (contact_id)
@@ -80,6 +81,9 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		, $event['events_path']
 		, $event['identifier']
 	));
+	if ($event['website_id'] != wrap_setting('website_id'))
+		wrap_setting('path_website_id', (int) $event['website_id']);
+
 	wrap_setting('log_filename', $event['identifier']);
 	if (!$internal AND !$event['tournament_id']) {
 		return wrap_redirect(
