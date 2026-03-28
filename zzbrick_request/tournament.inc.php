@@ -70,11 +70,6 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	if (!$tournament['freiplatz']) $tournament['freiplatz'] = NULL;
 	$event = array_merge($event, $tournament);
 
-	wrap_setting('tournaments_public_url', sprintf('https://%s%s/%s/'
-		, $event['canonical_hostname']
-		, wrap_setting('local_access') ? '.local' : ''
-		, $event['identifier']
-	));
 	wrap_setting('events_public_url', sprintf('https://%s%s%s/%s/'
 		, $event['canonical_hostname']
 		, wrap_setting('local_access') ? '.local' : ''
