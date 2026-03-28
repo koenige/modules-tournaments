@@ -70,7 +70,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	wrap_setting('log_filename', $event['identifier']);
 	if (!$internal AND !$event['tournament_id']) {
 		return wrap_redirect(
-			sprintf('%s/%s/', wrap_setting('events_path'), implode('/', $vars)), 307);
+			wrap_path('events_event', implode('/', $vars), ['check_rights' => false]), 307);
 	}
 	if ($event['series_parameter']) {
 		parse_str($event['series_parameter'], $series_parameter);
