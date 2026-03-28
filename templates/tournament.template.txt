@@ -27,7 +27,7 @@
 </ul>
 </nav>
 
-<p><a href="%%% if canonical_hostname %%%https://%%% item canonical_hostname %%%%%% endif %%%/%%% item identifier %%%/">Turnier auf der öffentlichen Website</a></p>
+<p><a href="%%% path events_event identifier %%%">Turnier auf der öffentlichen Website</a></p>
 </div>
 
 %%% endif %%%
@@ -81,7 +81,7 @@
 %%% loop end %%%
 %%% unless internal %%%
 %%% if ausschreibung %%%
-<dd><a href="%%% setting events_public_url %%%#zeitplan">Kompletter Zeitplan …</a></dd>
+<dd><a href="%%% path events_event identifier %%%#zeitplan">Kompletter Zeitplan …</a></dd>
 %%% endif %%%
 %%% endif %%%
 %%% endif %%%
@@ -104,7 +104,7 @@
 %%% if links | ausschreibung %%%
 <dt>Links:</dt>
 %%% if ausschreibung %%%
-<dd><a href="%%% setting events_public_url %%%">Ausschreibung des Turniers</a></dd>
+<dd><a href="%%% path events_event identifier %%%">Ausschreibung des Turniers</a></dd>
 %%% endif %%%
 %%% if links %%%
 %%% loop links %%%
@@ -134,7 +134,7 @@
 
 %%% if offen %%%
 %%% if setting tournaments_type_single %%%
-<p><strong>Dieses Turnier ist ein offenes Turnier! <a href="%%% setting events_public_url %%%#anmeldung">Jetzt melden!</a></strong></p>
+<p><strong>Dieses Turnier ist ein offenes Turnier! <a href="%%% path events_event identifier %%%#anmeldung">Jetzt melden!</a></strong></p>
 %%% else %%%
 <p><strong>Dieses Turnier ist ein offenes Turnier!
 %%% if meldung_moeglich & online_meldung  %%%
@@ -148,7 +148,7 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% endif %%%
 %%% elseif freiplatz %%%
 %%% if setting tournaments_type_single %%%
-<p><strong>Für dieses Turnier gibt es Freiplätze. <a href="%%% setting events_public_url %%%#anmeldung">Jetzt bewerben!</a></strong></p>
+<p><strong>Für dieses Turnier gibt es Freiplätze. <a href="%%% path events_event identifier %%%#anmeldung">Jetzt bewerben!</a></strong></p>
 %%% endif %%%
 %%% endif %%%
 

@@ -41,12 +41,6 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 			, registration
 			, livebretter
 			, website_org.contact_abbr
-			, (SELECT setting_value FROM _settings
-				WHERE setting_key = "canonical_hostname" AND _settings.website_id = events.website_id
-			) AS canonical_hostname
-			, (SELECT setting_value FROM _settings
-				WHERE setting_key = "events_path" AND _settings.website_id = events.website_id
-			) AS events_path
 			, IF(NOT ISNULL(IFNULL(events.description, series.description)), 1, NULL) AS ausschreibung
 			, main_tournament_id
 			, events.website_id
@@ -70,12 +64,6 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	if (!$tournament['freiplatz']) $tournament['freiplatz'] = NULL;
 	$event = array_merge($event, $tournament);
 
-	wrap_setting('events_public_url', sprintf('https://%s%s%s/%s/'
-		, $event['canonical_hostname']
-		, wrap_setting('local_access') ? '.local' : ''
-		, $event['events_path']
-		, $event['identifier']
-	));
 	if ($event['website_id'] != wrap_setting('website_id'))
 		wrap_setting('path_website_id', (int) $event['website_id']);
 
