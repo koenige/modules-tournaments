@@ -94,3 +94,5 @@
 /* 2026-03-18-7 */	DELETE FROM _settings WHERE setting_key = 'tournaments_standings_path';
 /* 2026-03-18-8 */	DELETE FROM _settings WHERE setting_key = 'tournaments_team_registration_path';
 /* 2026-03-18-9 */	DELETE FROM _settings WHERE setting_key = 'tournaments_team_path';
+/* 2026-03-28-1 */	UPDATE webpages SET content = REPLACE(content, '%%% request games * *=event internal=1 %%%', '%%% request pgn * *=event internal=1 %%%'), identifier = CONCAT(identifier, '.pgn'), ending = 'none' WHERE content LIKE '\%\%\% request games * *=event internal=1 \%\%\%';
+/* 2026-03-28-2 */	INSERT INTO webpages (website_id, title, content, description, identifier, ending, sequence, mother_page_id, live, parameters, last_update) SELECT website_id, title, REPLACE(content, '%%% request games ', '%%% request pgn '), description, CONCAT(identifier, '.pgn'), 'none', sequence, mother_page_id, live, parameters, NOW() FROM webpages WHERE content LIKE '%\%\%\% request games *%';
