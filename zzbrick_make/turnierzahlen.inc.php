@@ -88,7 +88,7 @@ function mod_tournaments_make_turnierzahlen($vars, $settings, $event) {
 		'dsb' => 'dwz',
 		'fide' => 'elo'
 	];
-	$ratings = $contact_ids ? mf_ratings_contact($contact_ids) : [];
+	$ratings = $contact_ids ? mf_ratings_by_contact($contact_ids) : [];
 
 	wrap_setting('log_username', 'Turnierzahlen '.implode('/', $vars));
 
