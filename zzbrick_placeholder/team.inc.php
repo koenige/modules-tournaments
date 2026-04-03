@@ -90,7 +90,7 @@ function mod_tournaments_placeholder_team($brick) {
 	if (!empty($brick['local_settings']['internal'])) {
 		$zz_page['access'] = []; // remove rights from event placeholder
 		$zz_page['access'][] = $team['team_rights'].'+'.$team['event_rights']; // first team, then event, for condition
-		wrap_access_page(!empty($brick['local_settings']['access']) ? $brick['local_settings'] : $zz_page['db']['parameters'], $zz_page['access']);
+		wrap_access_page(!empty($brick['local_settings']['access']) ? $brick['local_settings'] : wrap_page_field('parameters'), $zz_page['access']);
 	}
 
 	if ($team['parameters']) {
