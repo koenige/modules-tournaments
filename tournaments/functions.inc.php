@@ -346,7 +346,8 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 	$federations_by_country = [];
 	foreach ($federations as $federation) {
 		$federations_by_zps[$federation['federation_code']] = $federation;
-		$federations_by_country[$federation['country_id']] = $federation;
+		if ($federation['country_id'])
+			$federations_by_country[$federation['country_id']] = $federation;
 	}
 
 	// get country and federation per contact
