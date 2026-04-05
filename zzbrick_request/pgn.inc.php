@@ -407,13 +407,11 @@ function mod_tournaments_pgn_liveonly($games, $event) {
  * @return array
  */
 function mod_tournaments_pgn_check_qs() {
-	global $zz_page;
-
 	$url = parse_url(wrap_setting('request_uri'));
 	if (!str_ends_with($url['path'], '.pgn')) return [];
 	if (empty($url['query'])) return [];
 	parse_str($url['query'], $qs);
-	$zz_page['url']['full']['query'] = false;
+	wrap_url('query', '');
 	if (wrap_setting('cache_age'))
 		wrap_send_cache(wrap_setting('cache_age'));
 	return array_keys($qs);
