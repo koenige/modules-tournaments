@@ -14,8 +14,6 @@
 
 
 function mod_tournaments_placeholder_team($brick) {
-	global $zz_page;
-
 	if (!empty($brick['parameter'])) {
 		if (substr_count($brick['parameter'], '/') !== 2) wrap_quit(404);
 		list($year, $identifier, $team_idf) = explode('/', $brick['parameter']);
@@ -88,9 +86,9 @@ function mod_tournaments_placeholder_team($brick) {
 	}
 
 	if (!empty($brick['local_settings']['internal'])) {
-		$zz_page['access'] = []; // remove rights from event placeholder
-		$zz_page['access'][] = $team['team_rights'].'+'.$team['event_rights']; // first team, then event, for condition
-		wrap_access_page(!empty($brick['local_settings']['access']) ? $brick['local_settings'] : wrap_page_field('parameters'), $zz_page['access']);
+		wrap_page_meta('access', [], 'set'); // remove rights from event placeholder
+		wrap_page_meta('access', $team['team_rights'].'+'.$team['event_rights']); // first team, then event, for condition
+		wrap_access_page(!empty($brick['local_settings']['access']) ? $brick['local_settings'] : NULL);
 	}
 
 	if ($team['parameters']) {
@@ -109,39 +107,41 @@ function mod_tournaments_placeholder_team($brick) {
 
 
 	if (!empty($brick['local_settings']['internal']) AND empty($brick['local_settings']['no_team_breadcrumbs'])) {
-		$zz_page['breadcrumb_placeholder'][0] = [
+		wrap_page_meta('breadcrumb_placeholder', [
 			'title' => $team['year'],
 			'url_path' => $team['year']
-		];
+		]);
 		if ($team['main_series_path']) {
-			$zz_page['breadcrumb_placeholder'][1] = [
+			wrap_page_meta('breadcrumb_placeholder', [
 				'title' => $team['main_series'],
 				'url_path' => $team['year'].'/'.$team['main_series_path'],
 				'extra_breadcrumb' => true
-			];
+			]);
 		}
-		$zz_page['breadcrumb_placeholder'][2] = [
+		wrap_page_meta('breadcrumb_placeholder', [
 			'title' => $team['event'],
 			'url_path' => $team['event_identifier']
-		];
+		]);
 		if (!empty($brick['vars'][4]) OR $brick['parameter']) {
-			$zz_page['breadcrumb_placeholder'][3] = [
+			wrap_page_meta('breadcrumb_placeholder', [
 				'title' => $team['team'],
 				'url_path' => $team['team_identifier']
-			];
+			]);
 		}
-	} elseif (!empty($zz_page['breadcrumb_placeholder'])) {
-		$last_key = array_key_last($zz_page['breadcrumb_placeholder']);
-		$zz_page['breadcrumb_placeholder'][$last_key]['extra_breadcrumb'] = true;
-		$zz_page['breadcrumb_placeholder'][] = [
+	} elseif (wrap_page_meta('breadcrumb_placeholder')) {
+		$breadcrumbs = wrap_page_meta('breadcrumb_placeholder');
+		$last_key = array_key_last($breadcrumbs);
+		$breadcrumbs[$last_key]['extra_breadcrumb'] = true;
+		wrap_page_meta('breadcrumb_placeholder', $breadcrumbs, 'set');
+		wrap_page_meta('breadcrumb_placeholder', [
 			'title' => $team['team'],
 			'url_path' => $team['team_identifier']
-		];
+		]);
 	} else {
-		$zz_page['breadcrumb_placeholder'][0] = [
+		wrap_page_meta('breadcrumb_placeholder', [
 			'title' => $team['event'],
-			'url_path' => sprintf('/%s/', $team['event_identifier'])
-		];
+			'url_path' => $team['event_identifier']
+		]);
 	}
 
 	$brick['page']['dont_show_h1'] = true;
