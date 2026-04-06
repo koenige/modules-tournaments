@@ -198,10 +198,12 @@ function mf_tournaments_colors_hex2dec($color) {
  */
 function mf_tournaments_fide_title($title) {
 	static $titles = [];
+	if (!$title) return '';
 	if (!$titles) {
 		$sql = 'SELECT category, category_short, description
 			FROM categories
-			WHERE main_category_id = /*_ID categories fide-title _*/';
+			WHERE main_category_id = /*_ID categories fide-title _*/
+			AND category_short IS NOT NULL';
 		$titles = wrap_db_fetch($sql, 'category_short');
 	}
 	if (array_key_exists($title, $titles)) return $titles[$title]['category'];
