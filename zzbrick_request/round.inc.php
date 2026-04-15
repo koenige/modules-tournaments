@@ -69,7 +69,7 @@ function mod_tournaments_round($params, $vars, $event) {
 	if (mf_tournaments_current_round($event['event_id']) < $event['runde_no']) {
 		// @todo ausgestellt, muß aber wieder an wenn keine Live–Übertragung
 //		$page['head'] .= sprintf(
-//			"\t<meta http-equiv='refresh' content='60; URL=%s%s%s/'>\r", wrap_setting('host_base'), wrap_path('events_events'), wrap_setting('brick_url_parameter')
+//			"\t<meta http-equiv='refresh' content='60; URL=%s%s%s/'>\r", wrap_setting('host_base'), wrap_path('events_events'), wrap_brick('parameter')
 //		);
 		if (wrap_setting('tournaments_type_single')) {
 			$event['live_date'] = mf_tournaments_last_update($event['partien']);
