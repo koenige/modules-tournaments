@@ -218,7 +218,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 				$logo['width_factor'] = 1.35;
 			} elseif (!empty($line['federation_abbr']) AND wrap_setting('tournaments_type_team')) {
 				// @todo better do this via parameters and not event_category
-				$logo['filename'] = sprintf('%s/flaggen/%s.png', wrap_setting('media_folder'), wrap_filename($line['federation_abbr']));
+				$logo['filename'] = mf_tournaments_flag($line['federation_abbr']);
 				$logo['border'] = true;
 			}
 			mf_tournaments_pdf_logo($pdf, $logo, $card);

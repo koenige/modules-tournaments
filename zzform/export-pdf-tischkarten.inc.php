@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017, 2019-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2017, 2019-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -71,7 +71,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 			'left' => $left
 		];
 		if (!empty($line['federation_abbr'])) {
-			$logo['filename'] = sprintf('%s/flaggen/%s.png', wrap_setting('media_folder'), wrap_filename($line['federation_abbr']));
+			$logo['filename'] = mf_tournaments_flag($line['federation_abbr']);
 			$logo['border'] = true;
 		}
 		mf_tournaments_pdf_logo($pdf, $logo, $card);

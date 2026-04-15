@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -400,4 +400,17 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 		$data = reset($data);
 	
 	return $data;
+}
+
+/**
+ * get flag image file path for a federation abbreviation
+ *
+ * @param string $abbr federation abbreviation (contacts.contact_abbr)
+ * @return string file path or empty string if not found
+ */
+function mf_tournaments_flag($abbr) {
+	$filename = sprintf('layout/flags/%s.png', wrap_filename($abbr));
+	$files = wrap_collect_files($filename, 'themes');
+	if (!$files) return '';
+	return reset($files);
 }
