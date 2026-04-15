@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2024 Gustaf Mossakowski
+ * @copyright Copyright © 2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -54,6 +54,6 @@ function mf_tournaments_sendfile_teampdfs($params) {
 	if (!$access) wrap_quit(403);
 
 	$file['caching'] = false;
-	$file['name'] = wrap_setting('media_folder').'/'.$filename;
+	$file['name'] = wrap_setting('tournaments_dir').'/'.$filename;
 	wrap_send_file($file);
 }

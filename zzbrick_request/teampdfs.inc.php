@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2013-2014, 2017-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2013-2014, 2017-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -348,7 +348,7 @@ function mf_tournaments_pdf_teams($event, $params) {
 		}
 		$teams[$team_id]['komplett'] = mf_tournaments_team_registration_complete($teams[$team_id]);
 		if (!empty($params['check_uploads'])) {
-			$filename = sprintf('%s/teampdfs/%s%%s.pdf', wrap_setting('media_folder'), $teams[$team_id]['team_identifier']);
+			$filename = sprintf('%s/teampdfs/%s%%s.pdf', wrap_setting('tournaments_dir'), $teams[$team_id]['team_identifier']);
 			$filenames = [
 				sprintf($filename, ''),
 				sprintf($filename, '-ehrenkodex'),
