@@ -172,7 +172,7 @@ if (wrap_setting('tournaments_upload_pgn')) {
 	$zz['fields'][23]['field_name'] = 'pgn';
 	$zz['fields'][23]['type'] = 'upload_image';
 	$zz['fields'][23]['path'] = [
-		'root' => wrap_setting('media_folder').'/pgn/',
+		'root' => wrap_setting('pgn_dir').'/',
 		'field1' => 'event_identifier',
 		'string2' => '/',
 		'field2' => 'pgn_segment',

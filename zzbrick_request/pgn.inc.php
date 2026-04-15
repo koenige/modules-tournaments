@@ -99,7 +99,7 @@ function mod_tournaments_pgn_settings($settings) {
 	} else {
 		$settings['character_set'] = 'iso-8859-1';
 	}
-	$settings['pgn_path'] = wrap_setting('media_folder').'/pgn/%s/%s.pgn';
+	$settings['pgn_path'] = wrap_setting('pgn_dir').'/%s/%s.pgn';
 	// ignore query strings behind .pgn
 	$settings['qs'] = mod_tournaments_pgn_check_qs();
 	return $settings;

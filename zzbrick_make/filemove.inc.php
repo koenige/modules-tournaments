@@ -74,7 +74,7 @@ function mod_tournaments_make_filemove() {
 	}
 
 	$pgn_queue = wrap_setting('pgn_queue_dir').'/%s';
-	$pgn_sys = wrap_setting('media_folder').wrap_setting('pgn_folder').'/%s';
+	$pgn_sys = wrap_setting('pgn_dir').'/%s';
 
 	wrap_include('syndication', 'zzwrap');
 	wrap_setting('syndication_timeout_ms', 2500);

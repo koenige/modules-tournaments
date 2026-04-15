@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -108,7 +108,7 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 	}
 
 	// PGN-Datei vorhanden?
-	$pgn_path = wrap_setting('media_folder').'/pgn/'.$event['identifier'].'/%s.pgn';
+	$pgn_path = wrap_setting('pgn_dir').'/'.$event['identifier'].'/%s.pgn';
 	$pgn_filename = sprintf($pgn_path, $pgn_filename);
 	if (file_exists($pgn_filename)) {
 		$pgn = file($pgn_filename);
