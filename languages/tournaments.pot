@@ -5,7 +5,7 @@
 # https://www.zugzwang.org/modules/tournaments
 #
 # @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2020-2025 Gustaf Mossakowski
+# @copyright Copyright © 2020-2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
 msgid ""
@@ -142,6 +142,10 @@ msgstr ""
 
 #: zzbrick_request/teaminternal.inc.php
 msgid "Please create a tournament first."
+msgstr ""
+
+#: zzbrick_request/pgn.inc.php
+msgid "You need to be logged in to see this PGN file."
 msgstr ""
 
 #: zzbrick_tables/tournaments-identifiers.php
