@@ -36,24 +36,20 @@ if (wrap_setting('tournaments_upload_pgn')) { // 11 = author
 	$zz['fields'][11]['type'] = 'upload_image';
 	$zz['fields'][11]['path'] = [
 		'root' => wrap_setting('media_folder').'/pgn/',
-		'webroot' => wrap_path('media_internal_folder', 'pgn'),
-		'field1' => 'main_event_identifier', 
-		'string2' => '/',
+		'field1' => 'main_event_identifier',
+		'string1' => '/',
 		'field2' => 'runde_no',
-		'string3' => '.pgn'
+		'string2' => '.pgn'
 	];
 	$zz['fields'][11]['input_filetypes'] = ['pgn'];
 	$zz['fields'][11]['link'] = [
-		'string1' => wrap_path('media_internal_folder', 'pgn'),
-		'field1' => 'main_event_identifier',
-		'string2' => '/',
-		'field2' => 'runde_no',
-		'string3' => '.pgn'
+		'area' => 'tournaments_pgns_internal',
+		'fields' => ['main_event_identifier', 'runde_no'],
+		'strings_append' => ['', '-raw']
 	];
 	$zz['fields'][11]['optional_image'] = true;
 	$zz['fields'][11]['image'][0]['title'] = 'main';
 	$zz['fields'][11]['image'][0]['field_name'] = 'main';
-	$zz['fields'][11]['image'][0]['path'] = $zz['fields'][11]['path'];
 	$zz['fields'][11]['unless']['export_mode']['list_prefix'] = '<br>';
 }
 

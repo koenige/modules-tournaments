@@ -173,57 +173,21 @@ if (wrap_setting('tournaments_upload_pgn')) {
 	$zz['fields'][23]['type'] = 'upload_image';
 	$zz['fields'][23]['path'] = [
 		'root' => wrap_setting('media_folder').'/pgn/',
-		'webroot' => wrap_path('media_internal_folder', 'pgn'),
-		'field1' => 'event_identifier', 
+		'field1' => 'event_identifier',
 		'string2' => '/',
-		'field2' => 'runde_no',
-		'string3' => '-',
-		'field3' => 'tisch_no',
-		'string4' => '-',
-		'field4' => 'brett_no',
-		'string5' => '.pgn'
-	];
-	$zz['fields'][23]['if'][1]['path'] = [
-		'root' => wrap_setting('media_folder').'/pgn/',
-		'webroot' => wrap_path('media_internal_folder', 'pgn'),
-		'field1' => 'event_identifier', 
-		'string2' => '/',
-		'field2' => 'runde_no',
-		'string3' => '-',
-		'field3' => '',
-		'string4' => '',
-		'field4' => 'brett_no',
-		'string5' => '.pgn'
+		'field2' => 'pgn_segment',
+		'string3' => '.pgn'
 	];
 	$zz['fields'][23]['input_filetypes'] = ['pgn'];
 	$zz['fields'][23]['link'] = [
-		'string1' => wrap_path('media_internal_folder', 'pgn'),
-		'field1' => 'event_identifier',
-		'string2' => '/',
-		'field2' => 'runde_no',
-		'string3' => '-',
-		'field3' => 'tisch_no',
-		'string4' => '-',
-		'field4' => 'brett_no',
-		'string5' => '.pgn'
-	];
-	$zz['fields'][23]['if'][1]['link'] = [
-		'string1' => wrap_path('media_internal_folder', 'pgn'),
-		'field1' => 'event_identifier',
-		'string2' => '/',
-		'field2' => 'runde_no',
-		'string3' => '-',
-		'field3' => '',
-		'string4' => '',
-		'field4' => 'brett_no',
-		'string5' => '.pgn'
+		'area' => 'tournaments_pgns_internal',
+		'fields' => ['event_identifier', 'pgn_segment'],
+		'strings_append' => ['', '-raw']
 	];
 	$zz['fields'][23]['optional_image'] = true;
 
 	$zz['fields'][23]['image'][0]['title'] = 'gro&szlig;';
 	$zz['fields'][23]['image'][0]['field_name'] = 'gross';
-	$zz['fields'][23]['image'][0]['path'] = $zz['fields'][23]['path'];
-	$zz['fields'][23]['if'][1]['image'][0]['path'] = $zz['fields'][23]['if'][1]['path'];
 	$zz['fields'][23]['dont_show_missing'] = true;
 	$zz['fields'][23]['hide_in_list_if_empty'] = true;
 }
@@ -246,6 +210,7 @@ $zz['fields'][99]['hide_in_list'] = true;
 
 $zz['sql'] = 'SELECT partien.*
 		, event, events.identifier AS event_identifier, paarungen.tisch_no
+		, CONCAT(partien.runde_no, IFNULL(CONCAT("-", paarungen.tisch_no), ""), "-", partien.brett_no) AS pgn_segment
 		, CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname) AS weiss
 		, CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname) AS schwarz
 		, categories.category
