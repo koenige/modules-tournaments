@@ -184,22 +184,18 @@ if (wrap_setting('tournaments_upload_pgn')) {
 	$zz['fields'][25]['type'] = 'upload_image';
 	$zz['fields'][25]['path'] = [
 		'root' => wrap_setting('media_folder').'/pgn/',
-		'webroot' => wrap_path('media_internal_folder', 'pgn'),
 		'field1' => 'event_identifier',
-		'string2' => '/gesamt',
-		'string3' => '.pgn'
+		'string1' => '/gesamt.pgn'
 	];
 	$zz['fields'][25]['input_filetypes'] = ['pgn'];
 	$zz['fields'][25]['link'] = [
-		'string1' => wrap_path('media_internal_folder', 'pgn'),
-		'field1' => 'event_identifier',
-		'string2' => '/gesamt',
-		'string3' => '.pgn'
+		'area' => 'tournaments_pgns_internal',
+		'fields' => ['event_identifier'],
+		'strings' => ['gesamt-raw']
 	];
 	$zz['fields'][25]['optional_image'] = true;
 	$zz['fields'][25]['image'][0]['title'] = 'pgn';
 	$zz['fields'][25]['image'][0]['field_name'] = 'pgn';
-	$zz['fields'][25]['image'][0]['path'] = $zz['fields'][25]['path'];
 	$zz['fields'][25]['title_tab'] = 'Dateien';
 	$zz['fields'][25]['if']['add']['hide_in_form'] = true;
 }
