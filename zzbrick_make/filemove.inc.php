@@ -73,7 +73,7 @@ function mod_tournaments_make_filemove() {
 		}
 	}
 
-	$pgn_queue = wrap_setting('media_folder').wrap_setting('pgn_queue_folder').'/%s';
+	$pgn_queue = wrap_setting('pgn_queue_dir').'/%s';
 	$pgn_sys = wrap_setting('media_folder').wrap_setting('pgn_folder').'/%s';
 
 	wrap_include('syndication', 'zzwrap');
@@ -116,8 +116,7 @@ function mod_tournaments_make_filemove() {
  * @return void
  */
 function mod_tournaments_make_filemove_queue($tournament, $parameters = []) {
-	// pgn-live/2016-dvm-u20/games.pgn
-	$pgn_live = wrap_setting('media_folder').wrap_setting('pgn_live_folder').'/%s/games.pgn';
+	$pgn_live = wrap_setting('pgn_live_dir').'/%s/games.pgn';
 
 	$source = sprintf($pgn_live, $tournament['path']);
 	if ($merged_source = mod_tournaments_make_filemove_concat_pgn($source))
@@ -176,7 +175,7 @@ function mod_tournaments_make_filemove_final_pgn($tournament) {
 function mod_tournaments_make_filemove_concat_pgn($source) {
 	// test against filesize, too, livechess creates empty games.pgn
 	if (file_exists($source) AND filesize($source)) return false;
-	$folder = dirname($source); // media_folder/pgn-live/[tournament]/
+	$folder = dirname($source); // pgn_live_dir/[tournament]/
 	$pgn_files = mod_tournaments_make_filemove_scandir($folder);
 	if (!$pgn_files) return false;
 	
@@ -230,7 +229,7 @@ function mod_tournaments_make_filemove_scandir($folder) {
  */
 function mod_tournaments_make_filemove_bulletin_pgn($tournament) {
 	if (empty($tournament['parameters']['pgn_bulletin_file_template'])) return;
-	$bulletin_dir = wrap_setting('media_folder').wrap_setting('pgn_bulletin_folder').'/'.$tournament['main_series_path'];
+	$bulletin_dir = wrap_setting('pgn_bulletin_dir').'/'.$tournament['main_series_path'];
 	if (!file_exists($bulletin_dir)) return;
 
 	$s_filename = sprintf('%s/%s.pgn', $bulletin_dir, $tournament['parameters']['pgn_bulletin_file_template']);

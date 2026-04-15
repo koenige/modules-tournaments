@@ -33,8 +33,8 @@ function mod_tournaments_make_livefolders() {
 	$running = wrap_db_fetch($sql, '_dummy_', 'key/value');
 
 	// get all existing folders
-	$pgn_folders[] = wrap_setting('media_folder').'/pgn-live';
-	$pgn_folders[] = wrap_setting('media_folder').'/pgn-queue';
+	$pgn_folders[] = wrap_setting('pgn_live_dir');
+	$pgn_folders[] = wrap_setting('pgn_queue_dir');
 
 	foreach ($pgn_folders as $pgn_folder) {
 		$existing_folders = array_diff(scandir($pgn_folder), ['.', '..']);
