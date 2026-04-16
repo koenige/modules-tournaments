@@ -100,6 +100,6 @@ msgstr ""
 msgid "Please create a tournament first."
 msgstr "Bitte lege zuerst ein Turnier an."
 
-#: zzbrick_request/pgn.inc.php
+#: zzbrick_request/pgnfile.inc.php
 msgid "You need to be logged in to see this PGN file."
 msgstr "Du musst angemeldet sein, um diese PGN-Datei anzuzeigen."

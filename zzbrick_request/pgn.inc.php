@@ -57,8 +57,6 @@ function mod_tournaments_pgn($vars, $settings = [], $event = []) {
 
 	if ($settings['request'] === 'gesamt')
 		return mod_tournaments_pgn_file_complete($event, $settings);
-	if ($settings['request'] === 'gesamt-raw')
-		return mod_tournaments_pgn_file_raw($event, 'gesamt', $settings);
 	if ($settings['request'] === 'current')
 		return mod_tournaments_pgn_file_current($event, $settings);
 	if ($settings['request'] === 'live')
@@ -69,16 +67,10 @@ function mod_tournaments_pgn($vars, $settings = [], $event = []) {
 		return mod_tournaments_pgn_file_live_round($event, $matches[1], $settings);
 	if (preg_match('/^(\d+)-live-raw$/', $settings['request'], $matches))
 		return mod_tournaments_pgn_file_liveraw_round($event, $matches[1], $settings);
-	if (preg_match('/^(\d+)-raw$/', $settings['request'], $matches))
-		return mod_tournaments_pgn_file_raw($event, $matches[1], $settings);
 	if (preg_match('/^(\d+)$/', $settings['request'], $matches))
 		return mod_tournaments_pgn_file_round($event, $matches[1], $settings);
-	if (preg_match('/^(\d+)-(\d+)-raw$/', $settings['request'], $matches))
-		return mod_tournaments_pgn_file_raw($event, $matches[1].'-'.$matches[2], $settings);
 	if (preg_match('/^(\d+)-(\d+)$/', $settings['request'], $matches))
 		return mod_tournaments_pgn_file_game_single($event, $matches[1], $matches[2], $settings);
-	if (preg_match('/^(\d+)-(\d+)-(\d+)-raw$/', $settings['request'], $matches))
-		return mod_tournaments_pgn_file_raw($event, $matches[1].'-'.$matches[2].'-'.$matches[3], $settings);
 	if (preg_match('/^(\d+)-(\d+)\-(\d+)$/', $settings['request'], $matches))
 		return mod_tournaments_pgn_file_game_team($event, $matches[1], $matches[2], $matches[3], $settings);
 	return false;
@@ -321,22 +313,6 @@ function mod_tournaments_pgn_file_liveraw_round($event, $round_no, $settings) {
 	$page['text'] = file_get_contents($pgn);
 	$settings['send_as'] .= ' Runde '.$round_no.' (Live)';
 	return mod_tournaments_pgn_send($page, $settings);
-}
-
-/**
- * send the raw uploaded PGN file from disk
- *
- * @param array $event
- * @param string $basename file basename without .pgn (e.g. 'gesamt', '3', '1-2', '1-2-4')
- * @param array $settings
- */
-function mod_tournaments_pgn_file_raw($event, $basename, $settings) {
-	if (!wrap_session_value('logged_in'))
-		wrap_quit(403, wrap_text('You need to be logged in to see this PGN file.'));
-	$file['name'] = sprintf($settings['pgn_path'], $event['identifier'], $basename);
-	if (!file_exists($file['name'])) return false;
-	$file['send_as'] = sprintf('%s %s (raw).pgn', $settings['send_as'], $basename);
-	wrap_send_file($file);
 }
 
 /**

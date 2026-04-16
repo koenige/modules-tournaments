@@ -189,9 +189,9 @@ if (wrap_setting('tournaments_upload_pgn')) {
 	];
 	$zz['fields'][25]['input_filetypes'] = ['pgn'];
 	$zz['fields'][25]['link'] = [
-		'area' => 'tournaments_pgns_internal',
+		'area' => 'tournaments_pgns_raw',
 		'fields' => ['event_identifier'],
-		'strings' => ['gesamt-raw']
+		'strings' => ['gesamt']
 	];
 	$zz['fields'][25]['optional_image'] = true;
 	$zz['fields'][25]['image'][0]['title'] = 'pgn';

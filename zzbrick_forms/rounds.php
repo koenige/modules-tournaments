@@ -43,9 +43,8 @@ if (wrap_setting('tournaments_upload_pgn')) { // 11 = author
 	];
 	$zz['fields'][11]['input_filetypes'] = ['pgn'];
 	$zz['fields'][11]['link'] = [
-		'area' => 'tournaments_pgns_internal',
-		'fields' => ['main_event_identifier', 'runde_no'],
-		'strings_append' => ['', '-raw']
+		'area' => 'tournaments_pgns_raw',
+		'fields' => ['main_event_identifier', 'runde_no']
 	];
 	$zz['fields'][11]['optional_image'] = true;
 	$zz['fields'][11]['image'][0]['title'] = 'main';
