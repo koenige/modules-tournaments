@@ -48,7 +48,7 @@
 </li>
 %%% loop end %%%
 </ul>
-%%% if series_path %%%
+%%% if series_path & path events_event %%%
 <p><a href="%%% path events_event year series_path %%%">Terminplan aller Turniere</a></p>
 %%% endif %%%
 
@@ -58,7 +58,7 @@
 %%% request tournamentnews * %%%
 %%% endif %%%
 
-%%% if pgn %%%
+%%% if pgn & path tournaments_pgns %%%
 <h2>Partien</h2>
 <p><a href="%%% path tournaments_pgns identifier gesamt %%%">Download der Partien aller Turniere als PGN-Datei</a>
 <br><a href="%%% path tournaments_pgns identifier gesamt-utf8 %%%">Download der Partien aller Turniere als PGN-Datei (UTF-8)</a>
@@ -73,9 +73,15 @@
 <p><a href="%%% if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% endif %%%herkunftsorte/">Übersicht der Herkunftsorte der Teilnehmer</a></p>
 %%% endif %%%
 
+%%% if path tournaments_statistics %%%
 <h2>Zahlen</h2>
 
-<p><a href="%%% if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% endif %%%statistik/">Statistiken zu den Turnieren</a></p>
+<p><a href="%%% if series_path %%%
+%%% path tournaments_statistics year series_path %%%
+%%% else %%%
+%%% path tournaments_statistics identifier %%%
+%%% endif %%%">Statistiken zu den Turnieren</a></p>
+%%% endif %%%
 %%% endif %%%
 %%% else %%%
 <p>Die Termine der einzelnen Turniere sind noch nicht veröffentlicht.</p>
