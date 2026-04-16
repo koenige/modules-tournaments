@@ -2,7 +2,7 @@
 
 /**
  * tournaments module
- * file functions
+ * send a team registration file
  *
  * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
@@ -14,13 +14,13 @@
 
 
 /**
- * send a team registration PDF file
+ * send a team registration file
  *
  * @param array $params
  * @return array
  */
-function mf_tournaments_sendfile_teampdfs($params) {
-	if (count($params) !== 4) wrap_quit(404);
+function mod_tournaments_teamfile($params) {
+	if (count($params) !== 4) return [];
 	$filename = implode('/', $params);
 	$team = substr($params[3], 0, strrpos($params[3], '.'));
 	switch (substr($team, strrpos($team, '-') + 1)) {
