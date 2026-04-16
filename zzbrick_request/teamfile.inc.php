@@ -20,9 +20,9 @@
  * @return array
  */
 function mod_tournaments_teamfile($params) {
-	if (count($params) !== 4) return [];
-	$filename = implode('/', $params);
-	$team = substr($params[3], 0, strrpos($params[3], '.'));
+	if (count($params) !== 3) return [];
+	$filename = implode('/', $params).'.pdf';
+	$team = $params[2];
 	switch (substr($team, strrpos($team, '-') + 1)) {
 		case 'ehrenkodex':
 			$team = substr($team, 0, strrpos($team, '-'));
@@ -38,8 +38,9 @@ function mod_tournaments_teamfile($params) {
 	}
 	$sql = 'SELECT team_id, team, event, IFNULL(event_year, YEAR(date_begin)) AS year
 		FROM teams LEFT JOIN events USING (event_id) WHERE teams.identifier = "%d/%s/%s"';
-	$sql = sprintf($sql, $params[1], $params[2], $team);
+	$sql = sprintf($sql, $params[0], $params[1], $team);
 	$team = wrap_db_fetch($sql);
+	if (!$team) return false;
 	$file['send_as'] = 'Meldebogen '.$team['event'].' '.$team['year'].' '.$team['team'].$suffix.'.pdf';
 
 	$rights = sprintf('event:%d/%s', $params[1], $params[2]);
@@ -54,6 +55,6 @@ function mod_tournaments_teamfile($params) {
 	if (!$access) wrap_quit(403);
 
 	$file['caching'] = false;
-	$file['name'] = wrap_setting('tournaments_dir').'/'.$filename;
+	$file['name'] = wrap_setting('tournaments_teams_dir').'/'.$filename;
 	wrap_send_file($file);
 }
