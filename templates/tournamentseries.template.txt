@@ -48,8 +48,20 @@
 </li>
 %%% loop end %%%
 </ul>
+%%% if events %%%
+<h2>Weitere Veranstaltungen</h2>
+<ul class="events-further">
+%%% loop events %%%
+<li>%%% item duration format=date %%%%%% unless date_end %%%%%% item time_begin format=time ", %s Uhr" %%%%%% endif %%%: 
+<a href="%%% path events_event identifier %%%">%%% item event %%%</a>
+%%% unless place_equal %%%%%% item place " in %s" %%%%%% endif %%%
+</li>
+%%% loop end %%%
+</ul>
+
+%%% endif %%%
 %%% if series_path & path events_event %%%
-<p><a href="%%% path events_event year series_path %%%">Terminplan aller Turniere</a></p>
+<p><a href="%%% path events_event year series_path %%%">Terminplan aller Veranstaltungen</a></p>
 %%% endif %%%
 
 %%% unless internal %%%

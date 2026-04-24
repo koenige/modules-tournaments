@@ -94,7 +94,13 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 	else
 		$parameter = [];
 
-	foreach ($event['tournaments'] AS $turnier) {
+	$event['events'] = [];
+	foreach ($event['tournaments'] AS $event_id => $turnier) {
+		if (!$turnier['turnierform']) {
+			$event['events'][$event_id] = $turnier;
+			unset($event['tournaments'][$event_id]);
+			continue;
+		}
 		if ($turnier['partien']) $event['pgn'] = true;
 		if ($turnier['spieler']) $event['spieler'] = true;
 		if ($turnier['teams']) $event['teams'] = true;
