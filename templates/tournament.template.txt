@@ -244,7 +244,7 @@ Plätze frei sind oder eine Warteliste existiert.
 %%% item contact %%% %%% if url %%%</a>%%% endif %%%</strong></dd>
 %%% if addresses %%%
 %%% loop addresses %%%
-<dd>%%% item address %%%, %%% item postcode %%% %%% item place %%%</dd>
+<dd>%%% item address "%s, "%%%%%% item postcode %%% %%% item place %%%</dd>
 %%% loop end %%%
 %%% endif %%%
 %%% loop phone %%%
