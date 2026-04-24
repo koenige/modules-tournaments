@@ -73,6 +73,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 			, tournaments.tabellenstand_runde_no AS runde_no
 			, IF(spielerphotos = "ja", 1, NULL) AS spielerphotos
 			, IF(types.parameters LIKE "%%&tournaments_type_single=1%%", 1, NULL) AS single_tournament
+			, types.parameters
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN events_categories
@@ -87,6 +88,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 			AND events_websites.website_id = /*_SETTING website_id _*/
 		WHERE main_event_id = %d
 		AND events.event_category_id = /*_ID categories event/event _*/
+		AND types.parameters LIKE "%%&tournament=1%%"
 		ORDER BY series.sequence, events.identifier';
 	$sql = sprintf($sql, $data['event_id']);
 	$data['events'] = wrap_db_fetch($sql, 'event_id');
