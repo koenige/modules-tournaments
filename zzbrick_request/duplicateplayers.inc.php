@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015-2016, 2019-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2015-2016, 2019-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -38,6 +38,7 @@ function mod_tournaments_duplicateplayers($params, $settings, $event) {
 		FROM participations
 		WHERE usergroup_id = /*_ID usergroups spieler _*/
 		AND event_id IN (%s)
+		AND status_category_id != /*_ID categories participation-status/deleted _*/
 		GROUP BY contact_id
 		HAVING COUNT(contact_id) > 1
 	';
