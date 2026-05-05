@@ -19,7 +19,7 @@ Stand: %%% item live_date format=date %%%, %%% item live_date format=time %%% Uh
 <p>%%% item wochentag %%%, %%% item date_begin format=date %%% %%% item time_begin %%%%%% item time_end "–%s" %%%
 %%% if time_begin | time_end %%% Uhr%%% endif %%%</p>
 
-</div>
+</main>
 <div class="tournament">
 %%% loop paarungen %%%
 <table class="team_ergebnis" id="tisch-%%% item tisch_no %%%">
@@ -46,7 +46,7 @@ Stand: %%% item live_date format=date %%%, %%% item live_date format=time %%% Uh
 </table>
 %%% loop end %%%
 </div>
-<div class="text">
+<main class="text">
 <nav>
 <div class="relnav">
 %%% if tabelle %%%
