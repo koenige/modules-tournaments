@@ -72,8 +72,8 @@
 
 %%% if tabelle %%%
  · <a href="tabelle/%%% item runde_no %%%/">Tabelle</a>
-%%% loop tabellenstaende %%%
- · <a href="tabelle/%%% item runde_no %%%/%%% item tabelle %%%/">Tabelle (%%% item tabelle %%%)</a>
+%%% loop special_standings %%%
+ · <a href="tabelle/%%% item round_no %%%/%%% item special %%%/">Tabelle (%%% item special %%%)</a>
 %%% loop end %%%
 %%% endif %%%
 %%% if faellt_aus %%%</del> <strong>fällt aus!</strong>%%% endif %%%

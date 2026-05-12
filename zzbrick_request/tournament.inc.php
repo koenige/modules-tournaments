@@ -156,6 +156,9 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	';
 	$sql = sprintf($sql, $internal ? 1 : 'NULL', $event['event_id']);
 	$event['events'] = wrap_db_fetch($sql, 'event_id');
+	
+	if ($internal) $event['tabellenstaende'] = [];
+	$ts = $event['tabellenstaende'] ? explode(',', $event['tabellenstaende']) : [];
 	foreach ($event['events'] as $event_id => $program_item) {
 		if (!$event['freiplatz']) $event['freiplatz'] = NULL;
 		if ($event['offen'] OR $event['freiplatz']) {
@@ -172,6 +175,12 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 				$event['offen'] = false;
 				$event['freiplatz'] = false;
 			}
+		}
+		foreach ($ts as $stand) {
+			$event['events'][$event_id]['special_standings'][] = [
+				'special' => trim($stand),
+				'round_no' => $program_item['runde_no']
+			];
 		}
 	}
 	if ($event['date_begin'] <= date('Y-m-d')) {
@@ -269,16 +278,6 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 		$event['einzelteilnehmerliste'] = wrap_db_fetch($sql, '', 'single value');
 		if (!$event['einzelteilnehmerliste'])
 			$event['einzelteilnehmerliste'] = NULL;
-	}
-	if ($internal) $event['tabellenstaende'] = [];
-	if ($event['tabellenstaende']) {
-		$ts = explode(',', $event['tabellenstaende']);
-		$event['tabellenstaende'] = [];
-		foreach ($ts as $stand) {
-			$event['tabellenstaende'][] = [
-				'tabelle' => trim($stand)
-			];
-		}
 	}
 
 	if ($event['spielerphotos']) {
