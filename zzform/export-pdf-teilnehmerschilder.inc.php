@@ -94,6 +94,7 @@ function mf_tournaments_nametag_data($ops) {
 			) AS name
 			, sex
 			, t_verein AS club
+			, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
 			, usergroups.usergroup
 			, usergroup_categories.category AS usergroup_category
 			, role

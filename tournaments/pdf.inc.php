@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -230,11 +230,14 @@ function mf_tournaments_pdf_group_line($line) {
  * get club line for PDFs
  * role overwrites club, sometimes usergroup overwrites club
  *
- * @param array $line keys parameters, usergroup, club, role, sex
+ * @param array $line keys parameters, usergroup, club, role, sex; optional team
  * @return string
  */
 function mf_tournaments_pdf_club_line($line) {
-	if ($line['club']) return $line['club'];
+	if (wrap_setting('tournaments_nametag_show_team') && !empty($line['team']))
+		return $line['team'];
+	if ($line['club'])
+		return $line['club'];
 	if (!empty($line['parameters']['pdf_group_line'])) {
 		switch ($line['parameters']['pdf_group_line']) {
 		case 'role':
