@@ -155,3 +155,16 @@ msgstr ""
 #: zzbrick_tables/tournaments-identifiers.php
 msgid "Tournament Identifiers"
 msgstr ""
+
+#: zzform/export-pdf-teilnehmerschilder.inc.php
+msgid "No participants were selected for this export."
+msgstr ""
+
+#: zzform/export-pdf-teilnehmerschilder.inc.php
+msgid "No name tags are available for these people."
+msgstr ""
+
+#: zzform/export-pdf-teilnehmerschilder.inc.php
+msgid ""
+"This name tag size is not supported for PDF export. Allowed sizes are: %s."
+msgstr ""

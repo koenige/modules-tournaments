@@ -2,7 +2,7 @@
 
 /**
  * tournaments module
- * export participant signs as PDF
+ * export name tags as PDF
  *
  * Part of »Zugwzang Project«
  * https://www.zugzwang.org/modules/tournaments
@@ -30,6 +30,9 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	foreach ($ops['output']['rows'] as $line) {
 		$ids[] = $line['id_value'];
 	}
+	if (!$ids) {
+		wrap_quit(404, wrap_text('No participants were selected for this export.'));
+	}
 	$sql = 'SELECT participation_id, event_id
 		FROM participations
 		LEFT JOIN categories
@@ -38,7 +41,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		AND (ISNULL(categories.parameters) OR categories.parameters NOT LIKE "%%&tournaments_no_cards=1%%")';
 	$sql = sprintf($sql, implode(',', $ids));
 	$data = wrap_db_fetch($sql, 'participation_id');
-	if (!$data) wrap_quit(404, 'Es gibt keine Teilnehmerkarten für diese Personen.');
+	if (!$data) wrap_quit(404, wrap_text('No name tags are available for these people.'));
 	
 	$events = [];
 	foreach ($data as $line) {
@@ -47,8 +50,8 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		if ($events[$line['event_id']]['series_parameter']) {
 			parse_str($events[$line['event_id']]['series_parameter'], $events[$line['event_id']]['series_parameter']);
 		}
- 	}
- 	$event = wrap_static('zzform', 'event');
+	}
+	$event = wrap_static('zzform', 'event');
 	if ($event['series_parameter']) {
 		parse_str($event['series_parameter'], $event['series_parameter']);
 		$event += $event['series_parameter'];
@@ -70,34 +73,14 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	$sql = sprintf($sql, implode(',', array_keys($events)));
 	$formfields = wrap_db_fetch($sql, ['participation_id', 'formfield_id']);
 
-	$name_tag_size = !empty($event['name_tag_size']) ? $event['name_tag_size'] : '10.5x7';
-	switch ($name_tag_size) {
-	case '9x5.5':
-		$card['width'] = 255.12;
-		$card['height'] = 155.9;
-		$card['rows'] = 5;
-		$card['margin'] = 12;
-		$card['image_size'] = 54;
-		$card['logo_height'] = 26;
-		$card['bar_height'] = 22;
-		$card['bar_font_size'] = 14;
-		$card['event_font_size'] = 10;
-		$card['club_font_size'] = 10;
-		break;
-	default:
-	case '10.5x7':
-		$card['width'] = 297.5;
-		$card['height'] = 198.5;
-		$card['rows'] = 4;
-		$card['margin'] = 20;
-		$card['image_size'] = 68;
-		$card['logo_height'] = 36;
-		$card['bar_height'] = 28;
-		$card['bar_font_size'] = 18;
-		$card['event_font_size'] = 11;
-		$card['club_font_size'] = 12;
-		break;
+	$name_tag_layouts = mf_tournaments_name_tag_card_layouts();
+	if (!array_key_exists(wrap_setting('events_name_tag_size'), $name_tag_layouts)) {
+		wrap_quit(404, wrap_text(
+			'This name tag size is not supported for PDF export. Allowed sizes are: %s.'
+			, ['values' => [implode(', ', array_keys($name_tag_layouts))]]
+		));
 	}
+	$card = $name_tag_layouts[wrap_setting('events_name_tag_size')];
 
 	$sql = 'SELECT participation_id, participations.contact_id
 			, t_fidetitel AS fidetitel
@@ -140,7 +123,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		, implode(',', array_keys($data))
 	);
 	$data = wrap_db_fetch($sql, 'participation_id');
-	if (!$data) wrap_quit(404, 'Es gibt keine Teilnehmerschilder für diese Personen.');
+	if (!$data) wrap_quit(404, wrap_text('No name tags are available for these people.'));
 	if (wrap_package('ratings')) {
 		wrap_package_activate('ratings');
 		$data = mf_ratings_titles($data);
@@ -275,7 +258,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		}
 		$i++;
 	}
-	$folder = wrap_setting('tmp_dir').'/schilder/'.$event['identifier'];
+	$folder = wrap_setting('tmp_dir').'/tournaments/schilder/'.$event['identifier'];
 	wrap_mkdir($folder);
 	if (file_exists($folder.'/teilnehmerschilder.pdf')) {
 		unlink($folder.'/teilnehmerschilder.pdf');
@@ -286,7 +269,41 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 
 	$pdf->output('F', $file['name'], true);
 	wrap_send_file($file);
-}	
+}
+
+/**
+ * Physical layout presets per events_name_tag_size key (width/height in pt).
+ *
+ * @return array<string, array<string, float|int>>
+ */
+function mf_tournaments_name_tag_card_layouts() {
+	return [
+		'9x5.5' => [
+			'width' => 255.12,
+			'height' => 155.9,
+			'rows' => 5,
+			'margin' => 12,
+			'image_size' => 54,
+			'logo_height' => 26,
+			'bar_height' => 22,
+			'bar_font_size' => 14,
+			'event_font_size' => 10,
+			'club_font_size' => 10,
+		],
+		'10.5x7' => [
+			'width' => 297.5,
+			'height' => 198.5,
+			'rows' => 4,
+			'margin' => 20,
+			'image_size' => 68,
+			'logo_height' => 36,
+			'bar_height' => 28,
+			'bar_font_size' => 18,
+			'event_font_size' => 11,
+			'club_font_size' => 12,
+		],
+	];
+}
 
 /**
  * mf_tournaments_p_qrcode(https://r.schach.in/p/12345, 12345)
