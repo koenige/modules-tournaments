@@ -4,7 +4,7 @@
  * tournaments module
  * export name tags as PDF
  *
- * Part of »Zugwzang Project«
+ * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
@@ -26,6 +26,17 @@
 function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	wrap_include('pdf', 'tournaments');
 
+	list($event, $data) = mf_tournaments_nametag_data($ops);
+	mf_tournaments_nametag_pdf($event, $data);
+}
+
+/**
+ * Collect participations and enriched rows for name tag PDF export.
+ *
+ * @param array $ops zzform export ops
+ * @return array{array, array<int, array>} Event record (zzform context), then enriched rows keyed by participation_id
+ */
+function mf_tournaments_nametag_data($ops) {
 	$ids = [];
 	foreach ($ops['output']['rows'] as $line) {
 		$ids[] = $line['id_value'];
@@ -42,7 +53,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	$sql = sprintf($sql, implode(',', $ids));
 	$data = wrap_db_fetch($sql, 'participation_id');
 	if (!$data) wrap_quit(404, wrap_text('No name tags are available for these people.'));
-	
+
 	$events = [];
 	foreach ($data as $line) {
 		if (array_key_exists($line['event_id'], $events)) continue;
@@ -56,7 +67,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		parse_str($event['series_parameter'], $event['series_parameter']);
 		$event += $event['series_parameter'];
 	}
-	
+
 	// extra form fields?
 	$sql = 'SELECT formfield_id, formfield, parameters, formfield_category_id
 			, IFNULL(registrationvarchar, registrationtext) AS text
@@ -73,21 +84,12 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	$sql = sprintf($sql, implode(',', array_keys($events)));
 	$formfields = wrap_db_fetch($sql, ['participation_id', 'formfield_id']);
 
-	$name_tag_layouts = mf_tournaments_name_tag_card_layouts();
-	if (!array_key_exists(wrap_setting('events_name_tag_size'), $name_tag_layouts)) {
-		wrap_quit(404, wrap_text(
-			'This name tag size is not supported for PDF export. Allowed sizes are: %s.'
-			, ['values' => [implode(', ', array_keys($name_tag_layouts))]]
-		));
-	}
-	$card = $name_tag_layouts[wrap_setting('events_name_tag_size')];
-
 	$sql = 'SELECT participation_id, participations.contact_id
 			, t_fidetitel AS fidetitel
 			, CONCAT(
 				IFNULL(CONCAT(t_fidetitel, " "), ""),
-				IFNULL(t_vorname, first_name), 
-				IFNULL(CONCAT(" ", IFNULL(t_namenszusatz, name_particle)), ""), " ", 
+				IFNULL(t_vorname, first_name),
+				IFNULL(CONCAT(" ", IFNULL(t_namenszusatz, name_particle)), ""), " ",
 				IFNULL(t_nachname, last_name)
 			) AS name
 			, sex
@@ -103,7 +105,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			, IF(IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) > 18, 1,
 				IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_begin, 1, NULL)
 			) AS volljaehrig
-			, IF(SUBSTRING(date_of_birth, 5, 6) = "-00-00" AND IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) = 18, 1, 
+			, IF(SUBSTRING(date_of_birth, 5, 6) = "-00-00" AND IFNULL(events.event_year, YEAR(events.date_begin)) - YEAR(date_of_birth) = 18, 1,
 				IF(SUBSTRING(date_of_birth, 5, 6) != "-00-00" AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) <= events.date_end AND DATE_ADD(date_of_birth, INTERVAL 18 YEAR) >= events.date_begin, 1, NULL)
 			) AS evtl_volljaehrig
 		FROM participations
@@ -128,7 +130,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		wrap_package_activate('ratings');
 		$data = mf_ratings_titles($data);
 	}
-	
+
 	foreach ($data as $participation_id => $line) {
 		if ($line['parameters'])
 			parse_str($line['parameters'], $line['parameters']);
@@ -141,7 +143,6 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		$line['zusaetzliche_ak'] = mf_tournaments_pdf_agegroups($line['parameters'], $line['age']);
 		$line['group_line'] = mf_tournaments_pdf_group_line($line);
 		$line['club_line'] = mf_tournaments_pdf_club_line($line);
-		$line['graphic'] = mf_tournaments_pdf_graphic([$line['role'], $line['usergroup']], $card);
 		if (empty($line['fidetitel']) AND !empty($line['fide_title']))
 			$line['name'] = $line['fide_title'].' '.$line['name'];
 
@@ -159,7 +160,26 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		$data[$participation_id] = $line;
 	}
 	$data = mf_tournaments_clubs_to_federations($data, 'club_contact_id');
-	
+
+	return [$event, $data];
+}
+
+/**
+ * Build PDF from {@see mf_tournaments_nametag_data()} output and send download.
+ *
+ * @param array $event
+ * @param array<int, array> $data Enriched rows keyed by participation_id
+ */
+function mf_tournaments_nametag_pdf($event, $data) {
+	$layouts = mf_tournaments_nametag_layouts();
+	if (!array_key_exists(wrap_setting('events_name_tag_size'), $layouts)) {
+		wrap_quit(404, wrap_text(
+			'This name tag size is not supported for PDF export. Allowed sizes are: %s.'
+			, ['values' => [implode(', ', array_keys($layouts))]]
+		));
+	}
+	$card = $layouts[wrap_setting('events_name_tag_size')];
+
 	wrap_lib('tfpdf');
 
 	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
@@ -168,13 +188,14 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 	$pdf->AddFont('FiraSans-Regular', '', 'FiraSans-Regular.ttf', true);
 	$pdf->AddFont('FiraSans-SemiBold', '', 'FiraSans-SemiBold.ttf', true);
 	$pdf->SetLineWidth(0.25);
-	
+
 	$event['main_series_long'] = mf_tournaments_event_title_wrap($event['main_series_long']);
-	
+
 	$cell_width = $card['width'] - 2 * $card['margin'];
 
 	$i = 0;
 	foreach ($data as $line) {
+		$line['graphic'] = mf_tournaments_pdf_graphic([$line['role'], $line['usergroup']], $card);
 		// PDF setzen
 		$row = $i % $card['rows'];
 		if (!$row) {
@@ -190,7 +211,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 		for ($j = 0; $j < 2; $j++) {
 			// logo or QR code
 			$left = $card['width'] * $j;
-			
+
 			$logo = [
 				'top' => $card['margin'] + $top,
 				'left' => $left
@@ -212,7 +233,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
 			$pdf->SetTextColor(0, 0, 0);
 			$pdf->SetXY($left + $card['width']/2, $card['margin'] + $top);
 			$pdf->MultiCell(125, round($card['event_font_size'] * 1.2), $event['main_series_long']."\n".$event['place'].' '.$event['year'], 0, 'L');
-			
+
 			// name
 			$pdf->SetXY($card['margin'] + $left, $pdf->GetY() + $card['margin'] * 1.2);
 			if (strlen($line['name']) > 23) {
@@ -276,7 +297,7 @@ function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
  *
  * @return array<string, array<string, float|int>>
  */
-function mf_tournaments_name_tag_card_layouts() {
+function mf_tournaments_nametag_layouts() {
 	return [
 		'9x5.5' => [
 			'width' => 255.12,
