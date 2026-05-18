@@ -118,6 +118,13 @@ function mod_tournaments_make_standings_team($event) {
 	$existing_standings = wrap_db_fetch($sql, '_dummy_', 'key/value');
 
 	foreach ($standings as $stand) {
+		if (!array_key_exists('team_id', $stand)) {
+			wrap_error(wrap_text(
+				'Tournament with event_id %d has invalid standings ID %d, field team_id is empty.',
+				['values' => [$event['event_id'], $stand['tabellenstand_id']]]
+			));
+			continue;
+		}
 		$unwanted_keys = [
 			'dwz_schnitt', 'eindeutig'
 		];
