@@ -204,8 +204,12 @@ function mod_tournaments_make_filemove_concat_pgn($source) {
  * @return array list of files
  */
 function mod_tournaments_make_filemove_scandir($folder) {
-	$files = scandir($folder);
 	$pgn_files = [];
+	if (!file_exists($folder)) {
+		wrap_error(wrap_text('Folder %s for file move does not exist.', ['values' => [$folder]]));
+		return $pgn_files;
+	}
+	$files = scandir($folder);
 	foreach ($files as $file) {
 		if (substr($file, 0, 1) === '.') continue;
 		if ($file === 'games.pgn' AND filesize($folder.'/'.$file))
