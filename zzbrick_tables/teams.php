@@ -324,7 +324,7 @@ $zz['fields'][28]['path'] = [
 	'string2' => 'pdf'
 ];
 $zz['fields'][28]['input_filetypes'] = ['pdf'];
-$zz['fields'][28]['link'] = [
+$zz['fields'][28]['path_web'] = [
 	'area' => 'tournaments_team_file',
 	'fields' => ['identifier']
 ];
@@ -340,14 +340,14 @@ $zz['fields'][29]['title'] = 'Ehrenkodex';
 $zz['fields'][29]['field_name'] = 'ehrenkodex';
 $zz['fields'][29]['explanation'] = 'Hochladen des ausgefüllten, gescannten Ehrenkodexes<br>(Vorlage: <a href="https://www.deutsche-schachjugend.de/fileadmin/user_upload/Ehrenkodex.pdf">Ehrenkodex der Deutschen Sportjugend</a>)';
 $zz['fields'][29]['path']['string1'] = '-ehrenkodex.';
-$zz['fields'][29]['link']['strings_append'] = ['-ehrenkodex'];
+$zz['fields'][29]['path_web']['strings_append'] = ['-ehrenkodex'];
 
 $zz['fields'][30] = $zz['fields'][28];
 $zz['fields'][30]['title'] = 'Gastspielgenehmigung';
 $zz['fields'][30]['field_name'] = 'gastspielgenehmigung';
 $zz['fields'][30]['explanation'] = 'Hochladen der ausgefüllten, gescannten Gastspielgenehmigung';
 $zz['fields'][30]['path']['string1'] = '-gast.';
-$zz['fields'][30]['link']['strings_append'] = ['-gast'];
+$zz['fields'][30]['path_web']['strings_append'] = ['-gast'];
 
 $zz['fields'][20]['field_name'] = 'last_update';
 $zz['fields'][20]['type'] = 'timestamp';

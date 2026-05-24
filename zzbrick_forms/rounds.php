@@ -42,14 +42,14 @@ if (wrap_setting('tournaments_upload_pgn')) { // 11 = author
 		'string2' => '.pgn'
 	];
 	$zz['fields'][11]['input_filetypes'] = ['pgn'];
-	$zz['fields'][11]['link'] = [
+	$zz['fields'][11]['path_web'] = [
 		'area' => 'tournaments_pgns_raw',
 		'fields' => ['main_event_identifier', 'runde_no']
 	];
+	$zz['fields'][11]['link'] = $zz['fields'][11]['path_web'];
 	$zz['fields'][11]['optional_image'] = true;
 	$zz['fields'][11]['image'][0]['title'] = 'main';
 	$zz['fields'][11]['image'][0]['field_name'] = 'main';
-	$zz['fields'][11]['unless']['export_mode']['list_prefix'] = '<br>';
 }
 
 foreach ($zz['fields'] as $no => $field) {
