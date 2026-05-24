@@ -16,7 +16,7 @@
 
 <form method="POST" action="">
 <p><label for="sent_date">Nachrichten vor diesem Datum als »verteilt« markieren«:
-<br><input type="text" value="%%% item current_time format=date %%% %%% item current_time format=time %%%" name="sent_date" id="sent_date"></label></p>
+<br><input type="text" value="%%% item current_time format=date_plain %%% %%% item current_time format=time %%%" name="sent_date" id="sent_date"></label></p>
 <p><input type="submit" value="Nachrichten als »verteilt« markieren"></p>
 </form>
 <hr>
