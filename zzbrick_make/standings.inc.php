@@ -168,6 +168,35 @@ function mod_tournaments_make_standings_round($vars) {
 
 	$type = implode('/', $vars);
 	wrap_setting('log_username', wrap_setting('default_robot_username'));
+
+	$handle = mod_tournaments_make_standings_round_lock($vars, true);
+	if (!$handle) {
+		wrap_error(sprintf(
+			'Standings update: parallel run blocked for %s round %d',
+			$event['identifier'], $round_no
+		), E_USER_NOTICE);
+		$page['text'] = wrap_text(
+			'Standings update for tournament %s, round %d already in progress.',
+			['values' => [$event['identifier'], $round_no]]
+		);
+		$page['status'] = 403;
+		return mod_tournaments_make_standings_return($page, $time, $type);
+	}
+	$page = mod_tournaments_make_standings_round_run($event, $round_no, $time, $type);
+	wrap_flock_release($handle);
+	return $page;
+}
+
+/**
+ * calculate and write standings for one round (caller holds the lock)
+ *
+ * @param array $event
+ * @param int $round_no
+ * @param float $time microtime(true) at start of request
+ * @param string $type log label
+ * @return array|false
+ */
+function mod_tournaments_make_standings_round_run($event, $round_no, $time, $type) {
 	if (wrap_setting('tournaments_type_single')) {
 		require_once __DIR__.'/standings-single.inc.php';
 		$tabelle = mod_tournaments_make_standings_calculate_single($event, $round_no);
@@ -201,6 +230,24 @@ function mod_tournaments_make_standings_round($vars) {
 	else
 		$page['text'] = wrap_text('Standings for tournament %s, round %d: no updates necessary.', ['values' => [$event['identifier'], $round_no]]);
 	return mod_tournaments_make_standings_return($page, $time, $type);
+}
+
+/**
+ * exclusive lock for one tournament round standings update (calculate + write)
+ *
+ * @param array $vars year, event identifier, round no
+ * @param bool $non_blocking true: LOCK_NB (return false if already locked)
+ * @return resource|false handle on success, false if another run holds the lock
+ */
+function mod_tournaments_make_standings_round_lock($vars, $non_blocking = true) {
+	$module_lock_dir = sprintf('%s/tournaments', wrap_setting('tmp_dir'));
+	wrap_mkdir($module_lock_dir);
+	$lock_path = sprintf(
+		'%s/standings-%s.lock',
+		$module_lock_dir,
+		preg_replace('[^a-zA-Z0-9._-]+', '-', implode('-', $vars))
+	);
+	return wrap_flock_acquire($lock_path, $non_blocking);
 }
 
 function mod_tournaments_make_standings_return($page, $time, $type) {
