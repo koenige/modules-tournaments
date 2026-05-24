@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2015-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -54,6 +54,7 @@ function mod_tournaments_tournamentstats($params, $setting, $data) {
 			ON events.series_category_id = series.category_id
 		WHERE main_event_id = %d
 		AND events.event_category_id = /*_ID categories event/event _*/
+		AND eventtypes.parameters LIKE "%%&tournament=1%%"
 		AND (ISNULL(tournaments.urkunde_parameter) OR tournaments.urkunde_parameter NOT LIKE "%%statistik=0%%")
 		ORDER BY series.sequence
 	';
@@ -168,9 +169,15 @@ function mod_tournaments_tournamentstats($params, $setting, $data) {
 	$sql = 'SELECT IFNULL(events.event_year, YEAR(events.date_begin)) AS year
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
+		LEFT JOIN events_categories
+			ON events_categories.event_id = events.event_id
+			AND events_categories.type_category_id = /*_ID categories events _*/
+		LEFT JOIN categories eventtypes
+			ON events_categories.category_id = eventtypes.category_id
 		LEFT JOIN events main_events
 			ON events.main_event_id = main_events.event_id
 		WHERE main_events.series_category_id = /*_ID categories series/%s _*/
+		AND eventtypes.parameters LIKE "%%&tournament=1%%"
 		AND (ISNULL(tournaments.urkunde_parameter) OR tournaments.urkunde_parameter NOT LIKE "%%statistik=0%%")
 		AND (
 			(SELECT COUNT(team_id) FROM participations LEFT JOIN teams USING (team_id) WHERE participations.event_id = events.event_id AND teams.team_status = "Teilnehmer") > 0
