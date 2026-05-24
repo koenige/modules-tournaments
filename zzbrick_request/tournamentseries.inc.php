@@ -94,6 +94,9 @@ function mod_tournaments_tournamentseries($vars, $settings, $event) {
 	else
 		$parameter = [];
 
+	if ($event['website_id'] !== wrap_setting('website_id'))
+		wrap_setting('path_website_id', $event['website_id']);
+
 	$event['events'] = [];
 	foreach ($event['tournaments'] AS $event_id => $turnier) {
 		if (!$turnier['turnierform']) {

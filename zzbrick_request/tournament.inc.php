@@ -64,8 +64,8 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	if (!$tournament['freiplatz']) $tournament['freiplatz'] = NULL;
 	$event = array_merge($event, $tournament);
 
-	if ($event['website_id'] != wrap_setting('website_id'))
-		wrap_setting('path_website_id', (int) $event['website_id']);
+	if ($event['website_id'] !== wrap_setting('website_id'))
+		wrap_setting('path_website_id', $event['website_id']);
 
 	wrap_setting('log_filename', $event['identifier']);
 	if (!$internal AND !$event['tournament_id']) {
