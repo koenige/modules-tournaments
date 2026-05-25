@@ -245,7 +245,7 @@ function mod_tournaments_make_standings_round_lock($vars, $non_blocking = true) 
 	$lock_path = sprintf(
 		'%s/standings-%s.lock',
 		$module_lock_dir,
-		preg_replace('[^a-zA-Z0-9._-]+', '-', implode('-', $vars))
+		preg_replace('/[^a-zA-Z0-9._-]+/', '-', implode('-', $vars))
 	);
 	return wrap_flock_acquire($lock_path, $non_blocking);
 }
