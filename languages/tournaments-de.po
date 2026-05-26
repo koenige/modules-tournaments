@@ -199,6 +199,14 @@ msgstr "Turnierkennungen"
 msgid "No participants were selected for this export."
 msgstr "Für diesen Export wurden keine Teilnehmer ausgewählt."
 
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "No player messages were selected for this export."
+msgstr "Für diesen Export wurden keine Brett-Nachrichten ausgewählt."
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "No verified player messages are available for this export."
+msgstr "Es sind keine bestätigten Brett-Nachrichten für diesen Export verfügbar."
+
 #: zzform/export-pdf-teilnehmerschilder.inc.php
 msgid "No name tags are available for these people."
 msgstr "Es gibt keine Teilnehmerschilder für diese Personen."

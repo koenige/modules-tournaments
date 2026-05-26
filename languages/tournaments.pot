@@ -164,6 +164,14 @@ msgstr ""
 msgid "No participants were selected for this export."
 msgstr ""
 
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "No player messages were selected for this export."
+msgstr ""
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "No verified player messages are available for this export."
+msgstr ""
+
 #: zzform/export-pdf-teilnehmerschilder.inc.php
 msgid "No name tags are available for these people."
 msgstr ""

@@ -19,16 +19,23 @@
  * @param array $ops
  */
 function mf_tournaments_export_pdf_brettnachrichten($ops) {
-	foreach ($ops['output']['head'] as $index => $field) {
-		if (empty($field['field_name'])) continue;
-		if ($field['field_name'] !== 'playermessage_id') continue;
-		$p_index = $index; 
-	}
-	if (!isset($p_index)) return false;
-	
+	$data = mf_tournaments_playermessages_export_data($ops);
+	mf_tournaments_playermessages_export_pdf($data);
+}
+
+/**
+ * Collect verified player messages for PDF export.
+ *
+ * @param array $ops zzform export ops
+ * @return array<int, array> rows keyed by playermessage_id
+ */
+function mf_tournaments_playermessages_export_data($ops) {
 	$ids = [];
 	foreach ($ops['output']['rows'] as $row) {
-		$ids[] = $row[$p_index]['value'];
+		$ids[] = $row['id_value'];
+	}
+	if (!$ids) {
+		wrap_quit(404, wrap_text('No player messages were selected for this export.'));
 	}
 
 	$sql = 'SELECT playermessage_id, message, email, sender, playermessages.created
@@ -60,8 +67,71 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 		ORDER BY federations.contact_short, series.sequence, IFNULL(white.brett_no, black.brett_no), playermessages.created';
 	$sql = sprintf($sql, implode(',', $ids));
 	$data = wrap_db_fetch($sql, 'playermessage_id');
-	
-	wrap_lib('tfpdf');
+	if (!$data) {
+		wrap_quit(404, wrap_text('No verified player messages are available for this export.'));
+	}
+	return $data;
+}
+
+/**
+ * Render player message export as two-column landscape PDF.
+ *
+ * @param array<int, array> $data rows keyed by playermessage_id
+ */
+function mf_tournaments_playermessages_export_pdf($data) {
+	$pdf = new colPDF('L', 'mm', 'A4');
+	$pdf->setCompression(true);
+	$pdf->AddFont('OpenSansEmoji', '', 'OpenSansEmoji.ttf', true);
+	$pdf->AddFont('FiraSans-SemiBold', '', 'FiraSans-SemiBold.ttf', true);
+	$pdf->SetMargins(15, 15);
+	$pdf->SetCol(1);
+
+	$last_contact = false;
+	$first = reset($data);
+	$round_no = $first['round_no'];
+	$half = 118.5;
+
+	foreach ($data as $line) {
+		if ($line['contact'] !== $last_contact) {
+			$pdf->event = $line['event'];
+			$pdf->board_no = $line['board_no'];
+			$pdf->colour = $line['colour'];
+			$pdf->contact = $line['contact'];
+			$pdf->federation = $line['federation'];
+
+			if ($pdf->col === 1) {
+				$pdf->SetCol(0);
+				$pdf->addPage();
+				$pdf->Line(148.5, 0, 148.5, 210);
+			} else {
+				$pdf->SetCol(1);
+				$pdf->setHead();
+			}
+		} else {
+			$pdf->MultiCell(118.5, 7.5, '', 0, 'L');
+		}
+		$last_contact = $line['contact'];
+		$pdf->setFont('FiraSans-SemiBold', '', 11);
+		$pdf->MultiCell($half, 6, 'Von: '.$line['sender'].' <'.$line['email'].'>', 0, 'L');
+		$pdf->MultiCell($half, 6, 'Datum: '.wrap_date_plain($line['created']).' '.wrap_time($line['created']), 0, 'L');
+		$pdf->setFont('OpenSansEmoji', '', 11);
+		$pdf->MultiCell($half, 6, trim($line['message']), 0, 'L');
+	}
+	$folder = wrap_setting('tmp_dir').'/brettnachrichten/dem';
+	wrap_mkdir($folder);
+	if (file_exists($folder.'/runde-'.$round_no.'.pdf')) {
+		unlink($folder.'/runde-'.$round_no.'.pdf');
+	}
+	$file['name'] = $folder.'/runde-'.$round_no.'.pdf';
+	$file['send_as'] = 'DEM Brettnachrichten Runde '.$round_no.'.pdf';
+	$file['etag_generate_md5'] = true;
+
+	$pdf->output('F', $file['name'], true);
+	wrap_send_file($file);
+}
+
+
+wrap_lib('tfpdf');
 
 class colPDF extends TFPDF
 {
@@ -118,57 +188,3 @@ function Header()
 }
 
 }
-
-
-	$pdf = new colPDF('L', 'mm', 'A4');		// panorama = p, DIN A4, 595 x 842
-	$pdf->setCompression(true);
-	$pdf->AddFont('OpenSansEmoji', '', 'OpenSansEmoji.ttf', true);
-	$pdf->AddFont('FiraSans-SemiBold', '', 'FiraSans-SemiBold.ttf', true);
-	$pdf->SetMargins(15, 15);
-	$pdf->SetCol(1);
-	
-	$last_contact = false;
-	$first = reset($data);
-	$round_no = $first['round_no'];
-	$col = 'left';
-	$half = 118.5;
-	$left = 15;
-
-	foreach ($data as $line) {
-		if ($line['contact'] !== $last_contact) {
-			$pdf->event = $line['event'];
-			$pdf->board_no = $line['board_no'];
-			$pdf->colour = $line['colour'];
-			$pdf->contact = $line['contact'];
-			$pdf->federation = $line['federation'];
-
-			if ($pdf->col === 1) {
-				$pdf->SetCol(0);
-				$pdf->addPage();
-				$pdf->Line(148.5, 0, 148.5, 210);
-			} else {
-				$pdf->SetCol(1);
-				$pdf->setHead();
-			}
-		} else {
-			$pdf->MultiCell(118.5, 7.5, '', 0, 'L');
-		}
-		$last_contact = $line['contact'];
-		$pdf->setFont('FiraSans-SemiBold', '', 11);
-		$pdf->MultiCell($half, 6, 'Von: '.$line['sender'].' <'.$line['email'].'>', 0, 'L');
-		$pdf->MultiCell($half, 6, 'Datum: '.wrap_date_plain($line['created']).' '.wrap_time($line['created']), 0, 'L');
-		$pdf->setFont('OpenSansEmoji', '', 11);
-		$pdf->MultiCell($half, 6, trim($line['message']), 0, 'L');
-	}
-	$folder = wrap_setting('tmp_dir').'/brettnachrichten/dem';
-	wrap_mkdir($folder);
-	if (file_exists($folder.'/runde-'.$round_no.'.pdf')) {
-		unlink($folder.'/runde-'.$round_no.'.pdf');
-	}
-	$file['name'] = $folder.'/runde-'.$round_no.'.pdf';
-	$file['send_as'] = 'DEM Brettnachrichten Runde '.$round_no.'.pdf';
-	$file['etag_generate_md5'] = true;
-
-	$pdf->output('F', $file['name'], true);
-	wrap_send_file($file);
-}	
