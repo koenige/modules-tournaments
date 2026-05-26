@@ -34,12 +34,7 @@ function mod_tournaments_make_playermessage($vars, $settings, $data) {
 	if (!$contact) return false;
 	$data = array_merge($data, $contact);
 	
-	$sql = 'SELECT IF(spielernachrichten = "ja" AND DATE_SUB(events.date_end, INTERVAL 2 DAY) >= CURDATE(), NULL, 1), date_end
-		FROM tournaments
-		LEFT JOIN events USING (event_id)
-	    WHERE event_id = %d';
-	$sql = sprintf($sql, $data['event_id']);
-	$data['news_inactive'] = wrap_db_fetch($sql, '', 'single value');
+	$data['news_inactive'] = mf_tournaments_playermessages_inactive($data['event_id']);
 	if ($data['news_inactive']) {
 		$page['status'] = 410;
 		$data['hide_form'] = true;

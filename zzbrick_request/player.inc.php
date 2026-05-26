@@ -44,7 +44,6 @@ function mod_tournaments_player($vars, $settings, $event) {
 				AND identifier_category_id = /*_ID categories identifiers/id_fide _*/
 			) AS player_id_fide
 			, livebretter
-			, IF(DATE_SUB(events.date_end, INTERVAL 2 DAY) < CURDATE(), 1, NULL) AS einsendeschluss
 			, IF(spielerphotos = "ja", 1, NULL) AS spielerphotos
 			, IF(spielernachrichten = "ja", 1, NULL) AS spielernachrichten
 			, events.identifier AS event_identifier
@@ -68,6 +67,8 @@ function mod_tournaments_player($vars, $settings, $event) {
 	$sql = sprintf($sql, $vars[2], $event['event_id']);
 	$data = wrap_db_fetch($sql);
 	if (!$data) return false;
+
+	$data['einsendeschluss'] = mf_tournaments_playermessages_inactive($event['event_id']);
 
 	$data += $event;
 

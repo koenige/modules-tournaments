@@ -32,6 +32,22 @@ function mf_tournaments_current_round($identifier) {
 }
 
 /**
+ * whether player messages are closed for a tournament
+ *
+ * @param int $event_id
+ * @return bool
+ */
+function mf_tournaments_playermessages_inactive($event_id) {
+	$sql = 'SELECT IF(spielernachrichten = "ja"
+			AND DATE_SUB(IFNULL(events.date_end, events.date_begin), INTERVAL /*_SETTING tournaments_playermessages_days_before_end _*/ DAY) >= CURDATE(), NULL, 1)
+		FROM tournaments
+		LEFT JOIN events USING (event_id)
+		WHERE event_id = %d';
+	$sql = sprintf($sql, $event_id);
+	return wrap_db_fetch(sprintf($sql, $event_id), '', 'single value');
+}
+
+/**
  * get live round of an event
  *
  * @param int $event_id
