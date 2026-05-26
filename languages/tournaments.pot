@@ -148,6 +148,10 @@ msgstr ""
 msgid "You need to be logged in to see this PGN file."
 msgstr ""
 
+#: zzbrick_tables/playermessages.php
+msgid "Player Messages"
+msgstr ""
+
 #: zzbrick_tables/tournaments-identifiers.php
 msgid "Tournament"
 msgstr ""

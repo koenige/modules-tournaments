@@ -13,7 +13,7 @@
  */
 
 
-$zz['title'] = 'Brett-Nachrichten';
+$zz['title'] = 'Player Messages';
 $zz['table'] = 'playermessages';
 
 $zz['fields'][1]['title'] = 'ID';

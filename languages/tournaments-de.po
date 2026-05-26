@@ -183,6 +183,10 @@ msgstr "Bitte legen Sie zuerst ein Turnier an."
 msgid "You need to be logged in to see this PGN file."
 msgstr "Sie müssen angemeldet sein, um diese PGN-Datei anzuzeigen."
 
+#: zzbrick_tables/playermessages.php
+msgid "Player Messages"
+msgstr "Brett-Nachrichten"
+
 #: zzbrick_tables/tournaments-identifiers.php
 msgid "Tournament"
 msgstr "Turnier"
