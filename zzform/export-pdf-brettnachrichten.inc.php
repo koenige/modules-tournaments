@@ -31,7 +31,7 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 		$ids[] = $row[$p_index]['value'];
 	}
 
-	$sql = 'SELECT playermessage_id, message, email, sender, created
+	$sql = 'SELECT playermessage_id, message, email, sender, playermessages.created
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS contact
 			, CONCAT(events.event, " ", IFNULL(events.event_year, YEAR(events.date_begin))) AS event
 			, federations.contact_short AS federation
@@ -56,8 +56,8 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 			AND black.runde_no = (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id)
 			AND black.schwarz_person_id = persons.person_id
 		WHERE playermessage_id IN (%s)
-		AND verified = "yes"
-		ORDER BY federations.contact_short, series.sequence, IFNULL(white.brett_no, black.brett_no), created';
+		AND playermessages.verified = "yes"
+		ORDER BY federations.contact_short, series.sequence, IFNULL(white.brett_no, black.brett_no), playermessages.created';
 	$sql = sprintf($sql, implode(',', $ids));
 	$data = wrap_db_fetch($sql, 'playermessage_id');
 	

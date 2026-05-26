@@ -91,7 +91,7 @@ $zz['sql'] = 'SELECT playermessages.*
 	LEFT JOIN contacts federations
 		ON participations.federation_contact_id = federations.contact_id
 ';
-$zz['sqlorder'] = ' ORDER BY created DESC';
+$zz['sqlorder'] = ' ORDER BY playermessages.created DESC';
 
 $zz['conditions'][1]['scope'] = 'record';
 $zz['conditions'][1]['where'] = '/*_PREFIX_*/playermessages.verified = "no"';
