@@ -86,8 +86,23 @@ function mf_tournaments_playermessages_export_pdf($data) {
 
 	$pdf = new colPDF('L', 'mm', 'A4');
 	$pdf->setCompression(true);
-	$pdf->AddFont('OpenSansEmoji', '', 'OpenSansEmoji.ttf', true);
+	$pdf->AddFont('FiraSans-Regular', '', 'FiraSans-Regular.ttf', true);
 	$pdf->AddFont('FiraSans-SemiBold', '', 'FiraSans-SemiBold.ttf', true);
+	$pdf->AddFont('NotoEmoji-Regular', '', 'NotoEmoji-Regular.ttf', true);
+	$pdf->AddFont('NotoSansJP-Regular', '', 'NotoSansJP-Regular.ttf', true);
+	$pdf->AddFont('NotoSansSC-Regular', '', 'NotoSansSC-Regular.ttf', true);
+	$pdf->AddFont('NotoSansKR-Regular', '', 'NotoSansKR-Regular.ttf', true);
+	$pdf->AddFont('DejaVuSans', '', 'DejaVuSans.ttf', true);
+	$pdf->AddFont('NotoSansArabic-Regular', '', 'NotoSansArabic-Regular.ttf', true);
+	$pdf->AddFont('NotoSansThai-Regular', '', 'NotoSansThai-Regular.ttf', true);
+	$pdf->FontEmoji = 'NotoEmoji-Regular';
+	$pdf->FontCjk = 'NotoSansJP-Regular';
+	$pdf->FontCjkSc = 'NotoSansSC-Regular';
+	$pdf->FontCjkKr = 'NotoSansKR-Regular';
+	$pdf->FontBraille = 'DejaVuSans';
+	$pdf->FontArabic = 'NotoSansArabic-Regular';
+	$pdf->FontThai = 'NotoSansThai-Regular';
+	$pdf->SetFont('FiraSans-Regular', '', 11);
 	$pdf->SetMargins(15, 15);
 
 	$first = reset($data);
@@ -145,11 +160,11 @@ function mf_tournaments_playermessages_export_pdf_columns($pdf, $data, $half) {
 			$pdf->MultiCell($half, 7.5, '', 0, 'L');
 		}
 		$last_contact = $line['contact'];
-		$pdf->setFont('FiraSans-SemiBold', '', 11);
-		$pdf->MultiCell($half, 6, sprintf(wrap_text('From: %s <%s>'), $line['sender'], $line['email']), 0, 'L');
+		$pdf->SetFont('FiraSans-SemiBold', '', 11);
+		$pdf->MultiCellUnicode($half, 6, sprintf(wrap_text('From: %s <%s>'), $line['sender'], $line['email']), 0, 'L');
 		$pdf->MultiCell($half, 6, sprintf(wrap_text('Date: %s %s'), wrap_date_plain($line['created']), wrap_time($line['created'])), 0, 'L');
-		$pdf->setFont('OpenSansEmoji', '', 11);
-		$pdf->MultiCell($half, 6, trim($line['message']), 0, 'L');
+		$pdf->SetFont('FiraSans-Regular', '', 11);
+		$pdf->MultiCellUnicode($half, 6, trim($line['message']), 0, 'L');
 	}
 }
 
@@ -238,7 +253,7 @@ function mf_tournaments_playermessages_export_pdf_interleave_groups($left_groups
 
 wrap_lib('tfpdf');
 
-class colPDF extends TFPDF
+class colPDF extends zzTFPDFUnicode
 {
 var $col = 0;
 
@@ -253,23 +268,8 @@ function SetCol($col)
 
 function AcceptPageBreak()
 {
-    if($this->col<1)
-    {
-        // Go to next column
-        $this->SetCol($this->col+1);
-        $this->SetY(15);
-		$this->SetHead();
-		$this->MultiCell(118.5, 7.5, '', 0, 'L');
-        return false;
-    }
-    else
-    {
-        // Go back to first column and issue page break
-        $this->SetCol(0);
-//		$this->SetHead();
-//		$this->MultiCell(118.5, 7.5, '', 0, 'L');
-        return true;
-    }
+	// New page, stay in the current column; Header()/SetHead() redraws this contact.
+	return true;
 }
 
 function SetHead() {
@@ -280,10 +280,9 @@ function SetHead() {
 	$this->image(wrap_setting('media_folder').'/chessy/70-Post.600.png', 148.5 * ($this->col + 1) + 15 - 30 - $width, 10, $width, $height);
 	$board = sprintf(wrap_text('%s Board %s (%s)'), $this->event, $this->board_no, wrap_text($this->colour));
 	$this->setY(22.5);
-	$this->setFont('FiraSans-SemiBold', '', 11);
-	$this->MultiCell(118.5 - 22.5, 7.5, $this->contact.' ('.$this->federation.')', 1, 'L');
-	$this->MultiCell(118.5 - 22.5, 7.5, $board, 1, 'L');
-	$this->setFont('OpenSansEmoji', '', 11);
+	$this->SetFont('FiraSans-SemiBold', '', 11);
+	$this->MultiCellUnicode(118.5 - 22.5, 7.5, $this->contact.' ('.$this->federation.')', 1, 'L');
+	$this->MultiCellUnicode(118.5 - 22.5, 7.5, $board, 1, 'L');
 	$this->MultiCell(118.5, 7.5, '', 0, 'L');
 }
 
