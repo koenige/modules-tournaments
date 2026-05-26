@@ -172,6 +172,10 @@ msgstr ""
 msgid "No verified player messages are available for this export."
 msgstr ""
 
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "Event context is missing for this export."
+msgstr ""
+
 #: zzform/export-pdf-teilnehmerschilder.inc.php
 msgid "No name tags are available for these people."
 msgstr ""

@@ -21,6 +21,7 @@ if (!empty($brick['data']['event_id'])) {
 	$event_ids = mf_events_subevents($brick['data']['event_id']);
 	$zz['sql'] = wrap_edit_sql($zz['sql'], 'WHERE', sprintf('event_id IN (%s)', implode(',', $event_ids)));
 	$zz['title'] .= ': <br>'.$brick['data']['series_short'].' '.$brick['data']['year'];
+	$zz['vars']['event'] = $brick['data'];
 }
 
 $data = [];

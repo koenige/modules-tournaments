@@ -207,6 +207,10 @@ msgstr "Für diesen Export wurden keine Brett-Nachrichten ausgewählt."
 msgid "No verified player messages are available for this export."
 msgstr "Es sind keine bestätigten Brett-Nachrichten für diesen Export verfügbar."
 
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "Event context is missing for this export."
+msgstr "Für diesen Export fehlt der Termin-Kontext."
+
 #: zzform/export-pdf-teilnehmerschilder.inc.php
 msgid "No name tags are available for these people."
 msgstr "Es gibt keine Teilnehmerschilder für diese Personen."

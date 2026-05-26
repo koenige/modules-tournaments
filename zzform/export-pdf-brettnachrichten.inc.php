@@ -79,6 +79,11 @@ function mf_tournaments_playermessages_export_data($ops) {
  * @param array<int, array> $data rows keyed by playermessage_id
  */
 function mf_tournaments_playermessages_export_pdf($data) {
+	$event = mf_tournaments_playermessages_export_event();
+	if (!$event) {
+		wrap_quit(404, wrap_text('Event context is missing for this export.'));
+	}
+
 	$pdf = new colPDF('L', 'mm', 'A4');
 	$pdf->setCompression(true);
 	$pdf->AddFont('OpenSansEmoji', '', 'OpenSansEmoji.ttf', true);
@@ -90,6 +95,8 @@ function mf_tournaments_playermessages_export_pdf($data) {
 	$first = reset($data);
 	$round_no = $first['round_no'];
 	$half = 118.5;
+	$event_path = str_replace('/', '-', $event['identifier']);
+	$event_label = $event['series_short'] ?: $event['event'];
 
 	foreach ($data as $line) {
 		if ($line['contact'] !== $last_contact) {
@@ -117,17 +124,32 @@ function mf_tournaments_playermessages_export_pdf($data) {
 		$pdf->setFont('OpenSansEmoji', '', 11);
 		$pdf->MultiCell($half, 6, trim($line['message']), 0, 'L');
 	}
-	$folder = wrap_setting('tmp_dir').'/brettnachrichten/dem';
+	
+	$folder = wrap_setting('tmp_dir').'/tournaments/playermessages/'.$event_path;
 	wrap_mkdir($folder);
-	if (file_exists($folder.'/runde-'.$round_no.'.pdf')) {
-		unlink($folder.'/runde-'.$round_no.'.pdf');
+	if (file_exists($folder.'/round-'.$round_no.'.pdf')) {
+		unlink($folder.'/round-'.$round_no.'.pdf');
 	}
-	$file['name'] = $folder.'/runde-'.$round_no.'.pdf';
-	$file['send_as'] = 'DEM Brettnachrichten Runde '.$round_no.'.pdf';
+	$file['name'] = $folder.'/round-'.$round_no.'.pdf';
+	$file['send_as'] = sprintf('%s %s Brett-Nachrichten Runde %d.pdf', $event['year'], $event_label, $round_no);
 	$file['etag_generate_md5'] = true;
 
 	$pdf->output('F', $file['name'], true);
 	wrap_send_file($file);
+}
+
+function mf_tournaments_playermessages_export_event() {
+	$event = wrap_static('zzform', 'event');
+	if (!$event) {
+		$event = wrap_brick('data');
+	}
+	if (empty($event['event_id'])) {
+		return false;
+	}
+	if (empty($event['series_short'])) {
+		$event = array_merge($event, my_event($event['event_id']));
+	}
+	return $event;
 }
 
 
