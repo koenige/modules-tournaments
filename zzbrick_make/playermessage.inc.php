@@ -82,7 +82,7 @@ function mod_tournaments_make_playermessage_send($data) {
 	$data['hash'] = wrap_random_hash(20);
 
 	$sql = 'INSERT INTO playermessages
-		(teilnehmer_id, nachricht, email, absender, eintragszeit, ip, hash, verified)
+		(participation_id, message, email, sender, created, ip, hash, verified)
 		VALUES (%d, "%s", "%s", "%s", NOW(), "%s", "%s", "no")';
 	$sql = sprintf($sql
 		, $data['participation_id']

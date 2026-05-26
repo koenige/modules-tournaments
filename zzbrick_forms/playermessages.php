@@ -32,7 +32,7 @@ if (!empty($_POST['sent_date'])) {
 	$sql = 'UPDATE playermessages
 		SET processed = "%s"
 		WHERE ISNULL(processed)
-		AND eintragszeit < "%s"';
+		AND created < "%s"';
 	$sql = sprintf($sql
 		, zz_check_datetime($_POST['sent_date'])
 		, zz_check_datetime($_POST['sent_date'])
@@ -46,7 +46,7 @@ $zz['explanation'] = wrap_template('playermessage-form', $data);
 $zz['filter'][1]['sql'] = sprintf('SELECT DISTINCT(processed), processed
 	FROM playermessages
 	LEFT JOIN participations
-		ON playermessages.teilnehmer_id = participations.participation_id
+		ON playermessages.participation_id = participations.participation_id
 	%s
 	ORDER BY processed DESC'
 	, $event_ids ? sprintf(' WHERE event_id IN (%s)', implode(',', $event_ids)) : '');
@@ -60,7 +60,7 @@ $zz['filter'][1]['default_selection'] = 'NULL';
 $zz['filter'][2]['sql'] = sprintf('SELECT contacts.contact_id, contact_short
 	FROM playermessages
 	LEFT JOIN participations
-		ON participations.participation_id = playermessages.teilnehmer_id
+		ON participations.participation_id = playermessages.participation_id
 	LEFT JOIN contacts
 		ON participations.federation_contact_id = contacts.contact_id
 	%s

@@ -21,7 +21,7 @@
 function mf_tournaments_export_pdf_brettnachrichten($ops) {
 	foreach ($ops['output']['head'] as $index => $field) {
 		if (empty($field['field_name'])) continue;
-		if ($field['field_name'] !== 'nachricht_id') continue;
+		if ($field['field_name'] !== 'playermessage_id') continue;
 		$p_index = $index; 
 	}
 	if (!isset($p_index)) return false;
@@ -31,7 +31,7 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 		$ids[] = $row[$p_index]['value'];
 	}
 
-	$sql = 'SELECT nachricht_id, nachricht, email, absender, eintragszeit
+	$sql = 'SELECT playermessage_id, message, email, sender, created
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS contact
 			, CONCAT(events.event, " ", IFNULL(events.event_year, YEAR(events.date_begin))) AS event
 			, federations.contact_short AS federation
@@ -40,7 +40,7 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 			, IF (ISNULL(white.brett_no), "schwarz", "weiß") AS colour
 		FROM playermessages
 		LEFT JOIN participations
-			ON playermessages.teilnehmer_id = participations.participation_id
+			ON playermessages.participation_id = participations.participation_id
 		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories series
@@ -55,11 +55,11 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 			ON black.event_id = events.event_id
 			AND black.runde_no = (SELECT MAX(runde_no) FROM partien WHERE partien.event_id = events.event_id)
 			AND black.schwarz_person_id = persons.person_id
-		WHERE nachricht_id IN (%s)
+		WHERE playermessage_id IN (%s)
 		AND verified = "yes"
-		ORDER BY federations.contact_short, series.sequence, IFNULL(white.brett_no, black.brett_no), eintragszeit';
+		ORDER BY federations.contact_short, series.sequence, IFNULL(white.brett_no, black.brett_no), created';
 	$sql = sprintf($sql, implode(',', $ids));
-	$data = wrap_db_fetch($sql, 'nachricht_id');
+	$data = wrap_db_fetch($sql, 'playermessage_id');
 	
 	wrap_lib('tfpdf');
 
@@ -155,10 +155,10 @@ function Header()
 		}
 		$last_contact = $line['contact'];
 		$pdf->setFont('FiraSans-SemiBold', '', 11);
-		$pdf->MultiCell($half, 6, 'Von: '.$line['absender'].' <'.$line['email'].'>', 0, 'L');
-		$pdf->MultiCell($half, 6, 'Datum: '.wrap_date_plain($line['eintragszeit']).' '.wrap_time($line['eintragszeit']), 0, 'L');
+		$pdf->MultiCell($half, 6, 'Von: '.$line['sender'].' <'.$line['email'].'>', 0, 'L');
+		$pdf->MultiCell($half, 6, 'Datum: '.wrap_date_plain($line['created']).' '.wrap_time($line['created']), 0, 'L');
 		$pdf->setFont('OpenSansEmoji', '', 11);
-		$pdf->MultiCell($half, 6, trim($line['nachricht']), 0, 'L');
+		$pdf->MultiCell($half, 6, trim($line['message']), 0, 'L');
 	}
 	$folder = wrap_setting('tmp_dir').'/brettnachrichten/dem';
 	wrap_mkdir($folder);

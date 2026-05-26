@@ -98,3 +98,9 @@
 /* 2026-03-28-2 */	INSERT INTO webpages (website_id, title, content, description, identifier, ending, sequence, mother_page_id, live, parameters, last_update) SELECT website_id, title, REPLACE(content, '%%% request games ', '%%% request pgn '), description, CONCAT(identifier, '.pgn'), 'none', sequence, mother_page_id, live, parameters, NOW() FROM webpages WHERE content LIKE '%\%\%\% request games *%';
 /* 2026-05-26-1 */	ALTER TABLE `spieler_nachrichten` RENAME TO `playermessages`;
 /* 2026-05-26-2 */	INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'participations', 'participation_id', (SELECT DATABASE()), 'playermessages', 'nachricht_id', 'teilnehmer_id', 'delete');
+/* 2026-05-26-3 */	ALTER TABLE `playermessages` CHANGE `nachricht_id` `playermessage_id` int NOT NULL AUTO_INCREMENT;
+/* 2026-05-26-4 */	ALTER TABLE `playermessages` CHANGE `teilnehmer_id` `participation_id` int NOT NULL;
+/* 2026-05-26-5 */	ALTER TABLE `playermessages` CHANGE `nachricht` `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+/* 2026-05-26-6 */	ALTER TABLE `playermessages` CHANGE `absender` `sender` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+/* 2026-05-26-7 */	ALTER TABLE `playermessages` CHANGE `eintragszeit` `created` datetime NOT NULL;
+/* 2026-05-26-8 */	UPDATE _relations SET `detail_id_field` = 'playermessage_id', `detail_field` = 'participation_id' WHERE `detail_table` = 'playermessages' AND `detail_id_field` = 'nachricht_id' AND `detail_field` = 'teilnehmer_id';

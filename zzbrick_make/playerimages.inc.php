@@ -25,9 +25,9 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 			, CONCAT(t_vorname, IFNULL(CONCAT(" ", t_namenszusatz), ""), " ", t_nachname) AS contact
 			, event
 			, contact_short
-			, (SELECT IF(nachricht_id, 1, NULL)
+			, (SELECT IF(playermessage_id, 1, NULL)
 				FROM playermessages
-				WHERE playermessages.teilnehmer_id = participations.participation_id
+				WHERE playermessages.participation_id = participations.participation_id
 				AND missing_image = "yes"
 			) AS message_received
 		FROM participations
@@ -77,7 +77,7 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 
 			$msg = wrap_template($event['msg'], $player);
 			$sql = 'INSERT INTO playermessages
-				(nachricht, email, absender, teilnehmer_id, eintragszeit, missing_image, ip, hash, verified)
+				(message, email, sender, participation_id, created, missing_image, ip, hash, verified)
 				VALUES ("%s", "%s", "%s", %d, NOW(), "yes", "", "", "yes")';
 			$sql = sprintf($sql
 				, $msg

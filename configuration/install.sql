@@ -103,21 +103,21 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 
 -- playermessages --
 CREATE TABLE `playermessages` (
-  `nachricht_id` int NOT NULL AUTO_INCREMENT,
+  `playermessage_id` int NOT NULL AUTO_INCREMENT,
   `ip` varchar(20) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-  `nachricht` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` text CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-  `absender` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `teilnehmer_id` int NOT NULL,
-  `eintragszeit` datetime NOT NULL,
+  `sender` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `participation_id` int NOT NULL,
+  `created` datetime NOT NULL,
   `hash` text CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   `verified` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'no',
   `missing_image` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'no',
   `processed` datetime DEFAULT NULL,
-  PRIMARY KEY (`nachricht_id`)
+  PRIMARY KEY (`playermessage_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'participations', 'participation_id', (SELECT DATABASE()), 'playermessages', 'nachricht_id', 'teilnehmer_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'participations', 'participation_id', (SELECT DATABASE()), 'playermessages', 'playermessage_id', 'participation_id', 'delete');
 
 
 -- tabellenstaende --

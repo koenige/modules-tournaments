@@ -17,19 +17,19 @@ $zz['title'] = 'Brett-Nachrichten';
 $zz['table'] = 'playermessages';
 
 $zz['fields'][1]['title'] = 'ID';
-$zz['fields'][1]['field_name'] = 'nachricht_id';
+$zz['fields'][1]['field_name'] = 'playermessage_id';
 $zz['fields'][1]['type'] = 'id';
 
-$zz['fields'][8]['field_name'] = 'eintragszeit';
+$zz['fields'][8]['field_name'] = 'created';
 $zz['fields'][8]['type'] = 'write_once';
 $zz['fields'][8]['type_detail'] = 'datetime';
 
-$zz['fields'][4]['field_name'] = 'nachricht';
+$zz['fields'][4]['field_name'] = 'message';
 $zz['fields'][4]['type'] = 'memo';
 $zz['fields'][4]['if'][1]['list_prefix'] = '<del>';
 $zz['fields'][4]['if'][1]['list_suffix'] = '</del>';
 
-$zz['fields'][6]['field_name'] = 'absender';
+$zz['fields'][6]['field_name'] = 'sender';
 $zz['fields'][6]['list_append_next'] = true;
 $zz['fields'][6]['list_suffix'] = '<br>';
 
@@ -41,7 +41,7 @@ $zz['fields'][5]['list_suffix'] = '<br>';
 $zz['fields'][2]['field_name'] = 'ip';
 $zz['fields'][2]['type'] = 'write_once';
 
-$zz['fields'][7]['field_name'] = 'teilnehmer_id';
+$zz['fields'][7]['field_name'] = 'participation_id';
 $zz['fields'][7]['type'] = 'select';
 $zz['fields'][7]['sql'] = 'SELECT participation_id, contact
 	, CONCAT(events.event, " ", IFNULL(event_year, YEAR(events.date_begin))) AS event
@@ -85,13 +85,13 @@ $zz['sql'] = 'SELECT playermessages.*
 		, contacts.contact
 	FROM playermessages
 	LEFT JOIN participations
-		ON playermessages.teilnehmer_id = participations.participation_id
+		ON playermessages.participation_id = participations.participation_id
 	LEFT JOIN contacts USING (contact_id)
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN contacts federations
 		ON participations.federation_contact_id = federations.contact_id
 ';
-$zz['sqlorder'] = ' ORDER BY eintragszeit DESC';
+$zz['sqlorder'] = ' ORDER BY created DESC';
 
 $zz['conditions'][1]['scope'] = 'record';
 $zz['conditions'][1]['where'] = '/*_PREFIX_*/playermessages.verified = "no"';
