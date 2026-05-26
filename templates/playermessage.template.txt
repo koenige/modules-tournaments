@@ -10,27 +10,23 @@
 # @copyright Copyright © 2022, 2024, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
-<h1>Brett-Nachricht an <a href="../">%%% item contact %%%</a>
+<h1>%%% text Player message to %%% <a href="../">%%% item contact %%%</a>
 <br><a href="../../../">%%% item event %%% %%% item duration format=date %%%</a> %%% item place "<em>in %s</em>" %%%</h1>
 
 %%% if news_inactive %%%
-<p>Für dieses Jahr sind die Brettgrüße geschlossen.</p>
-<p>Vielen Dank, auch im Namen aller Teilnehmerinnen und Teilnehmer für die
-vielen unterstützenden Brett-Nachrichten.</p>
+<p>%%% text Player messages are closed for this year. %%%</p>
+<p>%%% text Thank you, also on behalf of all participants, for the many supporting player messages. %%%</p>
 
 %%% elseif mail_sent %%%
-<p>Es wurde eine <strong>E-Mail</strong> mit einem Bestätigungslink an <strong>%%% item mail %%%</strong>
-geschickt. Erst nachdem Sie Ihre E-Mail Adresse bestätigt haben, wird Ihre
-Nachricht zugestellt.<br>
-Wenn Sie nach 5 min noch keine E-Mail bekommen haben, schauen Sie bitte erst in
-Ihrem Spam-Ordner nach.</p>
+<p>%%% text An e-mail with a confirmation link was sent to %%% <strong>%%% item mail %%%</strong>. %%% text Your message will only be delivered after you confirm your e-mail address. %%%<br>
+%%% text If you have not received an e-mail after 5 minutes, please check your spam folder first. %%%</p>
 
 %%% elseif mail_address_invalid %%%
-<p class="error">Es konnte keine E-Mail verschickt haben. Bitte gültige E-Mail Adresse eingeben.</p>
+<p class="error">%%% text Could not send an e-mail. Please enter a valid e-mail address. %%%</p>
 
 %%% elseif message_activated %%%
-<p>Vielen Dank! Die Nachricht wurde aktiviert.</p>
-<p><a href="./">Noch eine Nachricht schreiben.</a></p>
+<p>%%% text Thank you! The message was activated. %%%</p>
+<p><a href="./">%%% text Write another message. %%%</a></p>
 
 %%% endif %%%
 
@@ -38,18 +34,18 @@ Ihrem Spam-Ordner nach.</p>
 <form action="" method="post">
 <textarea name="message" cols="50" rows="10">%%% item message format=html_escape %%%</textarea><br><br>
 
-<label for="sender">Absender:<br><input type="text" name="sender" required id="sender" value="%%% item sender format=html_escape %%%"></label>
+<label for="sender">%%% text Sender: %%%<br><input type="text" name="sender" required id="sender" value="%%% item sender format=html_escape %%%"></label>
 <br><br>
-<label for="mail">E-Mail:<br><input type="text" name="mail" required id="mail" value="%%% item mail format=html_escape %%%"></label>
-<br><small>(Die E-Mail-Adresse ist erforderlich, da dorthin eine E-Mail geschickt wird, damit der Gruß freigeschaltet werden kann. Sie wird nach dem Turnier gelöscht.) </small>
+<label for="mail">%%% text E-mail: %%%<br><input type="text" name="mail" required id="mail" value="%%% item mail format=html_escape %%%"></label>
+<br><small>%%% text (The e-mail address is required because a confirmation e-mail will be sent there to activate the message. It will be deleted after the tournament.) %%% </small>
 <br><br>
-<input type="submit" value="Senden">
-<p>Nachrichten die bis 22 Uhr abgesendet werden, werden in der Regel am nächsten Tag zugestellt.</p>
+<input type="submit" value="%%% text Send %%%">
+<p>%%% text Messages submitted by 10 p.m. are usually delivered the next day. %%%</p>
 </form>
 
 %%% endif %%%
 
-<p><a href="../">Zurück zu %%% item contact %%%.</a></p>
+<p>%%% text Back to %%% <a href="../">%%% item contact %%%</a>.</p>
 
 %%% comment
 

@@ -11,17 +11,15 @@
 <div>
 <hr>
 %%% if messages_sent %%%
-<p class="error">%%% item messages_sent %%% Nachrichten wurden als versendet markiert.</p>
+<p class="error">%%% item messages_sent %%% %%% text messages were marked as sent. %%%</p>
 %%% endif %%%
 
 <form method="POST" action="">
-<p><label for="sent_date">Nachrichten vor diesem Datum als »verteilt« markieren«:
+<p><label for="sent_date">%%% text Mark messages sent before this date as distributed: %%%
 <br><input type="text" value="%%% item current_time format=date_plain %%% %%% item current_time format=time %%%" name="sent_date" id="sent_date"></label></p>
-<p><input type="submit" value="Nachrichten als »verteilt« markieren"></p>
+<p><input type="submit" value="%%% text Mark messages as distributed %%%"></p>
 </form>
 <hr>
-<p>Durchgestrichene Nachrichten sind noch nicht freigegeben (E-Mail-Bestätigung
-steht noch aus). Sie können – wenn gewünscht – auch manuell freigegeben werden 
-(Bestätigt: »ja«).</p>
+<p>%%% text Struck-through messages are not yet approved (e-mail confirmation pending). They can – if desired – also be approved manually (Verified: “yes”). %%%</p>
 
 </div>

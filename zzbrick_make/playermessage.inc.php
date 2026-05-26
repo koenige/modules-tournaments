@@ -57,10 +57,10 @@ function mod_tournaments_make_playermessage($vars, $settings, $data) {
 	$page['query_strings'][] = 'hash';
 	$page['query_strings'][] = 'sent';
 	$page['text'] = wrap_template('playermessage', $data);
-	$page['title'] = sprintf('Brett-Nachricht an %s – %s %d', $data['contact'], $data['event'], $data['year']);
+	$page['title'] = sprintf(wrap_text('Player message to %s – %s %d'), $data['contact'], $data['event'], $data['year']);
 	$page['dont_show_h1'] = true;
 	$page['breadcrumbs'][] = ['title' => $data['contact'], 'url_path' => '../'];
-	$page['breadcrumbs'][]['title'] = 'Brett-Nachricht';
+	$page['breadcrumbs'][]['title'] = wrap_text('Player message');
 	$page['meta'][] = ['name' => 'robots', 'content' => 'noindex'];
 	return $page;
 }

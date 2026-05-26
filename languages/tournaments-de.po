@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.9\n"
 
 #: templates/empty-tournament.template.txt
 msgid "Empty Tournament"
@@ -77,6 +77,140 @@ msgstr[1] "%s Teams"
 msgid "These records were deleted:"
 msgstr "Diese Einträge wurden gelöscht:"
 
+#: templates/player.template.txt
+msgid "Write player message"
+msgstr "Brett-Nachricht schreiben"
+
+#: templates/playermessage-form.template.txt
+msgid "messages were marked as sent."
+msgstr "Nachrichten wurden als versendet markiert."
+
+#: templates/playermessage-form.template.txt
+msgid "Mark messages sent before this date as distributed:"
+msgstr "Nachrichten vor diesem Datum als »verteilt« markieren:"
+
+#: templates/playermessage-form.template.txt
+msgid "Mark messages as distributed"
+msgstr "Nachrichten als »verteilt« markieren"
+
+#: templates/playermessage-form.template.txt
+msgid ""
+"Struck-through messages are not yet approved (e-mail confirmation pending). "
+"They can – if desired – also be approved manually (Verified: “yes”)."
+msgstr ""
+"Durchgestrichene Nachrichten sind noch nicht freigegeben (E-Mail-Bestätigung "
+"steht noch aus). Sie können – wenn gewünscht – auch manuell freigegeben werden (Bestätigt: „ja“)."
+
+#: templates/playermessage.template.txt
+msgid "Player message to"
+msgstr "Brett-Nachricht an"
+
+#: templates/playermessage.template.txt
+msgid "Player messages are closed for this year."
+msgstr "Für dieses Jahr sind die Brettgrüße geschlossen."
+
+#: templates/playermessage.template.txt
+msgid ""
+"Thank you, also on behalf of all participants, for the many supporting "
+"player messages."
+msgstr ""
+"Vielen Dank, auch im Namen aller Teilnehmerinnen und Teilnehmer für die "
+"vielen unterstützenden Brett-Nachrichten."
+
+#: templates/playermessage.template.txt
+msgid "An e-mail with a confirmation link was sent to"
+msgstr "Es wurde eine E-Mail mit einem Bestätigungslink an"
+
+#: templates/playermessage.template.txt
+msgid ""
+"Your message will only be delivered after you confirm your e-mail address."
+msgstr ""
+"Erst nachdem Sie Ihre E-Mail-Adresse bestätigt haben, wird Ihre Nachricht "
+"zugestellt."
+
+#: templates/playermessage.template.txt
+msgid ""
+"If you have not received an e-mail after 5 minutes, please check your spam "
+"folder first."
+msgstr ""
+"Wenn Sie nach 5 Minuten noch keine E-Mail bekommen haben, schauen Sie bitte "
+"erst in Ihrem Spam-Ordner nach."
+
+#: templates/playermessage.template.txt
+msgid "Could not send an e-mail. Please enter a valid e-mail address."
+msgstr ""
+"Es konnte keine E-Mail verschickt werden. Bitte gültige E-Mail-Adresse "
+"eingeben."
+
+#: templates/playermessage.template.txt
+msgid "Thank you! The message was activated."
+msgstr "Vielen Dank! Die Nachricht wurde aktiviert."
+
+#: templates/playermessage.template.txt
+msgid "Write another message."
+msgstr "Noch eine Nachricht schreiben."
+
+#: templates/playermessage.template.txt
+msgid "Sender:"
+msgstr "Absender:"
+
+#: templates/playermessage.template.txt
+msgid "E-mail:"
+msgstr "E-Mail:"
+
+#: templates/playermessage.template.txt
+msgid ""
+"(The e-mail address is required because a confirmation e-mail will be sent "
+"there to activate the message. It will be deleted after the tournament.)"
+msgstr ""
+"(Die E-Mail-Adresse ist erforderlich, da dorthin eine E-Mail geschickt wird, "
+"damit der Gruß freigeschaltet werden kann. Sie wird nach dem Turnier "
+"gelöscht.)"
+
+#: templates/playermessage.template.txt
+msgid "Send"
+msgstr "Senden"
+
+#: templates/playermessage.template.txt
+msgid "Messages submitted by 10 p.m. are usually delivered the next day."
+msgstr ""
+"Nachrichten, die bis 22 Uhr abgesendet werden, werden in der Regel am "
+"nächsten Tag zugestellt."
+
+#: templates/playermessage.template.txt
+msgid "Back to"
+msgstr "Zurück zu"
+
+#: templates/playermessage-mail.template.txt
+msgid "Hello,"
+msgstr "Hallo,"
+
+#: templates/playermessage-mail.template.txt
+msgid "To activate your player message, click the following link:"
+msgstr ""
+"Um Ihre Brett-Nachricht zu aktivieren, klicken Sie auf den nachfolgenden "
+"Link:"
+
+#: templates/playermessage-mail.template.txt
+msgid ""
+"If the link is not clickable, copy the entire line into your browser address "
+"bar."
+msgstr ""
+"Falls der Link nicht anklickbar ist, kopieren Sie die komplette Zeile in die "
+"Browseradressleiste."
+
+#: templates/playermessage-mail.template.txt
+msgid "Best regards"
+msgstr "Viele Grüße"
+
+#: zzbrick_forms/playermessages.php
+msgid "Federation"
+msgstr "Verband"
+
+#: zzbrick_forms/playermessages.php
+msgid "PDF Brettnachrichten"
+msgstr "PDF Brett-Nachrichten"
+
 #: zzbrick_forms/rounds.inc.php
 msgid "Rounds"
 msgstr "Runden"
@@ -125,6 +259,14 @@ msgstr ""
 "Für Runden besteht die Möglichkeit, in der <a href=\"%s\">Rundenübersicht</"
 "a> eine PGN-Datei hochzuladen."
 
+#: zzbrick_make/playermessage.inc.php
+msgid "Player message to %s – %s %d"
+msgstr "Brett-Nachricht an %s – %s %d"
+
+#: zzbrick_make/playermessage.inc.php
+msgid "Player message"
+msgstr "Brett-Nachricht"
+
 #: zzbrick_make/standings.inc.php
 msgid ""
 "Standings update for round %d impossible: So far only %d round has been "
@@ -167,6 +309,10 @@ msgstr ""
 msgid "No ratings found when updating on %s."
 msgstr "Keine Wertungzahlen beim Update am %s gefunden."
 
+#: zzbrick_request/pgnfile.inc.php
+msgid "You need to be logged in to see this PGN file."
+msgstr "Sie müssen angemeldet sein, um diese PGN-Datei anzuzeigen."
+
 #: zzbrick_request/livegames.inc.php
 msgid ""
 "The tournament is over. All live games are integrated into the <a href=\"../"
@@ -179,13 +325,21 @@ msgstr ""
 msgid "Please create a tournament first."
 msgstr "Bitte legen Sie zuerst ein Turnier an."
 
-#: zzbrick_request/pgnfile.inc.php
-msgid "You need to be logged in to see this PGN file."
-msgstr "Sie müssen angemeldet sein, um diese PGN-Datei anzuzeigen."
-
 #: zzbrick_tables/playermessages.php
 msgid "Player Messages"
 msgstr "Brett-Nachrichten"
+
+#: zzbrick_tables/playermessages.php
+msgid "Verified"
+msgstr "Bestätigt"
+
+#: zzbrick_tables/playermessages.php
+msgid "Missing image"
+msgstr "Bildnachricht"
+
+#: zzbrick_tables/playermessages.php
+msgid "Processed"
+msgstr "Verarbeitet"
 
 #: zzbrick_tables/tournaments-identifiers.php
 msgid "Tournament"
@@ -205,11 +359,36 @@ msgstr "Für diesen Export wurden keine Brett-Nachrichten ausgewählt."
 
 #: zzform/export-pdf-brettnachrichten.inc.php
 msgid "No verified player messages are available for this export."
-msgstr "Es sind keine bestätigten Brett-Nachrichten für diesen Export verfügbar."
+msgstr ""
+"Es sind keine bestätigten Brett-Nachrichten für diesen Export verfügbar."
 
 #: zzform/export-pdf-brettnachrichten.inc.php
 msgid "Event context is missing for this export."
 msgstr "Für diesen Export fehlt der Termin-Kontext."
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "From: %s <%s>"
+msgstr "Von: %s <%s>"
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "Date: %s %s"
+msgstr "Datum: %s %s"
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "%s Board %s (%s)"
+msgstr "%s Brett %s (%s)"
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "%s %s Player Messages Round %d.pdf"
+msgstr "%s %s Brett-Nachrichten Runde %d.pdf"
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "black"
+msgstr "schwarz"
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "white"
+msgstr "weiß"
 
 #: zzform/export-pdf-teilnehmerschilder.inc.php
 msgid "No name tags are available for these people."

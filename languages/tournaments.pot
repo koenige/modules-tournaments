@@ -70,6 +70,121 @@ msgstr[1] ""
 msgid "These records were deleted:"
 msgstr ""
 
+#: templates/player.template.txt
+msgid "Write player message"
+msgstr ""
+
+#: templates/playermessage-form.template.txt
+msgid "messages were marked as sent."
+msgstr ""
+
+#: templates/playermessage-form.template.txt
+msgid "Mark messages sent before this date as distributed:"
+msgstr ""
+
+#: templates/playermessage-form.template.txt
+msgid "Mark messages as distributed"
+msgstr ""
+
+#: templates/playermessage-form.template.txt
+msgid ""
+"Struck-through messages are not yet approved (e-mail confirmation pending). "
+"They can – if desired – also be approved manually (Verified: “yes”)."
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid "Player message to"
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid "Player messages are closed for this year."
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid ""
+"Thank you, also on behalf of all participants, for the many supporting player "
+"messages."
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid "An e-mail with a confirmation link was sent to"
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid ""
+"Your message will only be delivered after you confirm your e-mail address."
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid ""
+"If you have not received an e-mail after 5 minutes, please check your spam "
+"folder first."
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid "Could not send an e-mail. Please enter a valid e-mail address."
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid "Thank you! The message was activated."
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid "Write another message."
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid "Sender:"
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid "E-mail:"
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid ""
+"(The e-mail address is required because a confirmation e-mail will be sent "
+"there to activate the message. It will be deleted after the tournament.)"
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid "Send"
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid "Messages submitted by 10 p.m. are usually delivered the next day."
+msgstr ""
+
+#: templates/playermessage.template.txt
+msgid "Back to"
+msgstr ""
+
+#: templates/playermessage-mail.template.txt
+msgid "Hello,"
+msgstr ""
+
+#: templates/playermessage-mail.template.txt
+msgid "To activate your player message, click the following link:"
+msgstr ""
+
+#: templates/playermessage-mail.template.txt
+msgid ""
+"If the link is not clickable, copy the entire line into your browser address "
+"bar."
+msgstr ""
+
+#: templates/playermessage-mail.template.txt
+msgid "Best regards"
+msgstr ""
+
+#: zzbrick_forms/playermessages.php
+msgid "Federation"
+msgstr ""
+
+#: zzbrick_forms/playermessages.php
+msgid "PDF Brettnachrichten"
+msgstr ""
+
 #: zzbrick_forms/rounds.inc.php
 msgid "Rounds"
 msgstr ""
@@ -110,6 +225,14 @@ msgstr ""
 msgid "For rounds, there is a possibility to upload a PGN file in the <a href="%s">round overview</a>."
 msgstr ""
 
+#: zzbrick_make/playermessage.inc.php
+msgid "Player message to %s – %s %d"
+msgstr ""
+
+#: zzbrick_make/playermessage.inc.php
+msgid "Player message"
+msgstr ""
+
 #: zzbrick_make/standings.inc.php
 msgid "Standings update for round %d impossible: So far only %d round has been played."
 msgid_plural "Standings update for round %d impossible: So far only %d rounds have been played."
@@ -136,6 +259,10 @@ msgstr ""
 msgid "No ratings found when updating on %s."
 msgstr ""
 
+#: zzbrick_request/pgnfile.inc.php
+msgid "You need to be logged in to see this PGN file."
+msgstr ""
+
 #: zzbrick_request/livegames.inc.php
 msgid "The tournament is over. All live games are integrated into the <a href="../">tournament pages</a>."
 msgstr ""
@@ -144,12 +271,20 @@ msgstr ""
 msgid "Please create a tournament first."
 msgstr ""
 
-#: zzbrick_request/pgnfile.inc.php
-msgid "You need to be logged in to see this PGN file."
+#: zzbrick_tables/playermessages.php
+msgid "Player Messages"
 msgstr ""
 
 #: zzbrick_tables/playermessages.php
-msgid "Player Messages"
+msgid "Verified"
+msgstr ""
+
+#: zzbrick_tables/playermessages.php
+msgid "Missing image"
+msgstr ""
+
+#: zzbrick_tables/playermessages.php
+msgid "Processed"
 msgstr ""
 
 #: zzbrick_tables/tournaments-identifiers.php
@@ -174,6 +309,30 @@ msgstr ""
 
 #: zzform/export-pdf-brettnachrichten.inc.php
 msgid "Event context is missing for this export."
+msgstr ""
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "From: %s <%s>"
+msgstr ""
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "Date: %s %s"
+msgstr ""
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "%s Board %s (%s)"
+msgstr ""
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "%s %s Player Messages Round %d.pdf"
+msgstr ""
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "black"
+msgstr ""
+
+#: zzform/export-pdf-brettnachrichten.inc.php
+msgid "white"
 msgstr ""
 
 #: zzform/export-pdf-teilnehmerschilder.inc.php

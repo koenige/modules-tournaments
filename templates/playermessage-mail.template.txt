@@ -7,18 +7,18 @@
 # @author Erik Kothe <kontakt@erikkothe.de>
 # @author Gustaf Mossakowski <gustaf@koenige.org>
 # @copyright Copyright © 2018-2022 Erik Kothe
-# @copyright Copyright © 2022 Gustaf Mossakowski
+# @copyright Copyright © 2022, 2026 Gustaf Mossakowski
 # @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
 #
-Subject: Brett-Nachricht an %%% item contact %%% (%%% item event %%% %%% item year %%%)
+Subject: %%% text Player message to %%% %%% item contact %%% (%%% item event %%% %%% item year %%%)
 
-Hallo,
+%%% text Hello, %%%
 
-um Ihre Brett-Nachricht zu aktivieren, klicken Sie auf den nachfolgenden Link:
+%%% text To activate your player message, click the following link: %%%
 
 %%% setting host_base %%%%%% setting request_uri %%%?hash=%%% item hash %%%
 
-Falls der Link nicht anklickbar ist, kopieren Sie die komplette Zeile in die Browseradressleiste.
+%%% text If the link is not clickable, copy the entire line into your browser address bar. %%%
 
-Viele Grüße
-%%% setting project %%%
+%%% text Best regards %%%
+%%% setting project %%%%

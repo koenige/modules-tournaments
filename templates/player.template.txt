@@ -101,7 +101,7 @@ keine
 
 %%% if spielernachrichten %%%
 %%% unless einsendeschluss %%%
-<p><a href="gruesse/">Brett-Nachricht schreiben</a></p>
+<p><a href="gruesse/">%%% text Write player message %%%</a></p>
 %%% endif %%%
 %%% endif %%%
 %%% script default/link-rel-nav.js %%%

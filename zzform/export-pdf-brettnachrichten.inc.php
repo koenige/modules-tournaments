@@ -44,7 +44,7 @@ function mf_tournaments_playermessages_export_data($ops) {
 			, federations.contact_short AS federation
 			, IFNULL(white.runde_no, black.runde_no) AS round_no
 			, IFNULL(white.brett_no, black.brett_no) AS board_no
-			, IF (ISNULL(white.brett_no), "schwarz", "weiß") AS colour
+			, IF (ISNULL(white.brett_no), "black", "white") AS colour
 		FROM playermessages
 		LEFT JOIN participations
 			ON playermessages.participation_id = participations.participation_id
@@ -119,8 +119,8 @@ function mf_tournaments_playermessages_export_pdf($data) {
 		}
 		$last_contact = $line['contact'];
 		$pdf->setFont('FiraSans-SemiBold', '', 11);
-		$pdf->MultiCell($half, 6, 'Von: '.$line['sender'].' <'.$line['email'].'>', 0, 'L');
-		$pdf->MultiCell($half, 6, 'Datum: '.wrap_date_plain($line['created']).' '.wrap_time($line['created']), 0, 'L');
+		$pdf->MultiCell($half, 6, sprintf(wrap_text('From: %s <%s>'), $line['sender'], $line['email']), 0, 'L');
+		$pdf->MultiCell($half, 6, sprintf(wrap_text('Date: %s %s'), wrap_date_plain($line['created']), wrap_time($line['created'])), 0, 'L');
 		$pdf->setFont('OpenSansEmoji', '', 11);
 		$pdf->MultiCell($half, 6, trim($line['message']), 0, 'L');
 	}
@@ -131,7 +131,7 @@ function mf_tournaments_playermessages_export_pdf($data) {
 		unlink($folder.'/round-'.$round_no.'.pdf');
 	}
 	$file['name'] = $folder.'/round-'.$round_no.'.pdf';
-	$file['send_as'] = sprintf('%s %s Brett-Nachrichten Runde %d.pdf', $event['year'], $event_label, $round_no);
+	$file['send_as'] = sprintf(wrap_text('%s %s Player Messages Round %d.pdf'), $event['year'], $event_label, $round_no);
 	$file['etag_generate_md5'] = true;
 
 	$pdf->output('F', $file['name'], true);
@@ -195,7 +195,7 @@ function SetHead() {
 
 	$this->setY(15);
 	$this->image(wrap_setting('media_folder').'/chessy/70-Post.600.png', 148.5 * ($this->col + 1) + 15 - 30 - $width, 10, $width, $height);
-	$board = $this->event.' Brett '.$this->board_no.' ('.$this->colour.')';
+	$board = sprintf(wrap_text('%s Board %s (%s)'), $this->event, $this->board_no, wrap_text($this->colour));
 	$this->setY(22.5);
 	$this->setFont('FiraSans-SemiBold', '', 11);
 	$this->MultiCell(118.5 - 22.5, 7.5, $this->contact.' ('.$this->federation.')', 1, 'L');

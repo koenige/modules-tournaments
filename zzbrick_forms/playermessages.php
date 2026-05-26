@@ -20,7 +20,9 @@ if (!empty($brick['data']['event_id'])) {
 	wrap_package_activate('events');
 	$event_ids = mf_events_subevents($brick['data']['event_id']);
 	$zz['sql'] = wrap_edit_sql($zz['sql'], 'WHERE', sprintf('event_id IN (%s)', implode(',', $event_ids)));
-	$zz['title'] .= ': <br>'.$brick['data']['series_short'].' '.$brick['data']['year'];
+	$zz['page']['dont_show_title_as_breadcrumb'] = true;
+	$zz['page']['breadcrumbs'][]['title'] = wrap_text($zz['title']);
+	$zz['title'] = wrap_text($zz['title']).': <br>'.$brick['data']['series_short'].' '.$brick['data']['year'];
 	$zz['vars']['event'] = $brick['data'];
 }
 
@@ -51,7 +53,7 @@ $zz['filter'][1]['sql'] = sprintf('SELECT DISTINCT(processed), processed
 	%s
 	ORDER BY processed DESC'
 	, $event_ids ? sprintf(' WHERE event_id IN (%s)', implode(',', $event_ids)) : '');
-$zz['filter'][1]['title'] = 'Verarbeitet';
+$zz['filter'][1]['title'] = wrap_text('Processed');
 $zz['filter'][1]['identifier'] = 'processed';
 $zz['filter'][1]['type'] = 'list';
 $zz['filter'][1]['field_name'] = 'processed';
@@ -67,7 +69,7 @@ $zz['filter'][2]['sql'] = sprintf('SELECT contacts.contact_id, contact_short
 	%s
 	ORDER BY contact_short'
 	, $event_ids ? sprintf(' WHERE event_id IN (%s)', implode(',', $event_ids)) : '');
-$zz['filter'][2]['title'] = 'Verband';
+$zz['filter'][2]['title'] = wrap_text('Federation');
 $zz['filter'][2]['identifier'] = 'federation';
 $zz['filter'][2]['type'] = 'list';
 $zz['filter'][2]['where'] = 'federations.contact_id';
