@@ -96,3 +96,5 @@
 /* 2026-03-18-9 */	DELETE FROM _settings WHERE setting_key = 'tournaments_team_path';
 /* 2026-03-28-1 */	UPDATE webpages SET content = REPLACE(content, '%%% request games * *=event internal=1 %%%', '%%% request pgn * *=event internal=1 %%%'), identifier = CONCAT(identifier, '.pgn'), ending = 'none' WHERE content LIKE '\%\%\% request games * *=event internal=1 \%\%\%';
 /* 2026-03-28-2 */	INSERT INTO webpages (website_id, title, content, description, identifier, ending, sequence, mother_page_id, live, parameters, last_update) SELECT website_id, title, REPLACE(content, '%%% request games ', '%%% request pgn '), description, CONCAT(identifier, '.pgn'), 'none', sequence, mother_page_id, live, parameters, NOW() FROM webpages WHERE content LIKE '%\%\%\% request games *%';
+/* 2026-05-26-1 */	ALTER TABLE `spieler_nachrichten` RENAME TO `playermessages`;
+/* 2026-05-26-2 */	INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'participations', 'participation_id', (SELECT DATABASE()), 'playermessages', 'nachricht_id', 'teilnehmer_id', 'delete');

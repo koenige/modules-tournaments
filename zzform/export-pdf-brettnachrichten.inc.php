@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022-2023, 2025 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2023, 2025-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -38,9 +38,9 @@ function mf_tournaments_export_pdf_brettnachrichten($ops) {
 			, IFNULL(white.runde_no, black.runde_no) AS round_no
 			, IFNULL(white.brett_no, black.brett_no) AS board_no
 			, IF (ISNULL(white.brett_no), "schwarz", "weiß") AS colour
-		FROM spieler_nachrichten
+		FROM playermessages
 		LEFT JOIN participations
-			ON spieler_nachrichten.teilnehmer_id = participations.participation_id
+			ON playermessages.teilnehmer_id = participations.participation_id
 		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN events USING (event_id)
 		LEFT JOIN categories series

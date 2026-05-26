@@ -11,6 +11,7 @@
  */
 
 
+-- anmerkungen --
 CREATE TABLE `anmerkungen` (
   `anmerkung_id` int unsigned NOT NULL AUTO_INCREMENT,
   `anmerkung` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -32,6 +33,7 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'persons', 'person_id', (SELECT DATABASE()), 'anmerkungen', 'anmerkung_id', 'autor_person_id', 'no-delete');
 
 
+-- paarungen --
 CREATE TABLE `paarungen` (
   `paarung_id` int unsigned NOT NULL AUTO_INCREMENT,
   `event_id` int unsigned NOT NULL,
@@ -57,6 +59,7 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'teams', 'team_id', (SELECT DATABASE()), 'paarungen', 'paarung_id', 'auswaerts_team_id', 'no-delete');
 
 
+-- partien --
 CREATE TABLE `partien` (
   `partie_id` int unsigned NOT NULL AUTO_INCREMENT,
   `event_id` int unsigned NOT NULL,
@@ -98,6 +101,26 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'persons', 'person_id', (SELECT DATABASE()), 'partien', 'partie_id', 'weiss_person_id', 'no-delete');
 
 
+-- playermessages --
+CREATE TABLE `playermessages` (
+  `nachricht_id` int NOT NULL AUTO_INCREMENT,
+  `ip` varchar(20) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+  `nachricht` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` text CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+  `absender` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `teilnehmer_id` int NOT NULL,
+  `eintragszeit` datetime NOT NULL,
+  `hash` text CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+  `verified` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'no',
+  `missing_image` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'no',
+  `processed` datetime DEFAULT NULL,
+  PRIMARY KEY (`nachricht_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'participations', 'participation_id', (SELECT DATABASE()), 'playermessages', 'nachricht_id', 'teilnehmer_id', 'delete');
+
+
+-- tabellenstaende --
 CREATE TABLE `tabellenstaende` (
   `tabellenstand_id` int unsigned NOT NULL AUTO_INCREMENT,
   `event_id` int unsigned NOT NULL,
@@ -121,6 +144,7 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'teams', 'team_id', (SELECT DATABASE()), 'tabellenstaende', 'tabellenstand_id', 'team_id', 'delete');
 
 
+-- tabellenstaende_wertungen --
 CREATE TABLE `tabellenstaende_wertungen` (
   `tsw_id` int unsigned NOT NULL AUTO_INCREMENT,
   `tabellenstand_id` int unsigned NOT NULL,
@@ -135,6 +159,7 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'tabellenstaende_wertungen', 'tsw_id', 'wertung_category_id', 'no-delete');
 
 
+-- teams --
 CREATE TABLE `teams` (
   `team_id` int unsigned NOT NULL AUTO_INCREMENT,
   `event_id` int unsigned NOT NULL,
@@ -171,6 +196,7 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'events', 'event_id', (SELECT DATABASE()), 'teams', 'team_id', 'event_id', 'no-delete');
 
 
+-- tournaments --
 CREATE TABLE `tournaments` (
   `tournament_id` int unsigned NOT NULL AUTO_INCREMENT,
   `event_id` int unsigned NOT NULL,
@@ -217,6 +243,7 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'tournaments', 'tournament_id', 'turnierform_category_id', 'no-delete');
 
 
+-- turniere_bedenkzeiten --
 CREATE TABLE `turniere_bedenkzeiten` (
   `tb_id` int unsigned NOT NULL AUTO_INCREMENT,
   `tournament_id` int unsigned NOT NULL,
@@ -231,6 +258,7 @@ CREATE TABLE `turniere_bedenkzeiten` (
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'turniere_bedenkzeiten', 'tb_id', 'tournament_id', 'delete');
 
 
+-- tournaments_identifiers --
 CREATE TABLE `tournaments_identifiers` (
   `tournament_identifier_id` int unsigned NOT NULL AUTO_INCREMENT,
   `tournament_id` int unsigned NOT NULL,
@@ -247,6 +275,7 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'tournaments_identifiers', 'tournament_identifier_id', 'identifier_category_id', 'no-delete');
 
 
+-- turniere_status --
 CREATE TABLE `turniere_status` (
   `turnier_status_id` int unsigned NOT NULL AUTO_INCREMENT,
   `tournament_id` int unsigned NOT NULL,
@@ -259,6 +288,7 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'turniere_status', 'turnier_status_id', 'status_category_id', 'no-delete');
 
 
+-- turniere_wertungen --
 CREATE TABLE `turniere_wertungen` (
   `tw_id` int unsigned NOT NULL AUTO_INCREMENT,
   `tournament_id` int unsigned NOT NULL,
@@ -275,6 +305,7 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'turniere_wertungen', 'tw_id', 'wertung_category_id', 'no-delete');
 
 
+-- views --
 CREATE FUNCTION `event_id`() RETURNS int
     NO SQL
     DETERMINISTIC

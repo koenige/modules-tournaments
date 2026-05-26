@@ -10,7 +10,7 @@
  * @author Erik Kothe <kontakt@erikkothe.de>
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2017 Erik Kothe
- * @copyright Copyright © 2017, 2019-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2017, 2019-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -26,8 +26,8 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 			, event
 			, contact_short
 			, (SELECT IF(nachricht_id, 1, NULL)
-				FROM spieler_nachrichten
-				WHERE spieler_nachrichten.teilnehmer_id = participations.participation_id
+				FROM playermessages
+				WHERE playermessages.teilnehmer_id = participations.participation_id
 				AND missing_image = "yes"
 			) AS message_received
 		FROM participations
@@ -76,7 +76,7 @@ function mod_tournaments_make_playerimages($params, $settings, $event) {
 			if ($player['message_received']) continue;
 
 			$msg = wrap_template($event['msg'], $player);
-			$sql = 'INSERT INTO spieler_nachrichten
+			$sql = 'INSERT INTO playermessages
 				(nachricht, email, absender, teilnehmer_id, eintragszeit, missing_image, ip, hash, verified)
 				VALUES ("%s", "%s", "%s", %d, NOW(), "yes", "", "", "yes")';
 			$sql = sprintf($sql

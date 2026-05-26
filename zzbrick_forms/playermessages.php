@@ -8,12 +8,12 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2023, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-$zz = zzform_include('spielernachrichten');
+$zz = zzform_include('playermessages');
 
 $event_ids = [];
 if (!empty($brick['data']['event_id'])) {
@@ -29,7 +29,7 @@ $data['current_time'] = date("Y-m-d H:i:s", time());
 if (!empty($_POST['sent_date'])) {
 	wrap_include('validate', 'zzform');
 
-	$sql = 'UPDATE spieler_nachrichten
+	$sql = 'UPDATE playermessages
 		SET processed = "%s"
 		WHERE ISNULL(processed)
 		AND eintragszeit < "%s"';
@@ -44,9 +44,9 @@ if (!empty($_POST['sent_date'])) {
 $zz['explanation'] = wrap_template('playermessage-form', $data);
 
 $zz['filter'][1]['sql'] = sprintf('SELECT DISTINCT(processed), processed
-	FROM spieler_nachrichten
+	FROM playermessages
 	LEFT JOIN participations
-		ON spieler_nachrichten.teilnehmer_id = participations.participation_id
+		ON playermessages.teilnehmer_id = participations.participation_id
 	%s
 	ORDER BY processed DESC'
 	, $event_ids ? sprintf(' WHERE event_id IN (%s)', implode(',', $event_ids)) : '');
@@ -54,13 +54,13 @@ $zz['filter'][1]['title'] = 'Verarbeitet';
 $zz['filter'][1]['identifier'] = 'processed';
 $zz['filter'][1]['type'] = 'list';
 $zz['filter'][1]['field_name'] = 'processed';
-$zz['filter'][1]['where'] = '/*_PREFIX_*/spieler_nachrichten.processed';
+$zz['filter'][1]['where'] = '/*_PREFIX_*/playermessages.processed';
 $zz['filter'][1]['default_selection'] = 'NULL';
 
 $zz['filter'][2]['sql'] = sprintf('SELECT contacts.contact_id, contact_short
-	FROM spieler_nachrichten
+	FROM playermessages
 	LEFT JOIN participations
-		ON participations.participation_id = spieler_nachrichten.teilnehmer_id
+		ON participations.participation_id = playermessages.teilnehmer_id
 	LEFT JOIN contacts
 		ON participations.federation_contact_id = contacts.contact_id
 	%s

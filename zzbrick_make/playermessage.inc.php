@@ -10,7 +10,7 @@
  * @author Erik Kothe <kontakt@erikkothe.de>
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2018-2022 Erik Kothe
- * @copyright Copyright © 2022-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -46,7 +46,7 @@ function mod_tournaments_make_playermessage($vars, $settings, $data) {
 	}
 	
 	if (!empty($_GET['hash']) AND !$data['news_inactive']) {
-		$sql = 'UPDATE spieler_nachrichten SET verified = "yes" WHERE hash like "%s"';
+		$sql = 'UPDATE playermessages SET verified = "yes" WHERE hash like "%s"';
 		$sql = sprintf($sql, wrap_db_escape($_GET['hash']));
 		wrap_db_query($sql);
 		$data['message_activated'] = true;
@@ -81,7 +81,7 @@ function mod_tournaments_make_playermessage_send($data) {
 	}
 	$data['hash'] = wrap_random_hash(20);
 
-	$sql = 'INSERT INTO spieler_nachrichten
+	$sql = 'INSERT INTO playermessages
 		(teilnehmer_id, nachricht, email, absender, eintragszeit, ip, hash, verified)
 		VALUES (%d, "%s", "%s", "%s", NOW(), "%s", "%s", "no")';
 	$sql = sprintf($sql

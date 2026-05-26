@@ -8,13 +8,13 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022-2023 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2023, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
 $zz['title'] = 'Brett-Nachrichten';
-$zz['table'] = 'spieler_nachrichten';
+$zz['table'] = 'playermessages';
 
 $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'nachricht_id';
@@ -79,13 +79,13 @@ $zz['fields'][13]['title_tab'] = 'V.';
 $zz['fields'][13]['hide_in_list'] = true;
 
 
-$zz['sql'] = 'SELECT spieler_nachrichten.*
+$zz['sql'] = 'SELECT playermessages.*
 		, CONCAT(events.event, " ", IFNULL(event_year, YEAR(events.date_begin))) AS event
 		, events.identifier AS event_identifier
 		, contacts.contact
-	FROM spieler_nachrichten
+	FROM playermessages
 	LEFT JOIN participations
-		ON spieler_nachrichten.teilnehmer_id = participations.participation_id
+		ON playermessages.teilnehmer_id = participations.participation_id
 	LEFT JOIN contacts USING (contact_id)
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN contacts federations
@@ -94,5 +94,4 @@ $zz['sql'] = 'SELECT spieler_nachrichten.*
 $zz['sqlorder'] = ' ORDER BY eintragszeit DESC';
 
 $zz['conditions'][1]['scope'] = 'record';
-$zz['conditions'][1]['where'] = '/*_PREFIX_*/spieler_nachrichten.verified = "no"';
-
+$zz['conditions'][1]['where'] = '/*_PREFIX_*/playermessages.verified = "no"';
