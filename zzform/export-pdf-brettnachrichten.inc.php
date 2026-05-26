@@ -89,15 +89,42 @@ function mf_tournaments_playermessages_export_pdf($data) {
 	$pdf->AddFont('OpenSansEmoji', '', 'OpenSansEmoji.ttf', true);
 	$pdf->AddFont('FiraSans-SemiBold', '', 'FiraSans-SemiBold.ttf', true);
 	$pdf->SetMargins(15, 15);
-	$pdf->SetCol(1);
 
-	$last_contact = false;
 	$first = reset($data);
 	$round_no = $first['round_no'];
 	$half = 118.5;
 	$event_path = str_replace('/', '-', $event['identifier']);
 	$event_label = $event['series_short'] ?: $event['event'];
 
+	if (wrap_setting('tournaments_playermessages_pdf_column_layout') == 1) {
+		$data = mf_tournaments_playermessages_export_pdf_split_data($data);
+	}
+	mf_tournaments_playermessages_export_pdf_columns($pdf, $data, $half);
+
+	$folder = wrap_setting('tmp_dir').'/tournaments/playermessages/'.$event_path;
+	wrap_mkdir($folder);
+	if (file_exists($folder.'/round-'.$round_no.'.pdf')) {
+		unlink($folder.'/round-'.$round_no.'.pdf');
+	}
+	$file['name'] = $folder.'/round-'.$round_no.'.pdf';
+	$file['send_as'] = sprintf(wrap_text('%s %s Player Messages Round %d.pdf'), $event['year'], $event_label, $round_no);
+	$file['etag_generate_md5'] = true;
+
+	$pdf->output('F', $file['name'], true);
+	wrap_send_file($file);
+}
+
+/**
+ * Render messages in alternating columns (1|2, or split halves after group reordering).
+ *
+ * @param colPDF $pdf
+ * @param array<int, array> $data
+ * @param float $half column width
+ */
+function mf_tournaments_playermessages_export_pdf_columns($pdf, $data, $half) {
+	$pdf->SetCol(1);
+
+	$last_contact = false;
 	foreach ($data as $line) {
 		if ($line['contact'] !== $last_contact) {
 			$pdf->event = $line['event'];
@@ -115,7 +142,7 @@ function mf_tournaments_playermessages_export_pdf($data) {
 				$pdf->setHead();
 			}
 		} else {
-			$pdf->MultiCell(118.5, 7.5, '', 0, 'L');
+			$pdf->MultiCell($half, 7.5, '', 0, 'L');
 		}
 		$last_contact = $line['contact'];
 		$pdf->setFont('FiraSans-SemiBold', '', 11);
@@ -124,18 +151,6 @@ function mf_tournaments_playermessages_export_pdf($data) {
 		$pdf->setFont('OpenSansEmoji', '', 11);
 		$pdf->MultiCell($half, 6, trim($line['message']), 0, 'L');
 	}
-	
-	$folder = wrap_setting('tmp_dir').'/tournaments/playermessages/'.$event_path;
-	wrap_mkdir($folder);
-	if (file_exists($folder.'/round-'.$round_no.'.pdf')) {
-		unlink($folder.'/round-'.$round_no.'.pdf');
-	}
-	$file['name'] = $folder.'/round-'.$round_no.'.pdf';
-	$file['send_as'] = sprintf(wrap_text('%s %s Player Messages Round %d.pdf'), $event['year'], $event_label, $round_no);
-	$file['etag_generate_md5'] = true;
-
-	$pdf->output('F', $file['name'], true);
-	wrap_send_file($file);
 }
 
 function mf_tournaments_playermessages_export_event() {
@@ -150,6 +165,74 @@ function mf_tournaments_playermessages_export_event() {
 		$event = array_merge($event, my_event($event['event_id']));
 	}
 	return $event;
+}
+
+/**
+ * Reorder for split columns: first-half groups left, second-half groups right (1|5, 2|6, …).
+ *
+ * Consecutive messages to the same recipient stay together so they share one column
+ * on a page, then the original alternating renderer handles page breaks.
+ *
+ * @param array<int, array> $data
+ * @return array<int, array>
+ */
+function mf_tournaments_playermessages_export_pdf_split_data($data) {
+	$data = array_values($data);
+	$split = (int) ceil(count($data) / 2);
+	$left = array_slice($data, 0, $split);
+	$right = array_slice($data, $split);
+	$left_groups = mf_tournaments_playermessages_export_pdf_contact_groups($left);
+	$right_groups = mf_tournaments_playermessages_export_pdf_contact_groups($right);
+	return mf_tournaments_playermessages_export_pdf_interleave_groups($left_groups, $right_groups);
+}
+
+/**
+ * Group consecutive messages to the same recipient.
+ *
+ * @param array<int, array> $messages
+ * @return array<int, array<int, array>>
+ */
+function mf_tournaments_playermessages_export_pdf_contact_groups($messages) {
+	$groups = [];
+	$group = [];
+	$last_contact = null;
+	foreach ($messages as $line) {
+		if ($last_contact !== null && $line['contact'] !== $last_contact) {
+			$groups[] = $group;
+			$group = [];
+		}
+		$group[] = $line;
+		$last_contact = $line['contact'];
+	}
+	if ($group) {
+		$groups[] = $group;
+	}
+	return $groups;
+}
+
+/**
+ * Interleave left and right recipient groups for split column pages.
+ *
+ * @param array<int, array<int, array>> $left_groups
+ * @param array<int, array<int, array>> $right_groups
+ * @return array<int, array>
+ */
+function mf_tournaments_playermessages_export_pdf_interleave_groups($left_groups, $right_groups) {
+	$reordered = [];
+	$rows = max(count($left_groups), count($right_groups));
+	for ($index = 0; $index < $rows; $index++) {
+		if (isset($left_groups[$index])) {
+			foreach ($left_groups[$index] as $line) {
+				$reordered[] = $line;
+			}
+		}
+		if (isset($right_groups[$index])) {
+			foreach ($right_groups[$index] as $line) {
+				$reordered[] = $line;
+			}
+		}
+	}
+	return $reordered;
 }
 
 
