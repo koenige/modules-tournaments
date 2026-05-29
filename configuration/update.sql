@@ -104,3 +104,4 @@
 /* 2026-05-26-6 */	ALTER TABLE `playermessages` CHANGE `absender` `sender` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
 /* 2026-05-26-7 */	ALTER TABLE `playermessages` CHANGE `eintragszeit` `created` datetime NOT NULL;
 /* 2026-05-26-8 */	UPDATE _relations SET `detail_id_field` = 'playermessage_id', `detail_field` = 'participation_id' WHERE `detail_table` = 'playermessages' AND `detail_id_field` = 'nachricht_id' AND `detail_field` = 'teilnehmer_id';
+/* 2026-05-29-1 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&turnierzahl=', '&tournaments_edition=') WHERE urkunde_parameter LIKE '%&turnierzahl=%';
