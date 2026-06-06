@@ -167,11 +167,13 @@ function mf_tournaments_team_match_points($board_points, $opponent_board_points)
 /**
  * Tiebreak rating per active team (sum of per-pairing values up to a round)
  *
- * Dispatches to separate helper function per pairing row, then sorts.
+ * Sum paths (mp, bp, sw, bpbye1): row helper per own pairing.
+ * Buchholz paths (bhz_*): opponent totals from a sum path, once per pairing faced.
  *
+ * Board-point Buchholz (bhz_bp, bhz_bp_fide2012) caps opponent results at $round_no.
  * @param int $event_id
  * @param int $round_no maximum round number inclusive
- * @param string $path
+ * @param string $path mp|bp|sw|bpbye1|bhz_mp|bhz_bp|bhz_bp_fide2012
  * @return array team_id => rating, sorted rating DESC, team_id ASC
  */
 function mf_tournaments_team_score($event_id, $round_no, $path) {
@@ -181,11 +183,31 @@ function mf_tournaments_team_score($event_id, $round_no, $path) {
 	foreach (array_keys($team_ids) as $team_id) {
 		$ratings[$team_id] = 0;
 	}
-	$function = sprintf('mf_tournaments_team_score_%s', $path);
+
+	switch ($path) {
+	case 'bhz_mp':
+		$opponent_totals = mf_tournaments_team_score($event_id, $round_no, 'mp');
+		break;
+	case 'bhz_bp':
+		$opponent_totals = mf_tournaments_team_score($event_id, $round_no, 'bp');
+		break;
+	case 'bhz_bp_fide2012':
+		$opponent_totals = mf_tournaments_team_score($event_id, $round_no, 'bpbye1');
+		break;
+	default:
+		$opponent_totals = null;
+	}
+	$pos = strpos($path, '_');
+	$suffix = $pos !== false ? substr($path, 0, $pos) : $path;
+	$function = sprintf('mf_tournaments_team_score_%s', $suffix);
+
 	foreach ($results as $team_id => $rounds) {
 		if (!isset($ratings[$team_id])) continue;
 		foreach ($rounds as $row) {
-			$ratings[$team_id] += $function($row);
+			if ($opponent_totals !== null)
+				$ratings[$team_id] += $function($row, $opponent_totals);
+			else
+				$ratings[$team_id] += $function($row);
 		}
 	}
 	return mf_tournaments_team_score_sort($ratings);
@@ -212,6 +234,19 @@ function mf_tournaments_team_score_bp($row) {
 }
 
 /**
+ * Board points from one team result row (FIDE 2012 pairing-bye correction)
+ *
+ * @param array $row team result row from mf_tournaments_team_results()
+ * @return int|float 1 for pairing bye, else board_points
+ */
+function mf_tournaments_team_score_bpbye1($row) {
+	if ($row['is_pairing_bye']) {
+		return 1;
+	}
+	return $row['board_points'];
+}
+
+/**
  * Win (1 or 0) from one team result row
  *
  * @param array $row team result row from mf_tournaments_team_results()
@@ -220,6 +255,21 @@ function mf_tournaments_team_score_bp($row) {
 function mf_tournaments_team_score_sw($row) {
 	if ($row['match_points'] === 2) return 1;
 	return 0;
+}
+
+/**
+ * Buchholz contribution from one pairing faced (mf_tournaments_team_score() helper)
+ *
+ * Returns the opponent’s cumulative total for the sum path chosen in the bhz_* switch
+ * (mp, bp, or bpbye1), not a value from the team’s own row.
+ *
+ * @param array $row team result row from mf_tournaments_team_results()
+ * @param array $opponent_totals team_id => rating from the recursive sum-path call
+ * @return int|float opponent total for this pairing
+ */
+function mf_tournaments_team_score_bhz($row, $opponent_totals) {
+	$opponent_id = $row['gegner_team_id'];
+	return $opponent_totals[$opponent_id] ?? 0;
 }
 
 /**
