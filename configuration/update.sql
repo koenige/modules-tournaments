@@ -113,3 +113,5 @@
 /* 2026-06-06-6 */	DROP VIEW `paarungen_ergebnisse_view`;
 /* 2026-06-06-7 */	DROP VIEW `partien_ergebnisse_view`;
 /* 2026-06-06-8 */	DROP VIEW `tabellenstaende_termine_view`;
+/* 2026-06-06-9 */	DROP VIEW `partien_einzelergebnisse`;
+/* 2026-06-06-10 */	DROP FUNCTION `event_id`;

@@ -304,18 +304,3 @@ CREATE TABLE `turniere_wertungen` (
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'turniere_wertungen', 'tw_id', 'tournament_id', 'delete');
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'turniere_wertungen', 'tw_id', 'wertung_category_id', 'no-delete');
 
-
--- views --
-CREATE FUNCTION `event_id`() RETURNS int
-    NO SQL
-    DETERMINISTIC
-return @event_id;
-
-
-CREATE OR REPLACE VIEW `partien_einzelergebnisse` AS
-	SELECT `partie_id`, `partiestatus_category_id`, `event_id`, `runde_no`, `weiss_person_id` AS `person_id`, `schwarz_person_id` AS `gegner_id`, `weiss_ergebnis` AS `ergebnis`, `brett_no`
-	FROM `partien`
-	WHERE `event_id` = `event_id`()
-	UNION ALL SELECT `partie_id`, `partiestatus_category_id`, `event_id`, `runde_no`, `schwarz_person_id` AS `person_id`, `weiss_person_id` AS `gegner_id`, `schwarz_ergebnis` AS `ergebnis`, `brett_no`
-	FROM `partien`
-	WHERE `event_id` = `event_id`();

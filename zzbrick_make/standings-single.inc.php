@@ -9,7 +9,7 @@
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
- * @copyright Copyright © 2012-2022, 2024-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2022, 2024-2026 Gustaf Mossakowski
  * @copyright Copyright © 2014, 2022 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
@@ -32,11 +32,6 @@ function mod_tournaments_make_standings_calculate_single($event, $round_no) {
 	$sql = sprintf($sql, $event['event_id'], $round_no);
 	$anzahl_partien = wrap_db_fetch($sql, '', 'single value');
 	if (!$anzahl_partien) return false;
-
-	// Termin-ID setzen
-	$sql = 'SELECT @event_id:=%d';
-	$sql = sprintf($sql, $event['event_id']);
-	wrap_db_query($sql);
 
 	// Spieler auslesen
 	$tabelleeinzeln = new mod_tournaments_make_standings_single();
@@ -196,6 +191,7 @@ class mod_tournaments_make_standings_single {
 	var $buchholz = [];
 	var $buchholzSpieler = [];
     var $buchholzSpielerFein = [];
+	var $event_id = 0;
 	var $round_no = 0;
 	var $win = 1;
 	var $draw = 0.5;
@@ -218,6 +214,7 @@ class mod_tournaments_make_standings_single {
 	}
 
 	function getSpieler($event_id) {
+		$this->event_id = $event_id;
 		$sql = 'SELECT person_id, setzliste_no
 			FROM participations
 			LEFT JOIN persons USING (contact_id)
@@ -230,16 +227,29 @@ class mod_tournaments_make_standings_single {
 	}
 	
 	function getRoundResults($person_id, $round_no = false) {
-		static $round_results = [];
-		if (!$round_results) {
+		static $round_results_by_event = [];
+		if (!isset($round_results_by_event[$this->event_id])) {
 			$sql = 'SELECT person_id, runde_no, partiestatus_category_id, gegner_id
 					, (CASE ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE %s END) AS ergebnis
-				FROM partien_einzelergebnisse
+				FROM (
+					SELECT runde_no, partiestatus_category_id
+						, weiss_person_id AS person_id, schwarz_person_id AS gegner_id
+						, weiss_ergebnis AS ergebnis
+					FROM partien
+					WHERE event_id = %d
+					UNION ALL
+					SELECT runde_no, partiestatus_category_id
+						, schwarz_person_id, weiss_person_id, schwarz_ergebnis
+					FROM partien
+					WHERE event_id = %d
+				) round_results
 				WHERE runde_no <= %d
 				ORDER BY runde_no';
-			$sql = sprintf($sql, $this->win, $this->draw, $this->loss, $this->round_no);
-			$round_results = wrap_db_fetch($sql, ['person_id', 'runde_no']);
+			$sql = sprintf($sql, $this->win, $this->draw, $this->loss
+				, $this->event_id, $this->event_id, $this->round_no);
+			$round_results_by_event[$this->event_id] = wrap_db_fetch($sql, ['person_id', 'runde_no']);
 		}
+		$round_results = $round_results_by_event[$this->event_id];
 		if (!array_key_exists($person_id, $round_results)) return [];
 		if ($round_no !== false) return $round_results[$person_id][$round_no];
 		return $round_results[$person_id];
@@ -293,13 +303,15 @@ class mod_tournaments_make_standings_single {
 	 * @return array
 	 */
 	function getBuchholzGegnerPunkte($event_id, $this_person_id) {
-		static $opponent_scores = [];
+		static $opponent_scores_by_event = [];
 		// Punkte pro Runde auslesen
 		// Liste, bspw. [2005-1] => [1 => 0.5, 2 => 0.0 ...], [2909-2] => ()
 		$correction = mf_tournaments_make_fide_correction($event_id);
 
-		if (!empty($opponent_scores[$this_person_id]))
-			return $opponent_scores[$this_person_id];
+		if (isset($opponent_scores_by_event[$event_id])) {
+			if (!array_key_exists($this_person_id, $opponent_scores_by_event[$event_id])) return [];
+			return $opponent_scores_by_event[$event_id][$this_person_id];
+		}
 		
 		// fide-2009, fide-2012: kampflose Partien werden mit 0.5 gewertet
 		$count_bye_as_draw = in_array($correction, ['fide-2009', 'fide-2012']) ? 1 : 0;
@@ -310,8 +322,29 @@ class mod_tournaments_make_standings_single {
 					CASE opponents_scores.ergebnis WHEN 1 THEN %s WHEN 0.5 THEN %s ELSE %s END
 				) AS buchholz
 				, opponents_scores.runde_no AS runde_gegner
-			FROM partien_einzelergebnisse own_scores
-			JOIN partien_einzelergebnisse opponents_scores
+			FROM (
+				SELECT event_id, runde_no, partiestatus_category_id
+					, weiss_person_id AS person_id, schwarz_person_id AS gegner_id
+				FROM partien
+				WHERE event_id = %d
+				UNION ALL
+				SELECT event_id, runde_no, partiestatus_category_id
+					, schwarz_person_id, weiss_person_id
+				FROM partien
+				WHERE event_id = %d
+			) own_scores
+			JOIN (
+				SELECT event_id, runde_no, partiestatus_category_id
+					, weiss_person_id AS person_id, schwarz_person_id AS gegner_id
+					, weiss_ergebnis AS ergebnis
+				FROM partien
+				WHERE event_id = %d
+				UNION ALL
+				SELECT event_id, runde_no, partiestatus_category_id
+					, schwarz_person_id, weiss_person_id, schwarz_ergebnis
+				FROM partien
+				WHERE event_id = %d
+			) opponents_scores
 				ON own_scores.event_id = opponents_scores.event_id
 				AND own_scores.gegner_id = opponents_scores.person_id
 			WHERE own_scores.runde_no <= %d
@@ -321,7 +354,9 @@ class mod_tournaments_make_standings_single {
 			ORDER BY own_scores.runde_no, own_scores.gegner_id, opponents_scores.runde_no';
 		$sql = sprintf($sql
 			, $count_bye_as_draw, $this->draw
-			, $this->win, $this->draw, $this->loss, $this->round_no, $this->round_no
+			, $this->win, $this->draw, $this->loss
+			, $event_id, $event_id, $event_id, $event_id
+			, $this->round_no, $this->round_no
 			// FIDE 2012: exclude all byes, calculate individually
 			, $correction === 'fide-2012' ? wrap_category_id('partiestatus/kampflos') : 0
 		);
@@ -370,6 +405,7 @@ class mod_tournaments_make_standings_single {
 				}
 			}
 		}
+		$opponent_scores_by_event[$event_id] = $opponent_scores;
 		// person might not have been paired (yet)
 		if (!array_key_exists($this_person_id, $opponent_scores)) return [];
 		return $opponent_scores[$this_person_id];
@@ -385,11 +421,20 @@ class mod_tournaments_make_standings_single {
  */
 function mf_tournaments_make_single_pkt($event_id, $round_no) {
 	$sql = 'SELECT person_id, SUM(ergebnis) AS punkte
-		FROM partien_einzelergebnisse
+		FROM (
+			SELECT weiss_person_id AS person_id, weiss_ergebnis AS ergebnis, runde_no
+			FROM partien
+			WHERE event_id = %d
+			AND NOT ISNULL(weiss_person_id)
+			UNION ALL
+			SELECT schwarz_person_id, schwarz_ergebnis, runde_no
+			FROM partien
+			WHERE event_id = %d
+			AND NOT ISNULL(schwarz_person_id)
+		) results
 		WHERE runde_no <= %d
-		AND NOT ISNULL(person_id)
 		GROUP BY person_id';
-	$sql = sprintf($sql, $round_no);
+	$sql = sprintf($sql, $event_id, $event_id, $round_no);
 	return wrap_db_fetch($sql, '_dummy_', 'key/value');
 }
 
@@ -404,8 +449,30 @@ function mf_tournaments_make_single_pkt($event_id, $round_no) {
 function mf_tournaments_make_single_sobo($event_id, $round_no) {
 	$sql = 'SELECT own_scores.person_id
 			, SUM(opponents_scores.ergebnis * own_scores.ergebnis) AS sb
-		FROM partien_einzelergebnisse own_scores
-		JOIN partien_einzelergebnisse opponents_scores
+		FROM (
+			SELECT event_id, runde_no
+				, weiss_person_id AS person_id, schwarz_person_id AS gegner_id
+				, weiss_ergebnis AS ergebnis
+			FROM partien
+			WHERE event_id = %d
+			UNION ALL
+			SELECT event_id, runde_no
+				, schwarz_person_id, weiss_person_id, schwarz_ergebnis
+			FROM partien
+			WHERE event_id = %d
+		) own_scores
+		JOIN (
+			SELECT event_id, runde_no
+				, weiss_person_id AS person_id, schwarz_person_id AS gegner_id
+				, weiss_ergebnis AS ergebnis
+			FROM partien
+			WHERE event_id = %d
+			UNION ALL
+			SELECT event_id, runde_no
+				, schwarz_person_id, weiss_person_id, schwarz_ergebnis
+			FROM partien
+			WHERE event_id = %d
+		) opponents_scores
 			ON own_scores.event_id = opponents_scores.event_id
 			AND own_scores.gegner_id = opponents_scores.person_id
 		WHERE opponents_scores.runde_no <= %d
@@ -413,7 +480,7 @@ function mf_tournaments_make_single_sobo($event_id, $round_no) {
 		AND NOT ISNULL(own_scores.person_id)
 		GROUP BY own_scores.person_id
 		ORDER BY sb DESC, person_id';
-	$sql = sprintf($sql, $round_no, $round_no);
+	$sql = sprintf($sql, $event_id, $event_id, $event_id, $event_id, $round_no, $round_no);
 	$wertungen = wrap_db_fetch($sql, ['person_id', 'sb'], 'key/value');
 	return $wertungen;
 }
@@ -427,11 +494,20 @@ function mf_tournaments_make_single_sobo($event_id, $round_no) {
  */
 function mf_tournaments_make_single_3p($event_id, $round_no) {
 	$sql = 'SELECT person_id, SUM(IF(ergebnis = 1, 3, IF(ergebnis = 0.5, 1, 0))) AS punkte
-		FROM partien_einzelergebnisse
+		FROM (
+			SELECT weiss_person_id AS person_id, weiss_ergebnis AS ergebnis, runde_no
+			FROM partien
+			WHERE event_id = %d
+			AND NOT ISNULL(weiss_person_id)
+			UNION ALL
+			SELECT schwarz_person_id, schwarz_ergebnis, runde_no
+			FROM partien
+			WHERE event_id = %d
+			AND NOT ISNULL(schwarz_person_id)
+		) results
 		WHERE runde_no <= %d
-		AND NOT ISNULL(person_id)
 		GROUP BY person_id';
-	$sql = sprintf($sql, $round_no);
+	$sql = sprintf($sql, $event_id, $event_id, $round_no);
 	return wrap_db_fetch($sql, '_dummy_', 'key/value');
 }
 
@@ -444,11 +520,20 @@ function mf_tournaments_make_single_3p($event_id, $round_no) {
  */
 function mf_tournaments_make_single_3_2_1($event_id, $runde_no) {
 	$sql = 'SELECT person_id, SUM(IF(ergebnis = 1, 3, IF(ergebnis = 0.5, 2, 1))) AS punkte
-		FROM partien_einzelergebnisse
+		FROM (
+			SELECT weiss_person_id AS person_id, weiss_ergebnis AS ergebnis, runde_no
+			FROM partien
+			WHERE event_id = %d
+			AND NOT ISNULL(weiss_person_id)
+			UNION ALL
+			SELECT schwarz_person_id, schwarz_ergebnis, runde_no
+			FROM partien
+			WHERE event_id = %d
+			AND NOT ISNULL(schwarz_person_id)
+		) results
 		WHERE runde_no <= %d
-		AND NOT ISNULL(person_id)
 		GROUP BY person_id';
-	$sql = sprintf($sql, $runde_no);
+	$sql = sprintf($sql, $event_id, $event_id, $runde_no);
 	return wrap_db_fetch($sql, '_dummy_', 'key/value');
 }
 
@@ -462,11 +547,20 @@ function mf_tournaments_make_single_3_2_1($event_id, $runde_no) {
  */
 function mf_tournaments_make_single_fort($event_id, $round_no, $tabelle) {
 	$sql = 'SELECT person_id, SUM((%d - runde_no + 1) * ergebnis) AS punkte
-		FROM partien_einzelergebnisse
+		FROM (
+			SELECT weiss_person_id AS person_id, weiss_ergebnis AS ergebnis, runde_no
+			FROM partien
+			WHERE event_id = %d
+			AND NOT ISNULL(weiss_person_id)
+			UNION ALL
+			SELECT schwarz_person_id, schwarz_ergebnis, runde_no
+			FROM partien
+			WHERE event_id = %d
+			AND NOT ISNULL(schwarz_person_id)
+		) results
 		WHERE runde_no <= %d
-		AND NOT ISNULL(person_id)
 		GROUP BY person_id';
-	$sql = sprintf($sql, $round_no, $round_no);
+	$sql = sprintf($sql, $round_no, $event_id, $event_id, $round_no);
 	$wertungen = wrap_db_fetch($sql, '_dummy_', 'key/value');
 	foreach (array_keys($tabelle) as $person_id) {
 		if (array_key_exists($person_id, $wertungen)) continue;
@@ -480,26 +574,36 @@ function mf_tournaments_make_single_fort($event_id, $round_no, $tabelle) {
  * Elo vor DWZ
  *
  * Schnitt nur über Ergebnisse gegen einen Gegner, falls Freilos wird Runde
- * nicht gewertet! = NOT ISNULL(partien_einzelergebnisse.gegner_id)
+ * nicht gewertet! = NOT ISNULL(gegner_id)
  * @param int $event_id
  * @param int $round_no
  * @return array Liste person_id => value
  */
 function mf_tournaments_make_single_performance($event_id, $round_no) {
-	$sql = 'SELECT partien_einzelergebnisse.person_id
-			, ROUND(SUM(IFNULL(IFNULL(t_elo, t_dwz), 0))/COUNT(partie_id)) AS wertung
-		FROM partien_einzelergebnisse
+	$sql = 'SELECT results.person_id
+			, ROUND(SUM(IFNULL(IFNULL(t_elo, t_dwz), 0))/COUNT(*)) AS wertung
+		FROM (
+			SELECT weiss_person_id AS person_id, schwarz_person_id AS gegner_id, runde_no
+			FROM partien
+			WHERE event_id = %d
+			AND NOT ISNULL(weiss_person_id)
+			AND NOT ISNULL(schwarz_person_id)
+			UNION ALL
+			SELECT schwarz_person_id, weiss_person_id, runde_no
+			FROM partien
+			WHERE event_id = %d
+			AND NOT ISNULL(schwarz_person_id)
+			AND NOT ISNULL(weiss_person_id)
+		) results
 		LEFT JOIN persons
-			ON partien_einzelergebnisse.gegner_id = persons.person_id
+			ON results.gegner_id = persons.person_id
 		LEFT JOIN participations
-			ON partien_einzelergebnisse.event_id = participations.event_id
+			ON participations.event_id = %d
 			AND persons.contact_id = participations.contact_id
 		WHERE runde_no <= %d
-		AND NOT ISNULL(partien_einzelergebnisse.person_id)
-		AND NOT ISNULL(partien_einzelergebnisse.gegner_id)
-		GROUP BY partien_einzelergebnisse.person_id
+		GROUP BY results.person_id
 	';
-	$sql = sprintf($sql, $round_no);
+	$sql = sprintf($sql, $event_id, $event_id, $event_id, $round_no);
 	return wrap_db_fetch($sql, '_dummy_', 'key/value');
 }
 
@@ -512,12 +616,24 @@ function mf_tournaments_make_single_performance($event_id, $round_no) {
  * @return array Liste person_id => value
  */
 function mf_tournaments_make_single_sw($event_id, $round_no, $tabelle) {
-	$sql = 'SELECT person_id, SUM(ergebnis) AS punkte
-		FROM partien_einzelergebnisse
-		WHERE ergebnis = 1
-		AND runde_no <= %d
+	$sql = 'SELECT person_id, COUNT(*) AS punkte
+		FROM (
+			SELECT weiss_person_id AS person_id
+			FROM partien
+			WHERE event_id = %d
+			AND runde_no <= %d
+			AND weiss_ergebnis = 1
+			AND NOT ISNULL(weiss_person_id)
+			UNION ALL
+			SELECT schwarz_person_id
+			FROM partien
+			WHERE event_id = %d
+			AND runde_no <= %d
+			AND schwarz_ergebnis = 1
+			AND NOT ISNULL(schwarz_person_id)
+		) wins
 		GROUP BY person_id';
-	$sql = sprintf($sql, $round_no);
+	$sql = sprintf($sql, $event_id, $round_no, $event_id, $round_no);
 	$wertungen = wrap_db_fetch($sql, '_dummy_', 'key/value');
 	foreach (array_keys($tabelle) as $person_id) {
 		if (array_key_exists($person_id, $wertungen)) continue;
