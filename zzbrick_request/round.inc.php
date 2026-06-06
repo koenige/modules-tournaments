@@ -157,7 +157,7 @@ function mod_tournaments_round_single($event) {
  * @return array
  */
 function mod_tournaments_round_team($event) {
-	wrap_include('team', 'tournaments');
+	wrap_include('team-registration', 'tournaments');
 
 	$sql = 'SELECT DISTINCT paarungen.runde_no
 		FROM paarungen

@@ -8,13 +8,13 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
 function mod_tournaments_team($vars, $settings, $data) {
-	wrap_include('team', 'tournaments');
+	wrap_include('team-registration', 'tournaments');
 
 	$sql = 'SELECT setzliste_no
 			, platz_no

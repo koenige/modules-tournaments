@@ -2,13 +2,13 @@
 
 /**
  * tournaments module
- * team functions
+ * team registration helpers
  *
  * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2022-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 

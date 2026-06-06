@@ -25,7 +25,7 @@
 function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 	wrap_include('validate', 'zzform');
 	wrap_include('zzform/editing', 'ratings');
-	wrap_include('team', 'tournaments');
+	wrap_include('team-registration', 'tournaments');
 
 	if ($data['meldung'] !== 'offen') wrap_quit(403,
 		'Das Team wurde bereits abschließend gemeldet. Eine Änderung der Aufstellung ist nicht mehr möglich.'

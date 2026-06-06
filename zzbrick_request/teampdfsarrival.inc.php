@@ -23,7 +23,7 @@
 function mod_tournaments_teampdfsarrival($params, $settings, $event) {
 	if (!$event) return false;
 	wrap_include('pdf', 'tournaments');
-	wrap_include('team', 'tournaments');
+	wrap_include('team-registration', 'tournaments');
 	
 	// event: additional event info needed
 	$sql = 'SELECT pseudo_dwz, ratings_updated, bretter_max

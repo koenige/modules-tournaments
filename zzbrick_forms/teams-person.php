@@ -20,7 +20,7 @@ if (!in_array($brick['data']['meldung'], ['offen', 'teiloffen']))
 
 $data = $brick['data'];
 // Team + Vereinsbetreuer auslesen
-wrap_include('team', 'tournaments');
+wrap_include('team-registration', 'tournaments');
 $data = array_merge($data, mf_tournaments_team_participants([$data['team_id'] => $data['contact_id']], $data, false));
 
 $zz = zzform_include('persons', [], 'forms');

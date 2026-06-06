@@ -295,7 +295,7 @@ function mod_tournaments_teampdfs_draft(&$pdf, $daten) {
  * @return array
  */
 function mf_tournaments_pdf_teams($event, $params) {
-	wrap_include('team', 'tournaments');
+	wrap_include('team-registration', 'tournaments');
 
 	// team_identifier is more specific
 	if (!empty($params['team_identifier']))
