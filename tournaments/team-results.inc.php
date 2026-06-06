@@ -337,7 +337,7 @@ function mf_tournaments_active_team_ids($event_id) {
 			AND team_status = "Teilnehmer"
 			AND spielfrei = "nein"';
 		$sql = sprintf($sql, $event_id);
-		$cache[$event_id] = wrap_db_fetch($sql, 'team_id', 'key/value');
+		$cache[$event_id] = wrap_db_fetch($sql, 'team_id', 'single value');
 	}
 	return $cache[$event_id];
 }
