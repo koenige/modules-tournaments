@@ -162,18 +162,22 @@ function mf_tournaments_get_paring_player($paarung, $farbe) {
 	if (!$partien) {
 		// get first players of each team, starting with black for home player
 		if ($farbe === $heim_farbe) { // heim_team
-			$id = $aufstellungen[$paarung['heim_team_id']][0];
+			$team_id = $paarung['heim_team_id'];
 		} else {
-			$id = $aufstellungen[$paarung['auswaerts_team_id']][0];
+			$team_id = $paarung['auswaerts_team_id'];
 		}
-		return $id;
+		if (empty($aufstellungen[$team_id])) return false;
+		return $aufstellungen[$team_id][0];
 	}
 	
 	$ha = $heim_farbe === $farbe ? 'heim' : 'auswaerts';
 	$pe = $farbe === 'weiss' ? 'schwarz' : 'weiss';
-	
-	$index = array_search($partien[$pe.'_person_id'], $aufstellungen[$paarung[$ha.'_team_id']]);
+	$team_id = $paarung[$ha.'_team_id'];
+	if (empty($aufstellungen[$team_id])) return false;
+
+	$index = array_search($partien[$pe.'_person_id'], $aufstellungen[$team_id]);
+	if ($index === false) return false;
 	$index++;
-	if ($index === count($aufstellungen[$paarung[$ha.'_team_id']])) return false;
-	return $aufstellungen[$paarung[$ha.'_team_id']][$index];
+	if ($index === count($aufstellungen[$team_id])) return false;
+	return $aufstellungen[$team_id][$index];
 }
