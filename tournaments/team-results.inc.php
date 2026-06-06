@@ -165,6 +165,53 @@ function mf_tournaments_team_match_points($board_points, $opponent_board_points)
 }
 
 /**
+ * Tiebreak rating per active team (sum of per-pairing values up to a round)
+ *
+ * Dispatches to separate helper function per pairing row, then sorts.
+ *
+ * @param int $event_id
+ * @param int $round_no maximum round number inclusive
+ * @param string $path
+ * @return array team_id => rating, sorted rating DESC, team_id ASC
+ */
+function mf_tournaments_team_score($event_id, $round_no, $path) {
+	$team_ids = mf_tournaments_active_team_ids($event_id);
+	$results = mf_tournaments_team_results($event_id, $round_no);
+	$ratings = [];
+	foreach (array_keys($team_ids) as $team_id) {
+		$ratings[$team_id] = 0;
+	}
+	$function = sprintf('mf_tournaments_team_score_%s', $path);
+	foreach ($results as $team_id => $rounds) {
+		if (!isset($ratings[$team_id])) continue;
+		foreach ($rounds as $row) {
+			$ratings[$team_id] += $function($row);
+		}
+	}
+	return mf_tournaments_team_score_sort($ratings);
+}
+
+/**
+ * Match points from one team result row (mf_tournaments_team_score() helper)
+ *
+ * @param array $row team result row from mf_tournaments_team_results()
+ * @return int|float match_points for that pairing
+ */
+function mf_tournaments_team_score_mp($row) {
+	return $row['match_points'];
+}
+
+/**
+ * Board points from one team result row (mf_tournaments_team_score() helper)
+ *
+ * @param array $row team result row from mf_tournaments_team_results()
+ * @return int|float board_points for that pairing
+ */
+function mf_tournaments_team_score_bp($row) {
+	return $row['board_points'];
+}
+
+/**
  * Match wins / draws / losses per participant team up to a round
  *
  * @param int $event_id

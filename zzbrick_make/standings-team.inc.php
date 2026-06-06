@@ -85,6 +85,10 @@ function mod_tournaments_make_standings_team($event) {
 		case 'sw':
 			$scores[$category_id] = mf_tournaments_team_score_wins($event['event_id'], $event['runde_no']);
 			break;
+		case 'mp':
+		case 'bp':
+			$scores[$category_id] = mf_tournaments_team_score($event['event_id'], $event['runde_no'], $scoring['path']);
+			break;
 		case 'sobo':
 			$scores[$category_id] = mf_tournaments_make_team_sobo($event['runde_no']); break;
 			break;

@@ -10,29 +10,6 @@
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
-
--- tournaments_scores_team_mp --
-/* calculate match points for team tournaments */
-SELECT team_id, SUM(mannschaftspunkte) AS rating
-FROM paarungen_ergebnisse_view
-LEFT JOIN teams USING (team_id)
-WHERE runde_no <= %d
-AND team_status = "Teilnehmer"
-AND spielfrei = "nein"
-GROUP BY team_id
-ORDER BY rating DESC, team_id;
-
--- tournaments_scores_team_bp --
-/* calculate board points for team tournaments */
-SELECT team_id, SUM(brettpunkte) AS rating
-FROM paarungen_ergebnisse_view
-LEFT JOIN teams USING (team_id)
-WHERE runde_no <= %d
-AND team_status = "Teilnehmer"
-AND spielfrei = "nein"
-GROUP BY team_id
-ORDER BY rating DESC, team_id;
-
 -- tournaments_scores_team_bhz_mp --
 /* calculate buchholz points based on match points for team tournaments, no correction */
 SELECT results.team_id, IFNULL(SUM(results_opponents.mannschaftspunkte), 0) AS rating
