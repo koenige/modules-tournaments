@@ -111,3 +111,5 @@
 /* 2026-06-06-4 */	DROP VIEW `tabellenstaende_guv_view`;
 /* 2026-06-06-5 */	DROP VIEW `buchholz_mit_kampflosen_view`;
 /* 2026-06-06-6 */	DROP VIEW `paarungen_ergebnisse_view`;
+/* 2026-06-06-7 */	DROP VIEW `partien_ergebnisse_view`;
+/* 2026-06-06-8 */	DROP VIEW `tabellenstaende_termine_view`;

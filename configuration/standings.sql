@@ -13,13 +13,32 @@
 -- tournaments_scores_team_bw --
 /* calculate berlin rating for team tournaments */
 SELECT team_id, SUM(CASE ergebnis
-	WHEN 1 THEN ((1 + tournaments.bretter_min) - results.brett_no)
-	WHEN 0.5 THEN (((1 + tournaments.bretter_min) - results.brett_no) / 2)
+	WHEN 1 THEN ((1 + bretter_min) - brett_no)
+	WHEN 0.5 THEN (((1 + bretter_min) - brett_no) / 2)
 	WHEN 0 THEN 0
 	ELSE 0 END
 ) AS rating
-FROM partien_ergebnisse_view results
-LEFT JOIN tournaments USING (event_id)
+FROM (
+	SELECT paarungen.heim_team_id AS team_id
+		, partien.runde_no
+		, partien.brett_no
+		, partien.heim_wertung AS ergebnis
+		, tournaments.bretter_min
+	FROM paarungen
+	JOIN partien ON partien.paarung_id = paarungen.paarung_id
+	JOIN tournaments ON tournaments.event_id = paarungen.event_id
+	WHERE paarungen.event_id = %d
+	UNION ALL
+	SELECT paarungen.auswaerts_team_id AS team_id
+		, partien.runde_no
+		, partien.brett_no
+		, partien.auswaerts_wertung AS ergebnis
+		, tournaments.bretter_min
+	FROM paarungen
+	JOIN partien ON partien.paarung_id = paarungen.paarung_id
+	JOIN tournaments ON tournaments.event_id = paarungen.event_id
+	WHERE paarungen.event_id = %d
+) results
 LEFT JOIN teams USING (team_id)
 WHERE runde_no <= %d
 AND team_status = "Teilnehmer"

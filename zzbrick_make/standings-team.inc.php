@@ -25,10 +25,6 @@
 function mod_tournaments_make_standings_team($event) {
 	wrap_include('team-results', 'tournaments');
 
-	$sql = 'SELECT @event_id:=%d';
-	$sql = sprintf($sql, $event['event_id']);
-	wrap_db_query($sql);
-	
 	$wdl = mf_tournaments_team_score_wdl($event['event_id'], $event['runde_no']);
 
 	$sql = 'SELECT teams.team_id
@@ -91,6 +87,11 @@ function mod_tournaments_make_standings_team($event) {
 		case 'bhz_mp_fide2012':
 		case 'sobo':
 			$scores[$category_id] = mf_tournaments_team_score($event['event_id'], $event['runde_no'], $scoring['path']);
+			break;
+		case 'bw':
+			$sql = wrap_sql_query('tournaments_scores_team_bw', 'standings');
+			$sql = sprintf($sql, $event['event_id'], $event['event_id'], $event['runde_no']);
+			$scores[$category_id] = wrap_db_fetch($sql, 'team_id', 'key/value');
 			break;
 		default:
 			if ($sql = wrap_sql_query('tournaments_scores_team_'.$scoring['path'], 'standings')) {

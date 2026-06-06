@@ -319,23 +319,3 @@ CREATE OR REPLACE VIEW `partien_einzelergebnisse` AS
 	UNION ALL SELECT `partie_id`, `partiestatus_category_id`, `event_id`, `runde_no`, `schwarz_person_id` AS `person_id`, `weiss_person_id` AS `gegner_id`, `schwarz_ergebnis` AS `ergebnis`, `brett_no`
 	FROM `partien`
 	WHERE `event_id` = `event_id`();
-
-
-CREATE OR REPLACE VIEW `partien_ergebnisse_view` AS
-	SELECT `partien`.`event_id`, `paarungen`.`heim_team_id` AS `team_id`, `paarungen`.`auswaerts_team_id` AS `gegner_team_id`, `partien`.`runde_no`, `partien`.`brett_no`, `partien`.`partie_id`, `partien`.`heim_wertung` AS `ergebnis`, `partien`.`auswaerts_wertung` AS `ergebnis_gegner`
-	FROM `paarungen`
-	LEFT JOIN `partien` USING (`paarung_id`)
-	WHERE `partien`.`event_id` = `event_id`()
-	UNION SELECT `partien`.`event_id`, `paarungen`.`auswaerts_team_id` AS `team_id`, `paarungen`.`heim_team_id` AS `gegner_team_id`, `partien`.`runde_no`, `partien`.`brett_no`, `partien`.`partie_id`, `partien`.`auswaerts_wertung` AS `ergebnis`, `partien`.`heim_wertung` AS `ergebnis_gegner`
-	FROM `paarungen`
-	LEFT JOIN `partien` USING (`paarung_id`)
-	WHERE `partien`.`event_id` = `event_id`();
-
-
-CREATE OR REPLACE VIEW `tabellenstaende_termine_view` AS
-	SELECT `teams`.`event_id`, `paarungen`.`runde_no`, `teams`.`team_id`
-	FROM `paarungen`
-	LEFT JOIN `teams` USING (`event_id`)
-	WHERE `paarungen`.`event_id` = `event_id`()
-	GROUP BY `runde_no`, `team_id`;
-
