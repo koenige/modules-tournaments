@@ -212,6 +212,17 @@ function mf_tournaments_team_score_bp($row) {
 }
 
 /**
+ * Win (1 or 0) from one team result row
+ *
+ * @param array $row team result row from mf_tournaments_team_results()
+ * @return int 1 if match won, else 0
+ */
+function mf_tournaments_team_score_sw($row) {
+	if ($row['match_points'] === 2) return 1;
+	return 0;
+}
+
+/**
  * Match wins / draws / losses per participant team up to a round
  *
  * @param int $event_id
@@ -240,20 +251,6 @@ function mf_tournaments_team_score_wdl($event_id, $round_no) {
 		}
 	}
 	return $wdl;
-}
-
-/**
- * @param int $event_id
- * @param int $round_no
- * @return array team_id => wins
- */
-function mf_tournaments_team_score_wins($event_id, $round_no) {
-	$wdl = mf_tournaments_team_score_wdl($event_id, $round_no);
-	$wins = [];
-	foreach ($wdl as $team_id => $record) {
-		$wins[$team_id] = $record['wins'];
-	}
-	return mf_tournaments_team_score_sort($wins);
 }
 
 /**

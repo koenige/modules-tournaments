@@ -83,8 +83,6 @@ function mod_tournaments_make_standings_team($event) {
 			$scores[$category_id] = wrap_db_fetch($sql, 'team_id', 'key/value');
 			break;
 		case 'sw':
-			$scores[$category_id] = mf_tournaments_team_score_wins($event['event_id'], $event['runde_no']);
-			break;
 		case 'mp':
 		case 'bp':
 			$scores[$category_id] = mf_tournaments_team_score($event['event_id'], $event['runde_no'], $scoring['path']);
