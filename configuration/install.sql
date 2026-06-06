@@ -363,16 +363,6 @@ CREATE OR REPLACE VIEW `tabellenstaende_termine_view` AS
 	GROUP BY `runde_no`, `team_id`;
 
 
-CREATE OR REPLACE VIEW `tabellenstaende_guv_view` AS
-	SELECT `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`, SUM(IF((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 2),1,0)) AS `gewonnen`, SUM(IF((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 1),1,0)) AS `unentschieden`, SUM(IF((`paarungen_ergebnisse_view`.`mannschaftspunkte` = 0),1,0)) AS `verloren`
-	FROM `tabellenstaende_termine_view`
-	LEFT JOIN `paarungen_ergebnisse_view`
-		ON `paarungen_ergebnisse_view`.`event_id` = `tabellenstaende_termine_view`.`event_id`
-		AND `paarungen_ergebnisse_view`.`team_id` = `tabellenstaende_termine_view`.`team_id`
-		AND `paarungen_ergebnisse_view`.`runde_no` <= `tabellenstaende_termine_view`.`runde_no`
-	GROUP BY `tabellenstaende_termine_view`.`event_id`, `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`;
-
-
 CREATE OR REPLACE VIEW `buchholz_mit_kampflosen_view` AS
 	SELECT `tabellenstaende_termine_view`.`runde_no`, `tabellenstaende_termine_view`.`team_id`, SUM(IF((`gegners_paarungen`.`kampflos` = 1), 1, `gegners_paarungen`.`mannschaftspunkte`)) AS `buchholz_mit_korrektur`
 	FROM `paarungen_ergebnisse_view`

@@ -9,7 +9,7 @@
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @author Erik Kothe <kontakt@erikkothe.de>
- * @copyright Copyright © 2012-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2024, 2026 Gustaf Mossakowski
  * @copyright Copyright © 2014 Erik Kothe
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
@@ -23,29 +23,35 @@
  * @todo return Anzahl der geänderten Datensätze, ggf.
  */
 function mod_tournaments_make_standings_team($event) {
+	wrap_include('team-results', 'tournaments');
+
 	$sql = 'SELECT @event_id:=%d';
 	$sql = sprintf($sql, $event['event_id']);
 	wrap_db_query($sql);
 	
+	$wdl = mf_tournaments_team_score_wdl($event['event_id'], $event['runde_no']);
+
 	$sql = 'SELECT teams.team_id
-			, gewonnen AS spiele_g, unentschieden AS spiele_u, verloren AS spiele_v
-			, events.event_id, tabellenstaende_guv_view.runde_no
+			, events.event_id
 			, (SELECT COUNT(website_id) FROM events_websites WHERE events_websites.event_id = events.event_id) AS veroeffentlicht
 		FROM events
 		JOIN teams USING (event_id)
-		JOIN tabellenstaende_guv_view USING (team_id)
 		WHERE events.event_id = %d
-		AND tabellenstaende_guv_view.runde_no = %d
 		AND spielfrei = "nein"
 		AND (meldung = "komplett" OR meldung = "teiloffen")
 		AND team_status = "Teilnehmer"
 		HAVING veroeffentlicht > 0
 	';
-	$sql = sprintf($sql,
-		$event['event_id'], $event['runde_no']
-	);
+	$sql = sprintf($sql, $event['event_id']);
 	$standings = wrap_db_fetch($sql, 'team_id');
 	if (!$standings) return false;
+
+	foreach ($standings as $team_id => $standing) {
+		$standings[$team_id]['spiele_g'] = $wdl[$team_id]['wins'] ?? 0;
+		$standings[$team_id]['spiele_u'] = $wdl[$team_id]['draws'] ?? 0;
+		$standings[$team_id]['spiele_v'] = $wdl[$team_id]['losses'] ?? 0;
+		$standings[$team_id]['runde_no'] = $event['runde_no'];
+	}
 
 	$scorings = mod_tournaments_make_standings_get_scoring($event['event_id']);
 	$scores = [];
