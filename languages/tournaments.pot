@@ -295,6 +295,28 @@ msgstr ""
 msgid "Tournament Identifiers"
 msgstr ""
 
+#: zzbrick_tables/tournaments.php
+msgid "Pairing bye scoring"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php
+msgid ""
+"Points awarded when a team receives a pairing-allocated bye (odd number of "
+"teams). “None” = pairing is not imported."
+msgstr ""
+
+#: zzbrick_tables/tournaments.php
+msgid "Win"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php
+msgid "Draw"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php
+msgid "None"
+msgstr ""
+
 #: zzform/export-pdf-teilnehmerschilder.inc.php
 msgid "No participants were selected for this export."
 msgstr ""

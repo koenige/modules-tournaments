@@ -216,7 +216,7 @@ CREATE TABLE `tournaments` (
   `pseudo_dwz` smallint unsigned DEFAULT NULL,
   `ratings_updated` date DEFAULT NULL,
   `teams_max` smallint unsigned DEFAULT NULL,
-  `wertung_spielfrei` enum('Sieg','Unentschieden','keine') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'Sieg',
+  `pairing_bye_scoring` enum('win','draw','none') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'win',
   `zimmerbuchung` enum('ja','nein') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'ja',
   `teilnehmerliste` enum('ja','nein') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'nein',
   `notationspflicht` enum('ja','nein') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'ja',

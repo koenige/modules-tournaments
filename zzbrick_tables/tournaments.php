@@ -247,12 +247,15 @@ $zz['fields'][15]['explanation'] = 'Sind Gastspieler von anderen Vereinen erlaub
 $zz['fields'][15]['hide_in_list'] = true;
 $zz['fields'][15]['if'][2] = false;
 
-$zz['fields'][50]['title'] = 'Wertung bei spielfrei';
-$zz['fields'][50]['field_name'] = 'wertung_spielfrei';
+$zz['fields'][50]['title'] = 'Pairing bye scoring';
+$zz['fields'][50]['field_name'] = 'pairing_bye_scoring';
 $zz['fields'][50]['type'] = 'select';
-$zz['fields'][50]['enum'] = ['Sieg', 'keine']; // @todo: 'Unentschieden' umsetzen
-$zz['fields'][50]['default'] = 'Sieg';
-$zz['fields'][50]['explanation'] = 'Wertung von spielfreien Partien, keine = wird nicht importiert';
+$zz['fields'][50]['enum'] = ['win', 'draw', 'none']; // @todo: 'draw' umsetzen
+$zz['fields'][50]['enum_title'] = [wrap_text('Win'), wrap_text('Draw'), wrap_text('None')];
+$zz['fields'][50]['default'] = 'win';
+$zz['fields'][50]['explanation'] = wrap_text(
+	'Points awarded when a team receives a pairing-allocated bye (odd number of teams). “None” = pairing is not imported.'
+);
 $zz['fields'][50]['hide_in_list'] = true;
 $zz['fields'][50]['if'][2] = false;
 

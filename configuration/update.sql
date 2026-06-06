@@ -105,3 +105,6 @@
 /* 2026-05-26-7 */	ALTER TABLE `playermessages` CHANGE `eintragszeit` `created` datetime NOT NULL;
 /* 2026-05-26-8 */	UPDATE _relations SET `detail_id_field` = 'playermessage_id', `detail_field` = 'participation_id' WHERE `detail_table` = 'playermessages' AND `detail_id_field` = 'nachricht_id' AND `detail_field` = 'teilnehmer_id';
 /* 2026-05-29-1 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&turnierzahl=', '&tournaments_edition=') WHERE urkunde_parameter LIKE '%&turnierzahl=%';
+/* 2026-06-06-1 */	ALTER TABLE `tournaments` MODIFY `wertung_spielfrei` varchar(20) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'Sieg';
+/* 2026-06-06-2 */	UPDATE `tournaments` SET `wertung_spielfrei` = CASE `wertung_spielfrei` WHEN 'Sieg' THEN 'win' WHEN 'Unentschieden' THEN 'draw' WHEN 'keine' THEN 'none' ELSE 'win' END;
+/* 2026-06-06-3 */	ALTER TABLE `tournaments` CHANGE `wertung_spielfrei` `pairing_bye_scoring` enum('win','draw','none') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'win';

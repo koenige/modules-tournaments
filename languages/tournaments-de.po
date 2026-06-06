@@ -349,6 +349,30 @@ msgstr "Turnier"
 msgid "Tournament Identifiers"
 msgstr "Turnierkennungen"
 
+#: zzbrick_tables/tournaments.php
+msgid "Pairing bye scoring"
+msgstr "Wertung bei Spielfrei"
+
+#: zzbrick_tables/tournaments.php
+msgid ""
+"Points awarded when a team receives a pairing-allocated bye (odd number of "
+"teams). “None” = pairing is not imported."
+msgstr ""
+"Punkte für ein paarungsbedingtes Freilos (ungerade Teamanzahl). „Keine“ = "
+"Paarung wird nicht importiert."
+
+#: zzbrick_tables/tournaments.php
+msgid "Win"
+msgstr "Sieg"
+
+#: zzbrick_tables/tournaments.php
+msgid "Draw"
+msgstr "Remis"
+
+#: zzbrick_tables/tournaments.php
+msgid "None"
+msgstr "Keine"
+
 #: zzform/export-pdf-teilnehmerschilder.inc.php
 msgid "No participants were selected for this export."
 msgstr "Für diesen Export wurden keine Teilnehmer ausgewählt."
