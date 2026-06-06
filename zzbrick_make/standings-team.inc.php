@@ -88,6 +88,7 @@ function mod_tournaments_make_standings_team($event) {
 		case 'bhz_mp':
 		case 'bhz_bp':
 		case 'bhz_bp_fide2012':
+		case 'bhz_mp_fide2012':
 		case 'sobo':
 			$scores[$category_id] = mf_tournaments_team_score($event['event_id'], $event['runde_no'], $scoring['path']);
 			break;

@@ -109,3 +109,5 @@
 /* 2026-06-06-2 */	UPDATE `tournaments` SET `wertung_spielfrei` = CASE `wertung_spielfrei` WHEN 'Sieg' THEN 'win' WHEN 'Unentschieden' THEN 'draw' WHEN 'keine' THEN 'none' ELSE 'win' END;
 /* 2026-06-06-3 */	ALTER TABLE `tournaments` CHANGE `wertung_spielfrei` `pairing_bye_scoring` enum('win','draw','none') CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT 'win';
 /* 2026-06-06-4 */	DROP VIEW `tabellenstaende_guv_view`;
+/* 2026-06-06-5 */	DROP VIEW `buchholz_mit_kampflosen_view`;
+/* 2026-06-06-6 */	DROP VIEW `paarungen_ergebnisse_view`;

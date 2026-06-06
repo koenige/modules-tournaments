@@ -167,14 +167,15 @@ function mf_tournaments_team_match_points($board_points, $opponent_board_points)
 /**
  * Tiebreak rating per active team (sum of per-pairing values up to a round)
  *
- * Sum paths (mp, bp, sw, bpbye1): row helper per own pairing.
+ * Sum paths (mp, bp, sw, mpbye1, bpbye1): row helper per own pairing.
+ * mpbye1 / bpbye1: pairing bye counts as 1 (FIDE 2012 Buchholz opponent totals).
  * Buchholz paths (bhz_*): opponent totals from a sum path, once per pairing faced.
  * sobo: board_points × opponent match-point total (opponent totals from mp).
  *
  * Board-point Buchholz (bhz_bp, bhz_bp_fide2012) caps opponent results at $round_no.
  * @param int $event_id
  * @param int $round_no maximum round number inclusive
- * @param string $path mp|bp|sw|bpbye1|bhz_mp|bhz_bp|bhz_bp_fide2012|sobo
+ * @param string $path mp|bp|sw|mpbye1|bpbye1|bhz_mp|bhz_bp|bhz_bp_fide2012|bhz_mp_fide2012|sobo
  * @return array team_id => rating, sorted rating DESC, team_id ASC
  */
 function mf_tournaments_team_score($event_id, $round_no, $path) {
@@ -195,6 +196,9 @@ function mf_tournaments_team_score($event_id, $round_no, $path) {
 	case 'bhz_bp_fide2012':
 		$opponent_totals = mf_tournaments_team_score($event_id, $round_no, 'bpbye1');
 		break;
+	case 'bhz_mp_fide2012':
+		$opponent_totals = mf_tournaments_team_score($event_id, $round_no, 'mpbye1');
+		break;
 	case 'sobo':
 		$opponent_totals = mf_tournaments_team_score($event_id, $round_no, 'mp');
 		break;
@@ -214,6 +218,9 @@ function mf_tournaments_team_score($event_id, $round_no, $path) {
 				$ratings[$team_id] += $function($row);
 		}
 	}
+	if ($path === 'bhz_mp_fide2012') {
+		$ratings = mf_tournaments_team_score_bhz_mp_fide2012_addon($ratings, $results, $round_no);
+	}
 	return mf_tournaments_team_score_sort($ratings);
 }
 
@@ -224,6 +231,19 @@ function mf_tournaments_team_score($event_id, $round_no, $path) {
  * @return int|float match_points for that pairing
  */
 function mf_tournaments_team_score_mp($row) {
+	return $row['match_points'];
+}
+
+/**
+ * Match points from one team result row (mf_tournaments_team_score() helper, path mpbye1)
+ *
+ * Pairing bye counts as 1 match point; played pairings use match_points as usual.
+ *
+ * @param array $row team result row from mf_tournaments_team_results()
+ * @return int|float 1 for pairing bye, else match_points
+ */
+function mf_tournaments_team_score_mpbye1($row) {
+	if ($row['is_pairing_bye']) return 1;
 	return $row['match_points'];
 }
 
@@ -244,9 +264,7 @@ function mf_tournaments_team_score_bp($row) {
  * @return int|float 1 for pairing bye, else board_points
  */
 function mf_tournaments_team_score_bpbye1($row) {
-	if ($row['is_pairing_bye']) {
-		return 1;
-	}
+	if ($row['is_pairing_bye']) return 1;
 	return $row['board_points'];
 }
 
@@ -274,6 +292,44 @@ function mf_tournaments_team_score_sw($row) {
 function mf_tournaments_team_score_bhz($row, $opponent_totals) {
 	$opponent_id = $row['gegner_team_id'];
 	return $opponent_totals[$opponent_id] ?? 0;
+}
+
+/**
+ * FIDE 2012 Buchholz (MP): extra points when the rated team had a pairing bye
+ *
+ * Replaces buchholz_mit_kampflosen_view UNION parts 2 and 3. Round-1 bye uses
+ * (round_no − 1) only; later byes use MPs before the bye round plus (round_no − bye_round).
+ *
+ * @param array $ratings team_id => buchholz so far
+ * @param array $results from mf_tournaments_team_results()
+ * @param int $round_no
+ * @return array team_id => rating with bye corrections added
+ */
+function mf_tournaments_team_score_bhz_mp_fide2012_addon($ratings, $results, $round_no) {
+	foreach ($results as $team_id => $rounds) {
+		if (!isset($ratings[$team_id])) {
+			continue;
+		}
+		foreach ($rounds as $row) {
+			if (!$row['is_pairing_bye']) {
+				continue;
+			}
+			$bye_round = (int) $row['runde_no'];
+			if ($bye_round === 1) {
+				$ratings[$team_id] += $round_no - 1;
+				continue;
+			}
+			$mp_before = 0;
+			foreach ($rounds as $prev) {
+				if ((int) $prev['runde_no'] >= $bye_round) {
+					continue;
+				}
+				$mp_before += $prev['match_points'];
+			}
+			$ratings[$team_id] += $mp_before + ($round_no - $bye_round);
+		}
+	}
+	return $ratings;
 }
 
 /**

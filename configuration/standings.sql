@@ -10,17 +10,6 @@
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
--- tournaments_scores_team_bhz_mp_fide2012 --
-/* calculate buchholz points based on match points for team tournaments, correction 2012 */
-SELECT team_id, IFNULL(SUM(buchholz_mit_korrektur), 0) AS rating
-FROM buchholz_mit_kampflosen_view
-LEFT JOIN teams USING (team_id)
-WHERE runde_no = %d
-AND team_status = "Teilnehmer"
-AND spielfrei = "nein"
-GROUP BY team_id
-ORDER BY rating DESC, team_id;
-
 -- tournaments_scores_team_bw --
 /* calculate berlin rating for team tournaments */
 SELECT team_id, SUM(CASE ergebnis
