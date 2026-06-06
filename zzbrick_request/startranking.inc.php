@@ -161,7 +161,7 @@ function mod_tournaments_startranking_single($event) {
 }
 	
 function mod_tournaments_startranking_team($event) {
-	wrap_include('team', 'tournaments');
+	wrap_include('team-ratings', 'tournaments');
 
 	$sql = 'SELECT team_id
 			, team, team_no
