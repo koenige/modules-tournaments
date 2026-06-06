@@ -93,16 +93,6 @@ AND spielfrei = "nein"
 GROUP BY tabellenstaende_termine_view.team_id
 ORDER BY rating DESC, team_id;
 		
--- tournaments_scores_team_sw --
-/* calculate wins for team tournaments */
-SELECT team_id, gewonnen
-FROM tabellenstaende_guv_view
-LEFT JOIN teams USING (team_id)
-WHERE runde_no = %d
-AND team_status = "Teilnehmer"
-AND spielfrei = "nein"
-ORDER BY gewonnen DESC, team_id;
-
 -- tournaments_scores_team_bw --
 /* calculate berlin rating for team tournaments */
 SELECT team_id, SUM(CASE ergebnis

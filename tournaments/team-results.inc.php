@@ -196,6 +196,20 @@ function mf_tournaments_team_score_wdl($event_id, $round_no) {
 }
 
 /**
+ * @param int $event_id
+ * @param int $round_no
+ * @return array team_id => wins
+ */
+function mf_tournaments_team_score_wins($event_id, $round_no) {
+	$wdl = mf_tournaments_team_score_wdl($event_id, $round_no);
+	$wins = [];
+	foreach ($wdl as $team_id => $record) {
+		$wins[$team_id] = $record['wins'];
+	}
+	return mf_tournaments_team_score_sort($wins);
+}
+
+/**
  * Active team ids for an event (Teilnehmer, not spielfrei), cached per request
  *
  * @param int $event_id
@@ -214,4 +228,20 @@ function mf_tournaments_active_team_ids($event_id) {
 		$cache[$event_id] = wrap_db_fetch($sql, 'team_id', 'key/value');
 	}
 	return $cache[$event_id];
+}
+
+/**
+ * Sort team ratings for tiebreak queries (rating DESC, team_id ASC)
+ *
+ * @param array $ratings team_id => rating
+ * @return array same array, reordered
+ */
+function mf_tournaments_team_score_sort($ratings) {
+	uksort($ratings, function ($team_a, $team_b) use ($ratings) {
+		if ($ratings[$team_a] != $ratings[$team_b]) {
+			return $ratings[$team_b] <=> $ratings[$team_a];
+		}
+		return $team_a <=> $team_b;
+	});
+	return $ratings;
 }
