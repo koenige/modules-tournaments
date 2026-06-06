@@ -88,10 +88,8 @@ function mod_tournaments_make_standings_team($event) {
 		case 'bhz_mp':
 		case 'bhz_bp':
 		case 'bhz_bp_fide2012':
-			$scores[$category_id] = mf_tournaments_team_score($event['event_id'], $event['runde_no'], $scoring['path']);
-			break;
 		case 'sobo':
-			$scores[$category_id] = mf_tournaments_make_team_sobo($event['runde_no']); break;
+			$scores[$category_id] = mf_tournaments_team_score($event['event_id'], $event['runde_no'], $scoring['path']);
 			break;
 		default:
 			if ($sql = wrap_sql_query('tournaments_scores_team_'.$scoring['path'], 'standings')) {
@@ -321,61 +319,3 @@ function mf_tournaments_make_team_direct_encounter($event, $standings, $hauptwer
 	arsort($teams);
 	return $teams;
 }
-
-/**
- * Sonneborn-Berger für Mannschaftsturniere berechnen
- * = Erzielte Brettpunkte x Mannschaftspunktzahl der Gegner nach der aktuellen Runde
- *
- * @param int $round_no
- * @return array Liste team_id => value
- */
-function mf_tournaments_make_team_sobo($round_no) {
-	// @deprecated, second query does not work in old MySQL/MariaDB databases
-	// because of GROUP BY
-	$deprecated = true;
-	if ($deprecated) {
-		$sql = 'SELECT team_id, (brettpunkte * (SELECT SUM(mannschaftspunkte)
-					FROM paarungen_ergebnisse_view opponents
-					WHERE opponents.team_id = paarungen_ergebnisse_view.gegner_team_id
-					AND opponents.runde_no <= %d
-				)) AS points
-				, runde_no
-			FROM paarungen_ergebnisse_view
-			LEFT JOIN teams USING (team_id)
-			WHERE paarungen_ergebnisse_view.runde_no <= %d
-			AND team_status = "Teilnehmer"
-			AND spielfrei = "nein"
-			ORDER BY runde_no
-		';
-		$sql = sprintf($sql, $round_no, $round_no);
-		$board_points = wrap_db_fetch($sql, ['team_id', 'runde_no', 'points'], 'key/value');
-		foreach ($board_points as $team_id => $points)
-			$data[$team_id] = array_sum($points);
-		arsort($data);
-	} else {
-		// paarungen_ergebnisse_view gibt bei Gewinn 2 MP, bei Unentschieden 1 MP aus
-		// daher MP / 2 * gegnerische MP
-		$sql = 'SELECT team_id
-				, SUM(brettpunkte * 
-					(SELECT SUM(mp.mannschaftspunkte)
-					FROM paarungen_ergebnisse_view mp
-					WHERE mp.team_id = paarungen_ergebnisse_view.gegner_team_id
-					AND mp.runde_no <= %d)
-				) AS sb
-			FROM paarungen_ergebnisse_view
-			LEFT JOIN teams USING (team_id)
-			WHERE paarungen_ergebnisse_view.runde_no <= %d
-			AND team_status = "Teilnehmer"
-			AND spielfrei = "nein"
-			GROUP BY team_id
-			ORDER BY sb DESC, team_id
-		';
-		$sql = sprintf($sql
-			, $round_no
-			, $round_no
-		);
-		$data = wrap_db_fetch($sql, 'team_id', 'key/value');
-	}
-	return $data;
-}
-

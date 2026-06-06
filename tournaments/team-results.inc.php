@@ -169,11 +169,12 @@ function mf_tournaments_team_match_points($board_points, $opponent_board_points)
  *
  * Sum paths (mp, bp, sw, bpbye1): row helper per own pairing.
  * Buchholz paths (bhz_*): opponent totals from a sum path, once per pairing faced.
+ * sobo: board_points × opponent match-point total (opponent totals from mp).
  *
  * Board-point Buchholz (bhz_bp, bhz_bp_fide2012) caps opponent results at $round_no.
  * @param int $event_id
  * @param int $round_no maximum round number inclusive
- * @param string $path mp|bp|sw|bpbye1|bhz_mp|bhz_bp|bhz_bp_fide2012
+ * @param string $path mp|bp|sw|bpbye1|bhz_mp|bhz_bp|bhz_bp_fide2012|sobo
  * @return array team_id => rating, sorted rating DESC, team_id ASC
  */
 function mf_tournaments_team_score($event_id, $round_no, $path) {
@@ -193,6 +194,9 @@ function mf_tournaments_team_score($event_id, $round_no, $path) {
 		break;
 	case 'bhz_bp_fide2012':
 		$opponent_totals = mf_tournaments_team_score($event_id, $round_no, 'bpbye1');
+		break;
+	case 'sobo':
+		$opponent_totals = mf_tournaments_team_score($event_id, $round_no, 'mp');
 		break;
 	default:
 		$opponent_totals = null;
@@ -270,6 +274,20 @@ function mf_tournaments_team_score_sw($row) {
 function mf_tournaments_team_score_bhz($row, $opponent_totals) {
 	$opponent_id = $row['gegner_team_id'];
 	return $opponent_totals[$opponent_id] ?? 0;
+}
+
+/**
+ * Sonneborn–Berger contribution from one pairing (mf_tournaments_team_score() helper)
+ *
+ * Board points scored in this pairing × opponent’s cumulative match points (mp path).
+ *
+ * @param array $row team result row from mf_tournaments_team_results()
+ * @param array $opponent_totals team_id => rating from the recursive mp call
+ * @return int|float
+ */
+function mf_tournaments_team_score_sobo($row, $opponent_totals) {
+	$opponent_id = $row['gegner_team_id'];
+	return $row['board_points'] * ($opponent_totals[$opponent_id] ?? 0);
 }
 
 /**
