@@ -2,7 +2,7 @@
 
 /**
  * tournaments module
- * table script: standings/scores
+ * table script: standings scores
  *
  * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
@@ -14,10 +14,10 @@
 
 
 $zz['title'] = 'Scores';
-$zz['table'] = 'tabellenstaende_wertungen';
+$zz['table'] = 'standings_scores';
 
 $zz['fields'][1]['title'] = 'ID';
-$zz['fields'][1]['field_name'] = 'tsw_id';
+$zz['fields'][1]['field_name'] = 'standing_score_id';
 $zz['fields'][1]['type'] = 'id';
 
 $zz['fields'][2]['field_name'] = 'tabellenstand_id';
@@ -26,11 +26,11 @@ $zz['fields'][2]['sql'] = 'SELECT tabellenstand_id, tabellenstand_id
 	FROM tabellenstaende
 	ORDER BY tabellenstand_id';
 
-$zz['fields'][4]['field_name'] = 'wertung';
+$zz['fields'][4]['field_name'] = 'score';
 $zz['fields'][4]['null'] = true;
 
-$zz['fields'][3]['title'] = 'Wertung';
-$zz['fields'][3]['field_name'] = 'wertung_category_id';
+$zz['fields'][3]['title'] = 'Score';
+$zz['fields'][3]['field_name'] = 'score_category_id';
 $zz['fields'][3]['type'] = 'select';
 $zz['fields'][3]['null'] = true;
 $zz['fields'][3]['sql'] = 'SELECT category_id, category, main_category_id
@@ -40,13 +40,13 @@ $zz['fields'][3]['show_hierarchy'] = 'main_category_id';
 $zz['fields'][3]['display_field'] = 'category';
 $zz['fields'][3]['show_hierarchy_subtree'] = wrap_category_id('turnierwertungen');
 
-$zz['unique'][] = ['tabellenstand_id', 'wertung_category_id'];
+$zz['unique'][] = ['tabellenstand_id', 'score_category_id'];
 
-$zz['sql'] = 'SELECT tabellenstaende_wertungen.*
+$zz['sql'] = 'SELECT standings_scores.*
 		, category
-	FROM tabellenstaende_wertungen
+	FROM standings_scores
 	LEFT JOIN tabellenstaende USING (tabellenstand_id)
 	LEFT JOIN categories
-		ON categories.category_id = tabellenstaende_wertungen.wertung_category_id
+		ON categories.category_id = standings_scores.score_category_id
 ';
 $zz['sqlorder'] = ' ORDER BY tabellenstand_id, category';

@@ -163,18 +163,18 @@ SELECT paarung_id, partie_id, partien.brett_no, partien.runde_no
 	, IF(heim_spieler_farbe = "schwarz", weiss_status.setzliste_no, schwarz_status.setzliste_no) AS auswaerts_setzliste_no
 	, IF(NOT ISNULL(pgn), IF(partiestatus_category_id != /*_ID categories partiestatus/kampflos _*/, 1, NULL), NULL) AS partie
 	, eco
-	, (SELECT wertung FROM tabellenstaende
-		LEFT JOIN tabellenstaende_wertungen USING (tabellenstand_id)
+	, (SELECT score FROM tabellenstaende
+		LEFT JOIN standings_scores USING (tabellenstand_id)
 		WHERE runde_no = partien.runde_no - 1
 		AND event_id = partien.event_id
 		AND person_id = partien.schwarz_person_id
-		AND wertung_category_id = /*_ID categories turnierwertungen/pkt _*/) AS schwarz_punkte
-	, (SELECT wertung FROM tabellenstaende
-		LEFT JOIN tabellenstaende_wertungen USING (tabellenstand_id)
+		AND score_category_id = /*_ID categories turnierwertungen/pkt _*/) AS schwarz_punkte
+	, (SELECT score FROM tabellenstaende
+		LEFT JOIN standings_scores USING (tabellenstand_id)
 		WHERE runde_no = partien.runde_no - 1
 		AND event_id = partien.event_id
 		AND person_id = partien.weiss_person_id
-		AND wertung_category_id = /*_ID categories turnierwertungen/pkt _*/) AS weiss_punkte
+		AND score_category_id = /*_ID categories turnierwertungen/pkt _*/) AS weiss_punkte
 	, partien.last_update
 FROM partien
 LEFT JOIN categories

@@ -103,8 +103,8 @@ function mod_tournaments_federation($params, $settings, $data) {
 				, setzliste_no
 				, platz_no
 				, IF(teilnehmerliste = "ja", IF(team_status = "Teilnehmer", 1, NULL), NULL) AS teilnehmerliste
-				, tsw.wertung AS mp
-				, (runde_no * IF(tournaments_scores.score_category_id = /*_ID categories turnierwertungen/bp _*/, tournaments.bretter_min, 2) - tsw.wertung) AS mp_gegner
+				, standings_scores.score AS mp
+				, (runde_no * IF(tournaments_scores.score_category_id = /*_ID categories turnierwertungen/bp _*/, tournaments.bretter_min, 2) - standings_scores.score) AS mp_gegner
 			FROM teams
 			LEFT JOIN tournaments USING (event_id)
 			LEFT JOIN tournaments_scores
@@ -113,9 +113,9 @@ function mod_tournaments_federation($params, $settings, $data) {
 			LEFT JOIN tabellenstaende
 				ON teams.team_id = tabellenstaende.team_id
 				AND runde_no = tournaments.tabellenstand_runde_no
-			LEFT JOIN tabellenstaende_wertungen tsw
-				ON tsw.tabellenstand_id = tabellenstaende.tabellenstand_id
-				AND tsw.wertung_category_id = tournaments_scores.score_category_id
+			LEFT JOIN standings_scores
+				ON standings_scores.tabellenstand_id = tabellenstaende.tabellenstand_id
+				AND standings_scores.score_category_id = tournaments_scores.score_category_id
 			LEFT JOIN contacts
 				ON teams.club_contact_id = contacts.contact_id 
 			LEFT JOIN contacts_identifiers vereine
@@ -150,7 +150,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 				, participations.event_id
 				, tabellenstaende.platz_no
 				, t_verein AS verein
-				, tsw.wertung AS punkte
+				, standings_scores.score AS punkte
 				, tabellenstaende.runde_no
 			FROM participations
 			LEFT JOIN persons USING (contact_id)
@@ -159,9 +159,9 @@ function mod_tournaments_federation($params, $settings, $data) {
 				ON tabellenstaende.person_id = persons.person_id
 				AND tabellenstaende.event_id = participations.event_id
 				AND runde_no = tournaments.tabellenstand_runde_no
-			LEFT JOIN tabellenstaende_wertungen tsw
-				ON tsw.tabellenstand_id = tabellenstaende.tabellenstand_id
-				AND wertung_category_id = /*_ID categories turnierwertungen/pkt _*/
+			LEFT JOIN standings_scores
+				ON standings_scores.tabellenstand_id = tabellenstaende.tabellenstand_id
+				AND standings_scores.score_category_id = /*_ID categories turnierwertungen/pkt _*/
 			LEFT JOIN contacts
 				ON participations.club_contact_id = contacts.contact_id 
 			LEFT JOIN contacts_identifiers vereine

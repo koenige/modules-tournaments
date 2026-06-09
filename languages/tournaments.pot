@@ -306,11 +306,13 @@ msgid "Processed"
 msgstr ""
 
 #: zzbrick_tables/standings-scores.php
+#: zzbrick_tables/tabellenstaende.php
 msgid "Scores"
 msgstr ""
 
-#: zzbrick_tables/tabellenstaende.php
-msgid "Scores"
+#: zzbrick_tables/standings-scores.php
+#: zzbrick_tables/tournaments-scores.php
+msgid "Score"
 msgstr ""
 
 #: zzbrick_tables/tournaments-identifiers.php
@@ -353,10 +355,6 @@ msgstr ""
 
 #: zzbrick_tables/tournaments-scores.php
 msgid "Seq."
-msgstr ""
-
-#: zzbrick_tables/tournaments-scores.php
-msgid "Score"
 msgstr ""
 
 #: zzbrick_tables/tournaments-scores.php

@@ -234,22 +234,22 @@ function mod_tournaments_standings($vars, $settings, $event) {
 		if (!empty($tabelle['zeige_setzliste'])) $tabelle[$tabellenstand_id]['zeige_setzliste'] = true;
 	}
 
-	$sql = 'SELECT tsw_id, tabellenstand_id, wertung_category_id, wertung
-		FROM tabellenstaende_wertungen
+	$sql = 'SELECT standing_score_id, tabellenstand_id, score_category_id, score
+		FROM standings_scores
 		WHERE tabellenstand_id IN (%s)';
 	$sql = sprintf($sql, implode(',', $tabellen_keys));
-	$scores = wrap_db_fetch($sql, ['tabellenstand_id', 'wertung_category_id']);
+	$scores = wrap_db_fetch($sql, ['tabellenstand_id', 'score_category_id']);
 
 	$sql = 'SELECT DISTINCT category_id, category, category_short
 			, ts.sequence, categories.sequence
-		FROM tabellenstaende_wertungen tsw
+		FROM standings_scores
 		LEFT JOIN tabellenstaende USING (tabellenstand_id)
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN tournaments_scores ts
-			ON ts.score_category_id = tsw.wertung_category_id
+			ON ts.score_category_id = standings_scores.score_category_id
 			AND ts.tournament_id = tournaments.tournament_id
 		LEFT JOIN categories
-			ON tsw.wertung_category_id = categories.category_id
+			ON standings_scores.score_category_id = categories.category_id
 		WHERE tabellenstand_id IN (%s)
 		ORDER BY ts.sequence, categories.sequence';
 	$sql = sprintf($sql, implode(',', $tabellen_keys));
@@ -259,13 +259,13 @@ function mod_tournaments_standings($vars, $settings, $event) {
 		if (!is_numeric($tabellenstand_id)) continue;
 		$tabelle[$tabellenstand_id]['guv'] = $guv;
 		foreach (array_keys($tabelle['scores']) as $category_id) {
-			if (!isset($scores[$tabellenstand_id][$category_id]['wertung'])) {
+			if (!isset($scores[$tabellenstand_id][$category_id]['score'])) {
 				$value = '';
 			} else {
-				$value = $scores[$tabellenstand_id][$category_id]['wertung'];
+				$value = $scores[$tabellenstand_id][$category_id]['score'];
 			}
 			$tabelle[$tabellenstand_id]['scores'][] = [
-				'wertung' => $value
+				'score' => $value
 			];
 		}
 	}

@@ -306,8 +306,8 @@ function mod_tournaments_make_standings_prepare($event, $standings, $scores, $sc
 				$standings[$tn_id]['platz_no'] = 1;
 			}
 			if ($score_categories[$category_id]['display'] === 'always') {
-				$standings[$tn_id]['scores'][$category_id]['wertung'] = $score;
-				$standings[$tn_id]['scores'][$category_id]['wertung_category_id'] = $category_id;
+				$standings[$tn_id]['scores'][$category_id]['score'] = $score;
+				$standings[$tn_id]['scores'][$category_id]['score_category_id'] = $category_id;
 			}
 			// Wertung nicht in allgemeines Array schreiben, da das nicht ausgegeben werden soll:
 			$tsw[$tn_id][$category_id] = $score;
@@ -326,10 +326,10 @@ function mod_tournaments_make_standings_prepare($event, $standings, $scores, $sc
 				$standings[$last_tn_id[$stand]]['eindeutig'] = false;
 				$standings[$tn_id]['eindeutig'] = false;
 				if ($score_categories[$category_id]['display'] !== 'always') {
-					$standings[$tn_id]['scores'][$category_id]['wertung'] = $score;
-					$standings[$tn_id]['scores'][$category_id]['wertung_category_id'] = $category_id;
-					$standings[$last_tn_id[$stand]]['scores'][$category_id]['wertung'] = $last_score[$stand];
-					$standings[$last_tn_id[$stand]]['scores'][$category_id]['wertung_category_id'] = $category_id;
+					$standings[$tn_id]['scores'][$category_id]['score'] = $score;
+					$standings[$tn_id]['scores'][$category_id]['score_category_id'] = $category_id;
+					$standings[$last_tn_id[$stand]]['scores'][$category_id]['score'] = $last_score[$stand];
+					$standings[$last_tn_id[$stand]]['scores'][$category_id]['score_category_id'] = $category_id;
 				}
 				if (!isset($increment[$stand])) $increment[$stand] = 1;
 				else $increment[$stand]++;
@@ -339,10 +339,10 @@ function mod_tournaments_make_standings_prepare($event, $standings, $scores, $sc
 				$increment[$stand] = 1;
 				$standings[$tn_id]['eindeutig'] = true;
 				if ($score_categories[$category_id]['display'] !== 'always') {
-					$standings[$tn_id]['scores'][$category_id]['wertung'] = $score;
-					$standings[$tn_id]['scores'][$category_id]['wertung_category_id'] = $category_id;
-					$standings[$last_tn_id[$stand]]['scores'][$category_id]['wertung'] = $last_score[$stand];
-					$standings[$last_tn_id[$stand]]['scores'][$category_id]['wertung_category_id'] = $category_id;
+					$standings[$tn_id]['scores'][$category_id]['score'] = $score;
+					$standings[$tn_id]['scores'][$category_id]['score_category_id'] = $category_id;
+					$standings[$last_tn_id[$stand]]['scores'][$category_id]['score'] = $last_score[$stand];
+					$standings[$last_tn_id[$stand]]['scores'][$category_id]['score_category_id'] = $category_id;
 				}
 			}
 			$last_tn_id[$stand] = $tn_id;

@@ -34,7 +34,7 @@
 %%% if main_event_path & federation_identifier %%%
 </a>
 %%% endif %%%</td>
-<td class="number">%%% item wertung format=result_format %%%</td>
+<td class="number">%%% item score format=result_format %%%</td>
 </tr>
 %%% loop end %%%
 %%% if more_players %%%

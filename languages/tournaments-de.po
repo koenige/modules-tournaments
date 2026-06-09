@@ -363,12 +363,14 @@ msgid "Processed"
 msgstr "Verarbeitet"
 
 #: zzbrick_tables/standings-scores.php
-msgid "Scores"
-msgstr "Wertungen"
-
 #: zzbrick_tables/tabellenstaende.php
 msgid "Scores"
 msgstr "Wertungen"
+
+#: zzbrick_tables/standings-scores.php
+#: zzbrick_tables/tournaments-scores.php
+msgid "Score"
+msgstr "Wertung"
 
 #: zzbrick_tables/tournaments-identifiers.php
 msgid "Tournament"
@@ -413,10 +415,6 @@ msgstr "Turnierwertungen"
 #: zzbrick_tables/tournaments-scores.php
 msgid "Seq."
 msgstr "Folge"
-
-#: zzbrick_tables/tournaments-scores.php
-msgid "Score"
-msgstr "Wertung"
 
 #: zzbrick_tables/tournaments-scores.php
 msgid "Show"

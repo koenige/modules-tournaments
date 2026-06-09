@@ -354,7 +354,7 @@ function mod_tournaments_tournament_players_compact($event) {
 	$sql = 'SELECT participation_id, platz_no
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
 			, setzliste_no
-			, tabellenstaende_wertungen.wertung
+			, standings_scores.score
 			, participations.club_contact_id
 		FROM participations
 		LEFT JOIN persons USING (contact_id)
@@ -362,9 +362,9 @@ function mod_tournaments_tournament_players_compact($event) {
 			ON persons.person_id = tabellenstaende.person_id
 			AND tabellenstaende.event_id = participations.event_id
 			AND tabellenstaende.runde_no = %d
-		LEFT JOIN tabellenstaende_wertungen
-			ON tabellenstaende_wertungen.tabellenstand_id = tabellenstaende.tabellenstand_id
-			AND tabellenstaende_wertungen.wertung_category_id = %d
+		LEFT JOIN standings_scores
+			ON standings_scores.tabellenstand_id = tabellenstaende.tabellenstand_id
+			AND standings_scores.score_category_id = %d
 		WHERE participations.event_id = %d
 		AND usergroup_id = /*_ID usergroups spieler _*/
 		AND status_category_id = /*_ID categories participation-status/participant _*/
@@ -437,29 +437,29 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 	}
 	if ($standings) {
 		// format 0 points as 0.00 to get points displayed
-		$sql = 'SELECT tsw_id, tabellenstand_id, wertung_category_id
-				, IF(wertung = "0", "0.00", wertung) AS wertung
-			FROM tabellenstaende_wertungen
+		$sql = 'SELECT standing_score_id, tabellenstand_id, score_category_id
+				, IF(score = "0", "0.00", score) AS score
+			FROM standings_scores
 			WHERE tabellenstand_id IN (%s)';
 		$sql = sprintf($sql, implode(',', array_keys($standings)));
-		$scores = wrap_db_fetch($sql, ['tabellenstand_id', 'wertung_category_id']);
+		$scores = wrap_db_fetch($sql, ['tabellenstand_id', 'score_category_id']);
 
 		$sql = 'SELECT DISTINCT category_id, category, category_short
 				, ts.sequence, categories.sequence
-			FROM tabellenstaende_wertungen tsw
+			FROM standings_scores
 			LEFT JOIN tabellenstaende USING (tabellenstand_id)
 			LEFT JOIN tournaments USING (event_id)
 			LEFT JOIN tournaments_scores ts
-				ON ts.score_category_id = tsw.wertung_category_id
+				ON ts.score_category_id = standings_scores.score_category_id
 				AND ts.tournament_id = tournaments.tournament_id
 			LEFT JOIN categories
-				ON tsw.wertung_category_id = categories.category_id
+				ON standings_scores.score_category_id = categories.category_id
 			WHERE tabellenstand_id IN (%s)
 			ORDER BY ts.sequence, categories.sequence
 			LIMIT 1';
 		$sql = sprintf($sql, implode(',', array_keys($standings)));
 		$score_category = wrap_db_fetch($sql);
-		foreach ($scores as $ts_id => $score) {
+		foreach ($scores as $standing_id => $score) {
 			if (!array_key_exists($score_category['category_id'], $score)) {
 				wrap_error(wrap_text(
 					'Missing score for category ID %d in tournament %s.',
@@ -470,8 +470,8 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 				));
 				continue;
 			}
-			$event['teams'][$standings[$ts_id]]['wertung'] 
-				= $score[$score_category['category_id']]['wertung'];
+			$event['teams'][$standings[$standing_id]]['score'] 
+				= $score[$score_category['category_id']]['score'];
 		}
 		$event['standings'] = true;
 	}

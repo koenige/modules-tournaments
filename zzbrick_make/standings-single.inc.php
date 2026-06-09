@@ -160,17 +160,17 @@ function mod_tournaments_make_standings_write_single($event_id, $round_no, $tabe
 		$line['scores'] = $stand['scores'];
 		if ($line['tabellenstand_id']) {
 			// überflüssige Feinwertungen löschen
-			$sql = 'SELECT tsw_id, wertung_category_id FROM
-				tabellenstaende_wertungen
+			$sql = 'SELECT standing_score_id, score_category_id FROM
+				standings_scores
 				WHERE tabellenstand_id = %d';
 			$sql = sprintf($sql, $tabellenstaende[$stand['person_id']]);
-			$feinwertungen = wrap_db_fetch($sql, 'tsw_id');
-			foreach ($feinwertungen as $bestandswertung) {
-				if (in_array($bestandswertung['wertung_category_id'], array_keys($stand['scores']))) continue;
+			$existing_scores = wrap_db_fetch($sql, 'standing_score_id');
+			foreach ($existing_scores as $existing_score) {
+				if (in_array($existing_score['score_category_id'], array_keys($stand['scores']))) continue;
 				$line['scores'][] = [
-					'tsw_id' => $bestandswertung['tsw_id'],
-					'wertung_category_id' => '',
-					'wertung' => ''
+					'standing_score_id' => $existing_score['standing_score_id'],
+					'score_category_id' => '',
+					'score' => ''
 				];
 			}
 			zzform_update('tabellenstaende', $line, E_USER_ERROR);

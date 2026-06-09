@@ -154,16 +154,16 @@ function mod_tournaments_make_standings_team($event) {
 			// @todo irgendwann so etwas direkt in zzform mit Funktion lösen
 			// (alle anderen Datensätze, die nicht aktualisiert werden, löschen)
 			$sql = 'SELECT * FROM
-				tabellenstaende_wertungen
+				standings_scores
 				WHERE tabellenstand_id = %d';
 			$sql = sprintf($sql, $existing_standings[$stand['team_id']]);
-			$data = wrap_db_fetch($sql, 'tsw_id');
-			foreach ($data as $tsw_id => $bestandswertung) {
-				if (in_array($bestandswertung['wertung_category_id'], array_keys($stand['scores']))) continue;
+			$data = wrap_db_fetch($sql, 'standing_score_id');
+			foreach ($data as $standing_score_id => $existing_score) {
+				if (in_array($existing_score['score_category_id'], array_keys($stand['scores']))) continue;
 				$line['scores'][] = [
-					'tsw_id' => $bestandswertung['tsw_id'],
-					'wertung_category_id' => '',
-					'wertung' => ''
+					'standing_score_id' => $existing_score['standing_score_id'],
+					'score_category_id' => '',
+					'score' => ''
 				];
 			}
 			zzform_update('tabellenstaende', $line, E_USER_ERROR);
