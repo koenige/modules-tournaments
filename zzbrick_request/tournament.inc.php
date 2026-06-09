@@ -351,7 +351,7 @@ function mod_tournaments_tournament_players_compact($event) {
 	$sql = sprintf($sql, $event['tournament_id']);
 	$main_score_category_id = wrap_db_fetch($sql, '', 'single value');
 
-	$sql = 'SELECT participation_id, platz_no
+	$sql = 'SELECT participation_id, rank_no
 			, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS spieler
 			, setzliste_no
 			, standings_scores.score
@@ -368,8 +368,8 @@ function mod_tournaments_tournament_players_compact($event) {
 		WHERE participations.event_id = %d
 		AND usergroup_id = /*_ID usergroups spieler _*/
 		AND status_category_id = /*_ID categories participation-status/participant _*/
-		AND NOT ISNULL(platz_no)
-		ORDER BY platz_no';
+		AND NOT ISNULL(rank_no)
+		ORDER BY rank_no';
 	$sql = sprintf($sql
 		, $event['round_no']
 		, $main_score_category_id
@@ -403,7 +403,7 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 	$sql = 'SELECT teams.team_id
 			, team, team_no, teams.identifier AS team_identifier, team_status
 			, setzliste_no
-			, platz_no, standing_id
+			, rank_no, standing_id
 			, teams.club_contact_id
 			, (SELECT place FROM addresses
 				WHERE addresses.contact_id = teams.club_contact_id
@@ -417,7 +417,7 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 		WHERE teams.event_id = %d
 		AND team_status IN ("Teilnehmer", "Teilnahmeberechtigt")
 		AND spielfrei = "nein"
-		ORDER BY platz_no, setzliste_no, team, team_no
+		ORDER BY rank_no, setzliste_no, team, team_no
 	';
 	$sql = sprintf($sql
 		, $event['round_no']

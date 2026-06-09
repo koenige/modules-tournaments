@@ -36,13 +36,13 @@ $zz['fields'][3]['if']['where']['hide_in_list'] = true;
 $zz['fields'][3]['if']['where']['hide_in_form'] = true;
 
 $zz['fields'][6]['title'] = 'Rank';
-$zz['fields'][6]['field_name'] = 'platz_no';
+$zz['fields'][6]['field_name'] = 'rank_no';
 $zz['fields'][6]['type'] = 'number';
 $zz['fields'][6]['suffix'] = '.';
 $zz['fields'][6]['list_suffix'] = '.';
 
 $zz['fields'][11]['title'] = 'Rank (board)';
-$zz['fields'][11]['field_name'] = 'platz_brett_no';
+$zz['fields'][11]['field_name'] = 'board_rank_no';
 $zz['fields'][11]['type'] = 'number';
 $zz['fields'][11]['suffix'] = '.';
 $zz['fields'][11]['list_suffix'] = '.';
@@ -74,19 +74,19 @@ $zz['fields'][5]['unique_ignore'] = ['geburtsjahr', 'identifier'];
 
 $zz['fields'][7]['title'] = 'Won';
 $zz['fields'][7]['title_tab'] = 'W';
-$zz['fields'][7]['field_name'] = 'spiele_g';
+$zz['fields'][7]['field_name'] = 'games_won';
 $zz['fields'][7]['type'] = 'number';
 $zz['fields'][7]['null'] = true;
 
 $zz['fields'][8]['title'] = 'Drawn';
 $zz['fields'][8]['title_tab'] = 'D';
-$zz['fields'][8]['field_name'] = 'spiele_u';
+$zz['fields'][8]['field_name'] = 'games_drawn';
 $zz['fields'][8]['type'] = 'number';
 $zz['fields'][8]['null'] = true;
 
 $zz['fields'][9]['title'] = 'Lost';
 $zz['fields'][9]['title_tab'] = 'L';
-$zz['fields'][9]['field_name'] = 'spiele_v';
+$zz['fields'][9]['field_name'] = 'games_lost';
 $zz['fields'][9]['type'] = 'number';
 $zz['fields'][9]['null'] = true;
 
@@ -111,7 +111,7 @@ $zz['sql'] = 'SELECT standings.*
 	LEFT JOIN persons USING (person_id)
 	LEFT JOIN contacts USING (contact_id)
 ';
-$zz['sqlorder'] = ' ORDER BY events.date_begin, events.identifier, runde_no, platz_no';
+$zz['sqlorder'] = ' ORDER BY events.date_begin, events.identifier, runde_no, rank_no';
 
 $zz['subtitle']['event_id']['sql'] = 'SELECT event_id, event FROM events';
 $zz['subtitle']['event_id']['var'] = ['event'];

@@ -20,7 +20,7 @@
 <tbody>
 %%% loop players %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
-<td>%%% item platz_no %%%</td>
+<td>%%% item rank_no %%%</td>
 <td>
 %%% if setzliste_no %%%
 <a href="spieler/%%% item setzliste_no %%%/">

@@ -37,8 +37,8 @@
 	</thead>
 %%% loop start %%%
 	<tr class="%%% loopposition uneven "un" %%%even%%% item live " live" %%%" id="%%% item team_identifier_short %%%">
-	<td class="tz tableposition">%%% item platz_no_identisch "<span class='identical_place'>" %%%%%% item platz_no %%%%%% item platz_no_identisch "</span>" %%%
- %%% if platz_wechsel %%% <img src="%%% setting layout_path %%%/tournaments/standings-%%% item platz_wechsel %%%.png" alt="%%% item platz_symbol %%%" class="%%% item platz_wechsel %%%"> %%% endif %%%</td>
+	<td class="tz tableposition">%%% item rank_tied "<span class='identical_place'>" %%%%%% item rank_no %%%%%% item rank_tied "</span>" %%%
+ %%% if rank_change %%% <img src="%%% setting layout_path %%%/tournaments/standings-%%% item rank_change %%%.png" alt="%%% item rank_symbol %%%" class="%%% item rank_change %%%"> %%% endif %%%</td>
 <td>%%% if aktiv %%%<a href="../../../%%% item pfad %%%%%% item team_identifier %%%/">%%% endif %%%
 %%% item team %%%%%% item aktiv "</a>" %%%</td>
 %%% if dwz_schnitt %%%
@@ -57,9 +57,9 @@
 %%% endif %%%
 %%% endif %%%
 %%% if guv %%%
-		<td class="tm bx">%%% item spiele_g %%%</td>
-		<td class="tm">%%% item spiele_u %%%</td>
-		<td class="tm bxv">%%% item spiele_v %%%</td>
+		<td class="tm bx">%%% item games_won %%%</td>
+		<td class="tm">%%% item games_drawn %%%</td>
+		<td class="tm bxv">%%% item games_lost %%%</td>
 %%% endif %%%
 		%%% loop scores %%%
 		<td class="tm">%%% item score format=result_format %%%</td>

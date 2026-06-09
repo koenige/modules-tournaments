@@ -101,8 +101,8 @@
 </table>
 </div>
 
-%%% if platz_no %%%
-<p><a href="../tabelle/#%%% item team_identifier_short %%%">%%% item platz_no %%%. Tabellenplatz</a>%%% item endstand " (Endstand)" %%%</p>
+%%% if rank_no %%%
+<p><a href="../tabelle/#%%% item team_identifier_short %%%">%%% item rank_no %%%. Tabellenplatz</a>%%% item endstand " (Endstand)" %%%</p>
 %%% endif %%%
 <p>%%% if dwz_schnitt & bretter_min %%%
 DWZ-Schnitt der ersten %%% item bretter_min %%% Bretter: <strong>%%% item dwz_schnitt %%%</strong>

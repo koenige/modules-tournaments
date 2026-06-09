@@ -112,13 +112,13 @@ function mf_tournaments_final_standings($event_ids) {
 			if (!$id) unset($ids[$index]);
 		if (!$ids) continue;
 		if ($fkennung === 'gesamt') {
-			$filter[$fkennung]['where'][] = 'platz_no <= 3';
+			$filter[$fkennung]['where'][] = 'rank_no <= 3';
 		} else {
 			$filter[$fkennung] = mf_tournaments_standings_filter($fkennung);
 		}
 
 		$sql = 'SELECT standings.event_id
-				, standing_id, runde_no, platz_no
+				, standing_id, runde_no, rank_no
 				, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
 				, IF(tournaments.teilnehmerliste = "ja", teams.identifier, "") AS team_identifier
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
@@ -139,7 +139,7 @@ function mf_tournaments_final_standings($event_ids) {
 				OR participations.status_category_id = /*_ID categories participation-status/participant _*/
 			)
 			AND (%s)
-			ORDER BY platz_no';
+			ORDER BY rank_no';
 		$sql = sprintf($sql
 			, implode(',', $ids)
 			, implode(') AND (', $filter[$fkennung]['where'])

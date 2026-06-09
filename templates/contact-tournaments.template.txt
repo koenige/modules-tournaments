@@ -19,7 +19,7 @@
 <tbody>
 %%% loop spieler %%%
 <tr%%% if nur_gemeldet %%% class="nurmeldung"%%% endif %%%><th class="nobr">%%% item duration format=date %%%</th><td><a href="%%% path events_internal_event event_identifier %%%">%%% item event %%%</a> %%% item teilnahme_status " (%s)" %%%</td>
-<td class="number %%% unless nur_gemeldet %%%platz%%% item platz_no %%%%%% endif %%%">%%% item platz_no "<span>%s.</span>" %%%</td>
+<td class="number %%% unless nur_gemeldet %%%platz%%% item rank_no %%%%%% endif %%%">%%% item rank_no "<span>%s.</span>" %%%</td>
 <td>%%% if einzelturnier %%% <abbr title="Einzelturnier">E</abbr>%%% elseif mannschaftsturnier %%% <abbr title="Mannschaftsturnier">M</abbr>%%% endif %%%</td>
 <td>%%% if team %%%%%% item team %%% %%% item brett_no "(%s.)" %%%%%% elseif t_verein %%%%%% item t_verein %%%%%% endif %%%</td>
 <td class="number">%%% item t_dwz %%%</td>

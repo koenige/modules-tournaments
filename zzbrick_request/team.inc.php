@@ -17,7 +17,7 @@ function mod_tournaments_team($vars, $settings, $data) {
 	wrap_include('team-registration', 'tournaments');
 
 	$sql = 'SELECT setzliste_no
-			, platz_no
+			, rank_no
 			, teams.identifier AS team_identifier
 			, SUBSTRING_INDEX(teams.identifier, "/", -1) AS team_identifier_short
 			, @laufende_partien:= (SELECT IF(COUNT(partie_id) = 0, NULL, 1) FROM partien

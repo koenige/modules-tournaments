@@ -43,9 +43,9 @@ function mod_tournaments_make_standings_team($event) {
 	if (!$standings) return false;
 
 	foreach ($standings as $team_id => $standing) {
-		$standings[$team_id]['spiele_g'] = $wdl[$team_id]['wins'] ?? 0;
-		$standings[$team_id]['spiele_u'] = $wdl[$team_id]['draws'] ?? 0;
-		$standings[$team_id]['spiele_v'] = $wdl[$team_id]['losses'] ?? 0;
+		$standings[$team_id]['games_won'] = $wdl[$team_id]['wins'] ?? 0;
+		$standings[$team_id]['games_drawn'] = $wdl[$team_id]['draws'] ?? 0;
+		$standings[$team_id]['games_lost'] = $wdl[$team_id]['losses'] ?? 0;
 		$standings[$team_id]['runde_no'] = $event['runde_no'];
 	}
 
@@ -208,7 +208,7 @@ function mf_tournaments_make_team_direct_encounter($event, $standings, $hauptwer
 	
 	foreach ($standings as $team_id => $standing) {
 		if (!empty($standing['eindeutig'])) continue;
-		$index = isset($standing['platz_no']) ? $standing['platz_no'] : 0;
+		$index = isset($standing['rank_no']) ? $standing['rank_no'] : 0;
 		$unklar[$index][] = $team_id;
 	}
 	if (!$unklar) return [];

@@ -19,7 +19,7 @@ function mod_tournaments_teaminternal($vars, $settings, $data) {
 	$sql = 'SELECT datum_anreise, TIME_FORMAT(uhrzeit_anreise, "%%H:%%i") AS uhrzeit_anreise
 			, datum_abreise, TIME_FORMAT(uhrzeit_abreise, "%%H:%%i") AS uhrzeit_abreise
 			, setzliste_no
-			, platz_no
+			, rank_no
 			, teams.identifier AS team_identifier
 			, SUBSTRING_INDEX(teams.identifier, "/", -1) AS team_identifier_short
 			, meldung_datum

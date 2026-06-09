@@ -143,7 +143,7 @@ function mod_tournaments_federations($params, $settings, $event) {
 			foreach ($standings as $ts) {
 				$filter = mf_tournaments_standings_filter($ts);
 				if ($filter['error']) return false;
-				$sql = 'SELECT participation_id, platz_no, standings.event_id,
+				$sql = 'SELECT participation_id, rank_no, standings.event_id,
 						landesverbaende.contact_id, landesverbaende.country_id
 					FROM standings
 					LEFT JOIN persons
@@ -163,7 +163,7 @@ function mod_tournaments_federations($params, $settings, $event) {
 					AND standings.event_id = %d
 					AND NOT ISNULL(landesverbaende.country_id)
 					%s
-					ORDER BY platz_no
+					ORDER BY rank_no
 					LIMIT %d
 				';
 				$sql = sprintf($sql,

@@ -302,8 +302,8 @@ function mod_tournaments_make_standings_prepare($event, $standings, $scores, $sc
 		$increment[1] = 1;
 		foreach ($scores[$category_id] as $tn_id => $score) {
 			// Aktueller Stand in dieser Wertungsschleife?
-			if (!isset($standings[$tn_id]['platz_no'])) {
-				$standings[$tn_id]['platz_no'] = 1;
+			if (!isset($standings[$tn_id]['rank_no'])) {
+				$standings[$tn_id]['rank_no'] = 1;
 			}
 			if ($score_categories[$category_id]['display'] === 'always') {
 				$standings[$tn_id]['scores'][$category_id]['score'] = $score;
@@ -316,13 +316,13 @@ function mod_tournaments_make_standings_prepare($event, $standings, $scores, $sc
 				// Bearbeitung nötig
 				continue;
 			}
-			$stand = $standings[$tn_id]['platz_no'];
+			$stand = $standings[$tn_id]['rank_no'];
 			if (empty($last_tn_id[$stand])) {
 				$standings[$tn_id]['eindeutig'] = true;
 				if (!isset($increment[$stand])) $increment[$stand] = 1;
 			} elseif (isset($tsw[$last_tn_id[$stand]][$category_id])
 				AND $score === $tsw[$last_tn_id[$stand]][$category_id]) {
-				$standings[$tn_id]['platz_no'] = $standings[$last_tn_id[$stand]]['platz_no'];
+				$standings[$tn_id]['rank_no'] = $standings[$last_tn_id[$stand]]['rank_no'];
 				$standings[$last_tn_id[$stand]]['eindeutig'] = false;
 				$standings[$tn_id]['eindeutig'] = false;
 				if ($score_categories[$category_id]['display'] !== 'always') {
@@ -335,7 +335,7 @@ function mod_tournaments_make_standings_prepare($event, $standings, $scores, $sc
 				else $increment[$stand]++;
 			} else {
 				if (!isset($increment[$stand])) $increment[$stand] = 1;
-				$standings[$tn_id]['platz_no'] = $standings[$last_tn_id[$stand]]['platz_no'] + $increment[$stand];
+				$standings[$tn_id]['rank_no'] = $standings[$last_tn_id[$stand]]['rank_no'] + $increment[$stand];
 				$increment[$stand] = 1;
 				$standings[$tn_id]['eindeutig'] = true;
 				if ($score_categories[$category_id]['display'] !== 'always') {
@@ -357,12 +357,12 @@ function mod_tournaments_make_standings_prepare($event, $standings, $scores, $sc
  * Teams nach ihrem aktuellen Tabellenstand sortieren
  *
  * @param array $standings
- * @return array (sortiert nach platz_no)
+ * @return array (sortiert nach rank_no)
  */
 function mod_tournaments_make_standings_sort($standings) {
 	foreach ($standings as $participant_id => $values) {
 		if (!is_numeric($participant_id)) continue;
-		$places[$participant_id] = $values['platz_no'];
+		$places[$participant_id] = $values['rank_no'];
 	}
 	array_multisort($places, SORT_ASC, $standings);
 	return $standings;

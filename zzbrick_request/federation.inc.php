@@ -99,9 +99,9 @@ function mod_tournaments_federation($params, $settings, $data) {
 		$data['anzahl_teams'] = 0;
 		$sql = 'SELECT teams.team_id, teams.identifier AS team_identifier
 				, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS team
-				, teams.event_id, IF(platz_no, platz_no, setzliste_no) AS no
+				, teams.event_id, IF(rank_no, rank_no, setzliste_no) AS no
 				, setzliste_no
-				, platz_no
+				, rank_no
 				, IF(teilnehmerliste = "ja", IF(team_status = "Teilnehmer", 1, NULL), NULL) AS teilnehmerliste
 				, standings_scores.score AS mp
 				, (runde_no * IF(tournaments_scores.score_category_id = /*_ID categories turnierwertungen/bp _*/, tournaments.bretter_min, 2) - standings_scores.score) AS mp_gegner
@@ -124,7 +124,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 			WHERE teams.event_id IN (%s)
 			AND (IF(NOT ISNULL(vereine.identifier), SUBSTRING(vereine.identifier, 1, 1) = "%s", contacts.country_id = %d))
 			AND teams.team_status IN ("Teilnehmer", "Teilnahmeberechtigt")
-			ORDER BY platz_no, setzliste_no, teams.identifier';
+			ORDER BY rank_no, setzliste_no, teams.identifier';
 		$sql = sprintf($sql
 			, implode(',', array_keys($data['events']))
 			, $data['zps_code']
@@ -148,7 +148,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 		$sql = 'SELECT participation_id, setzliste_no, persons.person_id
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 				, participations.event_id
-				, standings.platz_no
+				, standings.rank_no
 				, t_verein AS verein
 				, standings_scores.score AS punkte
 				, standings.runde_no
@@ -170,7 +170,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 			AND (IF(NOT ISNULL(vereine.identifier), SUBSTRING(vereine.identifier, 1, 1) = "%s", contacts.country_id = %d))
 			AND participations.usergroup_id = /*_ID usergroups spieler _*/
 			AND status_category_id IN (%s/*_ID categories participation-status/participant _*/)
-			ORDER BY platz_no, setzliste_no, t_nachname, t_vorname
+			ORDER BY rank_no, setzliste_no, t_nachname, t_vorname
 		';
 		$sql = sprintf($sql
 			, implode(',', array_keys($data['events']))

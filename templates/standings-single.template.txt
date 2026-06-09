@@ -37,11 +37,11 @@
 %%% loop start %%%
 	<tr class="%%% loopposition uneven "un" %%%even%%% item live " live" %%%"%%% item setzliste_no " id='s%s'" %%%>
 		<td class="tz tableposition">
-		%%% if no %%% %%% item no %%% (%%% item platz_no %%%)
+		%%% if no %%% %%% item no %%% (%%% item rank_no %%%)
 		%%% else %%%
-		%%% item platz_no_identisch "<span class='identical_place'>" %%%%%% item platz_no %%%%%% item platz_no_identisch "</span>" %%%
+		%%% item rank_tied "<span class='identical_place'>" %%%%%% item rank_no %%%%%% item rank_tied "</span>" %%%
 		%%% endif %%%
- %%% if platz_wechsel %%% <img src="%%% setting layout_path %%%/tournaments/standings-%%% item platz_wechsel %%%.png" alt="%%% item platz_symbol %%%" class="%%% item platz_wechsel %%%"> %%% endif %%%
+ %%% if rank_change %%% <img src="%%% setting layout_path %%%/tournaments/standings-%%% item rank_change %%%.png" alt="%%% item rank_symbol %%%" class="%%% item rank_change %%%"> %%% endif %%%
 		</td>
 
 %%% if zeige_setzliste %%%
@@ -64,9 +64,9 @@
 %%% endif %%%</td>
 %%% endif %%%
 %%% if zeige_guv %%%
-		<td class="tm bx wertung">%%% item spiele_g %%%</td>
-		<td class="tm wertung">%%% item spiele_u %%%</td>
-		<td class="tm bxv wertung">%%% item spiele_v %%%</td>
+		<td class="tm bx wertung">%%% item games_won %%%</td>
+		<td class="tm wertung">%%% item games_drawn %%%</td>
+		<td class="tm bxv wertung">%%% item games_lost %%%</td>
 %%% endif %%%
 		%%% loop scores %%%
 		<td class="tm wertung">%%% item score format=result_format %%%</td>

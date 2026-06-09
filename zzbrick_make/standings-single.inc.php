@@ -116,11 +116,11 @@ function mod_tournaments_make_standings_write_single($event_id, $round_no, $tabe
 	// Werte für Partien gewonnen, unentschieden, verloren auslesen
 	$sql = 'SELECT person_id
 			, SUM(IF(schwarz_ergebnis = "1.0" AND schwarz_person_id = person_id, 1,
-				IF(weiss_ergebnis = "1.0" AND weiss_person_id = person_id, 1, 0))) AS spiele_g
+				IF(weiss_ergebnis = "1.0" AND weiss_person_id = person_id, 1, 0))) AS games_won
 			, SUM(IF(schwarz_ergebnis = "0.5" AND schwarz_person_id = person_id, 1,
-				IF(weiss_ergebnis = "0.5" AND weiss_person_id = person_id, 1, 0))) AS spiele_u
+				IF(weiss_ergebnis = "0.5" AND weiss_person_id = person_id, 1, 0))) AS games_drawn
 			, SUM(IF(schwarz_ergebnis = "0.0" AND schwarz_person_id = person_id, 1,
-				IF(weiss_ergebnis = "0.0" AND weiss_person_id = person_id, 1, 0))) AS spiele_v
+				IF(weiss_ergebnis = "0.0" AND weiss_person_id = person_id, 1, 0))) AS games_lost
 		FROM participations
 		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN partien
@@ -135,7 +135,7 @@ function mod_tournaments_make_standings_write_single($event_id, $round_no, $tabe
 	';
 	$sql = sprintf($sql, $event_id, $round_no);
 	$guv = wrap_db_fetch($sql, 'person_id');
-	$punktspalten = ['g', 'u', 'v'];
+	$game_columns = ['games_won', 'games_drawn', 'games_lost'];
 
 	// Daten in Datenbank schreiben
 	foreach ($tabelle as $index => $stand) {
@@ -150,11 +150,10 @@ function mod_tournaments_make_standings_write_single($event_id, $round_no, $tabe
 			'event_id' => $event_id,
 			'runde_no' => $round_no,
 			'person_id' => $stand['person_id'],
-			'platz_no' => $stand['platz_no']
+			'rank_no' => $stand['rank_no']
 		];
-		foreach ($punktspalten AS $ps) {
-			$line['spiele_'.$ps] = isset($guv[$stand['person_id']]['spiele_'.$ps])
-			? $guv[$stand['person_id']]['spiele_'.$ps] : 0;
+		foreach ($game_columns as $column) {
+			$line[$column] = $guv[$stand['person_id']][$column] ?? 0;
 		}
 		// Feinwertungen, Detaildatensätze
 		$line['scores'] = $stand['scores'];

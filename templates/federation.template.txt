@@ -56,7 +56,7 @@
 %%% if teams %%%
 %%% loop teams %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
-	<td class="tz">%%% item platz_no %%%</td>
+	<td class="tz">%%% item rank_no %%%</td>
 	<td class="tuz">%%% item setzliste_no %%%</td>
 	<td>%%% if teilnehmerliste %%%<a href="../../../../%%% item team_identifier %%%/">%%% endif %%%%%% item team %%%%%% if teilnehmerliste %%%</a>%%% endif %%%</td>
 	<td class="tz">%%% item mp format=result_format %%% : %%% item mp_gegner format=result_format %%%</td>
@@ -65,7 +65,7 @@
 %%% elseif spieler %%%
 %%% loop spieler %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
-	<td class="tz">%%% item platz_no %%%</td>
+	<td class="tz">%%% item rank_no %%%</td>
 	<td class="tuz">%%% item setzliste_no %%%</td>
 %%% if turnierphotos %%%
 	<td class="spielerbild">

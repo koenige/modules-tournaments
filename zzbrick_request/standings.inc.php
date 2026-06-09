@@ -78,8 +78,8 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	mf_tournaments_cache($event['duration']);
 
 	if (wrap_setting('tournaments_type_team')) {
-		$sql = 'SELECT standing_id, platz_no
-				, spiele_g, spiele_u, spiele_v
+		$sql = 'SELECT standing_id, rank_no
+				, games_won, games_drawn, games_lost
 				, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
 				, teams.identifier AS team_identifier, team_id
 				, SUBSTRING_INDEX(teams.identifier, "/", -1) AS team_identifier_short
@@ -90,13 +90,13 @@ function mod_tournaments_standings($vars, $settings, $event) {
 			WHERE teams.event_id = %d
 			AND standings.runde_no = %d
 			AND spielfrei = "nein"
-			ORDER BY platz_no, team, team_no
+			ORDER BY rank_no, team, team_no
 		';
 		$sql = sprintf($sql, $event['event_id'], $runde);
 		$id = 'team_id';
 	} else {
-		$sql = 'SELECT standing_id, standings.platz_no
-				, spiele_g, spiele_u, spiele_v
+		$sql = 'SELECT standing_id, standings.rank_no
+				, games_won, games_drawn, games_lost
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 				, participations.setzliste_no
 				, t_verein, standings.person_id
@@ -114,7 +114,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 			WHERE standings.event_id = %d
 			AND standings.runde_no = %d
 			%s
-			ORDER BY platz_no
+			ORDER BY rank_no
 		';
 		$sql = sprintf($sql
 			, $event['event_id'], $runde
@@ -152,9 +152,9 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	foreach (array_keys($tabelle) as $standing_id) {
 		$tabelle_ids[] = $tabelle[$standing_id][$id];
 		if (!$guv) {
-			if ($tabelle[$standing_id]['spiele_g']) $guv = true;
-			elseif ($tabelle[$standing_id]['spiele_u']) $guv = true;
-			elseif ($tabelle[$standing_id]['spiele_v']) $guv = true;
+			if ($tabelle[$standing_id]['games_won']) $guv = true;
+			elseif ($tabelle[$standing_id]['games_drawn']) $guv = true;
+			elseif ($tabelle[$standing_id]['games_lost']) $guv = true;
 		}
 		$tabelle[$standing_id]['pfad'] = $pfad;
 		$tabelle[$standing_id][str_replace('-', '_', $event['turnierform'])] = true;
@@ -163,8 +163,8 @@ function mod_tournaments_standings($vars, $settings, $event) {
 			$tabelle[$standing_id]['no'] = $i;
 			$i++;
 		}
-		if ($last_id AND $tabelle[$last_id]['platz_no'] === $tabelle[$standing_id]['platz_no']) {
-			$tabelle[$standing_id]['platz_no_identisch'] = true;
+		if ($last_id AND $tabelle[$last_id]['rank_no'] === $tabelle[$standing_id]['rank_no']) {
+			$tabelle[$standing_id]['rank_tied'] = true;
 		}
 		// Teams mit nicht gespielten Partien: live markiert
 		if (wrap_setting('tournaments_type_team')) {
@@ -215,13 +215,13 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	$decrease = 0;
 	foreach ($tabelle as $standing_id => $tabellenstand) {
 		if ($decrease) {
-			$tabelle[$standing_id]['platz_no'] -= $decrease;
+			$tabelle[$standing_id]['rank_no'] -= $decrease;
 		}
 		if (!$k_a) $tabelle[$standing_id]['dwz_schnitt'] = false;
 		if ($event['teilnehmerliste']) $tabelle[$standing_id]['aktiv'] = 1;
 		if (empty($tabellenstand['country']) AND !empty($event['country']))
 			$tabelle[$standing_id]['country'] = '–';
-		if ($tabellenstand['spiele_g']) $tabelle['zeige_guv'] = true;
+		if ($tabellenstand['games_won']) $tabelle['zeige_guv'] = true;
 		if (!empty($tabellenstand['setzliste_no'])) $tabelle['zeige_setzliste'] = true;
 		if ($tabellenstand['status'].'' === wrap_category_id('participation-status/disqualified').'') {
 			$decrease++;
@@ -291,7 +291,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 
 	// Vorherige Runde
 	if ($runde > 1) {
-		$sql = 'SELECT platz_no, person_id, team_id
+		$sql = 'SELECT rank_no, person_id, team_id
 			FROM standings
 			WHERE runde_no = %d
 			AND event_id = %d
@@ -302,15 +302,15 @@ function mod_tournaments_standings($vars, $settings, $event) {
 			if (!is_numeric($ts_id)) continue;
 			$tabelle_id = $stand[$id];
 			if (empty($vorige_runde[$tabelle_id])) continue;
-			if ($stand['platz_no'] > $vorige_runde[$tabelle_id]['platz_no']) {
-				$tabelle[$ts_id]['platz_wechsel'] = 'worse';
-				$tabelle[$ts_id]['platz_symbol'] = '-';
-			} elseif ($stand['platz_no'] < $vorige_runde[$tabelle_id]['platz_no']) {
-				$tabelle[$ts_id]['platz_wechsel'] = 'better';
-				$tabelle[$ts_id]['platz_symbol'] = '+';
+			if ($stand['rank_no'] > $vorige_runde[$tabelle_id]['rank_no']) {
+				$tabelle[$ts_id]['rank_change'] = 'worse';
+				$tabelle[$ts_id]['rank_symbol'] = '-';
+			} elseif ($stand['rank_no'] < $vorige_runde[$tabelle_id]['rank_no']) {
+				$tabelle[$ts_id]['rank_change'] = 'better';
+				$tabelle[$ts_id]['rank_symbol'] = '+';
 			} else {
-				$tabelle[$ts_id]['platz_wechsel'] = 'equal';
-				$tabelle[$ts_id]['platz_symbol'] = '=';
+				$tabelle[$ts_id]['rank_change'] = 'equal';
+				$tabelle[$ts_id]['rank_symbol'] = '=';
 			}
 		}
 	}

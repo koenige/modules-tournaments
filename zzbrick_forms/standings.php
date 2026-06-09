@@ -32,7 +32,7 @@ $zz['where']['runde_no'] = $brick['vars'][2];
 
 if (wrap_setting('tournaments_type_single')) {
 	unset($zz['filter'][1]);
-	unset($zz['fields'][11]); // platz_brett_no
+	unset($zz['fields'][11]); // board_rank_no
 	unset($zz['fields'][4]); // Team
 } else {
 	$zz['fields'][4]['sql'] = sprintf('SELECT team_id

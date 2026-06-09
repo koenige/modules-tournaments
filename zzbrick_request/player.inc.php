@@ -32,7 +32,7 @@ function mod_tournaments_player($vars, $settings, $event) {
 			, t_dwz, t_elo, t_fidetitel
 			, setzliste_no
 			, YEAR(date_of_birth) AS geburtsjahr
-			, platz_no
+			, rank_no
 			, contacts.identifier AS personen_kennung
 			, SUBSTRING_INDEX(events.identifier, "/", -1) AS turnier_kennung
 			, (SELECT identifier FROM contacts_identifiers zps

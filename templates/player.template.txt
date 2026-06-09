@@ -43,7 +43,7 @@ keine
 %%% endif %%%
 </td></tr>
 <tr><th>Jahrgang:</th><td>%%% item geburtsjahr %%%</td></tr>
-<tr><th>Platz:</th><td>%%% if platz_no %%%<a href="../../tabelle/#s%%% item setzliste_no %%%">%%% item platz_no %%%.</a>%%% endif %%% (Setzliste <a href="../#s%%% item setzliste_no %%%">%%% item setzliste_no %%%</a>)</td></tr>
+<tr><th>Platz:</th><td>%%% if rank_no %%%<a href="../../tabelle/#s%%% item setzliste_no %%%">%%% item rank_no %%%.</a>%%% endif %%% (Setzliste <a href="../#s%%% item setzliste_no %%%">%%% item setzliste_no %%%</a>)</td></tr>
 <tr><th>Punkte:</th><td>%%% if hat_punkte %%%%%% item punkte format=result_format %%%%%% else %%%–%%% endif %%%</td></tr>
 </table>
 </div>

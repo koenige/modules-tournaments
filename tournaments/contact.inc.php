@@ -37,7 +37,7 @@ function mf_tournaments_contact($data, $ids) {
 			, brett_no
 			, t_verein, t_dwz, t_elo
 			, IF(status_category_id != /*_ID categories participation-status/participant _*/, participation_status.category, "") AS teilnahme_status
-			, standings.platz_no
+			, standings.rank_no
 			, IF (turnierformen.parameters LIKE "%%&team=1%%", 1, NULL) AS mannschaftsturnier
 			, IF (turnierformen.parameters LIKE "%%&team=0%%", 1, NULL) AS einzelturnier
 			, IF (ISNULL(brett_no) AND turnierformen.parameters LIKE "%%&team=1%%", 1, NULL) AS nur_gemeldet

@@ -25,8 +25,8 @@
 <tbody>
 %%% loop teams %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
-<td>%%% if platz_no %%%
-%%% item platz_no %%%
+<td>%%% if rank_no %%%
+%%% item rank_no %%%
 %%% else %%%
 %%% item setzliste_no %%%
 %%% endif %%%</td>
