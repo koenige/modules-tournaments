@@ -78,8 +78,10 @@ if (!isset($_GET['filter']['typ'])) {
 
 // @todo we are below rounds, make this breadcrumb superfluous
 $zz['page']['breadcrumbs'][] = [
-	'title' => 'Runden',
+	'title' => wrap_text('Rounds'),
 	'url_path' => wrap_path('events_internal_event', $brick['data']['identifier']).'runde/'
 ];
-$zz['page']['breadcrumbs'][] = ['title' => 'Tabelle '.$brick['vars'][2].'. Runde'];
+$zz['page']['breadcrumbs'][] = [
+	'title' => wrap_text('Standings round %d', ['values' => [$brick['vars'][2]]])
+];
 $zz['page']['dont_show_title_as_breadcrumb'] = true;

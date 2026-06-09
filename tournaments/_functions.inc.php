@@ -96,17 +96,17 @@ function mf_tournaments_final_standings($event_ids) {
 		AND ((ISNULL(events.date_end) AND events.date_begin < CURDATE()) OR events.date_end < CURDATE())';
 	$sql = sprintf($sql, implode(',', $event_ids));
 	$turniere = wrap_db_fetch($sql, 'event_id');
-	$tabellenstaende = [];
+	$standings = [];
 	foreach ($turniere as $event_id => $turnier) {
-		$tabellenstaende['gesamt'][] = $event_id;
+		$standings['gesamt'][] = $event_id;
 		if (!$turnier['tabellenstaende']) continue;
 		$staende = explode(',', $turnier['tabellenstaende']);
 		foreach ($staende as $stand) {
-			$tabellenstaende[$stand][] = $event_id;
+			$standings[$stand][] = $event_id;
 		}
 	}
 
-	foreach ($tabellenstaende as $fkennung => $ids) {
+	foreach ($standings as $fkennung => $ids) {
 		// @todo check why this happens?
 		foreach ($ids as $index => $id)
 			if (!$id) unset($ids[$index]);
@@ -117,24 +117,24 @@ function mf_tournaments_final_standings($event_ids) {
 			$filter[$fkennung] = mf_tournaments_standings_filter($fkennung);
 		}
 
-		$sql = 'SELECT tabellenstaende.event_id
-				, tabellenstand_id, runde_no, platz_no
+		$sql = 'SELECT standings.event_id
+				, standing_id, runde_no, platz_no
 				, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
 				, IF(tournaments.teilnehmerliste = "ja", teams.identifier, "") AS team_identifier
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 				, participations.setzliste_no
 				, t_verein AS verein
 				, persons.sex
-			FROM tabellenstaende
+			FROM standings
 			LEFT JOIN tournaments USING (event_id)
 			LEFT JOIN teams USING (team_id)
 			LEFT JOIN persons
-				ON tabellenstaende.person_id = persons.person_id 
+				ON standings.person_id = persons.person_id 
 			LEFT JOIN participations
 				ON participations.contact_id = persons.contact_id
-				AND participations.event_id = tabellenstaende.event_id
+				AND participations.event_id = standings.event_id
 				AND ISNULL(participations.team_id)
-			WHERE tabellenstaende.event_id IN (%s)
+			WHERE standings.event_id IN (%s)
 			AND (ISNULL(participations.status_category_id)
 				OR participations.status_category_id = /*_ID categories participation-status/participant _*/
 			)
@@ -144,7 +144,7 @@ function mf_tournaments_final_standings($event_ids) {
 			, implode(',', $ids)
 			, implode(') AND (', $filter[$fkennung]['where'])
 		);
-		$tabellen[$fkennung] = wrap_db_fetch($sql, ['event_id', 'tabellenstand_id']);
+		$tabellen[$fkennung] = wrap_db_fetch($sql, ['event_id', 'standing_id']);
 		foreach ($tabellen[$fkennung] as $event_id => $tabellenstand) {
 			foreach ($tabellenstand as $ts_id => $platzierung) {
 				if ($platzierung['runde_no'] !== $turniere[$event_id]['runden']) {

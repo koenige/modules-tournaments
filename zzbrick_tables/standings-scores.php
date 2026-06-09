@@ -20,11 +20,11 @@ $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'standing_score_id';
 $zz['fields'][1]['type'] = 'id';
 
-$zz['fields'][2]['field_name'] = 'tabellenstand_id';
+$zz['fields'][2]['field_name'] = 'standing_id';
 $zz['fields'][2]['type'] = 'select';
-$zz['fields'][2]['sql'] = 'SELECT tabellenstand_id, tabellenstand_id
-	FROM tabellenstaende
-	ORDER BY tabellenstand_id';
+$zz['fields'][2]['sql'] = 'SELECT standing_id, standing_id
+	FROM standings
+	ORDER BY standing_id';
 
 $zz['fields'][4]['field_name'] = 'score';
 $zz['fields'][4]['null'] = true;
@@ -40,13 +40,13 @@ $zz['fields'][3]['show_hierarchy'] = 'main_category_id';
 $zz['fields'][3]['display_field'] = 'category';
 $zz['fields'][3]['show_hierarchy_subtree'] = wrap_category_id('turnierwertungen');
 
-$zz['unique'][] = ['tabellenstand_id', 'score_category_id'];
+$zz['unique'][] = ['standing_id', 'score_category_id'];
 
 $zz['sql'] = 'SELECT standings_scores.*
 		, category
 	FROM standings_scores
-	LEFT JOIN tabellenstaende USING (tabellenstand_id)
+	LEFT JOIN standings USING (standing_id)
 	LEFT JOIN categories
 		ON categories.category_id = standings_scores.score_category_id
 ';
-$zz['sqlorder'] = ' ORDER BY tabellenstand_id, category';
+$zz['sqlorder'] = ' ORDER BY standing_id, category';

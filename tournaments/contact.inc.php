@@ -37,7 +37,7 @@ function mf_tournaments_contact($data, $ids) {
 			, brett_no
 			, t_verein, t_dwz, t_elo
 			, IF(status_category_id != /*_ID categories participation-status/participant _*/, participation_status.category, "") AS teilnahme_status
-			, tabellenstaende.platz_no
+			, standings.platz_no
 			, IF (turnierformen.parameters LIKE "%%&team=1%%", 1, NULL) AS mannschaftsturnier
 			, IF (turnierformen.parameters LIKE "%%&team=0%%", 1, NULL) AS einzelturnier
 			, IF (ISNULL(brett_no) AND turnierformen.parameters LIKE "%%&team=1%%", 1, NULL) AS nur_gemeldet
@@ -53,10 +53,10 @@ function mf_tournaments_contact($data, $ids) {
 		LEFT JOIN categories turnierformen
 			ON tournaments.turnierform_category_id = turnierformen.category_id
 		LEFT JOIN teams USING (team_id)
-		LEFT JOIN tabellenstaende
-			ON tabellenstaende.event_id = events.event_id
-			AND IF(ISNULL(participations.team_id), tabellenstaende.person_id = persons.person_id, tabellenstaende.team_id = participations.team_id)
-			AND tabellenstaende.runde_no = tournaments.tabellenstand_runde_no
+		LEFT JOIN standings
+			ON standings.event_id = events.event_id
+			AND IF(ISNULL(participations.team_id), standings.person_id = persons.person_id, standings.team_id = participations.team_id)
+			AND standings.runde_no = tournaments.tabellenstand_runde_no
 		WHERE participations.participation_id IN (%s)
 		ORDER BY participations.date_begin DESC, participations.date_end DESC, events.date_begin DESC, events.date_end DESC';
 	$sql = sprintf($sql, implode(',', array_keys($participations)));

@@ -18,9 +18,9 @@ function mod_tournaments_round($params, $vars, $event) {
 	if (!is_numeric($params[2])) return false;
 
 	$sql = 'SELECT events.event AS round_event, events.runde_no
-			, (SELECT IF(COUNT(tabellenstand_id), 1, NULL) FROM tabellenstaende
-				WHERE tabellenstaende.event_id = main_events.event_id
-				AND tabellenstaende.runde_no = events.runde_no
+			, (SELECT IF(COUNT(standing_id), 1, NULL) FROM standings
+				WHERE standings.event_id = main_events.event_id
+				AND standings.runde_no = events.runde_no
 			) AS tabelle
 			, (SELECT IF(COUNT(partie_id), 1, NULL) FROM partien
 				WHERE partien.event_id = main_events.event_id

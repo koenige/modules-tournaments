@@ -33,10 +33,10 @@ function mod_tournaments_team($vars, $settings, $data) {
 			AND events_websites.website_id = /*_SETTING website_id _*/
 		LEFT JOIN categories turnierformen
 			ON tournaments.turnierform_category_id = turnierformen.category_id
-		LEFT JOIN tabellenstaende
-			ON tabellenstaende.team_id = teams.team_id
-			AND (ISNULL(tabellenstaende.runde_no)
-				OR tabellenstaende.runde_no = tournaments.tabellenstand_runde_no)
+		LEFT JOIN standings
+			ON standings.team_id = teams.team_id
+			AND (ISNULL(standings.runde_no)
+				OR standings.runde_no = tournaments.tabellenstand_runde_no)
 		WHERE teams.team_id = %d
 		AND NOT ISNULL(events_websites.website_id)
 	';

@@ -54,10 +54,10 @@ function mod_tournaments_player($vars, $settings, $event) {
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN contacts USING (contact_id)
-		LEFT JOIN tabellenstaende
-			ON tabellenstaende.person_id = persons.person_id
-			AND participations.event_id = tabellenstaende.event_id
-			AND tabellenstaende.runde_no = tournaments.tabellenstand_runde_no 
+		LEFT JOIN standings
+			ON standings.person_id = persons.person_id
+			AND participations.event_id = standings.event_id
+			AND standings.runde_no = tournaments.tabellenstand_runde_no 
 		LEFT JOIN contacts organisationen
 			ON participations.club_contact_id = organisationen.contact_id
 		WHERE setzliste_no = %d

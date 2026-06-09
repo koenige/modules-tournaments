@@ -26,8 +26,9 @@ function mod_tournaments_federations($params, $settings, $event) {
 			, events.identifier
 			, urkunde_parameter
 			, tournaments.tabellenstaende
-			, (SELECT MAX(ts.runde_no)
-					FROM tabellenstaende ts WHERE ts.event_id = events.event_id) AS aktuelle_runde_no
+			, (SELECT MAX(standings.runde_no)
+					FROM standings
+					WHERE standings.event_id = events.event_id) AS aktuelle_runde_no
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
 		JOIN categories series
@@ -136,20 +137,20 @@ function mod_tournaments_federations($params, $settings, $event) {
 	if (wrap_setting('tournaments_type_single')) {
 		$lv['punktvergabe'] = true;
 		foreach ($events as $event) {
-			$tabellenstaende = !empty($event['tabellenstaende'])
+			$standings = !empty($event['tabellenstaende'])
 				? explode(',', $event['tabellenstaende']) : [];
-			$tabellenstaende[] = '';
-			foreach ($tabellenstaende as $ts) {
+			$standings[] = '';
+			foreach ($standings as $ts) {
 				$filter = mf_tournaments_standings_filter($ts);
 				if ($filter['error']) return false;
-				$sql = 'SELECT participation_id, platz_no, tabellenstaende.event_id,
+				$sql = 'SELECT participation_id, platz_no, standings.event_id,
 						landesverbaende.contact_id, landesverbaende.country_id
-					FROM tabellenstaende
+					FROM standings
 					LEFT JOIN persons
-						ON persons.person_id = tabellenstaende.person_id
+						ON persons.person_id = standings.person_id
 					LEFT JOIN participations
 						ON participations.contact_id = persons.contact_id
-						AND participations.event_id = tabellenstaende.event_id
+						AND participations.event_id = standings.event_id
 					LEFT JOIN contacts organisationen
 						ON participations.club_contact_id = organisationen.contact_id
 					LEFT JOIN contacts_identifiers ok
@@ -159,7 +160,7 @@ function mod_tournaments_federations($params, $settings, $event) {
 					LEFT JOIN contacts landesverbaende
 						ON lvk.contact_id = landesverbaende.contact_id AND lvk.current = "yes"
 					WHERE runde_no = %d
-					AND tabellenstaende.event_id = %d
+					AND standings.event_id = %d
 					AND NOT ISNULL(landesverbaende.country_id)
 					%s
 					ORDER BY platz_no

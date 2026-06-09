@@ -16,9 +16,9 @@
 require_once __DIR__.'/../zzbrick_rights/access.inc.php';
 
 function mf_tournaments_current_round($identifier) {
-	$sql = 'SELECT MAX(tabellenstaende.runde_no)
+	$sql = 'SELECT MAX(standings.runde_no)
 		FROM events
-		JOIN tabellenstaende USING (event_id)
+		JOIN standings USING (event_id)
 		WHERE %s
 		GROUP BY events.event_id';
 	$sql = sprintf($sql

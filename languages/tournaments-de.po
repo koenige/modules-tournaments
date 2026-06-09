@@ -212,10 +212,12 @@ msgid "PDF Brettnachrichten"
 msgstr "PDF Brett-Nachrichten"
 
 #: zzbrick_forms/rounds.inc.php
+#: zzbrick_forms/standings.php
 msgid "Rounds"
 msgstr "Runden"
 
 #: zzbrick_forms/rounds.inc.php
+#: zzbrick_tables/standings.php
 msgid "Round"
 msgstr "Runde"
 
@@ -236,8 +238,13 @@ msgid "Pairings"
 msgstr "Paarungen"
 
 #: zzbrick_forms/rounds.inc.php
+#: zzbrick_tables/standings.php
 msgid "Standings"
 msgstr "Tabellenstände"
+
+#: zzbrick_forms/standings.php
+msgid "Standings round %d"
+msgstr "Tabelle %d. Runde"
 
 #: zzbrick_forms/tournaments.inc.php
 msgid ""
@@ -363,9 +370,65 @@ msgid "Processed"
 msgstr "Verarbeitet"
 
 #: zzbrick_tables/standings.php
+msgid "D"
+msgstr "U"
+
+#: zzbrick_tables/standings.php
+msgid "Drawn"
+msgstr "Unentschieden"
+
+#: zzbrick_tables/standings.php
+msgid "Event"
+msgstr "Termin"
+
+#: zzbrick_tables/standings.php
+msgid "L"
+msgstr "V"
+
+#: zzbrick_tables/standings.php
+msgid "Lost"
+msgstr "Verloren"
+
+#: zzbrick_tables/standings.php
+msgid "Players"
+msgstr "Spieler"
+
+#: zzbrick_tables/standings.php
+msgid "Rank"
+msgstr "Platz"
+
+#: zzbrick_tables/standings.php
+msgid "Rank (board)"
+msgstr "Platz (Brett)"
+
+#: zzbrick_tables/standings.php
+msgid "Round "
+msgstr "Runde "
+
+#: zzbrick_tables/standings.php
 #: zzbrick_tables/standings-scores.php
 msgid "Scores"
 msgstr "Wertungen"
+
+#: zzbrick_tables/standings.php
+msgid "Team / Player"
+msgstr "Team / Spieler"
+
+#: zzbrick_tables/standings.php
+msgid "Teams"
+msgstr "Teams"
+
+#: zzbrick_tables/standings.php
+msgid "Type"
+msgstr "Typ"
+
+#: zzbrick_tables/standings.php
+msgid "W"
+msgstr "G"
+
+#: zzbrick_tables/standings.php
+msgid "Won"
+msgstr "Gewonnen"
 
 #: zzbrick_tables/standings-scores.php
 #: zzbrick_tables/tournaments-scores.php

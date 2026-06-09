@@ -125,8 +125,8 @@ function mod_tournaments_make_standings_team($event) {
 
 	$standings = mod_tournaments_make_standings_prepare($event, $standings, $scores, $score_categories);
 
-	$sql = 'SELECT team_id, tabellenstand_id
-		FROM tabellenstaende
+	$sql = 'SELECT team_id, standing_id
+		FROM standings
 		WHERE event_id = %d AND runde_no = %d AND NOT ISNULL(team_id)';
 	$sql = sprintf($sql, $event['event_id'], $event['runde_no']);
 	$existing_standings = wrap_db_fetch($sql, '_dummy_', 'key/value');
@@ -135,7 +135,7 @@ function mod_tournaments_make_standings_team($event) {
 		if (!array_key_exists('team_id', $stand)) {
 			wrap_error(wrap_text(
 				'Tournament with event_id %d has invalid standings ID %d, field team_id is empty.',
-				['values' => [$event['event_id'], $stand['tabellenstand_id']]]
+				['values' => [$event['event_id'], $stand['standing_id']]]
 			));
 			continue;
 		}
@@ -149,13 +149,13 @@ function mod_tournaments_make_standings_team($event) {
 		$line['event_id'] = $event['event_id'];
 		$line['runde_no'] = $event['runde_no'];
 		if (!empty($existing_standings[$stand['team_id']])) {
-			$line['tabellenstand_id'] = $existing_standings[$stand['team_id']];
+			$line['standing_id'] = $existing_standings[$stand['team_id']];
 			// überflüssige Tabellenstände löschen
 			// @todo irgendwann so etwas direkt in zzform mit Funktion lösen
 			// (alle anderen Datensätze, die nicht aktualisiert werden, löschen)
 			$sql = 'SELECT * FROM
 				standings_scores
-				WHERE tabellenstand_id = %d';
+				WHERE standing_id = %d';
 			$sql = sprintf($sql, $existing_standings[$stand['team_id']]);
 			$data = wrap_db_fetch($sql, 'standing_score_id');
 			foreach ($data as $standing_score_id => $existing_score) {

@@ -106,12 +106,12 @@ function mod_tournaments_make_standings_calculate_single($event, $round_no) {
  */
 function mod_tournaments_make_standings_write_single($event_id, $round_no, $tabelle) {
 	// Bestehenden Tabellenstand aus Datenbank auslesen
-	$sql = 'SELECT person_id, tabellenstand_id
-		FROM tabellenstaende
+	$sql = 'SELECT person_id, standing_id
+		FROM standings
 		WHERE event_id = %d
 		AND runde_no = %d';
 	$sql = sprintf($sql, $event_id, $round_no);
-	$tabellenstaende = wrap_db_fetch($sql, '_dummy_', 'key/value');
+	$standings = wrap_db_fetch($sql, '_dummy_', 'key/value');
 
 	// Werte für Partien gewonnen, unentschieden, verloren auslesen
 	$sql = 'SELECT person_id
@@ -146,7 +146,7 @@ function mod_tournaments_make_standings_write_single($event_id, $round_no, $tabe
 			continue;
 		}
 		$line = [
-			'tabellenstand_id' => $tabellenstaende[$stand['person_id']] ?? NULL,
+			'standing_id' => $standings[$stand['person_id']] ?? NULL,
 			'event_id' => $event_id,
 			'runde_no' => $round_no,
 			'person_id' => $stand['person_id'],
@@ -158,12 +158,12 @@ function mod_tournaments_make_standings_write_single($event_id, $round_no, $tabe
 		}
 		// Feinwertungen, Detaildatensätze
 		$line['scores'] = $stand['scores'];
-		if ($line['tabellenstand_id']) {
+		if ($line['standing_id']) {
 			// überflüssige Feinwertungen löschen
 			$sql = 'SELECT standing_score_id, score_category_id FROM
 				standings_scores
-				WHERE tabellenstand_id = %d';
-			$sql = sprintf($sql, $tabellenstaende[$stand['person_id']]);
+				WHERE standing_id = %d';
+			$sql = sprintf($sql, $standings[$stand['person_id']]);
 			$existing_scores = wrap_db_fetch($sql, 'standing_score_id');
 			foreach ($existing_scores as $existing_score) {
 				if (in_array($existing_score['score_category_id'], array_keys($stand['scores']))) continue;

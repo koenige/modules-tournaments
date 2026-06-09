@@ -216,7 +216,7 @@ function mod_tournaments_make_standings_round_run($event, $round_no, $time, $typ
 	
 	// Aktuelle runde_no von Tabellenstand speichern
 	// aus Performancegründen
-	$sql = 'SELECT MAX(runde_no) FROM tabellenstaende WHERE event_id = %d';
+	$sql = 'SELECT MAX(runde_no) FROM standings WHERE event_id = %d';
 	$sql = sprintf($sql, $event['event_id']);
 	$max_runde_no = wrap_db_fetch($sql, '', 'single value');
 	$line = [

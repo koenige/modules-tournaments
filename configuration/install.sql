@@ -120,9 +120,9 @@ CREATE TABLE `playermessages` (
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'participations', 'participation_id', (SELECT DATABASE()), 'playermessages', 'playermessage_id', 'participation_id', 'delete');
 
 
--- tabellenstaende --
-CREATE TABLE `tabellenstaende` (
-  `tabellenstand_id` int unsigned NOT NULL AUTO_INCREMENT,
+-- standings --
+CREATE TABLE `standings` (
+  `standing_id` int unsigned NOT NULL AUTO_INCREMENT,
   `event_id` int unsigned NOT NULL,
   `runde_no` tinyint unsigned NOT NULL,
   `team_id` int unsigned DEFAULT NULL,
@@ -133,29 +133,29 @@ CREATE TABLE `tabellenstaende` (
   `spiele_u` tinyint unsigned DEFAULT NULL,
   `spiele_v` tinyint unsigned DEFAULT NULL,
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`tabellenstand_id`),
+  PRIMARY KEY (`standing_id`),
   UNIQUE KEY `team_id_termin_id_runde_no` (`team_id`,`event_id`,`runde_no`),
   UNIQUE KEY `person_id_termin_id_runde_no` (`person_id`,`event_id`,`runde_no`),
   KEY `termin_id` (`event_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'events', 'event_id', (SELECT DATABASE()), 'tabellenstaende', 'tabellenstand_id', 'event_id', 'delete');
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'persons', 'person_id', (SELECT DATABASE()), 'tabellenstaende', 'tabellenstand_id', 'person_id', 'no-delete');
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'teams', 'team_id', (SELECT DATABASE()), 'tabellenstaende', 'tabellenstand_id', 'team_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'events', 'event_id', (SELECT DATABASE()), 'standings', 'standing_id', 'event_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'persons', 'person_id', (SELECT DATABASE()), 'standings', 'standing_id', 'person_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'teams', 'team_id', (SELECT DATABASE()), 'standings', 'standing_id', 'team_id', 'delete');
 
 
 -- standings_scores --
 CREATE TABLE `standings_scores` (
   `standing_score_id` int unsigned NOT NULL AUTO_INCREMENT,
-  `tabellenstand_id` int unsigned NOT NULL,
+  `standing_id` int unsigned NOT NULL,
   `score_category_id` int unsigned NOT NULL,
   `score` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`standing_score_id`),
-  UNIQUE KEY `tabellenstand_id_score_category_id` (`tabellenstand_id`,`score_category_id`),
+  UNIQUE KEY `standing_id_score_category_id` (`standing_id`,`score_category_id`),
   KEY `score_category_id` (`score_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tabellenstaende', 'tabellenstand_id', (SELECT DATABASE()), 'standings_scores', 'standing_score_id', 'tabellenstand_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'standings', 'standing_id', (SELECT DATABASE()), 'standings_scores', 'standing_score_id', 'standing_id', 'delete');
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'standings_scores', 'standing_score_id', 'score_category_id', 'no-delete');
 
 

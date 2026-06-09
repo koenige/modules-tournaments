@@ -110,11 +110,11 @@ function mod_tournaments_federation($params, $settings, $data) {
 			LEFT JOIN tournaments_scores
 				ON tournaments.tournament_id = tournaments_scores.tournament_id
 				AND tournaments_scores.sequence = 1
-			LEFT JOIN tabellenstaende
-				ON teams.team_id = tabellenstaende.team_id
+			LEFT JOIN standings
+				ON teams.team_id = standings.team_id
 				AND runde_no = tournaments.tabellenstand_runde_no
 			LEFT JOIN standings_scores
-				ON standings_scores.tabellenstand_id = tabellenstaende.tabellenstand_id
+				ON standings_scores.standing_id = standings.standing_id
 				AND standings_scores.score_category_id = tournaments_scores.score_category_id
 			LEFT JOIN contacts
 				ON teams.club_contact_id = contacts.contact_id 
@@ -148,19 +148,19 @@ function mod_tournaments_federation($params, $settings, $data) {
 		$sql = 'SELECT participation_id, setzliste_no, persons.person_id
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 				, participations.event_id
-				, tabellenstaende.platz_no
+				, standings.platz_no
 				, t_verein AS verein
 				, standings_scores.score AS punkte
-				, tabellenstaende.runde_no
+				, standings.runde_no
 			FROM participations
 			LEFT JOIN persons USING (contact_id)
 			LEFT JOIN tournaments USING (event_id)
-			LEFT JOIN tabellenstaende
-				ON tabellenstaende.person_id = persons.person_id
-				AND tabellenstaende.event_id = participations.event_id
+			LEFT JOIN standings
+				ON standings.person_id = persons.person_id
+				AND standings.event_id = participations.event_id
 				AND runde_no = tournaments.tabellenstand_runde_no
 			LEFT JOIN standings_scores
-				ON standings_scores.tabellenstand_id = tabellenstaende.tabellenstand_id
+				ON standings_scores.standing_id = standings.standing_id
 				AND standings_scores.score_category_id = /*_ID categories turnierwertungen/pkt _*/
 			LEFT JOIN contacts
 				ON participations.club_contact_id = contacts.contact_id 

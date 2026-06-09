@@ -28,11 +28,11 @@ function mod_tournaments_make_emptytournament($params, $settings, $event) {
 	$event['pairings'] = wrap_db_fetch($sql, 'paarung_id', 'single value');
 	$event['pairings_count'] = count($event['pairings']);
 
-	$sql = 'SELECT tabellenstand_id
-		FROM tabellenstaende
+	$sql = 'SELECT standing_id
+		FROM standings
 		WHERE event_id = %d';
 	$sql = sprintf($sql, $event['event_id']);
-	$event['standings'] = wrap_db_fetch($sql, 'tabellenstand_id', 'single value');
+	$event['standings'] = wrap_db_fetch($sql, 'standing_id', 'single value');
 	$event['standings_count'] = count($event['standings']);
 
 	// get participants, but only imported

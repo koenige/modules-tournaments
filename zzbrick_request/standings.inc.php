@@ -78,41 +78,41 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	mf_tournaments_cache($event['duration']);
 
 	if (wrap_setting('tournaments_type_team')) {
-		$sql = 'SELECT tabellenstand_id, platz_no
+		$sql = 'SELECT standing_id, platz_no
 				, spiele_g, spiele_u, spiele_v
 				, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
 				, teams.identifier AS team_identifier, team_id
 				, SUBSTRING_INDEX(teams.identifier, "/", -1) AS team_identifier_short
 				, team_status AS status
 				, teams.club_contact_id
-			FROM tabellenstaende
+			FROM standings
 			JOIN teams USING (team_id)
 			WHERE teams.event_id = %d
-			AND tabellenstaende.runde_no = %d
+			AND standings.runde_no = %d
 			AND spielfrei = "nein"
 			ORDER BY platz_no, team, team_no
 		';
 		$sql = sprintf($sql, $event['event_id'], $runde);
 		$id = 'team_id';
 	} else {
-		$sql = 'SELECT tabellenstand_id, tabellenstaende.platz_no
+		$sql = 'SELECT standing_id, standings.platz_no
 				, spiele_g, spiele_u, spiele_v
 				, CONCAT(t_vorname, " ", IFNULL(CONCAT(t_namenszusatz, " "), ""), t_nachname) AS person
 				, participations.setzliste_no
-				, t_verein, tabellenstaende.person_id
+				, t_verein, standings.person_id
 				, status_category_id AS status
 				, participations.club_contact_id
-			FROM tabellenstaende
+			FROM standings
 			JOIN tournaments USING (event_id)
 			JOIN events USING (event_id)
 			LEFT JOIN persons
-				ON tabellenstaende.person_id = persons.person_id
+				ON standings.person_id = persons.person_id
 			LEFT JOIN participations
 				ON participations.contact_id = persons.contact_id
-				AND participations.event_id = tabellenstaende.event_id
+				AND participations.event_id = standings.event_id
 				AND participations.usergroup_id = /*_ID usergroups spieler _*/
-			WHERE tabellenstaende.event_id = %d
-			AND tabellenstaende.runde_no = %d
+			WHERE standings.event_id = %d
+			AND standings.runde_no = %d
 			%s
 			ORDER BY platz_no
 		';
@@ -122,7 +122,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 		);
 		$id = 'person_id';
 	}
-	$tabelle = wrap_db_fetch($sql, 'tabellenstand_id');
+	$tabelle = wrap_db_fetch($sql, 'standing_id');
 	if (!$tabelle) return false;
 	$tabelle = mf_tournaments_clubs_to_federations($tabelle, 'club_contact_id');
 
@@ -149,45 +149,45 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	$last_id = false;
 	$guv = NULL;
 	$tabelle_ids = [];
-	foreach (array_keys($tabelle) as $tabellenstand_id) {
-		$tabelle_ids[] = $tabelle[$tabellenstand_id][$id];
+	foreach (array_keys($tabelle) as $standing_id) {
+		$tabelle_ids[] = $tabelle[$standing_id][$id];
 		if (!$guv) {
-			if ($tabelle[$tabellenstand_id]['spiele_g']) $guv = true;
-			elseif ($tabelle[$tabellenstand_id]['spiele_u']) $guv = true;
-			elseif ($tabelle[$tabellenstand_id]['spiele_v']) $guv = true;
+			if ($tabelle[$standing_id]['spiele_g']) $guv = true;
+			elseif ($tabelle[$standing_id]['spiele_u']) $guv = true;
+			elseif ($tabelle[$standing_id]['spiele_v']) $guv = true;
 		}
-		$tabelle[$tabellenstand_id]['pfad'] = $pfad;
-		$tabelle[$tabellenstand_id][str_replace('-', '_', $event['turnierform'])] = true;
-		$tabelle[$tabellenstand_id]['main_event_path'] = $event['main_event_path'];
+		$tabelle[$standing_id]['pfad'] = $pfad;
+		$tabelle[$standing_id][str_replace('-', '_', $event['turnierform'])] = true;
+		$tabelle[$standing_id]['main_event_path'] = $event['main_event_path'];
 		if ($filter_kennung) {
-			$tabelle[$tabellenstand_id]['no'] = $i;
+			$tabelle[$standing_id]['no'] = $i;
 			$i++;
 		}
-		if ($last_id AND $tabelle[$last_id]['platz_no'] === $tabelle[$tabellenstand_id]['platz_no']) {
-			$tabelle[$tabellenstand_id]['platz_no_identisch'] = true;
+		if ($last_id AND $tabelle[$last_id]['platz_no'] === $tabelle[$standing_id]['platz_no']) {
+			$tabelle[$standing_id]['platz_no_identisch'] = true;
 		}
 		// Teams mit nicht gespielten Partien: live markiert
 		if (wrap_setting('tournaments_type_team')) {
 			foreach ($laufende_begegnungen as $begegnung) {
-				if ($begegnung['heim_team_id'] === $tabelle[$tabellenstand_id]['team_id']) {
-					$tabelle[$tabellenstand_id]['live'] = true;
-				} elseif ($begegnung['auswaerts_team_id'] === $tabelle[$tabellenstand_id]['team_id']) {
-					$tabelle[$tabellenstand_id]['live'] = true;
+				if ($begegnung['heim_team_id'] === $tabelle[$standing_id]['team_id']) {
+					$tabelle[$standing_id]['live'] = true;
+				} elseif ($begegnung['auswaerts_team_id'] === $tabelle[$standing_id]['team_id']) {
+					$tabelle[$standing_id]['live'] = true;
 				}
 			}
-			$team_ids[$tabelle[$tabellenstand_id]['team_id']] = [
-				'team_id' => $tabelle[$tabellenstand_id]['team_id']
+			$team_ids[$tabelle[$standing_id]['team_id']] = [
+				'team_id' => $tabelle[$standing_id]['team_id']
 			];
 		} else {
 			foreach ($laufende_begegnungen as $begegnung) {
-				if ($begegnung['weiss_person_id'] === $tabelle[$tabellenstand_id]['person_id']) {
-					$tabelle[$tabellenstand_id]['live'] = true;
-				} elseif ($begegnung['schwarz_person_id'] === $tabelle[$tabellenstand_id]['person_id']) {
-					$tabelle[$tabellenstand_id]['live'] = true;
+				if ($begegnung['weiss_person_id'] === $tabelle[$standing_id]['person_id']) {
+					$tabelle[$standing_id]['live'] = true;
+				} elseif ($begegnung['schwarz_person_id'] === $tabelle[$standing_id]['person_id']) {
+					$tabelle[$standing_id]['live'] = true;
 				}
 			}
 		}
-		$last_id = $tabellenstand_id;
+		$last_id = $standing_id;
 	}
 
 	if (wrap_setting('tournaments_type_team')) {
@@ -197,11 +197,11 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	}
 	
 	$k_a = true;
-	foreach ($tabelle as $tabellenstand_id => $tabellenstand) {
+	foreach ($tabelle as $standing_id => $tabellenstand) {
 		if (wrap_setting('tournaments_type_team') AND !empty($team_ids[$tabellenstand['team_id']]['dwz_schnitt'])) {
-			$tabelle[$tabellenstand_id]['dwz_schnitt'] = $team_ids[$tabellenstand['team_id']]['dwz_schnitt'];
+			$tabelle[$standing_id]['dwz_schnitt'] = $team_ids[$tabellenstand['team_id']]['dwz_schnitt'];
 			// Zeige DWZ-Schnitt in Überschrift abhängig von Werten in Spalte an
-			if ($tabelle[$tabellenstand_id]['dwz_schnitt'] !== 'k. A.') {
+			if ($tabelle[$standing_id]['dwz_schnitt'] !== 'k. A.') {
 				$event['dwz_schnitt'] = true;
 				$k_a = true;
 			} elseif (empty($event['dwz_schnitt'])) {
@@ -213,65 +213,65 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	}
 	$tabellen_keys = array_keys($tabelle);
 	$decrease = 0;
-	foreach ($tabelle as $tabellenstand_id => $tabellenstand) {
+	foreach ($tabelle as $standing_id => $tabellenstand) {
 		if ($decrease) {
-			$tabelle[$tabellenstand_id]['platz_no'] -= $decrease;
+			$tabelle[$standing_id]['platz_no'] -= $decrease;
 		}
-		if (!$k_a) $tabelle[$tabellenstand_id]['dwz_schnitt'] = false;
-		if ($event['teilnehmerliste']) $tabelle[$tabellenstand_id]['aktiv'] = 1;
+		if (!$k_a) $tabelle[$standing_id]['dwz_schnitt'] = false;
+		if ($event['teilnehmerliste']) $tabelle[$standing_id]['aktiv'] = 1;
 		if (empty($tabellenstand['country']) AND !empty($event['country']))
-			$tabelle[$tabellenstand_id]['country'] = '–';
+			$tabelle[$standing_id]['country'] = '–';
 		if ($tabellenstand['spiele_g']) $tabelle['zeige_guv'] = true;
 		if (!empty($tabellenstand['setzliste_no'])) $tabelle['zeige_setzliste'] = true;
 		if ($tabellenstand['status'].'' === wrap_category_id('participation-status/disqualified').'') {
 			$decrease++;
-			unset($tabelle[$tabellenstand_id]);
+			unset($tabelle[$standing_id]);
 		}
 	}
-	foreach ($tabelle as $tabellenstand_id => $tabellenstand) {
-		if (!is_numeric($tabellenstand_id)) continue;
-		if (!empty($tabelle['zeige_guv'])) $tabelle[$tabellenstand_id]['zeige_guv'] = true;
-		if (!empty($tabelle['zeige_setzliste'])) $tabelle[$tabellenstand_id]['zeige_setzliste'] = true;
+	foreach ($tabelle as $standing_id => $tabellenstand) {
+		if (!is_numeric($standing_id)) continue;
+		if (!empty($tabelle['zeige_guv'])) $tabelle[$standing_id]['zeige_guv'] = true;
+		if (!empty($tabelle['zeige_setzliste'])) $tabelle[$standing_id]['zeige_setzliste'] = true;
 	}
 
-	$sql = 'SELECT standing_score_id, tabellenstand_id, score_category_id, score
+	$sql = 'SELECT standing_score_id, standing_id, score_category_id, score
 		FROM standings_scores
-		WHERE tabellenstand_id IN (%s)';
+		WHERE standing_id IN (%s)';
 	$sql = sprintf($sql, implode(',', $tabellen_keys));
-	$scores = wrap_db_fetch($sql, ['tabellenstand_id', 'score_category_id']);
+	$scores = wrap_db_fetch($sql, ['standing_id', 'score_category_id']);
 
 	$sql = 'SELECT DISTINCT category_id, category, category_short
 			, ts.sequence, categories.sequence
 		FROM standings_scores
-		LEFT JOIN tabellenstaende USING (tabellenstand_id)
+		LEFT JOIN standings USING (standing_id)
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN tournaments_scores ts
 			ON ts.score_category_id = standings_scores.score_category_id
 			AND ts.tournament_id = tournaments.tournament_id
 		LEFT JOIN categories
 			ON standings_scores.score_category_id = categories.category_id
-		WHERE tabellenstand_id IN (%s)
+		WHERE standing_id IN (%s)
 		ORDER BY ts.sequence, categories.sequence';
 	$sql = sprintf($sql, implode(',', $tabellen_keys));
 	$tabelle['scores'] = wrap_db_fetch($sql, 'category_id');
 
-	foreach ($tabelle as $tabellenstand_id => $tabellenstand) {
-		if (!is_numeric($tabellenstand_id)) continue;
-		$tabelle[$tabellenstand_id]['guv'] = $guv;
+	foreach ($tabelle as $standing_id => $tabellenstand) {
+		if (!is_numeric($standing_id)) continue;
+		$tabelle[$standing_id]['guv'] = $guv;
 		foreach (array_keys($tabelle['scores']) as $category_id) {
-			if (!isset($scores[$tabellenstand_id][$category_id]['score'])) {
+			if (!isset($scores[$standing_id][$category_id]['score'])) {
 				$value = '';
 			} else {
-				$value = $scores[$tabellenstand_id][$category_id]['score'];
+				$value = $scores[$standing_id][$category_id]['score'];
 			}
-			$tabelle[$tabellenstand_id]['scores'][] = [
+			$tabelle[$standing_id]['scores'][] = [
 				'score' => $value
 			];
 		}
 	}
 	
 	// Vorige und nächste Runde?
-	$sql = 'SELECT DISTINCT runde_no FROM tabellenstaende
+	$sql = 'SELECT DISTINCT runde_no FROM standings
 		WHERE event_id = %d';
 	$sql = sprintf($sql, $event['event_id']);
 	$runden = wrap_db_fetch($sql, 'runde_no', 'single value');
@@ -292,7 +292,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	// Vorherige Runde
 	if ($runde > 1) {
 		$sql = 'SELECT platz_no, person_id, team_id
-			FROM tabellenstaende
+			FROM standings
 			WHERE runde_no = %d
 			AND event_id = %d
 			AND %s IN (%s)';

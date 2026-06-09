@@ -132,3 +132,11 @@
 /* 2026-06-09-6 */	UPDATE _relations SET `detail_table` = 'standings_scores', `detail_id_field` = 'standing_score_id' WHERE `detail_table` = 'tabellenstaende_wertungen' AND `detail_id_field` = 'tsw_id';
 /* 2026-06-09-7 */	UPDATE _relations SET `detail_field` = 'score_category_id' WHERE `detail_table` = 'standings_scores' AND `detail_field` = 'wertung_category_id';
 /* 2026-06-09-8 */	UPDATE webpages SET content = REPLACE(content, '%%% forms tabellenstaende ', '%%% forms standings ') WHERE content LIKE '%\%\%\% forms tabellenstaende %';
+/* 2026-06-09-9 */	RENAME TABLE `tabellenstaende` TO `standings`;
+/* 2026-06-09-10 */	ALTER TABLE `standings` CHANGE `tabellenstand_id` `standing_id` int unsigned NOT NULL AUTO_INCREMENT;
+/* 2026-06-09-11 */	ALTER TABLE `standings_scores` CHANGE `tabellenstand_id` `standing_id` int unsigned NOT NULL AFTER `standing_score_id`;
+/* 2026-06-09-12 */	ALTER TABLE `standings_scores` DROP INDEX `tabellenstand_id_score_category_id`;
+/* 2026-06-09-13 */	ALTER TABLE `standings_scores` ADD UNIQUE `standing_id_score_category_id` (`standing_id`,`score_category_id`), ADD INDEX `standing_id` (`standing_id`);
+/* 2026-06-09-14 */	UPDATE _relations SET `detail_table` = 'standings', `detail_id_field` = 'standing_id' WHERE `detail_table` = 'tabellenstaende' AND `detail_id_field` = 'tabellenstand_id';
+/* 2026-06-09-15 */	UPDATE _relations SET `master_table` = 'standings', `master_field` = 'standing_id' WHERE `master_table` = 'tabellenstaende' AND `master_field` = 'tabellenstand_id';
+/* 2026-06-09-16 */	UPDATE _relations SET `detail_field` = 'standing_id' WHERE `detail_table` = 'standings_scores' AND `detail_field` = 'tabellenstand_id';
