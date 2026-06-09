@@ -291,7 +291,7 @@ function mod_tournaments_make_standings_prepare($event, $standings, $scores, $sc
 	foreach (array_keys($score_categories) as $category_id) {
 		if (empty($scores[$category_id])) continue;
 		if (!is_array($scores[$category_id])
-			AND $category_id.'' === wrap_category_id('turnierwertungen/dv').'') {
+			AND $category_id.'' === wrap_category_id('scores/dv').'') {
 			$scores[$category_id] = mf_tournaments_make_team_direct_encounter(
 				$event, $standings, reset($score_categories)
 			);

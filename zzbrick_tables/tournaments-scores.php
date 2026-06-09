@@ -44,7 +44,7 @@ $zz['fields'][3]['sql'] = 'SELECT category_id, category, main_category_id
 	ORDER BY sequence, category';
 $zz['fields'][3]['show_hierarchy'] = 'main_category_id';
 $zz['fields'][3]['display_field'] = 'category';
-$zz['fields'][3]['show_hierarchy_subtree'] = wrap_category_id('turnierwertungen');
+$zz['fields'][3]['show_hierarchy_subtree'] = wrap_category_id('scores');
 
 $zz['fields'][5]['title'] = 'Show';
 $zz['fields'][5]['field_name'] = 'display';

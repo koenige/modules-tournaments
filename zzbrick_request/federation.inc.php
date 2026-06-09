@@ -104,7 +104,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 				, rank_no
 				, IF(teilnehmerliste = "ja", IF(team_status = "Teilnehmer", 1, NULL), NULL) AS teilnehmerliste
 				, standings_scores.score AS mp
-				, (runde_no * IF(tournaments_scores.score_category_id = /*_ID categories turnierwertungen/bp _*/, tournaments.bretter_min, 2) - standings_scores.score) AS mp_gegner
+				, (runde_no * IF(tournaments_scores.score_category_id = /*_ID categories scores/bp _*/, tournaments.bretter_min, 2) - standings_scores.score) AS mp_gegner
 			FROM teams
 			LEFT JOIN tournaments USING (event_id)
 			LEFT JOIN tournaments_scores
@@ -161,7 +161,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 				AND runde_no = tournaments.tabellenstand_runde_no
 			LEFT JOIN standings_scores
 				ON standings_scores.standing_id = standings.standing_id
-				AND standings_scores.score_category_id = /*_ID categories turnierwertungen/pkt _*/
+				AND standings_scores.score_category_id = /*_ID categories scores/pkt _*/
 			LEFT JOIN contacts
 				ON participations.club_contact_id = contacts.contact_id 
 			LEFT JOIN contacts_identifiers vereine

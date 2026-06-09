@@ -141,3 +141,4 @@
 /* 2026-06-09-15 */	UPDATE _relations SET `master_table` = 'standings', `master_field` = 'standing_id' WHERE `master_table` = 'tabellenstaende' AND `master_field` = 'tabellenstand_id';
 /* 2026-06-09-16 */	UPDATE _relations SET `detail_field` = 'standing_id' WHERE `detail_table` = 'standings_scores' AND `detail_field` = 'tabellenstand_id';
 /* 2026-06-09-17 */	ALTER TABLE `standings` CHANGE `platz_no` `rank_no` tinyint unsigned NOT NULL, CHANGE `platz_brett_no` `board_rank_no` tinyint unsigned DEFAULT NULL, CHANGE `spiele_g` `games_won` tinyint unsigned DEFAULT NULL, CHANGE `spiele_u` `games_drawn` tinyint unsigned DEFAULT NULL, CHANGE `spiele_v` `games_lost` tinyint unsigned DEFAULT NULL;
+/* 2026-06-09-18 */	UPDATE categories SET parameters = CONCAT(IFNULL(parameters, ''), '&alias=scores') WHERE path = 'turnierwertungen' AND IFNULL(parameters, '') NOT LIKE '%alias=scores%';

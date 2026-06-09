@@ -194,11 +194,11 @@ function mod_tournaments_make_standings_team($event) {
 function mf_tournaments_make_team_direct_encounter($event, $standings, $hauptwertung) {
 	// Welches ist die Hauptwertung?
 	switch ($hauptwertung['category_id']) {
-	case wrap_category_id('turnierwertungen/mp'):
+	case wrap_category_id('scores/mp'):
 		$tw = 'mp';
 		break;
 	default:
-	case wrap_category_id('turnierwertungen/bp'):
+	case wrap_category_id('scores/bp'):
 		$tw = 'bp';
 		break;
 	}

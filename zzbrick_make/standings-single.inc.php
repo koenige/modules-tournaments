@@ -40,10 +40,10 @@ function mod_tournaments_make_standings_calculate_single($event, $round_no) {
 
 	// Score categories
 	$score_categories = mod_tournaments_make_standings_score_categories($event['event_id']);
-	if (in_array(wrap_category_id('turnierwertungen/3p'), array_keys($score_categories))) {
+	if (in_array(wrap_category_id('scores/3p'), array_keys($score_categories))) {
 		$tabelleeinzeln->setWin(3);
 		$tabelleeinzeln->setDraw(1);
-	} elseif (in_array(wrap_category_id('turnierwertungen/3-2-1'), array_keys($score_categories))) {
+	} elseif (in_array(wrap_category_id('scores/3-2-1'), array_keys($score_categories))) {
 		$tabelleeinzeln->setWin(3);
 		$tabelleeinzeln->setDraw(2);
 		$tabelleeinzeln->setLoss(1);
@@ -54,14 +54,14 @@ function mod_tournaments_make_standings_calculate_single($event, $round_no) {
 	}
 
 	$niedrig_besser = [
-		wrap_category_id('turnierwertungen/rg'),
-		wrap_category_id('turnierwertungen/p')
+		wrap_category_id('scores/rg'),
+		wrap_category_id('scores/p')
 	];
 	$null_punkte_bei_null = [
-		wrap_category_id('turnierwertungen/p')
+		wrap_category_id('scores/p')
 	];
 	$null_komma_null_punkte_bei_null = [
-		wrap_category_id('turnierwertungen/pkt')
+		wrap_category_id('scores/pkt')
 	];
 
 	if (empty($scores)) {

@@ -168,13 +168,13 @@ SELECT paarung_id, partie_id, partien.brett_no, partien.runde_no
 		WHERE runde_no = partien.runde_no - 1
 		AND event_id = partien.event_id
 		AND person_id = partien.schwarz_person_id
-		AND score_category_id = /*_ID categories turnierwertungen/pkt _*/) AS schwarz_punkte
+		AND score_category_id = /*_ID categories scores/pkt _*/) AS schwarz_punkte
 	, (SELECT score FROM standings
 		LEFT JOIN standings_scores USING (standing_id)
 		WHERE runde_no = partien.runde_no - 1
 		AND event_id = partien.event_id
 		AND person_id = partien.weiss_person_id
-		AND score_category_id = /*_ID categories turnierwertungen/pkt _*/) AS weiss_punkte
+		AND score_category_id = /*_ID categories scores/pkt _*/) AS weiss_punkte
 	, partien.last_update
 FROM partien
 LEFT JOIN categories
