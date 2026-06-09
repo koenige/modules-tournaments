@@ -166,9 +166,9 @@ function mod_tournaments_make_standings_team($event) {
 					'score' => ''
 				];
 			}
-			zzform_update('tabellenstaende', $line, E_USER_ERROR);
+			zzform_update('standings', $line, E_USER_ERROR);
 		} else {
-			zzform_insert('tabellenstaende', $line, E_USER_ERROR);
+			zzform_insert('standings', $line, E_USER_ERROR);
 		}
 	}
 }

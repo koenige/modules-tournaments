@@ -173,9 +173,9 @@ function mod_tournaments_make_standings_write_single($event_id, $round_no, $tabe
 					'score' => ''
 				];
 			}
-			zzform_update('tabellenstaende', $line, E_USER_ERROR);
+			zzform_update('standings', $line, E_USER_ERROR);
 		} else {
-			zzform_insert('tabellenstaende', $line, E_USER_ERROR);
+			zzform_insert('standings', $line, E_USER_ERROR);
 		}
 	}
 	return true;

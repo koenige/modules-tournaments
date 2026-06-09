@@ -57,7 +57,7 @@ function mod_tournaments_make_emptytournament($params, $settings, $event) {
 	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		// standings are deleted automatically for team tournaments, not for single tournaments
 		if (wrap_setting('tournaments_type_single'))
-		$ids = zzform_delete('tabellenstaende', $event['standings']);
+		$ids = zzform_delete('standings', $event['standings']);
 		$event['standings_deleted'] = count($ids);
 		$ids = zzform_delete('partien', $event['games']);
 		$event['games_deleted'] = count($ids);

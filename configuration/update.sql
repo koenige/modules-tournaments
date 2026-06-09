@@ -124,10 +124,11 @@
 /* 2026-06-07-7 */	ALTER TABLE `tournaments_scores` ADD UNIQUE `tournament_id_score_category_id` (`tournament_id`,`score_category_id`), ADD INDEX `sequence` (`sequence`), ADD INDEX `score_category_id` (`score_category_id`);
 /* 2026-06-07-8 */	UPDATE _relations SET `detail_table` = 'tournaments_scores', `detail_id_field` = 'tournament_score_id' WHERE `detail_table` = 'turniere_wertungen' AND `detail_id_field` = 'tw_id';
 /* 2026-06-07-9 */	UPDATE _relations SET `detail_field` = 'score_category_id' WHERE `detail_table` = 'tournaments_scores' AND `detail_field` = 'wertung_category_id';
-/* 2026-06-08-1 */	RENAME TABLE `tabellenstaende_wertungen` TO `standings_scores`;
-/* 2026-06-08-2 */	ALTER TABLE `standings_scores` CHANGE `tsw_id` `standing_score_id` int unsigned NOT NULL AUTO_INCREMENT;
-/* 2026-06-08-3 */	ALTER TABLE `standings_scores` CHANGE `wertung_category_id` `score_category_id` int unsigned NOT NULL AFTER `tabellenstand_id`, CHANGE `wertung` `score` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL AFTER `score_category_id`;
-/* 2026-06-08-4 */	ALTER TABLE `standings_scores` DROP INDEX `tabellenstand_id`, DROP INDEX `wertung_kategorie_id`;
-/* 2026-06-08-5 */	ALTER TABLE `standings_scores` ADD UNIQUE `tabellenstand_id_score_category_id` (`tabellenstand_id`,`score_category_id`), ADD INDEX `score_category_id` (`score_category_id`);
-/* 2026-06-08-6 */	UPDATE _relations SET `detail_table` = 'standings_scores', `detail_id_field` = 'standing_score_id' WHERE `detail_table` = 'tabellenstaende_wertungen' AND `detail_id_field` = 'tsw_id';
-/* 2026-06-08-7 */	UPDATE _relations SET `detail_field` = 'score_category_id' WHERE `detail_table` = 'standings_scores' AND `detail_field` = 'wertung_category_id';
+/* 2026-06-09-1 */	RENAME TABLE `tabellenstaende_wertungen` TO `standings_scores`;
+/* 2026-06-09-2 */	ALTER TABLE `standings_scores` CHANGE `tsw_id` `standing_score_id` int unsigned NOT NULL AUTO_INCREMENT;
+/* 2026-06-09-3 */	ALTER TABLE `standings_scores` CHANGE `wertung_category_id` `score_category_id` int unsigned NOT NULL AFTER `tabellenstand_id`, CHANGE `wertung` `score` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL AFTER `score_category_id`;
+/* 2026-06-09-4 */	ALTER TABLE `standings_scores` DROP INDEX `tabellenstand_id`, DROP INDEX `wertung_kategorie_id`;
+/* 2026-06-09-5 */	ALTER TABLE `standings_scores` ADD UNIQUE `tabellenstand_id_score_category_id` (`tabellenstand_id`,`score_category_id`), ADD INDEX `score_category_id` (`score_category_id`);
+/* 2026-06-09-6 */	UPDATE _relations SET `detail_table` = 'standings_scores', `detail_id_field` = 'standing_score_id' WHERE `detail_table` = 'tabellenstaende_wertungen' AND `detail_id_field` = 'tsw_id';
+/* 2026-06-09-7 */	UPDATE _relations SET `detail_field` = 'score_category_id' WHERE `detail_table` = 'standings_scores' AND `detail_field` = 'wertung_category_id';
+/* 2026-06-09-8 */	UPDATE webpages SET content = REPLACE(content, '%%% forms tabellenstaende ', '%%% forms standings ') WHERE content LIKE '%\%\%\% forms tabellenstaende %';

@@ -305,8 +305,8 @@ msgstr ""
 msgid "Processed"
 msgstr ""
 
+#: zzbrick_tables/standings.php
 #: zzbrick_tables/standings-scores.php
-#: zzbrick_tables/tabellenstaende.php
 msgid "Scores"
 msgstr ""
 

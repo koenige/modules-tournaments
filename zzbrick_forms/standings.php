@@ -25,7 +25,7 @@ $sql = 'SELECT score_category_id
 $sql = sprintf($sql, $brick['data']['event_id']);
 $score_categories = wrap_db_fetch($sql, 'score_category_id', 'single value');
 
-$zz = zzform_include('tabellenstaende');
+$zz = zzform_include('standings');
 
 $zz['where']['event_id'] = $brick['data']['event_id'];
 $zz['where']['runde_no'] = $brick['vars'][2];
