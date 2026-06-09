@@ -171,10 +171,10 @@ function mod_tournaments_federations($params, $settings, $event) {
 					(!empty($filter['where']) ? ' AND '.implode(' AND ', $filter['where']) : ''),
 					$placement_count
 				);
-				$tabellenstand = wrap_db_fetch($sql, 'participation_id');
+				$placement_rows = wrap_db_fetch($sql, 'participation_id');
 				$punkte = 10;
 				$platz = 1;
-				foreach ($tabellenstand as $stand) {
+				foreach ($placement_rows as $stand) {
 					$lv[$stand['country_id']]['punkte'] += $punkte; 
 					$lv[$stand['country_id']]['plaetze'][$platz]['platz'] = $platz;
 					if (empty($lv[$stand['country_id']]['plaetze'][$platz]['anzahl']))

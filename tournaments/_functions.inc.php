@@ -145,8 +145,8 @@ function mf_tournaments_final_standings($event_ids) {
 			, implode(') AND (', $filter[$fkennung]['where'])
 		);
 		$tabellen[$fkennung] = wrap_db_fetch($sql, ['event_id', 'standing_id']);
-		foreach ($tabellen[$fkennung] as $event_id => $tabellenstand) {
-			foreach ($tabellenstand as $ts_id => $platzierung) {
+		foreach ($tabellen[$fkennung] as $event_id => $event_standings) {
+			foreach ($event_standings as $ts_id => $platzierung) {
 				if ($platzierung['runde_no'] !== $turniere[$event_id]['runden']) {
 					unset($tabellen[$fkennung][$event_id][$ts_id]);
 				} elseif (!$platzierung['team'] AND !$platzierung['person']) {

@@ -65,7 +65,9 @@ function mod_tournaments_make_standings_calculate_single($event, $round_no) {
 	];
 
 	if (empty($scores)) {
-		wrap_error('Keine (möglichen) Wertungen in Turnierstand angegeben!', E_USER_ERROR);
+		wrap_error(wrap_text(
+			'No (possible) scores specified for standings.',
+		), E_USER_ERROR);
 	}
 	foreach ($scores as $index => $values) {
 		if (in_array($index, $null_punkte_bei_null)) {

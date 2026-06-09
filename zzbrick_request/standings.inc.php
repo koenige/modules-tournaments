@@ -197,9 +197,9 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	}
 	
 	$k_a = true;
-	foreach ($tabelle as $standing_id => $tabellenstand) {
-		if (wrap_setting('tournaments_type_team') AND !empty($team_ids[$tabellenstand['team_id']]['dwz_schnitt'])) {
-			$tabelle[$standing_id]['dwz_schnitt'] = $team_ids[$tabellenstand['team_id']]['dwz_schnitt'];
+	foreach ($tabelle as $standing_id => $standing) {
+		if (wrap_setting('tournaments_type_team') AND !empty($team_ids[$standing['team_id']]['dwz_schnitt'])) {
+			$tabelle[$standing_id]['dwz_schnitt'] = $team_ids[$standing['team_id']]['dwz_schnitt'];
 			// Zeige DWZ-Schnitt in Überschrift abhängig von Werten in Spalte an
 			if ($tabelle[$standing_id]['dwz_schnitt'] !== 'k. A.') {
 				$event['dwz_schnitt'] = true;
@@ -209,26 +209,26 @@ function mod_tournaments_standings($vars, $settings, $event) {
 			}
 		}
 		// Zeige Bundesland in Überschrift abhängig von Werten in Spalte an
-		if (!empty($tabellenstand['country'])) $event['country'] = true;
+		if (!empty($standing['country'])) $event['country'] = true;
 	}
 	$tabellen_keys = array_keys($tabelle);
 	$decrease = 0;
-	foreach ($tabelle as $standing_id => $tabellenstand) {
+	foreach ($tabelle as $standing_id => $standing) {
 		if ($decrease) {
 			$tabelle[$standing_id]['rank_no'] -= $decrease;
 		}
 		if (!$k_a) $tabelle[$standing_id]['dwz_schnitt'] = false;
 		if ($event['teilnehmerliste']) $tabelle[$standing_id]['aktiv'] = 1;
-		if (empty($tabellenstand['country']) AND !empty($event['country']))
+		if (empty($standing['country']) AND !empty($event['country']))
 			$tabelle[$standing_id]['country'] = '–';
-		if ($tabellenstand['games_won']) $tabelle['zeige_guv'] = true;
-		if (!empty($tabellenstand['setzliste_no'])) $tabelle['zeige_setzliste'] = true;
-		if ($tabellenstand['status'].'' === wrap_category_id('participation-status/disqualified').'') {
+		if ($standing['games_won']) $tabelle['zeige_guv'] = true;
+		if (!empty($standing['setzliste_no'])) $tabelle['zeige_setzliste'] = true;
+		if ($standing['status'].'' === wrap_category_id('participation-status/disqualified').'') {
 			$decrease++;
 			unset($tabelle[$standing_id]);
 		}
 	}
-	foreach ($tabelle as $standing_id => $tabellenstand) {
+	foreach ($tabelle as $standing_id => $standing) {
 		if (!is_numeric($standing_id)) continue;
 		if (!empty($tabelle['zeige_guv'])) $tabelle[$standing_id]['zeige_guv'] = true;
 		if (!empty($tabelle['zeige_setzliste'])) $tabelle[$standing_id]['zeige_setzliste'] = true;
@@ -255,7 +255,7 @@ function mod_tournaments_standings($vars, $settings, $event) {
 	$sql = sprintf($sql, implode(',', $tabellen_keys));
 	$tabelle['scores'] = wrap_db_fetch($sql, 'category_id');
 
-	foreach ($tabelle as $standing_id => $tabellenstand) {
+	foreach ($tabelle as $standing_id => $standing) {
 		if (!is_numeric($standing_id)) continue;
 		$tabelle[$standing_id]['guv'] = $guv;
 		foreach (array_keys($tabelle['scores']) as $category_id) {

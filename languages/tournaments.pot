@@ -266,6 +266,10 @@ msgstr ""
 msgid "Standings update for tournament %s, round %d already in progress."
 msgstr ""
 
+#: zzbrick_make/standings-single.inc.php
+msgid "No (possible) scores specified for standings."
+msgstr ""
+
 #: zzbrick_make/standings-team.inc.php
 msgid "Score %s not implemented."
 msgstr ""

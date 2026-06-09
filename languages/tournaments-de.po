@@ -317,6 +317,10 @@ msgid "Standings update for tournament %s, round %d already in progress."
 msgstr ""
 "Tabellenaktualisierung für Turnier %s, Runde %d läuft bereits."
 
+#: zzbrick_make/standings-single.inc.php
+msgid "No (possible) scores specified for standings."
+msgstr "Keine (möglichen) Wertungen für den Turnierstand angegeben!"
+
 #: zzbrick_make/standings-team.inc.php
 msgid "Score %s not implemented."
 msgstr "Wertung %s nicht implementiert."

@@ -55,8 +55,8 @@ function mod_tournaments_make_standings_team($event) {
 	// Wertungen aus Datenbank auslesen
 	foreach ($score_categories as $category_id => $score_category) {
 		if (str_starts_with($score_category['path'], 'bhz')) {
-			$erste_wertung = reset($score_categories);
-			if ($erste_wertung['path'] === 'bp')
+			$first_score_category = reset($score_categories);
+			if ($first_score_category['path'] === 'bp')
 				$score_category['path'] .= '_bp';
 			else
 				$score_category['path'] .= '_mp';
@@ -188,18 +188,17 @@ function mod_tournaments_make_standings_team($event) {
  *
  * @param array $event
  * @param array $standings
- * @param array $hauptwertung
- * @return $teams int team_id => string Wertung
+ * @param array $primary_score_category
+ * @return array int team_id => string score
  */
-function mf_tournaments_make_team_direct_encounter($event, $standings, $hauptwertung) {
-	// Welches ist die Hauptwertung?
-	switch ($hauptwertung['category_id']) {
+function mf_tournaments_make_team_direct_encounter($event, $standings, $primary_score_category) {
+	switch ($primary_score_category['category_id']) {
 	case wrap_category_id('scores/mp'):
-		$tw = 'mp';
+		$score_kind = 'mp';
 		break;
 	default:
 	case wrap_category_id('scores/bp'):
-		$tw = 'bp';
+		$score_kind = 'bp';
 		break;
 	}
 
@@ -242,12 +241,12 @@ function mf_tournaments_make_team_direct_encounter($event, $standings, $hauptwer
 			$punkte[$team_id]['punkte'] = 0;
 			foreach ($paarungen as $paarung) {
 				if ($team_id == $paarung['heim_team_id']) {
-					if (!empty($paarung['heim_'.$tw]))
-						$punkte[$team_id]['punkte'] += $paarung['heim_'.$tw];
+					if (!empty($paarung['heim_'.$score_kind]))
+						$punkte[$team_id]['punkte'] += $paarung['heim_'.$score_kind];
 					$punkte[$team_id]['paarungen']++;
 				} elseif ($team_id == $paarung['auswaerts_team_id']) {
-					if (!empty($paarung['auswaerts_'.$tw]))
-						$punkte[$team_id]['punkte'] += $paarung['auswaerts_'.$tw];
+					if (!empty($paarung['auswaerts_'.$score_kind]))
+						$punkte[$team_id]['punkte'] += $paarung['auswaerts_'.$score_kind];
 					$punkte[$team_id]['paarungen']++;
 				}
 			}
@@ -260,7 +259,7 @@ function mf_tournaments_make_team_direct_encounter($event, $standings, $hauptwer
 			$tatsaechliche_punkte[$team_id] = $tp['punkte'];
 			if ($tp['paarungen'] < count($team_ids) - 1) {
 				$diff = count($team_ids) - 1 - $tp['paarungen'];
-				if ($tw === 'mp') {
+				if ($score_kind === 'mp') {
 					$punkte[$team_id]['punkte_max'] = $tp['punkte'] + $diff * 2;
 				} else {
 					$punkte[$team_id]['punkte_max'] = $tp['punkte'] + $diff * $event['bretter_min'];
