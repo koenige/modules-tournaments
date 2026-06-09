@@ -362,7 +362,7 @@ msgstr "Bildnachricht"
 msgid "Processed"
 msgstr "Verarbeitet"
 
-#: zzbrick_tables/tabellenstaende-wertungen.php
+#: zzbrick_tables/standings-scores.php
 msgid "Scores"
 msgstr "Wertungen"
 
@@ -406,27 +406,27 @@ msgstr "Remis"
 msgid "None"
 msgstr "Keine"
 
-#: zzbrick_tables/turniere-wertungen.php
+#: zzbrick_tables/tournaments-scores.php
 msgid "Tournament scores"
 msgstr "Turnierwertungen"
 
-#: zzbrick_tables/turniere-wertungen.php
+#: zzbrick_tables/tournaments-scores.php
 msgid "Seq."
 msgstr "Folge"
 
-#: zzbrick_tables/turniere-wertungen.php
+#: zzbrick_tables/tournaments-scores.php
 msgid "Score"
 msgstr "Wertung"
 
-#: zzbrick_tables/turniere-wertungen.php
+#: zzbrick_tables/tournaments-scores.php
 msgid "Show"
 msgstr "Anzeigen"
 
-#: zzbrick_tables/turniere-wertungen.php
+#: zzbrick_tables/tournaments-scores.php
 msgid "Always"
 msgstr "immer"
 
-#: zzbrick_tables/turniere-wertungen.php
+#: zzbrick_tables/tournaments-scores.php
 msgid "On tie"
 msgstr "bei Gleichstand"
 

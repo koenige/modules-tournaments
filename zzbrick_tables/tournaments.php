@@ -134,7 +134,7 @@ $zz['fields'][53]['type'] = 'date';
 $zz['fields'][53]['hide_in_list'] = true;
 $zz['fields'][53]['if']['add']['hide_in_form'] = true;
 
-$zz['fields'][21] = zzform_include('turniere-wertungen');
+$zz['fields'][21] = zzform_include('tournaments-scores');
 $zz['fields'][21]['title'] = 'Score categories';
 $zz['fields'][21]['type'] = 'subtable';
 $zz['fields'][21]['min_records'] = 3;

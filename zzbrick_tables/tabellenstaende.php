@@ -90,7 +90,7 @@ $zz['fields'][9]['field_name'] = 'spiele_v';
 $zz['fields'][9]['type'] = 'number';
 $zz['fields'][9]['null'] = true;
 
-$zz['fields'][10] = zzform_include('tabellenstaende-wertungen');
+$zz['fields'][10] = zzform_include('standings-scores');
 $zz['fields'][10]['title'] = 'Scores';
 $zz['fields'][10]['table_name'] = 'scores';
 $zz['fields'][10]['type'] = 'subtable';

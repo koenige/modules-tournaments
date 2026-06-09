@@ -305,7 +305,7 @@ msgstr ""
 msgid "Processed"
 msgstr ""
 
-#: zzbrick_tables/tabellenstaende-wertungen.php
+#: zzbrick_tables/standings-scores.php
 msgid "Scores"
 msgstr ""
 
@@ -347,27 +347,27 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: zzbrick_tables/turniere-wertungen.php
+#: zzbrick_tables/tournaments-scores.php
 msgid "Tournament scores"
 msgstr ""
 
-#: zzbrick_tables/turniere-wertungen.php
+#: zzbrick_tables/tournaments-scores.php
 msgid "Seq."
 msgstr ""
 
-#: zzbrick_tables/turniere-wertungen.php
+#: zzbrick_tables/tournaments-scores.php
 msgid "Score"
 msgstr ""
 
-#: zzbrick_tables/turniere-wertungen.php
+#: zzbrick_tables/tournaments-scores.php
 msgid "Show"
 msgstr ""
 
-#: zzbrick_tables/turniere-wertungen.php
+#: zzbrick_tables/tournaments-scores.php
 msgid "Always"
 msgstr ""
 
-#: zzbrick_tables/turniere-wertungen.php
+#: zzbrick_tables/tournaments-scores.php
 msgid "On tie"
 msgstr ""
 
