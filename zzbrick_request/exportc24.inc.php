@@ -25,16 +25,16 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		$ftp['user'] = $event['path'];
 	}
 	
-	// Wertungen
-	$sql = 'SELECT tw_id, categories.parameters
-		FROM turniere_wertungen
+	// Score categories
+	$sql = 'SELECT tournament_score_id, categories.parameters
+		FROM tournaments_scores
 		LEFT JOIN tournaments USING (tournament_id)
 		LEFT JOIN categories
-			ON turniere_wertungen.wertung_category_id = categories.category_id
+			ON tournaments_scores.score_category_id = categories.category_id
 		WHERE tournaments.event_id = %d
-		ORDER BY turniere_wertungen.reihenfolge';
+		ORDER BY tournaments_scores.sequence';
 	$sql = sprintf($sql, $event['event_id']);
-	$wertungen = wrap_db_fetch($sql, 'tw_id');
+	$score_categories = wrap_db_fetch($sql, 'tournament_score_id');
 	
 	$data['id'] = $event['path'];
 	$data['hidden'] = false;
@@ -58,10 +58,10 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		'es' => '',
 		'fr' => ''
 	];
-	foreach ($wertungen as $id => $wertung) {
-		parse_str($wertung['parameters'], $wparameter);
-		if (empty($wparameter['chess24_com'])) continue;
-		$data['tieRules'][] = $wparameter['chess24_com'];
+	foreach ($score_categories as $id => $score_category) {
+		parse_str($score_category['parameters'], $score_parameter);
+		if (empty($score_parameter['chess24_com'])) continue;
+		$data['tieRules'][] = $score_parameter['chess24_com'];
 	}
 	$data['chatRooms'] = [
 		'broadcast_'.$event['path'].'_en',

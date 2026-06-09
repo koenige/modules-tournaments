@@ -49,26 +49,26 @@ function mod_tournaments_make_standings_team($event) {
 		$standings[$team_id]['runde_no'] = $event['runde_no'];
 	}
 
-	$scorings = mod_tournaments_make_standings_get_scoring($event['event_id']);
+	$score_categories = mod_tournaments_make_standings_score_categories($event['event_id']);
 	$scores = [];
 
 	// Wertungen aus Datenbank auslesen
-	foreach ($scorings as $category_id => $scoring) {
-		if (str_starts_with($scoring['path'], 'bhz')) {
-			$erste_wertung = reset($scorings);
+	foreach ($score_categories as $category_id => $score_category) {
+		if (str_starts_with($score_category['path'], 'bhz')) {
+			$erste_wertung = reset($score_categories);
 			if ($erste_wertung['path'] === 'bp')
-				$scoring['path'] .= '_bp';
+				$score_category['path'] .= '_bp';
 			else
-				$scoring['path'] .= '_mp';
+				$score_category['path'] .= '_mp';
 			if (mf_tournaments_make_fide_correction($event['event_id']) === 'fide-2012')
-				$scoring['path'] .= '_fide2012';
+				$score_category['path'] .= '_fide2012';
 			// @todo check if there’s a correction for board points as well
 			// Swiss-Chess says no, so we remove it here:
-			if (str_ends_with($scoring['path'], '_bp_fide2012'))
-				$scoring['path'] = substr($scoring['path'], 0, -strlen('_fide2012'));
+			if (str_ends_with($score_category['path'], '_bp_fide2012'))
+				$score_category['path'] = substr($score_category['path'], 0, -strlen('_fide2012'));
 		}
 		
-		switch ($scoring['path']) {
+		switch ($score_category['path']) {
 		case 'dv':
 			// direkter Vergleich erst nach Auswertung der anderen Wertungen
 			$scores[$category_id] = 1;
@@ -86,7 +86,7 @@ function mod_tournaments_make_standings_team($event) {
 		case 'bhz_bp_fide2012':
 		case 'bhz_mp_fide2012':
 		case 'sobo':
-			$scores[$category_id] = mf_tournaments_team_score($event['event_id'], $event['runde_no'], $scoring['path']);
+			$scores[$category_id] = mf_tournaments_team_score($event['event_id'], $event['runde_no'], $score_category['path']);
 			break;
 		case 'bw':
 			$sql = wrap_sql_query('tournaments_scores_team_bw', 'standings');
@@ -94,15 +94,15 @@ function mod_tournaments_make_standings_team($event) {
 			$scores[$category_id] = wrap_db_fetch($sql, 'team_id', 'key/value');
 			break;
 		default:
-			if ($sql = wrap_sql_query('tournaments_scores_team_'.$scoring['path'], 'standings')) {
+			if ($sql = wrap_sql_query('tournaments_scores_team_'.$score_category['path'], 'standings')) {
 				$sql = sprintf($sql, $event['runde_no']);
 				$scores[$category_id] = wrap_db_fetch($sql, 'team_id', 'key/value');
 				break;
 			}
-			wrap_error(sprintf('Rating %s not implemented.', $scoring['path']), E_USER_WARNING);
+			wrap_error(wrap_text('Score %s not implemented.', ['values' => [$score_category['path']]]), E_USER_WARNING);
 		}
 
-		if ($scoring['anzeigen'] === 'immer') {
+		if ($score_category['display'] === 'always') {
 			// Vor der 1. Runde kann es sein, dass Mannschafts- und Brettpunkte
 			// für einzelne Teams noch nicht gesetzt sind, da es noch keine Ergebnisse
 			// gibt, dann auf 0 setzen
@@ -123,7 +123,7 @@ function mod_tournaments_make_standings_team($event) {
 		}
 	}
 
-	$standings = mod_tournaments_make_standings_prepare($event, $standings, $scores, $scorings);
+	$standings = mod_tournaments_make_standings_prepare($event, $standings, $scores, $score_categories);
 
 	$sql = 'SELECT team_id, tabellenstand_id
 		FROM tabellenstaende
@@ -159,8 +159,8 @@ function mod_tournaments_make_standings_team($event) {
 			$sql = sprintf($sql, $existing_standings[$stand['team_id']]);
 			$data = wrap_db_fetch($sql, 'tsw_id');
 			foreach ($data as $tsw_id => $bestandswertung) {
-				if (in_array($bestandswertung['wertung_category_id'], array_keys($stand['wertungen']))) continue;
-				$line['wertungen'][] = [
+				if (in_array($bestandswertung['wertung_category_id'], array_keys($stand['scores']))) continue;
+				$line['scores'][] = [
 					'tsw_id' => $bestandswertung['tsw_id'],
 					'wertung_category_id' => '',
 					'wertung' => ''
@@ -206,9 +206,9 @@ function mf_tournaments_make_team_direct_encounter($event, $standings, $hauptwer
 	$teams = [];
 	$unklar = [];
 	
-	foreach ($standings as $team_id => $wertung) {
-		if (!empty($wertung['eindeutig'])) continue;
-		$index = isset($wertung['platz_no']) ? $wertung['platz_no'] : 0;
+	foreach ($standings as $team_id => $standing) {
+		if (!empty($standing['eindeutig'])) continue;
+		$index = isset($standing['platz_no']) ? $standing['platz_no'] : 0;
 		$unklar[$index][] = $team_id;
 	}
 	if (!$unklar) return [];

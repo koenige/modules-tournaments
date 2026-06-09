@@ -2,22 +2,22 @@
 
 /**
  * tournaments module
- * table script: tournament ratings
+ * table script: tournament scores
  *
  * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012, 2014-2015, 2019-2021 Gustaf Mossakowski
+ * @copyright Copyright © 2012, 2014-2015, 2019-2021, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-$zz['title'] = 'Turniere/Wertungen';
-$zz['table'] = 'turniere_wertungen';
+$zz['title'] = 'Tournament scores';
+$zz['table'] = 'tournaments_scores';
 
 $zz['fields'][1]['title'] = 'ID';
-$zz['fields'][1]['field_name'] = 'tw_id';
+$zz['fields'][1]['field_name'] = 'tournament_score_id';
 $zz['fields'][1]['type'] = 'id';
 
 $zz['fields'][2]['field_name'] = 'tournament_id';
@@ -30,15 +30,14 @@ $zz['fields'][2]['sql'] = 'SELECT tournament_id
 $zz['fields'][2]['display_field'] = 'turnier';
 $zz['fields'][2]['search'] = 'CONCAT(event, " ", IFNULL(event_year, YEAR(date_begin)))';
 
-$zz['fields'][4]['title'] = 'Folge';
-$zz['fields'][4]['title_tab'] = 'Folge';
-$zz['fields'][4]['field_name'] = 'reihenfolge';
+$zz['fields'][4]['title_tab'] = 'Seq.';
+$zz['fields'][4]['field_name'] = 'sequence';
 $zz['fields'][4]['type'] = 'number';
 $zz['fields'][4]['auto_value'] = 'increment';
 $zz['fields'][4]['def_val_ignore'] = true;
 
-$zz['fields'][3]['title'] = 'Wertung';
-$zz['fields'][3]['field_name'] = 'wertung_category_id';
+$zz['fields'][3]['title'] = 'Score';
+$zz['fields'][3]['field_name'] = 'score_category_id';
 $zz['fields'][3]['type'] = 'select';
 $zz['fields'][3]['sql'] = 'SELECT category_id, category, main_category_id
 	FROM categories
@@ -47,23 +46,24 @@ $zz['fields'][3]['show_hierarchy'] = 'main_category_id';
 $zz['fields'][3]['display_field'] = 'category';
 $zz['fields'][3]['show_hierarchy_subtree'] = wrap_category_id('turnierwertungen');
 
-$zz['fields'][5]['title'] = 'Anzeigen';
-$zz['fields'][5]['field_name'] = 'anzeigen';
+$zz['fields'][5]['title'] = 'Show';
+$zz['fields'][5]['field_name'] = 'display';
 $zz['fields'][5]['type'] = 'select';
-$zz['fields'][5]['enum'] = array('immer', 'bei Gleichstand');
-$zz['fields'][5]['default'] = 'immer';
+$zz['fields'][5]['enum'] = ['always', 'on_tie'];
+$zz['fields'][5]['enum_title'] = [wrap_text('Always'), wrap_text('On tie')];
+$zz['fields'][5]['default'] = 'always';
 $zz['fields'][5]['def_val_ignore'] = true;
 
-$zz['sql'] = 'SELECT turniere_wertungen.*
+$zz['sql'] = 'SELECT tournaments_scores.*
 		, CONCAT(events.event, " ", IFNULL(event_year, YEAR(date_begin))) AS turnier
 		, category
-	FROM turniere_wertungen
+	FROM tournaments_scores
 	LEFT JOIN tournaments USING (tournament_id)
 	LEFT JOIN events USING (event_id)
 	LEFT JOIN categories
-		ON categories.category_id = turniere_wertungen.wertung_category_id
+		ON categories.category_id = tournaments_scores.score_category_id
 ';
-$zz['sqlorder'] = ' ORDER BY events.date_begin, turniere_wertungen.reihenfolge, category';
+$zz['sqlorder'] = ' ORDER BY events.date_begin, tournaments_scores.sequence, category';
 
 $zz['hooks']['after_insert'] = 
 $zz['hooks']['after_update'] = 

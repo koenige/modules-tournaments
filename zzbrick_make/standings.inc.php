@@ -258,94 +258,95 @@ function mod_tournaments_make_standings_return($page, $time, $type) {
 }
 
 /**
- * Hole alle Turnierwertungen für ein Turnier
+ * Get all score categories for a tournament
  * 
  * @param int $event_id
  * @return array
  */
-function mod_tournaments_make_standings_get_scoring($event_id) {
+function mod_tournaments_make_standings_score_categories($event_id) {
 	$sql = 'SELECT category_id, category, category_short
-			, SUBSTRING_INDEX(REPLACE(path, "-", "_"), "/", -1) AS path, anzeigen
-		FROM turniere_wertungen
+			, SUBSTRING_INDEX(REPLACE(path, "-", "_"), "/", -1) AS path, display
+		FROM tournaments_scores
 		JOIN tournaments USING (tournament_id)
 		JOIN categories
-			ON turniere_wertungen.wertung_category_id = categories.category_id
+			ON tournaments_scores.score_category_id = categories.category_id
 		WHERE event_id = %d
-		ORDER BY turniere_wertungen.reihenfolge, categories.sequence';
+		ORDER BY tournaments_scores.sequence, categories.sequence';
 	$sql = sprintf($sql, $event_id);
 	return wrap_db_fetch($sql, 'category_id');
 }
 
 /**
- * Schreibt Wertungen in Tabellen-Array und ermittelt Platz aus $wertungen
+ * Schreibt Wertungen in Tabellen-Array und ermittelt Platz aus $scores
  * anzeige von Wertungen nur, wenn zur Differenzierung nötig
  *
+ * @param array $event
  * @param array $standings
- * @param array $wertungen
- * @param array $turnierwertungen
+ * @param array $scores
+ * @param array $score_categories
  * @return array
  */
-function mod_tournaments_make_standings_prepare($event, $standings, $wertungen, $turnierwertungen) {
+function mod_tournaments_make_standings_prepare($event, $standings, $scores, $score_categories) {
 	$tsw = [];
-	foreach (array_keys($turnierwertungen) as $category_id) {
-		if (empty($wertungen[$category_id])) continue;
-		if (!is_array($wertungen[$category_id])
+	foreach (array_keys($score_categories) as $category_id) {
+		if (empty($scores[$category_id])) continue;
+		if (!is_array($scores[$category_id])
 			AND $category_id.'' === wrap_category_id('turnierwertungen/dv').'') {
-			$wertungen[$category_id] = mf_tournaments_make_team_direct_encounter(
-				$event, $standings, reset($turnierwertungen)
+			$scores[$category_id] = mf_tournaments_make_team_direct_encounter(
+				$event, $standings, reset($score_categories)
 			);
 		}
-		$vorige_tn_id = [];
-		$vorige_wertung = [];
+		$last_tn_id = [];
+		$last_score = [];
 		$increment = [];
 		$increment[1] = 1;
-		foreach ($wertungen[$category_id] as $tn_id => $wertung) {
+		foreach ($scores[$category_id] as $tn_id => $score) {
 			// Aktueller Stand in dieser Wertungsschleife?
 			if (!isset($standings[$tn_id]['platz_no'])) {
 				$standings[$tn_id]['platz_no'] = 1;
 			}
-			if ($turnierwertungen[$category_id]['anzeigen'] === 'immer') {
-				$standings[$tn_id]['wertungen'][$category_id]['wertung'] = $wertung;
-				$standings[$tn_id]['wertungen'][$category_id]['wertung_category_id'] = $category_id;
+			if ($score_categories[$category_id]['display'] === 'always') {
+				$standings[$tn_id]['scores'][$category_id]['wertung'] = $score;
+				$standings[$tn_id]['scores'][$category_id]['wertung_category_id'] = $category_id;
 			}
 			// Wertung nicht in allgemeines Array schreiben, da das nicht ausgegeben werden soll:
-			$tsw[$tn_id][$category_id] = $wertung;
+			$tsw[$tn_id][$category_id] = $score;
 			if (!empty($standings[$tn_id]['eindeutig'])) {
 				// Platz-Nr. bei eindeutigen Verhältnissen korrekt, keine weitere
 				// Bearbeitung nötig
 				continue;
 			}
 			$stand = $standings[$tn_id]['platz_no'];
-			if (empty($vorige_tn_id[$stand])) {
+			if (empty($last_tn_id[$stand])) {
 				$standings[$tn_id]['eindeutig'] = true;
 				if (!isset($increment[$stand])) $increment[$stand] = 1;
-			} elseif (isset($tsw[$vorige_tn_id[$stand]][$category_id])
-				AND $wertung === $tsw[$vorige_tn_id[$stand]][$category_id]) {
-				$standings[$tn_id]['platz_no'] = $standings[$vorige_tn_id[$stand]]['platz_no'];
-				$standings[$vorige_tn_id[$stand]]['eindeutig'] = false;
+			} elseif (isset($tsw[$last_tn_id[$stand]][$category_id])
+				AND $score === $tsw[$last_tn_id[$stand]][$category_id]) {
+				$standings[$tn_id]['platz_no'] = $standings[$last_tn_id[$stand]]['platz_no'];
+				$standings[$last_tn_id[$stand]]['eindeutig'] = false;
 				$standings[$tn_id]['eindeutig'] = false;
-				if ($turnierwertungen[$category_id]['anzeigen'] !== 'immer') {
-					$standings[$tn_id]['wertungen'][$category_id]['wertung'] = $wertung;
-					$standings[$tn_id]['wertungen'][$category_id]['wertung_category_id'] = $category_id;
-					$standings[$vorige_tn_id[$stand]]['wertungen'][$category_id]['wertung'] = $vorige_wertung[$stand];
-					$standings[$vorige_tn_id[$stand]]['wertungen'][$category_id]['wertung_category_id'] = $category_id;
+				if ($score_categories[$category_id]['display'] !== 'always') {
+					$standings[$tn_id]['scores'][$category_id]['wertung'] = $score;
+					$standings[$tn_id]['scores'][$category_id]['wertung_category_id'] = $category_id;
+					$standings[$last_tn_id[$stand]]['scores'][$category_id]['wertung'] = $last_score[$stand];
+					$standings[$last_tn_id[$stand]]['scores'][$category_id]['wertung_category_id'] = $category_id;
 				}
 				if (!isset($increment[$stand])) $increment[$stand] = 1;
 				else $increment[$stand]++;
 			} else {
 				if (!isset($increment[$stand])) $increment[$stand] = 1;
-				$standings[$tn_id]['platz_no'] = $standings[$vorige_tn_id[$stand]]['platz_no'] + $increment[$stand];
+				$standings[$tn_id]['platz_no'] = $standings[$last_tn_id[$stand]]['platz_no'] + $increment[$stand];
 				$increment[$stand] = 1;
 				$standings[$tn_id]['eindeutig'] = true;
-				if ($turnierwertungen[$category_id]['anzeigen'] !== 'immer') {
-					$standings[$tn_id]['wertungen'][$category_id]['wertung'] = $wertung;
-					$standings[$tn_id]['wertungen'][$category_id]['wertung_category_id'] = $category_id;
-					$standings[$vorige_tn_id[$stand]]['wertungen'][$category_id]['wertung'] = $vorige_wertung[$stand];
-					$standings[$vorige_tn_id[$stand]]['wertungen'][$category_id]['wertung_category_id'] = $category_id;
+				if ($score_categories[$category_id]['display'] !== 'always') {
+					$standings[$tn_id]['scores'][$category_id]['wertung'] = $score;
+					$standings[$tn_id]['scores'][$category_id]['wertung_category_id'] = $category_id;
+					$standings[$last_tn_id[$stand]]['scores'][$category_id]['wertung'] = $last_score[$stand];
+					$standings[$last_tn_id[$stand]]['scores'][$category_id]['wertung_category_id'] = $category_id;
 				}
 			}
-			$vorige_tn_id[$stand] = $tn_id;
-			$vorige_wertung[$stand] = $wertung;
+			$last_tn_id[$stand] = $tn_id;
+			$last_score[$stand] = $score;
 		}
 	}
 	$standings = mod_tournaments_make_standings_sort($standings);

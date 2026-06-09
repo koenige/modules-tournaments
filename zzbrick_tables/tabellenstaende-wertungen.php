@@ -2,18 +2,18 @@
 
 /**
  * tournaments module
- * table script: standings/ratings
+ * table script: standings/scores
  *
  * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012, 2014, 2019-2021, 2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012, 2014, 2019-2021, 2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-$zz['title'] = 'Tabellenstände/Wertungen';
+$zz['title'] = 'Scores';
 $zz['table'] = 'tabellenstaende_wertungen';
 
 $zz['fields'][1]['title'] = 'ID';

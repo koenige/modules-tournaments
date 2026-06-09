@@ -255,6 +255,20 @@ msgstr ""
 msgid "Standings for tournament %s, round %d: no updates necessary."
 msgstr ""
 
+#: zzbrick_make/standings.inc.php
+msgid "Standings update for tournament %s, round %d already in progress."
+msgstr ""
+
+#: zzbrick_make/standings-team.inc.php
+msgid "Score %s not implemented."
+msgstr ""
+
+#: zzbrick_make/standings-team.inc.php
+msgid ""
+"Tournament with event_id %d has invalid standings ID %d, field team_id is "
+"empty."
+msgstr ""
+
 #: zzbrick_make/turnierzahlen.inc.php
 msgid "No ratings found when updating on %s."
 msgstr ""
@@ -269,6 +283,10 @@ msgstr ""
 
 #: zzbrick_request/teaminternal.inc.php
 msgid "Please create a tournament first."
+msgstr ""
+
+#: zzbrick_request/tournament.inc.php
+msgid "Missing score for category ID %d in tournament %s."
 msgstr ""
 
 #: zzbrick_tables/playermessages.php
@@ -287,12 +305,24 @@ msgstr ""
 msgid "Processed"
 msgstr ""
 
+#: zzbrick_tables/tabellenstaende-wertungen.php
+msgid "Scores"
+msgstr ""
+
+#: zzbrick_tables/tabellenstaende.php
+msgid "Scores"
+msgstr ""
+
 #: zzbrick_tables/tournaments-identifiers.php
 msgid "Tournament"
 msgstr ""
 
 #: zzbrick_tables/tournaments-identifiers.php
 msgid "Tournament Identifiers"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php
+msgid "Score categories"
 msgstr ""
 
 #: zzbrick_tables/tournaments.php
@@ -315,6 +345,30 @@ msgstr ""
 
 #: zzbrick_tables/tournaments.php
 msgid "None"
+msgstr ""
+
+#: zzbrick_tables/turniere-wertungen.php
+msgid "Tournament scores"
+msgstr ""
+
+#: zzbrick_tables/turniere-wertungen.php
+msgid "Seq."
+msgstr ""
+
+#: zzbrick_tables/turniere-wertungen.php
+msgid "Score"
+msgstr ""
+
+#: zzbrick_tables/turniere-wertungen.php
+msgid "Show"
+msgstr ""
+
+#: zzbrick_tables/turniere-wertungen.php
+msgid "Always"
+msgstr ""
+
+#: zzbrick_tables/turniere-wertungen.php
+msgid "On tie"
 msgstr ""
 
 #: zzform/export-pdf-teilnehmerschilder.inc.php

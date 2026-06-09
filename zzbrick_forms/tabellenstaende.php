@@ -16,14 +16,14 @@
 if (count($brick['vars']) === 1 AND strstr($brick['vars'][0], '/'))
 	$brick['vars'] = explode('/', $brick['vars'][0]);
 
-// Wertungen
-$sql = 'SELECT wertung_category_id
-	FROM turniere_wertungen
+// Score categories
+$sql = 'SELECT score_category_id
+	FROM tournaments_scores
 	LEFT JOIN tournaments USING (tournament_id)
 	WHERE tournaments.event_id = %d
-	ORDER BY reihenfolge';
+	ORDER BY sequence';
 $sql = sprintf($sql, $brick['data']['event_id']);
-$wertungen = wrap_db_fetch($sql, 'wertung_category_id', 'single value');
+$score_categories = wrap_db_fetch($sql, 'score_category_id', 'single value');
 
 $zz = zzform_include('tabellenstaende');
 
@@ -63,12 +63,12 @@ if (!isset($_GET['filter']['typ'])) {
 		$zz['fields'][11]['hide_in_form'] = true; // Spieler-Platz
 	}
 	$zz['fields'][10]['min_records'] =
-	$zz['fields'][10]['max_records'] = count($wertungen);
+	$zz['fields'][10]['max_records'] = count($score_categories);
 	$zz['fields'][10]['fields'][3]['def_val_ignore'] = true;
 
 	$i = 0;
-	foreach ($wertungen as $wertung) {
-		$zz['fields'][10]['values'][$i][3] = $wertung;
+	foreach ($score_categories as $score_category) {
+		$zz['fields'][10]['values'][$i][3] = $score_category;
 		$i++;
 	}
 } elseif ($_GET['filter']['typ'] === 'NULL') {

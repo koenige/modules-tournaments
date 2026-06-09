@@ -11,13 +11,13 @@
  */
 
 -- tournaments_scores_team_bw --
-/* calculate berlin rating for team tournaments */
+/* calculate berlin score for team tournaments */
 SELECT team_id, SUM(CASE ergebnis
 	WHEN 1 THEN ((1 + bretter_min) - brett_no)
 	WHEN 0.5 THEN (((1 + bretter_min) - brett_no) / 2)
 	WHEN 0 THEN 0
 	ELSE 0 END
-) AS rating
+) AS score
 FROM (
 	SELECT paarungen.heim_team_id AS team_id
 		, partien.runde_no
@@ -44,7 +44,7 @@ WHERE runde_no <= %d
 AND team_status = "Teilnehmer"
 AND spielfrei = "nein"
 GROUP BY team_id
-ORDER BY rating DESC, team_id;
+ORDER BY score DESC, team_id;
 
 -- tournaments_scores_team_rg --
 /* get seeding list no per team */

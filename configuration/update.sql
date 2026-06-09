@@ -115,3 +115,12 @@
 /* 2026-06-06-8 */	DROP VIEW `tabellenstaende_termine_view`;
 /* 2026-06-06-9 */	DROP VIEW `partien_einzelergebnisse`;
 /* 2026-06-06-10 */	DROP FUNCTION `event_id`;
+/* 2026-06-07-1 */	ALTER TABLE `turniere_wertungen` MODIFY `anzeigen` varchar(20) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'immer';
+/* 2026-06-07-2 */	UPDATE `turniere_wertungen` SET `anzeigen` = CASE `anzeigen` WHEN 'immer' THEN 'always' WHEN 'bei Gleichstand' THEN 'on_tie' ELSE 'always' END;
+/* 2026-06-07-3 */	RENAME TABLE `turniere_wertungen` TO `tournaments_scores`;
+/* 2026-06-07-4 */	ALTER TABLE `tournaments_scores` CHANGE `tw_id` `tournament_score_id` int unsigned NOT NULL AUTO_INCREMENT;
+/* 2026-06-07-5 */	ALTER TABLE `tournaments_scores` CHANGE `wertung_category_id` `score_category_id` int unsigned NOT NULL AFTER `tournament_id`, CHANGE `reihenfolge` `sequence` tinyint unsigned NOT NULL AFTER `score_category_id`, CHANGE `anzeigen` `display` enum('always','on_tie') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'always' AFTER `sequence`;
+/* 2026-06-07-6 */	ALTER TABLE `tournaments_scores` DROP INDEX `turnier_id`, DROP INDEX `reihenfolge`, DROP INDEX `wertung_kategorie_id`;
+/* 2026-06-07-7 */	ALTER TABLE `tournaments_scores` ADD UNIQUE `tournament_id_score_category_id` (`tournament_id`,`score_category_id`), ADD INDEX `sequence` (`sequence`), ADD INDEX `score_category_id` (`score_category_id`);
+/* 2026-06-07-8 */	UPDATE _relations SET `detail_table` = 'tournaments_scores', `detail_id_field` = 'tournament_score_id' WHERE `detail_table` = 'turniere_wertungen' AND `detail_id_field` = 'tw_id';
+/* 2026-06-07-9 */	UPDATE _relations SET `detail_field` = 'score_category_id' WHERE `detail_table` = 'tournaments_scores' AND `detail_field` = 'wertung_category_id';

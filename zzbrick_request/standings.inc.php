@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -238,33 +238,33 @@ function mod_tournaments_standings($vars, $settings, $event) {
 		FROM tabellenstaende_wertungen
 		WHERE tabellenstand_id IN (%s)';
 	$sql = sprintf($sql, implode(',', $tabellen_keys));
-	$wertungen = wrap_db_fetch($sql, ['tabellenstand_id', 'wertung_category_id']);
+	$scores = wrap_db_fetch($sql, ['tabellenstand_id', 'wertung_category_id']);
 
 	$sql = 'SELECT DISTINCT category_id, category, category_short
-			, tw.reihenfolge, categories.sequence
+			, ts.sequence, categories.sequence
 		FROM tabellenstaende_wertungen tsw
 		LEFT JOIN tabellenstaende USING (tabellenstand_id)
 		LEFT JOIN tournaments USING (event_id)
-		LEFT JOIN turniere_wertungen tw
-			ON tw.wertung_category_id = tsw.wertung_category_id
-			AND tw.tournament_id = tournaments.tournament_id
+		LEFT JOIN tournaments_scores ts
+			ON ts.score_category_id = tsw.wertung_category_id
+			AND ts.tournament_id = tournaments.tournament_id
 		LEFT JOIN categories
 			ON tsw.wertung_category_id = categories.category_id
 		WHERE tabellenstand_id IN (%s)
-		ORDER BY tw.reihenfolge, categories.sequence';
+		ORDER BY ts.sequence, categories.sequence';
 	$sql = sprintf($sql, implode(',', $tabellen_keys));
-	$tabelle['wertungen'] = wrap_db_fetch($sql, 'category_id');
+	$tabelle['scores'] = wrap_db_fetch($sql, 'category_id');
 
 	foreach ($tabelle as $tabellenstand_id => $tabellenstand) {
 		if (!is_numeric($tabellenstand_id)) continue;
 		$tabelle[$tabellenstand_id]['guv'] = $guv;
-		foreach (array_keys($tabelle['wertungen']) as $category_id) {
-			if (!isset($wertungen[$tabellenstand_id][$category_id]['wertung'])) {
+		foreach (array_keys($tabelle['scores']) as $category_id) {
+			if (!isset($scores[$tabellenstand_id][$category_id]['wertung'])) {
 				$value = '';
 			} else {
-				$value = $wertungen[$tabellenstand_id][$category_id]['wertung'];
+				$value = $scores[$tabellenstand_id][$category_id]['wertung'];
 			}
-			$tabelle[$tabellenstand_id]['wertungen'][] = [
+			$tabelle[$tabellenstand_id]['scores'][] = [
 				'wertung' => $value
 			];
 		}

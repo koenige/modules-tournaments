@@ -305,6 +305,23 @@ msgid "Standings for tournament %s, round %d: no updates necessary."
 msgstr ""
 "Tabellenstand für Turnier %s, Runde %d: keine Aktualisierung erforderlich."
 
+#: zzbrick_make/standings.inc.php
+msgid "Standings update for tournament %s, round %d already in progress."
+msgstr ""
+"Tabellenaktualisierung für Turnier %s, Runde %d läuft bereits."
+
+#: zzbrick_make/standings-team.inc.php
+msgid "Score %s not implemented."
+msgstr "Wertung %s nicht implementiert."
+
+#: zzbrick_make/standings-team.inc.php
+msgid ""
+"Tournament with event_id %d has invalid standings ID %d, field team_id is "
+"empty."
+msgstr ""
+"Turnier mit event_id %d hat ungültigen Tabellenstand-ID %d, Feld team_id "
+"ist leer."
+
 #: zzbrick_make/turnierzahlen.inc.php
 msgid "No ratings found when updating on %s."
 msgstr "Keine Wertungzahlen beim Update am %s gefunden."
@@ -325,6 +342,10 @@ msgstr ""
 msgid "Please create a tournament first."
 msgstr "Bitte legen Sie zuerst ein Turnier an."
 
+#: zzbrick_request/tournament.inc.php
+msgid "Missing score for category ID %d in tournament %s."
+msgstr "Fehlende Wertung für Kategorie-ID %d im Turnier %s."
+
 #: zzbrick_tables/playermessages.php
 msgid "Player Messages"
 msgstr "Brett-Nachrichten"
@@ -341,6 +362,14 @@ msgstr "Bildnachricht"
 msgid "Processed"
 msgstr "Verarbeitet"
 
+#: zzbrick_tables/tabellenstaende-wertungen.php
+msgid "Scores"
+msgstr "Wertungen"
+
+#: zzbrick_tables/tabellenstaende.php
+msgid "Scores"
+msgstr "Wertungen"
+
 #: zzbrick_tables/tournaments-identifiers.php
 msgid "Tournament"
 msgstr "Turnier"
@@ -348,6 +377,10 @@ msgstr "Turnier"
 #: zzbrick_tables/tournaments-identifiers.php
 msgid "Tournament Identifiers"
 msgstr "Turnierkennungen"
+
+#: zzbrick_tables/tournaments.php
+msgid "Score categories"
+msgstr "Turnierwertungen"
 
 #: zzbrick_tables/tournaments.php
 msgid "Pairing bye scoring"
@@ -372,6 +405,30 @@ msgstr "Remis"
 #: zzbrick_tables/tournaments.php
 msgid "None"
 msgstr "Keine"
+
+#: zzbrick_tables/turniere-wertungen.php
+msgid "Tournament scores"
+msgstr "Turnierwertungen"
+
+#: zzbrick_tables/turniere-wertungen.php
+msgid "Seq."
+msgstr "Folge"
+
+#: zzbrick_tables/turniere-wertungen.php
+msgid "Score"
+msgstr "Wertung"
+
+#: zzbrick_tables/turniere-wertungen.php
+msgid "Show"
+msgstr "Anzeigen"
+
+#: zzbrick_tables/turniere-wertungen.php
+msgid "Always"
+msgstr "immer"
+
+#: zzbrick_tables/turniere-wertungen.php
+msgid "On tie"
+msgstr "bei Gleichstand"
 
 #: zzform/export-pdf-teilnehmerschilder.inc.php
 msgid "No participants were selected for this export."

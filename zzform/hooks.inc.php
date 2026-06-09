@@ -42,7 +42,7 @@ function mf_tournaments_standings_update($ops) {
 			$update = true;
 			$tournament_ids[] = $ops['record_new'][$index]['tournament_id'];
 			break;
-		case 'turniere_wertungen':
+		case 'tournaments_scores':
 			// Bei Aktualisierung, Einfügen und Löschen immer, auch bei
 			// Änderung der Anzeige!
 			foreach ($ops['record_diff'][$index] as $field => $action) {

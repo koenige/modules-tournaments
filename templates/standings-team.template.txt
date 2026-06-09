@@ -30,7 +30,7 @@
 		<th><abbr title="Unentschiedene Spiele">U</abbr></th>
 		<th class="bxv"><abbr title="Verlorene Spiele">V</abbr></th>
 %%% endif %%%
-%%% loop wertungen %%%
+%%% loop scores %%%
 		<th><abbr title="%%% item category %%%">%%% item category_short %%%</abbr></th>
 %%% loop end %%%
 	</tr>
@@ -61,7 +61,7 @@
 		<td class="tm">%%% item spiele_u %%%</td>
 		<td class="tm bxv">%%% item spiele_v %%%</td>
 %%% endif %%%
-		%%% loop wertungen %%%
+		%%% loop scores %%%
 		<td class="tm">%%% item wertung format=result_format %%%</td>
 		%%% loop end %%%
 	</tr>

@@ -6,7 +6,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2020-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2020-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -288,19 +288,19 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'turniere_status', 'turnier_status_id', 'status_category_id', 'no-delete');
 
 
--- turniere_wertungen --
-CREATE TABLE `turniere_wertungen` (
-  `tw_id` int unsigned NOT NULL AUTO_INCREMENT,
+-- tournaments_scores --
+CREATE TABLE `tournaments_scores` (
+  `tournament_score_id` int unsigned NOT NULL AUTO_INCREMENT,
   `tournament_id` int unsigned NOT NULL,
-  `wertung_category_id` int unsigned NOT NULL,
-  `reihenfolge` tinyint unsigned NOT NULL,
-  `anzeigen` enum('immer','bei Gleichstand') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'immer',
-  PRIMARY KEY (`tw_id`),
-  UNIQUE KEY `turnier_id` (`tournament_id`,`wertung_category_id`),
-  KEY `reihenfolge` (`reihenfolge`),
-  KEY `wertung_kategorie_id` (`wertung_category_id`)
+  `score_category_id` int unsigned NOT NULL,
+  `sequence` tinyint unsigned NOT NULL,
+  `display` enum('always','on_tie') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'always',
+  PRIMARY KEY (`tournament_score_id`),
+  UNIQUE KEY `tournament_id_score_category_id` (`tournament_id`,`score_category_id`),
+  KEY `sequence` (`sequence`),
+  KEY `score_category_id` (`score_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'turniere_wertungen', 'tw_id', 'tournament_id', 'delete');
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'turniere_wertungen', 'tw_id', 'wertung_category_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'tournaments_scores', 'tournament_score_id', 'tournament_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'tournaments_scores', 'tournament_score_id', 'score_category_id', 'no-delete');
 
