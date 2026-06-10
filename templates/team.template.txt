@@ -52,7 +52,7 @@
 %%% elseif gewonnen %%%
 2%%% item spielfrei * %%%
 %%% elseif unentschieden %%%
-1
+1%%% item spielfrei * %%%
 %%% endif %%%
 </th>
 %%% loop end %%%

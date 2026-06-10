@@ -131,41 +131,42 @@ function mod_tournaments_team($vars, $settings, $data) {
 	$data = array_merge($data, mf_tournaments_team_players($data['team_id'], $data));
 
 	// Paarungen
+	wrap_include('team-results', 'tournaments');
+
 	$sql = 'SELECT paarungen.runde_no, tisch_no
 			, CONCAT(team, IFNULL(CONCAT(" ", team_no), "")) AS gegner
-			, IF(spielfrei = "ja", bretter_min, 
-				SUM(IF(paarungen.heim_team_id = %d, heim_wertung, auswaerts_wertung))
-			) AS punkte
-			, IF(SUM(IF(paarungen.heim_team_id = %d, heim_wertung, auswaerts_wertung)) < %s, 1, NULL) verloren
-			, IF(SUM(IF(paarungen.heim_team_id = %d, heim_wertung, auswaerts_wertung)) = %s, 1, NULL) unentschieden
-			, IF(spielfrei = "ja" OR SUM(IF(paarungen.heim_team_id = %d, heim_wertung, auswaerts_wertung)) > %s, 1, NULL) gewonnen
-			, IF(spielfrei = "ja", 1, NULL) AS spielfrei
+			, IF(teams.spielfrei = "ja", 1, NULL) AS spielfrei
 		FROM paarungen
 		LEFT JOIN teams
 			ON (IF(paarungen.heim_team_id = %d, paarungen.auswaerts_team_id, paarungen.heim_team_id) = teams.team_id)
-		LEFT JOIN partien USING (paarung_id)
-		LEFT JOIN tournaments
-			ON paarungen.event_id = tournaments.event_id
 		WHERE (heim_team_id = %d OR auswaerts_team_id = %d)
 		AND paarungen.event_id = %d
-		GROUP BY paarung_id, team_id
 		ORDER BY runde_no';
-	$sql = sprintf($sql, $data['team_id'], $data['team_id'], $data['bretter_min']/2
-		, $data['team_id'], $data['bretter_min']/2, $data['team_id'], $data['bretter_min']/2, $data['team_id']
-		, $data['team_id'], $data['team_id'], $data['event_id']);
+	$sql = sprintf($sql
+		, $data['team_id'], $data['team_id'], $data['team_id'], $data['event_id']
+	);
 	$data['paarungen'] = wrap_db_fetch($sql, 'runde_no');
 	if ($data['paarungen']) {
+		$results = mf_tournaments_team_results($data['event_id'], null, $data['team_id']);
 		$data['summe_bp'] = 0;
 		$data['summe_mp'] = 0;
-		foreach ($data['paarungen'] AS $paarung_id => $paarung) {
-			if ($paarung['spielfrei']) $data['spielfrei'] = true;
-			$data['summe_bp'] += $paarung['punkte'];
-			if ($paarung['gewonnen'])
-				$data['summe_mp'] += 2;
-			elseif ($paarung['unentschieden'])
-				$data['summe_mp'] += 1;
-			elseif ($paarung['unentschieden'])
-				$data['summe_mp'] += 0; // + 0 damit es Zahl ist.
+		foreach ($data['paarungen'] as $paarung_id => $paarung) {
+			if (isset($results[$paarung['runde_no']])) {
+				$match_points = (int) $results[$paarung['runde_no']]['match_points'];
+				$data['paarungen'][$paarung_id]['punkte'] = $results[$paarung['runde_no']]['board_points'];
+				$data['paarungen'][$paarung_id]['gewonnen'] = $match_points === 2 ? 1 : null;
+				$data['paarungen'][$paarung_id]['unentschieden'] = $match_points === 1 ? 1 : null;
+				$data['paarungen'][$paarung_id]['verloren'] = $match_points === 0 ? 1 : null;
+				if ($results[$paarung['runde_no']]['is_pairing_bye']) {
+					$data['paarungen'][$paarung_id]['spielfrei'] = true;
+					$data['spielfrei'] = true;
+				}
+				$data['summe_bp'] += $results[$paarung['runde_no']]['board_points'];
+				$data['summe_mp'] += $match_points;
+			} elseif ($paarung['spielfrei']) {
+				$data['paarungen'][$paarung_id]['punkte'] = 0;
+				$data['spielfrei'] = true;
+			}
 			$round = $data;
 			$round['runde_no'] = $paarung['runde_no'];
 			$round['identifier'] = $round['event_identifier'];
