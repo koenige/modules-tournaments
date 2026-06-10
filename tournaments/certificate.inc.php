@@ -47,3 +47,22 @@ function mf_tournaments_certificate_applies($event) {
 	if (wrap_setting('tournaments_type_team')) return true;
 	return false;
 }
+
+/**
+ * add to list of possible certificate types
+ *
+ * @param array $event
+ * @return array
+ */
+function mf_tournaments_certificate_types($event) {
+	$possible_types = ['platz'];
+	if (!$event['tabellenstaende']) return $possible_types;
+
+	// @todo currently, only 'w' for female is supported
+	$tabellenstaende = explode(',', $event['tabellenstaende']);
+	foreach ($tabellenstaende as $tabellenstand) {
+		if (!$tabellenstand) continue;
+		$possible_types[] = 'platz-'.$tabellenstand;
+	}
+	return $possible_types;
+}
