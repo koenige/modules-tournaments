@@ -18,15 +18,20 @@
  *
  * @param int $event_id
  * @param int|null $round_no maximum round number inclusive; null = all rounds
- * @return array [team_id][runde_no] rows with keys event_id, paarung_id, team_id,
- *		gegner_team_id, runde_no, board_points, board_points_opponent,
- *		match_points, match_points_opponent, is_pairing_bye
+ * @param int|null $team_id when set, return only this team’s rows keyed by runde_no
+ * @return array result rows with keys event_id, paarung_id, team_id, gegner_team_id,
+ *		runde_no, board_points, board_points_opponent, match_points,
+ *		match_points_opponent, is_pairing_bye — if $team_id is set: [runde_no => row],
+ *		otherwise [team_id => [runde_no => row]]
  */
-function mf_tournaments_team_results($event_id, $round_no = null) {
+function mf_tournaments_team_results($event_id, $round_no = null, $team_id = null) {
 	static $cache = [];
 
 	$key = $event_id.'-'.($round_no ?? '');
-	if (array_key_exists($key, $cache)) return $cache[$key];
+	if (array_key_exists($key, $cache)) {
+		if ($team_id) return $cache[$key][$team_id] ?? [];
+		return $cache[$key];
+	}
 
 	$sql = 'SELECT bretter_min, pairing_bye_scoring
 		FROM tournaments
@@ -69,7 +74,9 @@ function mf_tournaments_team_results($event_id, $round_no = null) {
 			$results[$row['team_id']][$row['runde_no']] = $row;
 		}
 	}
-	return $cache[$key] = $results;
+	$cache[$key] = $results;
+	if ($team_id) return $cache[$key][$team_id] ?? [];
+	return $cache[$key];
 }
 
 /**
@@ -227,7 +234,7 @@ function mf_tournaments_team_score($event_id, $round_no, $path) {
 /**
  * Match points from one team result row (mf_tournaments_team_score() helper)
  *
- * @param array $row team result row from mf_tournaments_team_results()
+ * @param array $row team result row
  * @return int|float match_points for that pairing
  */
 function mf_tournaments_team_score_mp($row) {
@@ -239,7 +246,7 @@ function mf_tournaments_team_score_mp($row) {
  *
  * Pairing bye counts as 1 match point; played pairings use match_points as usual.
  *
- * @param array $row team result row from mf_tournaments_team_results()
+ * @param array $row team result row
  * @return int|float 1 for pairing bye, else match_points
  */
 function mf_tournaments_team_score_mpbye1($row) {
@@ -250,7 +257,7 @@ function mf_tournaments_team_score_mpbye1($row) {
 /**
  * Board points from one team result row (mf_tournaments_team_score() helper)
  *
- * @param array $row team result row from mf_tournaments_team_results()
+ * @param array $row team result row
  * @return int|float board_points for that pairing
  */
 function mf_tournaments_team_score_bp($row) {
@@ -260,7 +267,7 @@ function mf_tournaments_team_score_bp($row) {
 /**
  * Board points from one team result row (FIDE 2012 pairing-bye correction)
  *
- * @param array $row team result row from mf_tournaments_team_results()
+ * @param array $row team result row
  * @return int|float 1 for pairing bye, else board_points
  */
 function mf_tournaments_team_score_bpbye1($row) {
@@ -271,7 +278,7 @@ function mf_tournaments_team_score_bpbye1($row) {
 /**
  * Win (1 or 0) from one team result row
  *
- * @param array $row team result row from mf_tournaments_team_results()
+ * @param array $row team result row
  * @return int 1 if match won, else 0
  */
 function mf_tournaments_team_score_sw($row) {
@@ -285,7 +292,7 @@ function mf_tournaments_team_score_sw($row) {
  * Returns the opponent’s cumulative total for the sum path chosen in the bhz_* switch
  * (mp, bp, or bpbye1), not a value from the team’s own row.
  *
- * @param array $row team result row from mf_tournaments_team_results()
+ * @param array $row team result row
  * @param array $opponent_totals team_id => score from the recursive sum-path call
  * @return int|float opponent total for this pairing
  */
@@ -337,7 +344,7 @@ function mf_tournaments_team_score_bhz_mp_fide2012_addon($scores, $results, $rou
  *
  * Board points scored in this pairing × opponent’s cumulative match points (mp path).
  *
- * @param array $row team result row from mf_tournaments_team_results()
+ * @param array $row team result row
  * @param array $opponent_totals team_id => score from the recursive mp call
  * @return int|float
  */
