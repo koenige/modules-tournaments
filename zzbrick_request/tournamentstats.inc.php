@@ -185,6 +185,28 @@ function mod_tournaments_tournamentstats($params, $setting, $data) {
 	// no players, no teams at all = no statistics!
 	if (empty($data['summe_total']) AND empty($data['summe_teams'])) return false;
 
+	$event_ids = array_keys($data['turniere']);
+	$event_ids[] = $data['event_id'];
+	$sql = 'SELECT COUNT(DISTINCT contact_id)
+		FROM participations
+		WHERE event_id IN (%s)
+		AND status_category_id = /*_ID categories participation-status/participant _*/
+		AND (NOT ISNULL(brett_no) OR ISNULL(team_id))
+		AND usergroup_id = /*_ID usergroups spieler _*/';
+	$sql = sprintf($sql, implode(',', $event_ids));
+	$data['persons_players'] = wrap_db_fetch($sql, '', 'single value');
+
+	$sql = 'SELECT COUNT(DISTINCT contact_id)
+		FROM participations
+		LEFT JOIN usergroups USING (usergroup_id)
+		WHERE event_id IN (%s)
+		AND status_category_id = /*_ID categories participation-status/participant _*/
+		AND usergroup_id != /*_ID usergroups spieler _*/
+		AND (ISNULL(usergroups.parameters) OR usergroups.parameters NOT LIKE "%%&present=0%%")';
+	$sql = sprintf($sql, implode(',', $event_ids));
+	$data['persons_not_playing'] = wrap_db_fetch($sql, '', 'single value');
+	$data['persons_total'] = $data['persons_players'] + $data['persons_not_playing'];
+
 	$sql = 'SELECT CEIL(halbzuege/2) AS zuege, partie_id, event
 		FROM partien
 		LEFT JOIN events USING (event_id)

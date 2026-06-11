@@ -105,6 +105,10 @@ Spielerinnen und Spieler ohne Wertung werden bei der Berechnung des Schnitts nic
 <li>Es werden nur abgeschlossene Partien berücksichtigt.</li>
 </ul>
 
+<p>Insgesamt waren <strong>%%% item persons_total %%%</strong> Menschen vor Ort registriert,
+davon <strong>%%% item persons_players %%%</strong> am Brett und 
+weitere <strong>%%% item persons_not_playing %%%</strong> als Begleitung oder im Organisationsteam.</p>
+
 </div>
 
 %%% if laengste_partien | live_partien %%%
