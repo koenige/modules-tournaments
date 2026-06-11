@@ -26,7 +26,10 @@
 <th><abbr title="Teilnehmer weiblich">♀</abbr></th>
 <th><abbr title="DWZ-Schnitt">∅&nbsp;DWZ</abbr></th>
 <th><abbr title="Elo-Schnitt">∅&nbsp;Elo</abbr></th>
-<th>Partien</th>
+<th><abbr title="Partien">P.</abbr></th>
+%%% if live_bretter %%%
+<th><abbr title="Übertragene Bretter">Live</abbr></th>
+%%% endif %%%
 %%% if summe_zuege %%%
 <th>Züge</th>
 <th><abbr title="Züge pro Partie">∅&nbsp;Z./P.</abbr></th>
@@ -50,6 +53,9 @@
 <th></th>
 <th></th>
 <th class="tz">%%% item summe_partien format=number %%%</th>
+%%% if live_bretter %%%
+<th class="tz">%%% item summe_live_bretter %%%</th>
+%%% endif %%%
 %%% if summe_zuege %%%
 <th class="tz">%%% item summe_zuege format=number %%%</th>
 <th class="tz">%%% item summe_zuege_pro_partie %%%</th>
@@ -74,6 +80,9 @@
 <td class="tz">%%% item dwz_schnitt %%%</td>
 <td class="tz">%%% item elo_schnitt %%%</td>
 <td class="tz">%%% item partien format=number %%%</td>
+%%% if live_bretter %%%
+<td class="tz">%%% item live_bretter %%%</td>
+%%% endif %%%
 %%% if summe_zuege %%%
 <td class="tz"><span class="sortonly">%%% item zuege %%%</span> %%% item zuege format=number %%%</td>
 <td class="tz">%%% item zuege_pro_partie %%%</td>
@@ -98,17 +107,23 @@ Spielerinnen und Spieler ohne Wertung werden bei der Berechnung des Schnitts nic
 
 </div>
 
-%%% if laengste_partien %%%
+%%% if laengste_partien | live_partien %%%
 <h2>Partien</h2>
 
 <ul>
+%%% if laengste_partien %%%
 <li>Die längste(n) Partie(n):
 	<ul>
 	%%% loop laengste_partien %%%
 	<li>in der %%% item event %%% mit %%% item zuege %%% Zügen</li>
 	%%% loop end %%%
 	</ul></li>
+%%% endif %%%
+%%% if live_partien %%%
+<li>Übertragene Live-Partien insgesamt: <strong>%%% item live_partien format=number %%%</strong></li>
+%%% endif %%%
 </ul>
+
 %%% endif %%%
 
 <div class="relnav">
@@ -125,6 +140,7 @@ Spielerinnen und Spieler ohne Wertung werden bei der Berechnung des Schnitts nic
 		columnFormat: [
 			null, %%% if summe_teams %%%'float', %%% endif %%%
 			'float', 'float', 'float', 'float', 'float', 'float', 'float',
+			%%% if live_bretter %%%'float', %%% endif %%%
 			'float', 'float', 'float', 'float', 'float'
 		]
 	});

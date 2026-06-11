@@ -43,6 +43,9 @@ function mod_tournaments_tournamentstats($params, $setting, $data) {
 			, (SELECT AVG(YEAR(events.date_begin)-YEAR(date_of_birth)) FROM participations LEFT JOIN persons USING (contact_id) WHERE event_id = events.event_id AND status_category_id = /*_ID categories participation-status/participant _*/ AND (NOT ISNULL(brett_no) OR ISNULL(team_id)) AND usergroup_id = /*_ID usergroups spieler _*/) AS average_age
 			, IF(events.event_year != YEAR(events.date_begin), CAST(events.event_year AS SIGNED) - YEAR(events.date_begin), NULL) AS different_year
 			, eventtypes.parameters AS eventtypes_parameters
+			, tournaments.livebretter
+			, tournaments.runden
+			, tournaments.bretter_min
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
 		LEFT JOIN events_categories
@@ -73,6 +76,8 @@ function mod_tournaments_tournamentstats($params, $setting, $data) {
 	$data['summe_tn_nachrichten'] = 0;
 	$data['summe_teams'] = 0;
 	$data['summe_average_age'] = 0;
+	$data['live_partien'] = 0;
+	$data['summe_live_bretter'] = 0;
 
 	// check for teams
 	foreach ($data['turniere'] as $event_id => $event) {
@@ -118,6 +123,29 @@ function mod_tournaments_tournamentstats($params, $setting, $data) {
 		} else {
 			$data['turniere'][$event_id]['partien'] = '';
 		}
+		$live_bretter = 0;
+		$brett_max = $event['bretter_min'] ?: (int) floor($event['tn_total'] / 2);
+		if (!empty($event['livebretter']) && $brett_max) {
+			$live_bretter = count(mf_tournaments_live_boards($event['livebretter'], $brett_max));
+		}
+		if ($live_bretter) {
+			$data['turniere'][$event_id]['live_bretter'] = $live_bretter;
+			$data['summe_live_bretter'] += $live_bretter;
+			$live_partien = $live_bretter * $event['runden'];
+			$data['turniere'][$event_id]['live_partien'] = $live_partien;
+			$data['live_partien'] += $live_partien;
+		}
+	}
+	if ($data['summe_live_bretter']) {
+		$data['live_bretter'] = true;
+		foreach ($data['turniere'] as $event_id => $event) {
+			if (empty($data['turniere'][$event_id]['live_bretter'])) {
+				$data['turniere'][$event_id]['live_bretter'] = '–';
+			}
+		}
+	}
+	if (!$data['live_partien']) {
+		$data['live_partien'] = null;
 	}
 	if ($data['summe_partien']) {
 		$data['quote_remis'] = $data['summe_remis']/$data['summe_partien'];
