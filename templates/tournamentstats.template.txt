@@ -105,9 +105,10 @@ Spielerinnen und Spieler ohne Wertung werden bei der Berechnung des Schnitts nic
 <li>Es werden nur abgeschlossene Partien berücksichtigt.</li>
 </ul>
 
-<p>Insgesamt waren <strong>%%% item persons_total %%%</strong> Menschen vor Ort registriert,
-davon <strong>%%% item persons_players %%%</strong> am Brett und 
-weitere <strong>%%% item persons_not_playing %%%</strong> als Begleitung oder im Organisationsteam.</p>
+<p>Insgesamt waren <strong>%%% item persons_total wrap_number %%%</strong> Menschen vor Ort registriert,
+davon <strong>%%% item persons_players wrap_number %%%</strong> am Brett und
+weitere <strong>%%% item persons_not_playing wrap_number %%%</strong> als Begleitung oder im Organisationsteam.
+<strong>%%% item persons_both wrap_number %%%</strong> gehörten beiden Gruppen an.</p>
 
 </div>
 
