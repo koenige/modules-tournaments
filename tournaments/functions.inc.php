@@ -107,7 +107,7 @@ function mf_tournaments_live_board($livebretter, $brett_no, $tisch_no = false) {
  * Rechnet Angaben zu Livebrettern in tatsächliche Bretter um
  *
  * @param string $livebretter
- *		4, 5-7, *
+ *		4, 5-7, 1-999, *
  * @param int $brett_max
  * @param int $tisch_max (optional)
  * @return array
@@ -148,7 +148,7 @@ function mf_tournaments_live_boards($livebretter, $brett_max, $tisch_max = false
 				if ($i === $tisch_von) {
 					$range = range($brett_von, $brett_max);
 				} elseif ($i === $tisch_bis) {
-					$range = range(1, $brett_bis);
+					$range = range(1, min($brett_bis, $brett_max));
 				} else {
 					$range = range(1, $brett_max);
 				}
@@ -157,7 +157,11 @@ function mf_tournaments_live_boards($livebretter, $brett_max, $tisch_max = false
 				}
 			}
 		} else {
-			$data = array_merge($data, range($bretter_von, $bretter_bis));
+			$bretter_von = (int) $bretter_von;
+			$bretter_bis = (int) $bretter_bis;
+			if ($bretter_von <= $brett_max) {
+				$data = array_merge($data, range($bretter_von, min($bretter_bis, $brett_max)));
+			}
 		}
 	}
 	return $data;
