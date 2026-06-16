@@ -29,7 +29,7 @@ function mf_tournaments_pdf_prepare($event) {
 	$settings['logo_width'] = 146;
 	$settings['logo_height'] = 50;
 
-	$pdf = new TFPDF('P', 'pt', 'A4');
+	$pdf = new zzTFPDF('P', 'pt', 'A4');
 	//$pdf->setCompression(true);           // Activate compression.
 
 	$pdf->AddFont('DejaVu', '', 'DejaVuSansCondensed.ttf', true);

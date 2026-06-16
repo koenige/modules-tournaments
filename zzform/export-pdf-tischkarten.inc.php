@@ -44,7 +44,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	if (!$data) wrap_quit(404, 'Es gibt keine Tischkarten für diese Personen.');
 
 	// A4 PDF, set fonts
-	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
+	$pdf = new zzTFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
 	$pdf->setCompression(true);
 	$pdf->AddFont('FiraSans-Regular', '', 'FiraSans-Regular.ttf', true);
 	$pdf->AddFont('FiraSans-SemiBold', '', 'FiraSans-SemiBold.ttf', true);

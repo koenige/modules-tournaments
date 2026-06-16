@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2017, 2019-2021, 2023-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2017, 2019-2021, 2023-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -31,7 +31,7 @@ function mf_tournaments_export_pdf_ergebniszettel($ops) {
 	
 	wrap_lib('tfpdf');
 
-	$pdf = new TFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
+	$pdf = new zzTFPDF('P', 'pt', 'A4');		// panorama = p, DIN A4, 595 x 842
 	$pdf->setCompression(true);
 	// Fira Sans!
 	$pdf->AddFont('FiraSans-Regular', '', 'FiraSans-Regular.ttf', true);
