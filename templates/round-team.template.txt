@@ -16,7 +16,7 @@
 Stand: %%% item live_date format=date %%%, %%% item live_date format=time %%% Uhr. <!-- Diese Seite wird minütlich automatisch aktualisiert. --></p>
 %%% endif %%%
 
-<p>%%% item wochentag %%%, %%% item date_begin format=date %%% %%% item time_begin %%%%%% item time_end "–%s" %%%
+<p>%%% item date_begin format=weekday_long %%%, %%% item date_begin format=date %%% %%% item time_begin %%%%%% item time_end "–%s" %%%
 %%% if time_begin | time_end %%% Uhr%%% endif %%%</p>
 
 </main>

@@ -197,14 +197,7 @@ function mod_tournaments_livegames_bretter($turnier) {
 
 function mod_tournaments_livegames_rounds($tournament_ids) {
 	// Aktuelle Runde, Daten
-	$sql = 'SELECT event_id, runde_no, main_event_id,
-			CASE DAYOFWEEK(events.date_begin) WHEN 1 THEN "So"
-				WHEN 2 THEN "Mo"
-				WHEN 3 THEN "Di"
-				WHEN 4 THEN "Mi"
-				WHEN 5 THEN "Do"
-				WHEN 6 THEN "Fr"
-				WHEN 7 THEN "Sa" END AS runde_wochentag
+	$sql = 'SELECT event_id, runde_no, main_event_id
 			, date_begin AS runde_beginn
 			, TIME_FORMAT(time_begin, "%%H:%%i") AS runde_time_begin
 			, TIME_FORMAT(time_end, "%%H:%%i") AS runde_time_end

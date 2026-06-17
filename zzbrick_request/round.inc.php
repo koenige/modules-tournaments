@@ -29,15 +29,6 @@ function mod_tournaments_round($params, $vars, $event) {
 			) AS live
 			, tournaments.livebretter
 			, events.date_begin
-			, CASE WEEKDAY(events.date_begin) 
-				WHEN 0 THEN "Montag"
-				WHEN 1 THEN "Dienstag"
-				WHEN 2 THEN "Mittwoch"
-				WHEN 3 THEN "Donnerstag"
-				WHEN 4 THEN "Freitag"
-				WHEN 5 THEN "Sonnabend"
-				WHEN 6 THEN "Sonntag"
-				END AS wochentag
 			, DATE_FORMAT(events.time_begin, "%%H:%%i") AS time_begin
 			, DATE_FORMAT(events.time_end, "%%H:%%i") AS time_end
 			, IF (CONCAT(events.date_begin, " ", events.time_begin) > NOW(), 1, NULL) AS auslosung
