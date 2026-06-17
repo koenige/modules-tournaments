@@ -29,7 +29,7 @@ Die Partien werden ohne Verzögerung übertragen!
 %%% loop start %%%
 %%% if aktuelle_runde_no %%%
 <div class="liveturnier">
-<h2 id="%%% item identifier %%%"><a href="../../../%%% item identifier %%%/">%%% item event %%% %%% item year %%%</a>: <a href="../../../%%% item identifier %%%/runde/%%% item aktuelle_runde_no %%%/">%%% item aktuelle_runde_no %%%. Runde</a>, %%% item runde_beginn format=weekday %%% %%% item runde_beginn format=date %%% %%% item runde_time_begin %%%%%% item runde_time_end "–%s" %%% Uhr</h2>
+<h2 id="%%% item identifier %%%"><a href="../../../%%% item identifier %%%/">%%% item event %%% %%% item year %%%</a>: <a href="../../../%%% item identifier %%%/runde/%%% item aktuelle_runde_no %%%/">%%% item aktuelle_runde_no %%%. Runde</a>, %%% item runde_beginn format=date_weekday %%% %%% item runde_time_begin %%%%%% item runde_time_end "–%s" %%% Uhr</h2>
 <a href="../../../%%% item identifier %%%/live/">Live-Bretter</a>
 <div class="results">
 <table class="spieler">
