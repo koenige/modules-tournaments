@@ -31,10 +31,10 @@ function mod_tournaments_federation($params, $settings, $data) {
 			, contacts.identifier AS federation_identifier
 			, contact_abbr
 		FROM contacts
+		LEFT JOIN contacts_contacts USING (contact_id)
 		LEFT JOIN contacts_identifiers ok
 			ON ok.contact_id = contacts.contact_id
 			AND ok.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
-		LEFT JOIN contacts_contacts USING (contact_id)
 		LEFT JOIN countries USING (country_id)
 		WHERE (contacts.identifier = "%s" OR ok.identifier = "%s00")
 		AND ok.current = "yes"
