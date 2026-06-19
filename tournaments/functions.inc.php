@@ -360,6 +360,7 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 		LEFT JOIN contacts_identifiers
 			ON contacts_identifiers.contact_id = contacts.contact_id
 			AND contacts_identifiers.current = "yes"
+			AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 	    WHERE contacts_contacts.main_contact_id = /*_SETTING clubs_confederation_contact_id _*/
 	    AND contacts_contacts.relation_category_id = /*_ID categories relation/member _*/
 	    AND contacts.contact_category_id = /*_ID categories contact/federation _*/';
@@ -381,6 +382,7 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 		LEFT JOIN contacts_identifiers
 			ON contacts_identifiers.contact_id = contacts.contact_id
 			AND contacts_identifiers.current = "yes"
+			AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 	    WHERE contacts.contact_id IN (%s)';
 	$sql = sprintf($sql
 		, implode(', ', $clubs)

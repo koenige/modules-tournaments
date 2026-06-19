@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2016-2017, 2019-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2016-2017, 2019-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -42,7 +42,9 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 		LEFT JOIN contacts organisationen
 			ON teams.club_contact_id = organisationen.contact_id
 		LEFT JOIN contacts_identifiers v_ok
-			ON v_ok.contact_id = organisationen.contact_id AND v_ok.current = "yes"
+			ON v_ok.contact_id = organisationen.contact_id
+			AND v_ok.current = "yes"
+			AND v_ok.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 		LEFT JOIN tournaments USING (event_id)
 		WHERE teams.team_id = %d';
 	$sql = sprintf($sql, $data['team_id']);

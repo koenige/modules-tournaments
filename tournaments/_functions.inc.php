@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -206,6 +206,7 @@ function mf_tournaments_federations($id_field_name = 'country_id') {
 		JOIN countries USING (country_id)
 		WHERE contact_category_id = /*_ID categories contact/federation _*/
 		AND contacts_identifiers.current = "yes"
+		AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 		AND contacts_contacts.main_contact_id = /*_SETTING clubs_confederation_contact_id _*/
 		AND contacts_contacts.relation_category_id = /*_ID categories relation/member _*/
 		ORDER BY country';

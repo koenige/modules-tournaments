@@ -39,6 +39,7 @@ $zz['fields'][3]['sql'] = 'SELECT contacts.contact_id, contact
 	LEFT JOIN contacts_identifiers
 		ON contacts_identifiers.contact_id = contacts.contact_id
 		AND contacts_identifiers.current = "yes"
+		AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 	LEFT JOIN categories
 		ON contacts.contact_category_id = categories.category_id
 	WHERE categories.parameters LIKE "%&organisation=1%"
@@ -372,9 +373,11 @@ $zz['sql'] = 'SELECT teams.*
 	LEFT JOIN contacts_identifiers
 		ON contacts_identifiers.contact_id = vereine.contact_id
 		AND contacts_identifiers.current = "yes"
+		AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 	LEFT JOIN contacts_identifiers federation_identifiers
 		ON CONCAT(SUBSTRING(contacts_identifiers.identifier, 1, 1), "00") = federation_identifiers.identifier 
 		AND federation_identifiers.current = "yes"
+		AND federation_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
 	LEFT JOIN contacts landesverbaende
 		ON landesverbaende.contact_id = federation_identifiers.contact_id
 	LEFT JOIN regionalgruppen 
