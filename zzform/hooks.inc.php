@@ -368,7 +368,7 @@ function mf_tournaments_remarks_mail($ops) {
 			LEFT JOIN contacts USING (contact_id)
 			LEFT JOIN contactdetails USING (contact_id)
 			WHERE person_id = %d
-			AND provider_category_id = /*_ID categories provider/e-mail _*/
+			AND channel_category_id = /*_ID categories provider/e-mail _*/
 			LIMIT 1';
 		$sql = sprintf($sql, $record['autor_person_id']);
 		$record = array_merge($record, wrap_db_fetch($sql));

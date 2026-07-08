@@ -137,7 +137,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 			, IF(gastspieler = "ja", 1, NULL) AS gastspieler
 			, (SELECT identification FROM contactdetails
 				WHERE contactdetails.contact_id = contacts.contact_id
-				AND provider_category_id = /*_ID categories provider/e-mail _*/
+				AND channel_category_id = /*_ID categories provider/e-mail _*/
 				LIMIT 1
 			) AS e_mail
 			, GROUP_CONCAT(category_short, ": ", identification SEPARATOR "<br>") AS telefon
@@ -162,7 +162,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 		LEFT JOIN contactdetails USING (contact_id)
 		LEFT JOIN usergroups USING (usergroup_id)
 		LEFT JOIN categories
-			ON categories.category_id = contactdetails.provider_category_id
+			ON categories.category_id = contactdetails.channel_category_id
 			AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&type=phone%%")
 		WHERE team_id IN (%s)
 		GROUP BY participation_id, contacts.contact_id
@@ -286,7 +286,7 @@ function mf_tournaments_team_club_board_members($contact_ids) {
 			, YEAR(date_of_birth) AS geburtsjahr
 			, (SELECT identification FROM contactdetails
 				WHERE contactdetails.contact_id = contacts.contact_id
-				AND provider_category_id = /*_ID categories provider/e-mail _*/
+				AND channel_category_id = /*_ID categories provider/e-mail _*/
 				LIMIT 1
 			) AS e_mail
 			, GROUP_CONCAT(category_short, ": ", identification SEPARATOR "<br>") AS telefon
@@ -296,7 +296,7 @@ function mf_tournaments_team_club_board_members($contact_ids) {
 		LEFT JOIN contactdetails USING (contact_id)
 		LEFT JOIN usergroups USING (usergroup_id)
 		LEFT JOIN categories
-			ON categories.category_id = contactdetails.provider_category_id
+			ON categories.category_id = contactdetails.channel_category_id
 			AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&type=phone%%")
 		WHERE club_contact_id IN (%s)
 		AND usergroup_id IN (/*_ID usergroups verein-jugend _*/, /*_ID usergroups verein-vorsitz _*/)

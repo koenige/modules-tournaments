@@ -9,7 +9,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2014-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -194,7 +194,7 @@ $zz['fields'][23]['fields'][2]['key_field_name'] = 'contact_id';
 $zz['fields'][23]['subselect']['sql'] = 'SELECT contact_id, identification, CONCAT("(", category_short, ")")
 	FROM contactdetails
 	LEFT JOIN categories
-		ON categories.category_id = contactdetails.provider_category_id
+		ON categories.category_id = contactdetails.channel_category_id
 	WHERE categories.parameters LIKE "%mail%"
 ';
 
@@ -210,7 +210,7 @@ $zz['fields'][22]['fields'][2]['key_field_name'] = 'contact_id';
 $zz['fields'][22]['subselect']['sql'] = 'SELECT contact_id, identification, CONCAT("(", category_short, ")")
 	FROM contactdetails
 	LEFT JOIN categories
-		ON categories.category_id = contactdetails.provider_category_id
+		ON categories.category_id = contactdetails.channel_category_id
 	WHERE categories.parameters LIKE "%phone%"
 ';
 
