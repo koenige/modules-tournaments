@@ -272,7 +272,7 @@ $zz['fields'][25]['subselect']['sql'] = 'SELECT team_id
 			IF(logins.active = "yes", " (+)", " (-)")) AS person
 		, (SELECT identification FROM contactdetails
 			WHERE contactdetails.contact_id = contacts.contact_id
-			AND channel_category_id = /*_ID categories provider/e-mail _*/
+			AND channel_category_id = /*_ID categories channel/e-mail _*/
 			LIMIT 1
 		) AS e_mail
 		, GROUP_CONCAT(CONCAT(category_short, ": ", identification) SEPARATOR "<br>") AS telefon

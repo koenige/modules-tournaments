@@ -137,7 +137,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 			, IF(gastspieler = "ja", 1, NULL) AS gastspieler
 			, (SELECT identification FROM contactdetails
 				WHERE contactdetails.contact_id = contacts.contact_id
-				AND channel_category_id = /*_ID categories provider/e-mail _*/
+				AND channel_category_id = /*_ID categories channel/e-mail _*/
 				LIMIT 1
 			) AS e_mail
 			, GROUP_CONCAT(category_short, ": ", identification SEPARATOR "<br>") AS telefon
@@ -286,7 +286,7 @@ function mf_tournaments_team_club_board_members($contact_ids) {
 			, YEAR(date_of_birth) AS geburtsjahr
 			, (SELECT identification FROM contactdetails
 				WHERE contactdetails.contact_id = contacts.contact_id
-				AND channel_category_id = /*_ID categories provider/e-mail _*/
+				AND channel_category_id = /*_ID categories channel/e-mail _*/
 				LIMIT 1
 			) AS e_mail
 			, GROUP_CONCAT(category_short, ": ", identification SEPARATOR "<br>") AS telefon

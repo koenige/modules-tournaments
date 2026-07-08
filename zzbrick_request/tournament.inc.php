@@ -301,7 +301,7 @@ function mod_tournaments_tournament_organisers($event, $internal) {
 		$sql_fields = ', GROUP_CONCAT(category, ": ", identification SEPARATOR "<br>") AS telefon
 		, (SELECT identification FROM contactdetails
 			WHERE contactdetails.contact_id = contacts.contact_id
-			AND channel_category_id = /*_ID categories provider/e-mail _*/
+			AND channel_category_id = /*_ID categories channel/e-mail _*/
 			LIMIT 1
 		) AS e_mail';
 		$sql_join = '

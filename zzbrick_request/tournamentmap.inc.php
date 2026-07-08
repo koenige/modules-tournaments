@@ -88,7 +88,7 @@ function mod_tournaments_tournamentmap_json($params, $settings, $event) {
 			, ok.identifier AS zps_code, contacts.identifier
 			, (SELECT identification FROM contactdetails
 				WHERE contactdetails.contact_id = contacts.contact_id
-				AND channel_category_id = /*_ID categories provider/website _*/
+				AND channel_category_id = /*_ID categories channel/website _*/
 				LIMIT 1) AS website
 		FROM contacts
 		LEFT JOIN contacts_contacts

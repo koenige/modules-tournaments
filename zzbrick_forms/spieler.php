@@ -157,7 +157,7 @@ $zz['sql'] = 'SELECT participations.*
 		) AS person
 		, (SELECT identification FROM contactdetails
 			WHERE contactdetails.contact_id = contacts.contact_id
-			AND channel_category_id = /*_ID categories provider/e-mail _*/
+			AND channel_category_id = /*_ID categories channel/e-mail _*/
 			LIMIT 1
 		) AS e_mail
 		, SUBSTRING(sex, 1, 1) AS sex
