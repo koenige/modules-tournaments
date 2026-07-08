@@ -10,7 +10,7 @@
  * @author Erik Kothe
  * @author Gustaf Mossakowski <gustaf@koenige.org>
  * @copyright Copyright © 2008 Erik Kothe
- * @copyright Copyright © 2008, 2012, 2014, 2016-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2008, 2012, 2014, 2016-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -199,7 +199,9 @@ function mod_tournament_make_liveresults_tournament($event) {
 						$line['auswaerts_wertung'] = $white;
 					}
 				}
-				$success = zzform_update('partien', $line, E_USER_NOTICE, ['msg' => wrap_text('Live result was not saved')]);
+				$success = zzform_update('partien', $line, E_USER_NOTICE, [
+					'_msg' => 'Live result was not saved'
+				]);
 				if ($success) $updated = true;
 			}
 		}

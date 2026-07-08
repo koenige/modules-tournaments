@@ -546,3 +546,7 @@ msgid ""
 msgstr ""
 "Diese Namenschild-Größe wird für den PDF-Export nicht unterstützt. Erlaubte "
 "Formate: %s."
+
+#: zzbrick_make/liveresults.inc.php
+msgid "Live result was not saved"
+msgstr "Das Live-Ergebnis wurde nicht gespeichert."
