@@ -4,7 +4,7 @@
  * tournaments module
  * move live PGN files
  *
- * Part of »Zugwzang Project«
+ * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
@@ -206,7 +206,7 @@ function mod_tournaments_make_filemove_concat_pgn($source) {
 function mod_tournaments_make_filemove_scandir($folder) {
 	$pgn_files = [];
 	if (!file_exists($folder)) {
-		wrap_error(wrap_text('Folder %s for file move does not exist.', ['values' => [$folder]]));
+		wrap_error(['Folder %s for file move does not exist.', ['values' => [$folder]]]);
 		return $pgn_files;
 	}
 	$files = scandir($folder);

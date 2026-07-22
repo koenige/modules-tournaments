@@ -104,10 +104,7 @@ function mod_tournaments_player($vars, $settings, $event) {
 			if (isset($game['heim_ergebnis_numerisch'])) $data['hat_punkte'] = true;
 		}
 		if (array_key_exists($game['runde_no'], $data['games']) AND $log_round_error) {
-			wrap_error(sprintf(
-				'There’s a player having played more than one game per round: Event %s, round %d, %s–%s'
-				, $event['identifier'], $game['runde_no'], $game['player_white'], $game['player_black']
-			));
+			wrap_error(['There’s a player having played more than one game per round: Event %s, round %d, %s–%s', ['values' => [$event['identifier'], $game['runde_no'], $game['player_white'], $game['player_black']]]]);
 			$log_round_error = false;
 		}
 		$data['games'][$game['runde_no']] = $game;

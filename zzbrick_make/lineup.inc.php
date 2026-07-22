@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2020-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2020-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -341,10 +341,10 @@ function mod_tournaments_make_lineup_round($data) {
 					}
 				}	
 				if ($error) {
-					wrap_error(sprintf(
-						'Konnte Partie nicht festlegen (Paarung-ID %d, Brett-Nr: %d)'
-						, $data['paarung_id'], $board_no
-					), E_USER_ERROR);
+					wrap_error([
+						'Could not set match (pairing ID %d, board no.: %d)',
+						['values' => [$data['paarung_id'], $board_no]]
+					], E_USER_ERROR);
 				}
 			}
 		}

@@ -25,11 +25,11 @@ msgid "Empty Tournament"
 msgstr ""
 
 #: templates/empty-tournament.template.txt
-msgid "Empty the tournament"
+msgid "In emergencies, if data has been imported incorrectly, an entire tournament can be deleted here: games, pairings, players (if added via import), teams."
 msgstr ""
 
 #: templates/empty-tournament.template.txt
-msgid "In emergencies, if data has been imported incorrectly, an entire tournament can be deleted here: games, pairings, players (if added via import), teams."
+msgid "These records were deleted:"
 msgstr ""
 
 #: templates/empty-tournament.template.txt
@@ -67,29 +67,11 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: templates/empty-tournament.template.txt
-msgid "These records were deleted:"
+msgid "Empty the tournament"
 msgstr ""
 
 #: templates/player.template.txt
 msgid "Write player message"
-msgstr ""
-
-#: templates/playermessage-form.template.txt
-msgid "messages were marked as sent."
-msgstr ""
-
-#: templates/playermessage-form.template.txt
-msgid "Mark messages sent before this date as distributed:"
-msgstr ""
-
-#: templates/playermessage-form.template.txt
-msgid "Mark messages as distributed"
-msgstr ""
-
-#: templates/playermessage-form.template.txt
-msgid ""
-"Struck-through messages are not yet approved (e-mail confirmation pending). "
-"They can – if desired – also be approved manually (Verified: “yes”)."
 msgstr ""
 
 #: templates/playermessage.template.txt
@@ -157,6 +139,26 @@ msgstr ""
 
 #: templates/playermessage.template.txt
 msgid "Back to"
+msgstr ""
+
+#: templates/playermessage-form.template.txt
+msgid "%s message was marked as sent."
+msgid_plural "%s messages were marked as sent."
+msgstr[] ""
+msgstr[] ""
+
+#: templates/playermessage-form.template.txt
+msgid "Mark messages sent before this date as distributed:"
+msgstr ""
+
+#: templates/playermessage-form.template.txt
+msgid "Mark messages as distributed"
+msgstr ""
+
+#: templates/playermessage-form.template.txt
+msgid ""
+"Struck-through messages are not yet approved (e-mail confirmation pending). "
+"They can – if desired – also be approved manually (Verified: “yes”)."
 msgstr ""
 
 #: templates/playermessage-mail.template.txt

@@ -461,13 +461,13 @@ function mod_tournaments_tournament_teams_compact(&$event, $internal) {
 		$score_category = wrap_db_fetch($sql);
 		foreach ($scores as $standing_id => $score) {
 			if (!array_key_exists($score_category['category_id'], $score)) {
-				wrap_error(wrap_text(
+				wrap_error([
 					'Missing score for category ID %d in tournament %s.',
 					['values' => [
 						$score_category['category_id'],
 						$event['identifier']
 					]]
-				));
+				]);
 				continue;
 			}
 			$event['teams'][$standings[$standing_id]]['score'] 

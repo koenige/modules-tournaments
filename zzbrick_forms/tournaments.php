@@ -33,8 +33,10 @@ if ($brick['data']['last_tournament_id']) {
 }
 
 if (!empty($zz['fields'][25]))
-	$zz['fields'][25]['explanation'] = wrap_text('Please only upload files for the entire tournament here.')
-	.'<br>'.sprintf(wrap_text('For rounds, there is a possibility to upload a PGN file in the <a href="%s">round overview</a>.'), '../runde/');
+	$zz['fields'][25]['explanation'] = [
+		['Please only upload files for the entire tournament here.'],
+		['For rounds, there is a possibility to upload a PGN file in the <a href="%s">round overview</a>.', ['values' => ['../runde/']]]
+	];
 
 $zz['where']['event_id'] = $brick['data']['event_id'];
 $zz['access'] = 'add_then_edit';

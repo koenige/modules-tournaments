@@ -253,9 +253,7 @@ $zz['fields'][50]['type'] = 'select';
 $zz['fields'][50]['enum'] = ['win', 'draw', 'none'];
 $zz['fields'][50]['enum_title'] = [wrap_text('Win'), wrap_text('Draw'), wrap_text('None')];
 $zz['fields'][50]['default'] = 'win';
-$zz['fields'][50]['explanation'] = wrap_text(
-	'Points awarded when a team receives a pairing-allocated bye (odd number of teams). “None” = pairing is not imported.'
-);
+$zz['fields'][50]['explanation'] = 'Points awarded when a team receives a pairing-allocated bye (odd number of teams). “None” = pairing is not imported.';
 $zz['fields'][50]['hide_in_list'] = true;
 $zz['fields'][50]['if'][2] = false;
 

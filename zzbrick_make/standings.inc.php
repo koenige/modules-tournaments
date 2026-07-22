@@ -135,8 +135,10 @@ function mod_tournaments_make_standings_round($vars) {
 	wrap_setting('log_filename', $event['identifier']);
 
 	if ($round_no > $event['runden']) {
-		wrap_error(sprintf('Tabellenstand-Update: Runde %d/%d nicht möglich (Termin %d/%s)',
-			$round_no, $event['runden'], $vars[0], $vars[1]), E_USER_WARNING);
+		wrap_error([
+			'Standings update: Round %d/%d not possible (date %d/%s)',
+			['values' => [$round_no, $event['runden'], $vars[0], $vars[1]]]
+		], E_USER_WARNING);
 		$page['text'] = sprintf('<p>%s</p>', wrap_text('Attempted to update a round that is higher than the maximum number of rounds.'));
 		$page['status'] = 503;
 		return $page;
@@ -171,10 +173,7 @@ function mod_tournaments_make_standings_round($vars) {
 
 	$handle = mod_tournaments_make_standings_round_lock($vars, true);
 	if (!$handle) {
-		wrap_error(sprintf(
-			'Standings update: parallel run blocked for %s round %d',
-			$event['identifier'], $round_no
-		), E_USER_NOTICE);
+		wrap_error(['Standings update: parallel run blocked for %s round %d', ['values' => [$event['identifier'], $round_no]]], E_USER_NOTICE);
 		$page['text'] = wrap_text(
 			'Standings update for tournament %s, round %d already in progress.',
 			['values' => [$event['identifier'], $round_no]]

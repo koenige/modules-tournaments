@@ -401,7 +401,7 @@ function mf_tournaments_clubs_to_federations($data, $field_name = 'club_contact_
 		} elseif ($contact['country_id'] AND array_key_exists($contact['country_id'], $federations_by_country)) {
 			$contacts[$contact_id] = array_merge($contact, $federations_by_country[$contact['country_id']]);
 		} else {
-			wrap_error(wrap_text('Unable to get federation for contact ID %d', ['values' => $contact_id]));
+			wrap_error(['Unable to get federation for contact ID %d', ['values' => $contact_id]]);
 		}
 		unset($contacts[$contact_id]['contact_id']);
 	}

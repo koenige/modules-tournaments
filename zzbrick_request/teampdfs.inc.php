@@ -69,7 +69,7 @@ function mod_tournaments_teampdfs($params, $settings, $event) {
 	$command = sprintf($command, $file['name'], implode('" "', $pdfs));
 	exec($command);
 	if (!file_exists($file['name'])) {
-		wrap_error(sprintf('PDF für %s konnte nicht erstellt werden.', $event['event']), E_USER_ERROR);
+		wrap_error(['Could not create PDF for %s', ['values' => [$event['event']]]], E_USER_ERROR);
 	}
 	wrap_send_file($file);
 }
@@ -407,7 +407,6 @@ function mod_tournaments_teampdfs_bookings(&$pdf, $team, $settings) {
 			// current pos + height of normal cell  + height of remarks cell times rows
 			$y_pos_bottom = $pdf->GetY() + 14 + 10 * $rows;
 			if ($y_pos_bottom >= $settings['page_height'] - $settings['margin_top_bottom']) {
-				wrap_error('ADD PAGE');
 				$pdf->AddPage();
 			} 			
 		}

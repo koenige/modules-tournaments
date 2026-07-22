@@ -65,9 +65,9 @@ function mod_tournaments_make_standings_calculate_single($event, $round_no) {
 	];
 
 	if (empty($scores)) {
-		wrap_error(wrap_text(
+		wrap_error([
 			'No (possible) scores specified for standings.',
-		), E_USER_ERROR);
+		], E_USER_ERROR);
 	}
 	foreach ($scores as $index => $values) {
 		if (in_array($index, $null_punkte_bei_null)) {
@@ -144,7 +144,7 @@ function mod_tournaments_make_standings_write_single($event_id, $round_no, $tabe
 		// Hauptdatensatz
 		// debug
 		if (!array_key_exists('person_id', $stand)) {
-			wrap_error('TABELLENSTAND '.json_encode($stand));
+			wrap_error(['Found no person for this standing record', ['data' => $stand]]);
 			continue;
 		}
 		$line = [

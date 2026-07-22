@@ -82,8 +82,10 @@ msgid "Write player message"
 msgstr "Brett-Nachricht schreiben"
 
 #: templates/playermessage-form.template.txt
-msgid "messages were marked as sent."
-msgstr "Nachrichten wurden als versendet markiert."
+msgid "%s message was marked as sent."
+msgid_plural "%s messages were marked as sent."
+msgstr[0] "%s Nachricht wurde als versendet markiert."
+msgstr[1] "%s Nachrichten wurden als versendet markiert."
 
 #: templates/playermessage-form.template.txt
 msgid "Mark messages sent before this date as distributed:"

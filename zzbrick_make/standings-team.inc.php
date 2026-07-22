@@ -99,7 +99,7 @@ function mod_tournaments_make_standings_team($event) {
 				$scores[$category_id] = wrap_db_fetch($sql, 'team_id', 'key/value');
 				break;
 			}
-			wrap_error(wrap_text('Score %s not implemented.', ['values' => [$score_category['path']]]), E_USER_WARNING);
+			wrap_error(['Score %s not implemented.', ['values' => [$score_category['path']]]], E_USER_WARNING);
 		}
 
 		if ($score_category['display'] === 'always') {
@@ -133,10 +133,10 @@ function mod_tournaments_make_standings_team($event) {
 
 	foreach ($standings as $stand) {
 		if (!array_key_exists('team_id', $stand)) {
-			wrap_error(wrap_text(
+			wrap_error([
 				'Tournament with event_id %d has invalid standings ID %d, field team_id is empty.',
 				['values' => [$event['event_id'], $stand['standing_id']]]
-			));
+			]);
 			continue;
 		}
 		$unwanted_keys = [

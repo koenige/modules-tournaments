@@ -22,7 +22,7 @@ if (!empty($brick['data']['event_id'])) {
 	$zz['sql'] = wrap_edit_sql($zz['sql'], 'WHERE', sprintf('event_id IN (%s)', implode(',', $event_ids)));
 	$zz['page']['dont_show_title_as_breadcrumb'] = true;
 	$zz['page']['breadcrumbs'][]['title'] = wrap_text($zz['title']);
-	$zz['title'] = wrap_text($zz['title']).': <br>'.$brick['data']['series_short'].' '.$brick['data']['year'];
+	$zz['subtitle']['text'] = $brick['data']['series_short'].' '.$brick['data']['year'];
 	$zz['vars']['event'] = $brick['data'];
 }
 

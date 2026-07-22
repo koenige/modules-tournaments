@@ -11,7 +11,7 @@
 <div>
 <hr>
 %%% if messages_sent %%%
-<p class="error">%%% item messages_sent %%% %%% text messages were marked as sent. %%%</p>
+<p class="error">%%% text "%s messages were marked as sent." messages_sent %%%</p>
 %%% endif %%%
 
 <form method="POST" action="">

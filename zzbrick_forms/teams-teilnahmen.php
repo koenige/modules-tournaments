@@ -182,7 +182,7 @@ $zz['fields'][24]['fields'][2]['key_field_name'] = 'contact_id';
 $zz['fields'][24]['subselect']['sql'] = 'SELECT contact_id, YEAR(date_of_birth)
 	FROM persons';
 
-$zz['fields'][23]['title'] = 'E-Mail';
+$zz['fields'][23]['title'] = 'E-mail';
 $zz['fields'][23]['type'] = 'subtable';
 $zz['fields'][23]['hide_in_form'] = true;
 $zz['fields'][23]['table'] = 'contactdetails';
