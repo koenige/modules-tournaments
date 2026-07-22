@@ -495,52 +495,52 @@ msgstr "immer"
 msgid "On tie"
 msgstr "bei Gleichstand"
 
-#: zzform/export-pdf-teilnehmerschilder.inc.php
+#: zzform_export/pdf-name-tags.inc.php
 msgid "No participants were selected for this export."
 msgstr "Für diesen Export wurden keine Teilnehmer ausgewählt."
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "No player messages were selected for this export."
 msgstr "Für diesen Export wurden keine Brett-Nachrichten ausgewählt."
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "No verified player messages are available for this export."
 msgstr ""
 "Es sind keine bestätigten Brett-Nachrichten für diesen Export verfügbar."
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "Event context is missing for this export."
 msgstr "Für diesen Export fehlt der Termin-Kontext."
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "From: %s <%s>"
 msgstr "Von: %s <%s>"
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "Date: %s %s"
 msgstr "Datum: %s %s"
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "%s Board %s (%s)"
 msgstr "%s Brett %s (%s)"
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "%s %s Player Messages Round %d.pdf"
 msgstr "%s %s Brett-Nachrichten Runde %d.pdf"
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "black"
 msgstr "schwarz"
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "white"
 msgstr "weiß"
 
-#: zzform/export-pdf-teilnehmerschilder.inc.php
+#: zzform_export/pdf-name-tags.inc.php
 msgid "No name tags are available for these people."
 msgstr "Es gibt keine Teilnehmerschilder für diese Personen."
 
-#: zzform/export-pdf-teilnehmerschilder.inc.php
+#: zzform_export/pdf-name-tags.inc.php
 msgid ""
 "This name tag size is not supported for PDF export. Allowed sizes are: %s."
 msgstr ""

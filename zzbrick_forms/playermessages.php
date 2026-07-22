@@ -74,4 +74,4 @@ $zz['filter'][2]['identifier'] = 'federation';
 $zz['filter'][2]['type'] = 'list';
 $zz['filter'][2]['where'] = 'federations.contact_id';
 
-$zz['export'][] = 'PDF Brettnachrichten';
+$zz['export']['pdf-player-messages'] = 'Brettnachrichten';

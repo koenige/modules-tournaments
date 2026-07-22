@@ -4,7 +4,7 @@
  * tournaments module
  * export player messages as PDF
  *
- * Part of »Zugwzang Project«
+ * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
@@ -18,7 +18,7 @@
  *
  * @param array $ops
  */
-function mf_tournaments_export_pdf_brettnachrichten($ops) {
+function mf_tournaments_export_pdf_player_messages($ops) {
 	$data = mf_tournaments_playermessages_export_data($ops);
 	mf_tournaments_playermessages_export_pdf($data);
 }
@@ -104,6 +104,7 @@ function mf_tournaments_playermessages_export_pdf($data) {
 	$pdf->FontThai = 'NotoSansThai-Regular';
 	$pdf->SetFont('FiraSans-Regular', '', 11);
 	$pdf->SetMargins(15, 15);
+	$pdf->SetAutoPageBreak(true, 8);
 
 	$first = reset($data);
 	$round_no = $first['round_no'];

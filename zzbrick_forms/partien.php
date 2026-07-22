@@ -123,7 +123,7 @@ $zz['footer']['text'] = wrap_template('link-rel-nav');
 
 if (count($brick['vars']) === 3) {
 	// Einzelturnier
-	$zz['export'][] = 'PDF Ergebniszettel';
+	$zz['export']['pdf-result-sheets'] = 'Ergebniszettel';
 	$zz['vars']['event'] = $brick['data'];
 }
 

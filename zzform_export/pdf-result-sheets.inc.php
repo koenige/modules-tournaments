@@ -2,9 +2,9 @@
 
 /**
  * tournaments module
- * export results notes as PDF
+ * export result sheets as PDF
  *
- * Part of »Zugwzang Project«
+ * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
@@ -23,11 +23,11 @@
  * Bestätigung
  * @param array $ops
  */
-function mf_tournaments_export_pdf_ergebniszettel($ops) {
+function mf_tournaments_export_pdf_result_sheets($ops) {
 	$event = wrap_static('zzform', 'event');
 	
 	// Feld-IDs raussuchen
-	$nos = mf_tournaments_export_pdf_ergebniszettel_nos($ops['output']['head']);
+	$nos = mf_tournaments_export_pdf_result_sheets_nos($ops['output']['head']);
 	
 	wrap_lib('tfpdf');
 
@@ -108,12 +108,11 @@ function mf_tournaments_export_pdf_ergebniszettel($ops) {
 		$k++;
 		$i++;
 	}
-	$folder = wrap_setting('tmp_dir').'/ergebniszettel/'.$event['identifier'];
+	$folder = wrap_setting('tmp_dir').'/tournaments/'.$event['identifier'];
 	wrap_mkdir($folder);
-	if (file_exists($folder.'/runde-'.$runde_no.'.pdf')) {
-		unlink($folder.'/runde-'.$runde_no.'.pdf');
-	}
-	$file['name'] = $folder.'/runde-'.$runde_no.'.pdf';
+	$file['name'] = $folder.'/results-round-'.$runde_no.'.pdf';
+	if (file_exists($file['name']))
+		unlink($file['name']);
 	$file['send_as'] = $event['year'].' '.$event['series_short'].' Ergebniszettel '.$runde_no.'.pdf';
 	$file['etag_generate_md5'] = true;
 
@@ -128,7 +127,7 @@ function mf_tournaments_export_pdf_ergebniszettel($ops) {
  * @param array $head = $ops['output']['head']
  * @return array $nos
  */
-function mf_tournaments_export_pdf_ergebniszettel_nos($head) {
+function mf_tournaments_export_pdf_result_sheets_nos($head) {
 	$fields = [
 		'runde_no', 'brett_no', 'weiss_person_id', 'weiss_ergebnis',
 		'schwarz_person_id', 'event_id'

@@ -436,51 +436,51 @@ msgstr ""
 msgid "On tie"
 msgstr ""
 
-#: zzform/export-pdf-teilnehmerschilder.inc.php
+#: zzform_export/pdf-name-tags.inc.php
 msgid "No participants were selected for this export."
 msgstr ""
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "No player messages were selected for this export."
 msgstr ""
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "No verified player messages are available for this export."
 msgstr ""
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "Event context is missing for this export."
 msgstr ""
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "From: %s <%s>"
 msgstr ""
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "Date: %s %s"
 msgstr ""
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "%s Board %s (%s)"
 msgstr ""
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "%s %s Player Messages Round %d.pdf"
 msgstr ""
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "black"
 msgstr ""
 
-#: zzform/export-pdf-brettnachrichten.inc.php
+#: zzform_export/pdf-player-messages.inc.php
 msgid "white"
 msgstr ""
 
-#: zzform/export-pdf-teilnehmerschilder.inc.php
+#: zzform_export/pdf-name-tags.inc.php
 msgid "No name tags are available for these people."
 msgstr ""
 
-#: zzform/export-pdf-teilnehmerschilder.inc.php
+#: zzform_export/pdf-name-tags.inc.php
 msgid ""
 "This name tag size is not supported for PDF export. Allowed sizes are: %s."
 msgstr ""

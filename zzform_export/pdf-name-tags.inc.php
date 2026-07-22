@@ -23,7 +23,7 @@
  * SHO
  * @param array $ops
  */
-function mf_tournaments_export_pdf_teilnehmerschilder($ops) {
+function mf_tournaments_export_pdf_name_tags($ops) {
 	wrap_include('pdf', 'tournaments');
 
 	list($event, $data) = mf_tournaments_nametag_data($ops);
@@ -280,12 +280,11 @@ function mf_tournaments_nametag_pdf($event, $data) {
 		}
 		$i++;
 	}
-	$folder = wrap_setting('tmp_dir').'/tournaments/schilder/'.$event['identifier'];
+	$folder = wrap_setting('tmp_dir').'/tournaments/'.$event['identifier'];
 	wrap_mkdir($folder);
-	if (file_exists($folder.'/teilnehmerschilder.pdf')) {
-		unlink($folder.'/teilnehmerschilder.pdf');
-	}
-	$file['name'] = $folder.'/teilnehmerschilder.pdf';
+	$file['name'] = $folder.'/name-tags.pdf';
+	if (file_exists($file['name']))
+		unlink($file['name']);
 	$file['send_as'] = $event['year'].' '.$event['series_short'].' Teilnehmerschilder.pdf';
 	$file['etag_generate_md5'] = true;
 

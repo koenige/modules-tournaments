@@ -4,7 +4,7 @@
  * tournaments module
  * export participant data as PDF for place cards
  *
- * Part of »Zugwzang Project«
+ * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
@@ -14,7 +14,7 @@
 
 
 /**
- * Ausgabe von Teilnehmerschildern
+ * export of place cards
  *
  * Deutsche Einzelmeisterschaft 2017 Willingen
  * FM Vorname Nachname
@@ -23,7 +23,7 @@
  * SHO
  * @param array $ops
  */
-function mf_tournaments_export_pdf_tischkarten($ops) {
+function mf_tournaments_export_pdf_place_cards($ops) {
 	wrap_lib('tfpdf');
 	wrap_include('pdf', 'tournaments');
 
@@ -37,8 +37,8 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	
 	// get data for cards
 	switch ($ops['output']['head'][0]['field_name']) {
-		case 'participation_id': $data = mf_tournaments_export_pdf_tischkarten_single($ops); break;
-		case 'team_id': $data = mf_tournaments_export_pdf_tischkarten_team($ops); break;
+		case 'participation_id': $data = mf_tournaments_export_pdf_place_cards_single($ops); break;
+		case 'team_id': $data = mf_tournaments_export_pdf_place_cards_team($ops); break;
 		default: wrap_quit(404);
 	}
 	if (!$data) wrap_quit(404, 'Es gibt keine Tischkarten für diese Personen.');
@@ -141,12 +141,11 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
 	}
 
 	// write PDF to cache folder, send
-	$folder = wrap_setting('tmp_dir').'/schilder/'.$event['identifier'];
+	$folder = wrap_setting('tmp_dir').'/tournaments/'.$event['identifier'];
 	wrap_mkdir($folder);
-	if (file_exists($folder.'/tischkarten.pdf')) {
-		unlink($folder.'/tischkarten.pdf');
-	}
-	$file['name'] = $folder.'/tischkarten.pdf';
+	$file['name'] = $folder.'/place-cards.pdf';
+	if (file_exists($file['name']))
+		unlink($file['name']);
 	$file['send_as'] = $event['year'].' '.$event['series_short'].' Tischkarten.pdf';
 	$file['etag_generate_md5'] = true;
 
@@ -160,7 +159,7 @@ function mf_tournaments_export_pdf_tischkarten($ops) {
  * @param array $ops
  * @return array
  */
-function mf_tournaments_export_pdf_tischkarten_single($ops) {	
+function mf_tournaments_export_pdf_place_cards_single($ops) {	
 	// Feld-IDs raussuchen
 	$ids = [];
 	foreach ($ops['output']['head'] as $index => $field) {
@@ -241,7 +240,7 @@ function mf_tournaments_parameters(&$line, $keys) {
  * @param array $ops
  * @return array
  */
-function mf_tournaments_export_pdf_tischkarten_team($ops) {
+function mf_tournaments_export_pdf_place_cards_team($ops) {
 	$team_ids = [];
 	foreach ($ops['output']['rows'] as $row) {
 		$team_ids[] = $row['0']['value'];
