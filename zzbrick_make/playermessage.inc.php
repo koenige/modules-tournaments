@@ -4,7 +4,7 @@
  * tournaments module
  * send message to player during tournament
  *
- * Part of »Zugwzang Project«
+ * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Erik Kothe <kontakt@erikkothe.de>

@@ -4,7 +4,7 @@
  * tournaments module
  * empty a tournament of games, pairing, players and teams
  *
- * Part of »Zugwzang Project«
+ * Part of »Zugzwang Project«
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
