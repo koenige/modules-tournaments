@@ -100,15 +100,16 @@ unset($zz['fields'][5]['unless']['export_mode']['subselect']['field_suffix'][0])
 $zz['fields'][5]['unless']['export_mode']['subselect']['field_suffix'][1] = '<br>';
 
 $zz['setting']['zzform_show_list_while_edit'] = false;
+$zz['record']['add'] = false;
 $zz['record']['delete'] = false;
 $zz['list']['merge'] = false;
-$zz['record']['add'] = false;
+
 $zz['page']['dont_show_title_as_breadcrumb'] = true;
-
-$zz['page']['breadcrumbs'][] = ['url_path' => '../', 'title' => $organisation];
 $zz['page']['breadcrumbs'][]['title'] = 'Adressen';
-
-$zz['title'] = '<a href="../">'.$type.' '.$organisation.'</a>: Adressen
-	<br><a href="../../">'.$brick['data']['event'].' '.wrap_date($brick['data']['duration']).'</a> <em>in '.$brick['data']['place'].'</em>';
-
 $zz['page']['referer'] = '../';
+
+$zz['title'] = '<a href="../">'.$type.' '.$organisation.'</a>: Adressen';
+$data = $brick['data'];
+$data['internal'] = 1;
+$data['identifier'] = $brick['data']['event_identifier'];
+$zz['subtitle']['text'] = wrap_template('event-subtitle', $data);
