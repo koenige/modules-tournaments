@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2014, 2016-2018, 2021-2024 Gustaf Mossakowski
+ * @copyright Copyright © 2014, 2016-2018, 2021-2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -19,9 +19,6 @@ if (!in_array($brick['data']['meldung'], ['offen', 'teiloffen']))
 	wrap_quit(403, 'Das Team wurde bereits abschließend gemeldet. Änderungen sind nicht mehr möglich.');
 
 $zz = zzform_include('teams');
-
-$brick['page']['title'] .= 'Reisedaten';
-$brick['page']['breadcrumbs'][]['title'] = 'Reisedaten';
 
 $zz['footer']['text'] = wrap_template('team-reisedaten', $brick['data']);
 $brick['data']['head'] = true;
