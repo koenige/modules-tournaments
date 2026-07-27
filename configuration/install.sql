@@ -275,17 +275,27 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'tournaments_identifiers', 'tournament_identifier_id', 'identifier_category_id', 'no-delete');
 
 
--- turniere_status --
-CREATE TABLE `turniere_status` (
-  `turnier_status_id` int unsigned NOT NULL AUTO_INCREMENT,
+-- tournaments_categories --
+CREATE TABLE `tournaments_categories` (
+  `tournament_category_id` int unsigned NOT NULL AUTO_INCREMENT,
   `tournament_id` int unsigned NOT NULL,
-  `status_category_id` int unsigned NOT NULL,
-  PRIMARY KEY (`turnier_status_id`),
-  UNIQUE KEY `turnier_id_status_kategorie_id` (`tournament_id`,`status_category_id`)
+  `category_id` int unsigned NOT NULL,
+  `property` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `type_category_id` int unsigned NOT NULL,
+  `sequence` tinyint unsigned DEFAULT NULL,
+  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`tournament_category_id`),
+  UNIQUE KEY `tournament_id_category_id` (`tournament_id`,`category_id`),
+  KEY `category_id` (`category_id`),
+  KEY `type_category_id` (`type_category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'turniere_status', 'turnier_status_id', 'tournament_id', 'delete');
-INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'turniere_status', 'turnier_status_id', 'status_category_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'tournaments', 'tournament_id', (SELECT DATABASE()), 'tournaments_categories', 'tournament_category_id', 'tournament_id', 'delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'tournaments_categories', 'tournament_category_id', 'category_id', 'no-delete');
+INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'tournaments_categories', 'tournament_category_id', 'type_category_id', 'no-delete');
+
+INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `parameters`, `sequence`, `last_update`) VALUES ('Tournaments', NULL, NULL, 'tournaments', '&alias=tournaments&use_subtree=1', NULL, NOW());
+INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `parameters`, `sequence`, `last_update`) VALUES ('Status', NULL, (SELECT category_id FROM categories c WHERE path = 'tournaments'), 'tournaments/status', '&alias=tournaments/status&own_type_category=1&form_display=set&min_records=1&max_records=10', NULL, NOW());
 
 
 -- tournaments_scores --

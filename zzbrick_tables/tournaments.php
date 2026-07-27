@@ -316,23 +316,17 @@ $zz['fields'][41]['hide_in_form'] = true;
 $zz['fields'][41]['hide_zeros'] = true;
 $zz['fields'][41]['exclude_from_search'] = true;
 
-$zz['fields'][43] = zzform_include('turniere-status');
-$zz['fields'][43]['title'] = 'Status';
-$zz['fields'][43]['type'] = 'subtable';
-$zz['fields'][43]['min_records'] = 1;
-$zz['fields'][43]['max_records'] = 10;
-$zz['fields'][43]['form_display'] = 'set';
-$zz['fields'][43]['fields'][2]['type'] = 'foreign_key';
-$zz['fields'][43]['sql'] .= $zz['fields'][43]['sqlorder'];
-$zz['fields'][43]['subselect']['sql'] = 'SELECT tournament_id, category, category_short
-	FROM /*_PREFIX_*/turniere_status
-	LEFT JOIN /*_PREFIX_*/categories
-		ON /*_PREFIX_*/categories.category_id = /*_PREFIX_*/turniere_status.status_category_id';
-$zz['fields'][43]['subselect']['field_prefix'][0] = '<abbr title="';
-$zz['fields'][43]['subselect']['field_suffix'][0] = '">';
-$zz['fields'][43]['subselect']['field_suffix'][1] = '</abbr>';
-$zz['fields'][43]['subselect']['concat_rows'] = ' ';
-$zz['fields'][43]['if']['add']['hide_in_form'] = true;
+// tournaments_categories
+mf_default_categories_subtable($zz, 'tournaments', 'tournaments', 43);
+if (!empty($zz['fields'][43])) {
+	unset($zz['fields'][43]['unless']['export_mode']['subselect']['prefix']);
+	unset($zz['fields'][43]['unless']['export_mode']['subselect']['suffix']);
+	$zz['fields'][43]['subselect']['field_prefix'][0] = '<abbr title="';
+	$zz['fields'][43]['subselect']['field_suffix'][0] = '">';
+	$zz['fields'][43]['subselect']['field_suffix'][1] = '</abbr>';
+	$zz['fields'][43]['subselect']['concat_rows'] = ' ';
+	$zz['fields'][43]['if']['add']['hide_in_form'] = true;
+}
 
 $zz['fields'][47]['field_name'] = 'fehler';
 $zz['fields'][47]['type'] = 'memo';
