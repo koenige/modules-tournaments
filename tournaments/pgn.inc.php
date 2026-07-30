@@ -69,13 +69,14 @@ function mf_tournaments_pgn_db($event_id, $round_no = false, $brett_no = false, 
 			, schwarz_fide_id.identifier AS BlackFideId
 			, tournaments.runden AS EventRounds
 			, CONCAT(
-				IF (LOCATE("pgn=", turnierformen.parameters),
-					CONCAT(SUBSTRING_INDEX(SUBSTRING_INDEX(turnierformen.parameters, "pgn=", -1), "&", 1), "-"), ""
+				IF(LOCATE("chess_pgn_event_type=", turnierformen.parameters),
+					CONCAT(SUBSTRING_INDEX(SUBSTRING_INDEX(turnierformen.parameters, "chess_pgn_event_type=", -1), "&", 1), " "), ""
 				),
-				SUBSTRING_INDEX(SUBSTRING_INDEX(modi.parameters, "pgn=", -1), "&", 1)
+				SUBSTRING_INDEX(SUBSTRING_INDEX(modi.parameters, "chess_pgn_event_type=", -1), "&", 1)
 			) AS EventType
-			, IF (LOCATE("pgn=", partiestatus.parameters),
-				SUBSTRING_INDEX(SUBSTRING_INDEX(partiestatus.parameters, "pgn=", -1), "&", 1), ""
+			, IF(LOCATE("chess_pgn_termination=", partiestatus.parameters),
+				SUBSTRING_INDEX(SUBSTRING_INDEX(partiestatus.parameters, "chess_pgn_termination=", -1), "&", 1),
+				NULL
 			) AS Termination
 			, paarungen.tisch_no AS `Table`
 		FROM partien
