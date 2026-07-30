@@ -214,7 +214,8 @@ msgid "Pairings"
 msgstr ""
 
 #: zzbrick_forms/rounds.inc.php
-#: zzbrick_tables/standings.php
+#: zzbrick_tables/standings.php:16
+#: zzbrick_tables/tournaments.php:183
 msgid "Standings"
 msgstr ""
 
@@ -392,6 +393,10 @@ msgstr ""
 msgid "Tournament Identifiers"
 msgstr ""
 
+#: zzbrick_tables/tournaments.php:186
+msgid "Additional standings as filters; enter as a comma-separated list"
+msgstr ""
+
 #: zzbrick_tables/tournaments.php
 msgid "Score categories"
 msgstr ""
@@ -416,6 +421,10 @@ msgstr ""
 
 #: zzbrick_tables/tournaments.php
 msgid "None"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:318
+msgid "Parameters"
 msgstr ""
 
 #: zzbrick_tables/tournaments-scores.php

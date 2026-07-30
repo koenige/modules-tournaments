@@ -1,0 +1,52 @@
+{
+    "additional-standings": [
+        {
+            "title": "Zusätzliche Tabellenstände",
+            "language": "de",
+            "package": "tournaments",
+            "filename": "help/Additional Standings-de.md",
+            "identifier": "additional-standings",
+            "type": "md",
+            "audience": [
+                "editor"
+            ]
+        },
+        {
+            "title": "Additional Standings",
+            "language": "en",
+            "package": "tournaments",
+            "filename": "help/Additional Standings.md",
+            "identifier": "additional-standings",
+            "type": "md",
+            "audience": [
+                "editor"
+            ]
+        }
+    ],
+    "tournaments-parameters": [
+        {
+            "title": "Tournaments parameters",
+            "language": "en",
+            "package": "tournaments",
+            "identifier": "tournaments-parameters",
+            "type": "parameters",
+            "audience": [
+                "editor"
+            ],
+            "table": "tournaments",
+            "parameter_field": "urkunde_parameter"
+        },
+        {
+            "title": "Turniere-Parameter",
+            "language": "de",
+            "package": "tournaments",
+            "identifier": "tournaments-parameters",
+            "type": "parameters",
+            "audience": [
+                "editor"
+            ],
+            "table": "tournaments",
+            "parameter_field": "urkunde_parameter"
+        }
+    ]
+}

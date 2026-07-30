@@ -170,11 +170,11 @@ $zz['fields'][28]['subselect']['sql'] = 'SELECT tournament_id, category_short
 	LEFT JOIN categories
 		ON categories.category_id = tournaments_identifiers.identifier_category_id';
 
-$zz['fields'][27]['title'] = 'Tabellenstände';
+$zz['fields'][27]['title'] = 'Standings';
 $zz['fields'][27]['hide_in_list'] = true;
 $zz['fields'][27]['field_name'] = 'tabellenstaende';
-$zz['fields'][27]['explanation'] = 'Zusätzliche Tabellenstände als Filter, Eingabe als Liste mit Kommas
- (<a href="/hilfe/anleitung/#tabellenstaende">Anleitung</a>)';
+$zz['fields'][27]['explanation'] = 'Additional standings as filters; enter as a comma-separated list';
+$zz['fields'][27]['help'] = 'tournaments/Additional Standings';
 $zz['fields'][27]['separator'] = true;
 
 if (wrap_setting('tournaments_upload_pgn')) {
@@ -294,12 +294,11 @@ $zz['fields'][46]['default'] = 'nein';
 $zz['fields'][46]['hide_in_list'] = true;
 $zz['fields'][46]['separator'] = true;
 
-$zz['fields'][36]['title'] = 'Parameter';
+$zz['fields'][36]['title'] = 'Parameters';
 $zz['fields'][36]['field_name'] = 'urkunde_parameter';
 $zz['fields'][36]['type'] = 'parameter';
 $zz['fields'][36]['rows'] = 3;
 $zz['fields'][36]['hide_in_list'] = true;
-$zz['fields'][36]['explanation'] = 'Eingabe im query string-Format: parameter=wert&amp;parameter2=wert (<a href="/hilfe/anleitung/#parameter">Anleitung</a>)';
 $zz['fields'][36]['separator'] = true;
 
 $zz['fields'][40]['field_name'] = 'teams';

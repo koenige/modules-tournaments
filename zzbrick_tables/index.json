@@ -1,0 +1,42 @@
+{
+    "anmerkungen": {
+        "title": "Remarks"
+    },
+    "paarungen": {
+        "title": "Pairings"
+    },
+    "partien": {
+        "title": "Games"
+    },
+    "playermessages": {
+        "title": "Player Messages"
+    },
+    "standings": {
+        "title": "Standings"
+    },
+    "standings_scores": {
+        "title": "Scores"
+    },
+    "teams": {
+        "title": "Teams"
+    },
+    "tournaments": {
+        "title": "Tournaments",
+        "parameter_field": "urkunde_parameter",
+        "audience": [
+            "editor"
+        ]
+    },
+    "tournaments_categories": {
+        "title": "Categories per Tournament"
+    },
+    "tournaments_identifiers": {
+        "title": "Tournament Identifiers"
+    },
+    "tournaments_scores": {
+        "title": "Tournament scores"
+    },
+    "turniere_bedenkzeiten": {
+        "title": "Tournament time controls"
+    }
+}
