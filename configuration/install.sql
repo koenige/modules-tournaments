@@ -195,6 +195,9 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'contacts', 'contact_id', (SELECT DATABASE()), 'teams', 'team_id', 'club_contact_id', 'no-delete');
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'events', 'event_id', (SELECT DATABASE()), 'teams', 'team_id', 'event_id', 'no-delete');
 
+INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `parameters`, `sequence`, `last_update`) VALUES ('Tournament Uploads', NULL, NULL, 'tournament-uploads', '&alias=tournament-uploads', NULL, NOW());
+INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `parameters`, `sequence`, `last_update`) VALUES ('Registration form', 'Upload the completed, scanned registration form', /*_ID categories tournament-uploads _*/, 'tournament-uploads/registration-form', '&alias=tournament-uploads/registration-form&tournaments_field_name=registration-form&optional=1', 1, NOW());
+
 
 -- tournaments --
 CREATE TABLE `tournaments` (

@@ -80,7 +80,7 @@ $zz['fields'][14]['hide_in_list'] = false;
 $zz['fields'][15]['hide_in_list'] = false;
 $zz['fields'][35]['hide_in_list'] = false;
 
-if (!$brick['data']['gastspieler']) unset($zz['fields'][30]); // keine Gastspielgenehmigung
+mf_tournaments_upload_fields($zz, 50, $brick['data']);
 
 // Einschränkungen, Admin + Gremien + Webmaster dürfen alles
 if (!brick_access_rights('Gremien') AND brick_access_rights(['Technik', 'Organisator'], $brick['data']['event_rights'])) {

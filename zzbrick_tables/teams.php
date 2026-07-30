@@ -314,41 +314,17 @@ $zz['fields'][27]['if']['insert']['default'] = date('Y-m-d H:i:s');
 $zz['fields'][27]['export'] = false;
 $zz['fields'][27]['merge_ignore'] = true;
 
-$zz['fields'][28]['title'] = 'Meldebogen';
-$zz['fields'][28]['field_name'] = 'meldebogen';
-$zz['fields'][28]['dont_show_missing'] = true;
-$zz['fields'][28]['type'] = 'upload_image';
-$zz['fields'][28]['path'] = [
-	'root' => wrap_setting('tournaments_teams_dir').'/',
-	'field1' => 'identifier',
-	'string1' => '.',
-	'string2' => 'pdf'
-];
-$zz['fields'][28]['input_filetypes'] = ['pdf'];
-$zz['fields'][28]['path_web'] = [
-	'area' => 'tournaments_team_file',
-	'fields' => ['identifier']
-];
-$zz['fields'][28]['optional_image'] = true;
-$zz['fields'][28]['explanation'] = 'Hochladen des ausgefüllten, gescannten Meldebogens';
-$zz['fields'][28]['image'][0]['title'] = 'pdf';
-$zz['fields'][28]['image'][0]['field_name'] = 'pdf';
-$zz['fields'][28]['list_append_next'] = true;
-$zz['fields'][28]['hide_in_list'] = true;
-
-$zz['fields'][29] = $zz['fields'][28];
-$zz['fields'][29]['title'] = 'Ehrenkodex';
-$zz['fields'][29]['field_name'] = 'ehrenkodex';
-$zz['fields'][29]['explanation'] = 'Hochladen des ausgefüllten, gescannten Ehrenkodexes<br>(Vorlage: <a href="https://www.deutsche-schachjugend.de/fileadmin/user_upload/Ehrenkodex.pdf">Ehrenkodex der Deutschen Sportjugend</a>)';
-$zz['fields'][29]['path']['string1'] = '-ehrenkodex.';
-$zz['fields'][29]['path_web']['strings_append'] = ['-ehrenkodex'];
-
-$zz['fields'][30] = $zz['fields'][28];
-$zz['fields'][30]['title'] = 'Gastspielgenehmigung';
-$zz['fields'][30]['field_name'] = 'gastspielgenehmigung';
-$zz['fields'][30]['explanation'] = 'Hochladen der ausgefüllten, gescannten Gastspielgenehmigung';
-$zz['fields'][30]['path']['string1'] = '-gast.';
-$zz['fields'][30]['path_web']['strings_append'] = ['-gast'];
+// Uploads
+$zz['fields'][50] = [];
+$zz['fields'][51] = [];
+$zz['fields'][52] = [];
+$zz['fields'][53] = [];
+$zz['fields'][54] = [];
+$zz['fields'][55] = [];
+$zz['fields'][56] = [];
+$zz['fields'][57] = [];
+$zz['fields'][58] = [];
+$zz['fields'][59] = [];
 
 $zz['fields'][20]['field_name'] = 'last_update';
 $zz['fields'][20]['type'] = 'timestamp';
