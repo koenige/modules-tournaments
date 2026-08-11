@@ -95,8 +95,9 @@ function mf_tournaments_nametag_data($ops) {
 			, sex
 			, t_verein AS club
 			, CONCAT(teams.team, IFNULL(CONCAT(" ", teams.team_no), "")) AS team
-			, usergroups.usergroup
+			, usergroups.usergroup_id
 			, usergroup_categories.category AS usergroup_category
+			, usergroups.identifier AS usergroup_identifier
 			, role
 			, federations.contact_abbr AS federation_abbr
 			, IFNULL(participations.club_contact_id, teams.club_contact_id) AS club_contact_id
@@ -196,7 +197,7 @@ function mf_tournaments_nametag_pdf($event, $data) {
 
 	$i = 0;
 	foreach ($data as $line) {
-		$line['graphic'] = mf_tournaments_pdf_graphic([$line['role'], $line['usergroup']], $card);
+		$line['graphic'] = mf_tournaments_pdf_graphic([$line['role'], $line['usergroup_identifier']], $card);
 		// PDF setzen
 		$row = $i % $card['rows'];
 		if (!$row) {

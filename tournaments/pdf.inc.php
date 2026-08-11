@@ -212,18 +212,9 @@ function mf_tournaments_pdf_group_line($line) {
 		// club is filled out, put role into group_line
 		return $line['role'];
 	} elseif ($line['sex']) {
-		// female or male forms?
-		if (!empty($line['parameters']['weiblich']) AND $line['sex'] === 'female') {
-			return $line['parameters']['weiblich'];
-		} elseif (!empty($line['parameters']['female']) AND $line['sex'] === 'female') {
-			return $line['parameters']['female'];
-		} elseif (!empty($line['parameters']['männlich']) AND $line['sex'] === 'male') {
-			return $line['parameters']['männlich'];
-		} elseif (!empty($line['parameters']['male']) AND $line['sex'] === 'male') {
-			return $line['parameters']['male'];
-		}
+		return mf_activities_usergroup_label($line['usergroup_id'], $line['sex']);
 	}
-	return $line['usergroup'];
+	return mf_activities_usergroup_label($line['usergroup_id']);
 }
 
 /**
@@ -245,7 +236,8 @@ function mf_tournaments_pdf_club_line($line) {
 			$line['role'] = false;
 			break;
 		case 'usergroup_category':
-			if (!$line['role']) $line['role'] = $line['usergroup'];
+			if (!$line['role'])
+				$line['role'] = mf_activities_usergroup_label($line['usergroup_id']);
 			break;
 		}
 	}

@@ -176,7 +176,7 @@ function mf_tournaments_export_pdf_place_cards_single($ops) {
 			)) AS name
 			, t_verein AS club, t_dwz, t_elo, t_fidetitel, club_contact_id, role
 			, persons.sex
-			, usergroups.usergroup, usergroups.parameters AS usergroup_parameters
+			, usergroups.usergroup_id, usergroups.parameters AS usergroup_parameters
 			, usergroup_categories.category AS usergroup_category
 			, series.parameters AS series_parameters
 			, series.category_short AS event
@@ -193,7 +193,10 @@ function mf_tournaments_export_pdf_place_cards_single($ops) {
 	    	ON events.series_category_id = series.category_id
 	    WHERE participation_id IN (%s)
 	    AND usergroup_id = /*_ID usergroups spieler _*/
-		AND (ISNULL(categories.parameters) OR categories.parameters NOT LIKE "%%&tournaments_no_cards=1%%")
+		AND (
+			ISNULL(categories.parameters)
+			OR categories.parameters NOT LIKE "%%&tournaments_no_cards=1%%"
+		)
 	    ORDER BY FIELD(participation_id, %s)';
 	$sql = sprintf($sql, implode(',', $ids), implode(',', $ids));
 	$data = wrap_db_fetch($sql, 'participation_id');
