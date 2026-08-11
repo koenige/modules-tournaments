@@ -43,11 +43,11 @@ $zz['fields'][3]['sql'] = 'SELECT category_id, category, main_category_id
 	ORDER BY category';
 $zz['fields'][3]['if'][1]['sql'] = 'SELECT category_id, category, main_category_id
 	FROM /*_PREFIX_*/categories
-	WHERE parameters LIKE "%team=1%"
+	WHERE parameters LIKE "%&tournaments_type_team=1%"
 	ORDER BY category';
 $zz['fields'][3]['if'][2]['sql'] = 'SELECT category_id, category, main_category_id
 	FROM /*_PREFIX_*/categories
-	WHERE parameters LIKE "%team=0%"
+	WHERE parameters LIKE "%&tournaments_type_single=1%"
 	ORDER BY category';
 $zz['fields'][3]['show_hierarchy'] = 'main_category_id';
 $zz['fields'][3]['show_hierarchy_subtree'] = wrap_category_id('turnierformen');

@@ -173,3 +173,6 @@
 /* 2026-08-11-15 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&home_team_first_board=', '&tournaments_home_team_first_board=') WHERE urkunde_parameter LIKE '%&home_team_first_board=%';
 /* 2026-08-11-16 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&lineup_before_round_mins=', '&tournaments_lineup_before_round_mins=') WHERE urkunde_parameter LIKE '%&lineup_before_round_mins=%';
 /* 2026-08-11-17 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&pgn_bulletin_file_template=', '&tournaments_pgn_bulletin_file_template=') WHERE urkunde_parameter LIKE '%&pgn_bulletin_file_template=%';
+/* 2026-08-11-18 */	UPDATE categories SET parameters = REPLACE(parameters, '&single=1', '&tournaments_type_single=1') WHERE parameters LIKE '%&single=1%';
+/* 2026-08-11-19 */	UPDATE categories SET parameters = REPLACE(parameters, '&team=1', '&tournaments_type_team=1') WHERE parameters LIKE '%&team=1%';
+/* 2026-08-11-20 */	UPDATE categories SET parameters = REPLACE(parameters, '&team=0', '') WHERE parameters LIKE '%&team=0%';

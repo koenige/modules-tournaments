@@ -277,4 +277,4 @@ $zz['conditions'][1]['scope'] = 'record';
 $zz['conditions'][1]['where'] = 'ISNULL(tisch_no)';
 
 $zz['conditions'][2]['scope'] = 'record';
-$zz['conditions'][2]['where'] = 'tournament_forms.parameters LIKE "%&single=1%"';
+$zz['conditions'][2]['where'] = 'tournament_forms.parameters LIKE "%&tournaments_type_single=1%"';

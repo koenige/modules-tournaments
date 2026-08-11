@@ -18,7 +18,7 @@ function mod_tournaments_exportcb($params, $settings, $event) {
 	$event['path'] = str_replace('/', '-', $event['identifier']);
 	parse_str($event['parameters'], $parameters);
 	if ($parameters) $event += $parameters;
-	if (empty($event['team'])) return false; // only for team tournaments
+	if (empty($event['tournaments_type_team'])) return false; // only for team tournaments
 
 	// get teams
 	// get players per team

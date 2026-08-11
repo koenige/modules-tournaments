@@ -38,9 +38,9 @@ function mf_tournaments_contact($data, $ids) {
 			, t_verein, t_dwz, t_elo
 			, IF(status_category_id != /*_ID categories participation-status/participant _*/, participation_status.category, "") AS teilnahme_status
 			, standings.rank_no
-			, IF (turnierformen.parameters LIKE "%%&team=1%%", 1, NULL) AS mannschaftsturnier
-			, IF (turnierformen.parameters LIKE "%%&team=0%%", 1, NULL) AS einzelturnier
-			, IF (ISNULL(brett_no) AND turnierformen.parameters LIKE "%%&team=1%%", 1, NULL) AS nur_gemeldet
+			, IF (turnierformen.parameters LIKE "%%&tournaments_type_team=1%%", 1, NULL) AS mannschaftsturnier
+			, IF (turnierformen.parameters LIKE "%%&tournaments_type_single=1%%", 1, NULL) AS einzelturnier
+			, IF (ISNULL(brett_no) AND turnierformen.parameters LIKE "%%&tournaments_type_team=1%%", 1, NULL) AS nur_gemeldet
 		FROM participations
 		LEFT JOIN categories participation_status
 			ON participations.status_category_id = participation_status.category_id
