@@ -94,16 +94,16 @@ function mod_tournaments_placeholder_team($brick) {
 	if ($team['parameters']) {
 		parse_str($team['parameters'], $parameters);
 		$team += $parameters;
-		wrap_match_module_parameters('events', $team['parameters'], false);
+		wrap_setting_from_table('events', $team['parameters'], false);
 	}
 	if ($team['tournament_form_parameters']) {
 		parse_str($team['tournament_form_parameters'], $team['tournament_form_parameters']);
-		wrap_match_module_parameters('tournaments', $team['tournament_form_parameters']);
+		wrap_setting_from_table('tournaments', $team['tournament_form_parameters']);
 	}
 	if ($team['series_parameters'])
-		wrap_match_module_parameters('tournaments', $team['series_parameters'], false);
+		wrap_setting_from_table('tournaments', $team['series_parameters'], false);
 	if ($team['tournament_parameters'])
-		wrap_match_module_parameters('tournaments', $team['tournament_parameters'], false);
+		wrap_setting_from_table('tournaments', $team['tournament_parameters'], false);
 
 
 	if (!empty($brick['local_settings']['internal']) AND empty($brick['local_settings']['no_team_breadcrumbs'])) {

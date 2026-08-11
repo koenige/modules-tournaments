@@ -129,7 +129,7 @@ function mod_tournaments_make_standings_round($vars) {
 	$sql = sprintf($sql, $vars[0], wrap_db_escape($vars[1]));
 	$event = wrap_db_fetch($sql);
 	if (!$event) return false;
-	wrap_match_module_parameters('tournaments', $event['parameters']);
+	wrap_setting_from_table('tournaments', $event['parameters']);
 	$event['rounds_played'] = mf_tournaments_live_round($event['event_id']);
 	
 	wrap_setting('log_filename', $event['identifier']);
