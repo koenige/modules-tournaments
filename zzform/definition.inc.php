@@ -34,7 +34,7 @@ function mf_tournaments_upload_fields(&$zz, $no, $data) {
 
 		$zz['fields'][$no]['title'] = $category['category'];
 		$zz['fields'][$no]['field_name'] = $parameters['tournaments_field_name'];
-		if (!empty($parameters['optional']))
+		if (!empty($parameters['tournaments_upload_optional']))
 			$zz['fields'][$no]['dont_show_missing'] = true;
 		$path_suffix = $parameters['tournaments_path_suffix'] ?? '';
 		$zz['fields'][$no]['type'] = 'upload_image';

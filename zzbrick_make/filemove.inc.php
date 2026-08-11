@@ -73,8 +73,8 @@ function mod_tournaments_make_filemove() {
 		}
 	}
 
-	$pgn_queue = wrap_setting('pgn_queue_dir').'/%s';
-	$pgn_sys = wrap_setting('pgn_dir').'/%s';
+	$pgn_queue = wrap_setting('tournaments_pgn_queue_dir').'/%s';
+	$pgn_sys = wrap_setting('tournaments_pgn_dir').'/%s';
 
 	wrap_include('syndication', 'zzwrap');
 	wrap_setting('syndication_timeout_ms', 2500);
@@ -116,7 +116,7 @@ function mod_tournaments_make_filemove() {
  * @return void
  */
 function mod_tournaments_make_filemove_queue($tournament, $parameters = []) {
-	$pgn_live = wrap_setting('pgn_live_dir').'/%s/games.pgn';
+	$pgn_live = wrap_setting('tournaments_pgn_live_dir').'/%s/games.pgn';
 
 	$source = sprintf($pgn_live, $tournament['path']);
 	if ($merged_source = mod_tournaments_make_filemove_concat_pgn($source))
@@ -175,7 +175,7 @@ function mod_tournaments_make_filemove_final_pgn($tournament) {
 function mod_tournaments_make_filemove_concat_pgn($source) {
 	// test against filesize, too, livechess creates empty games.pgn
 	if (file_exists($source) AND filesize($source)) return false;
-	$folder = dirname($source); // pgn_live_dir/[tournament]/
+	$folder = dirname($source); // tournaments_pgn_live_dir/[tournament]/
 	$pgn_files = mod_tournaments_make_filemove_scandir($folder);
 	if (!$pgn_files) return false;
 	
@@ -232,11 +232,11 @@ function mod_tournaments_make_filemove_scandir($folder) {
  * @return void
  */
 function mod_tournaments_make_filemove_bulletin_pgn($tournament) {
-	if (empty($tournament['parameters']['pgn_bulletin_file_template'])) return;
-	$bulletin_dir = wrap_setting('pgn_bulletin_dir').'/'.$tournament['main_series_path'];
+	if (empty($tournament['parameters']['tournaments_pgn_bulletin_file_template'])) return;
+	$bulletin_dir = wrap_setting('tournaments_pgn_bulletin_dir').'/'.$tournament['main_series_path'];
 	if (!file_exists($bulletin_dir)) return;
 
-	$s_filename = sprintf('%s/%s.pgn', $bulletin_dir, $tournament['parameters']['pgn_bulletin_file_template']);
+	$s_filename = sprintf('%s/%s.pgn', $bulletin_dir, $tournament['parameters']['tournaments_pgn_bulletin_file_template']);
 	for ($i = 1; $i <= $tournament['current_round']['runde_no']; $i++) {
 		$source = sprintf($s_filename, $i);
 		$dest = $tournament['final_dir'].'/'.$i.'.pgn';

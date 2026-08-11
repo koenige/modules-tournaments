@@ -41,7 +41,7 @@ function mod_tournaments_pgnfile($params, $settings = [], $event = []) {
 	if (!wrap_session_value('logged_in'))
 		wrap_quit(403, wrap_text('You need to be logged in to see this PGN file.'));
 
-	$file['name'] = sprintf(wrap_setting('pgn_dir').'/%s/%s.pgn', $event['identifier'], $basename);
+	$file['name'] = sprintf(wrap_setting('tournaments_pgn_dir').'/%s/%s.pgn', $event['identifier'], $basename);
 	if (!file_exists($file['name'])) return false;
 	$file['send_as'] = sprintf('%s %s %s (raw).pgn', $event['year'], ($event['series_short'] ?? $event['event']), $basename);
 	wrap_send_file($file);

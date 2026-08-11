@@ -82,7 +82,7 @@ function mod_tournaments_tournament($vars, $settings, $event) {
 	if (!empty($event['turnierform']))
 		$event[str_replace('-', '_', $event['turnierform'])] = true;
 	
-	if (!empty($event['show_main_tournament_archive'])) {
+	if (!empty($event['tournaments_show_main_archive'])) {
 		// series, series_path
 		$sql = 'SELECT category_id
 				, series.category AS series

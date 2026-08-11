@@ -15,7 +15,7 @@
 
 /**
  * check if submitting a line-up is available for current round
- * i. e. round has not begun or lineup_before_round_mins has a negative value
+ * i. e. round has not begun or tournaments_lineup_before_round_mins has a negative value
  *
  * @param array $event
  * @return bool
@@ -28,7 +28,7 @@ function mf_tournaments_team_lineup($event) {
 		WHERE main_event_id = %d
 		AND runde_no = %d';
 	$sql = sprintf($sql
-		 , (!empty($event['lineup_before_round_mins']) ? $event['lineup_before_round_mins'] : 0)
+		 , (!empty($event['tournaments_lineup_before_round_mins']) ? $event['tournaments_lineup_before_round_mins'] : 0)
 		 , $event['event_id']
 		 , $event['runde_no']
 	);

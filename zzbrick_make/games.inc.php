@@ -108,7 +108,7 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 	}
 
 	// PGN-Datei vorhanden?
-	$pgn_path = wrap_setting('pgn_dir').'/'.$event['identifier'].'/%s.pgn';
+	$pgn_path = wrap_setting('tournaments_pgn_dir').'/'.$event['identifier'].'/%s.pgn';
 	$pgn_filename = sprintf($pgn_path, $pgn_filename);
 	if (file_exists($pgn_filename)) {
 		$pgn = file($pgn_filename);
@@ -171,7 +171,7 @@ function mod_tournaments_make_games($vars, $settings, $event) {
 	// Datei Partie für Partie auswerten
 	wrap_include('pgn', 'chess');
 	$games = mf_chess_pgn_parse($pgn, $pgn_filename);
-	if ($function = wrap_setting('pgn_preparation_function'))
+	if ($function = wrap_setting('tournaments_pgn_preparation_function'))
 		$games = $function($games, $event['event_id']);
 
 	if (!empty($pgn_filename_not_live)) {
@@ -379,7 +379,7 @@ function cms_partienupdate_pgnfind(&$games, $partie) {
 	}
 	
 	// Round with Board?
-	if (wrap_setting('pgn_match_round_table_board') AND !empty($partie['Round_With_Board'])) {
+	if (wrap_setting('tournaments_pgn_match_round_table_board') AND !empty($partie['Round_With_Board'])) {
 		foreach ($games as $index => $game) {
 			if (empty($game['head']['Round'])) continue;
 			if ($game['head']['Round'] !== $partie['Round_With_Board']) continue;

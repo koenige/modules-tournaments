@@ -74,7 +74,7 @@ function mod_tournaments_games_settings($settings) {
 	} else {
 		$settings['content_type'] = 'html';
 	}
-	$settings['pgn_path'] = wrap_setting('pgn_dir').'/%s/%s.pgn';
+	$settings['pgn_path'] = wrap_setting('tournaments_pgn_dir').'/%s/%s.pgn';
 	return $settings;
 }
 

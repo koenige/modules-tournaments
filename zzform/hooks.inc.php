@@ -205,8 +205,8 @@ function mf_tournaments_team_points($ops) {
 	// set colour for first board
 	$colour_uneven_board = 'schwarz';
 	$colour_even_board = 'weiß'; 
-	if (!empty($settings['home_team_first_board'])) {
-		if ($settings['home_team_first_board'] === 'white') {
+	if (!empty($settings['tournaments_home_team_first_board'])) {
+		if ($settings['tournaments_home_team_first_board'] === 'white') {
 			$colour_uneven_board = 'weiß';
 			$colour_even_board = 'schwarz'; 
 		}

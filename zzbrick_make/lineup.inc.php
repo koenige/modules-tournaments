@@ -113,7 +113,7 @@ function mod_tournaments_make_lineup_active($params) {
 		$data += $parameter;
 	}
 	if (wrap_access('tournaments_lineup_until_begin_of_round'))
-		$data['lineup_before_round_mins'] = 0;
+		$data['tournaments_lineup_before_round_mins'] = 0;
 
 	// 2, 3) change lineup until n minutes before start of round
 	// @todo alternatively check if there are already games played in round
@@ -123,7 +123,7 @@ function mod_tournaments_make_lineup_active($params) {
 		WHERE runde_no = %d
 		AND main_event_id = %d';
 	$sql = sprintf($sql
-		, !empty($data['lineup_before_round_mins']) ? $data['lineup_before_round_mins'] : 0
+		, !empty($data['tournaments_lineup_before_round_mins']) ? $data['tournaments_lineup_before_round_mins'] : 0
 		, $current_round
 		, $data['event_id']
 	);
@@ -282,8 +282,8 @@ function mod_tournaments_make_lineup_round($data) {
 
 		$home_team_first_board = 'schwarz';
 		$away_team_first_board = 'weiss';
-		if (!empty($data['home_team_first_board'])) {
-			if ($data['home_team_first_board'] === 'white') {
+		if (!empty($data['tournaments_home_team_first_board'])) {
+			if ($data['tournaments_home_team_first_board'] === 'white') {
 				$home_team_first_board = 'weiss';
 				$away_team_first_board = 'schwarz';
 			}

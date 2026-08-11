@@ -131,7 +131,7 @@ function mod_tournaments_federations($params, $settings, $event) {
 	foreach ($events as $event_id => $event) {
 		if (!$event['urkunde_parameter']) continue;
 		parse_str($event['urkunde_parameter'], $parameter);
-		if (array_key_exists('medaillenspiegel', $parameter) AND !$parameter['medaillenspiegel']) {
+		if (array_key_exists('tournaments_medal_table', $parameter) AND !$parameter['tournaments_medal_table']) {
 			unset($events[$event_id]);
 			continue;
 		}
