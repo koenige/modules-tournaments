@@ -95,7 +95,7 @@ unset($zz['fields'][19]);	// contacts_identifiers
 $zz['fields'][32]['hide_in_list'] = false;
 
 $zz['fields'][5]['hide_in_list'] = false;
-$zz['fields'][5]['title_tab'] = 'Adresse';
+$zz['fields'][5]['title_tab'] = 'Address';
 unset($zz['fields'][5]['unless']['export_mode']['subselect']['field_suffix'][0]);
 $zz['fields'][5]['unless']['export_mode']['subselect']['field_suffix'][1] = '<br>';
 
@@ -108,7 +108,7 @@ $zz['page']['dont_show_title_as_breadcrumb'] = true;
 $zz['page']['breadcrumbs'][]['title'] = 'Adressen';
 $zz['page']['referer'] = '../';
 
-$zz['title'] = '<a href="../">'.$type.' '.$organisation.'</a>: Adressen';
+$zz['title'] = ['<a href="../">%s %s</a>: Addresses', ['values' => [$type, $organisation]]];
 $data = $brick['data'];
 $data['internal'] = 1;
 $data['identifier'] = $brick['data']['event_identifier'];

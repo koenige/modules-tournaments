@@ -1,301 +1,438 @@
 # tournaments module
-# Translations template
+# Translations
 #
 # Part of »Zugzwang Project«
 # https://www.zugzwang.org/modules/tournaments
 #
-# @author Gustaf Mossakowski <gustaf@koenige.org>
-# @copyright Copyright © 2020-2026 Gustaf Mossakowski
-# @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: Zugzwang Project -- tournaments module\n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2026-07-30 20:49+0000\n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
-"Language: \n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: templates/empty-tournament.template.txt
+#: templates/empty-tournament.template.txt:11
 msgid "Empty Tournament"
 msgstr ""
 
-#: templates/empty-tournament.template.txt
+#: templates/empty-tournament.template.txt:14
 msgid "In emergencies, if data has been imported incorrectly, an entire tournament can be deleted here: games, pairings, players (if added via import), teams."
 msgstr ""
 
-#: templates/empty-tournament.template.txt
+#: templates/empty-tournament.template.txt:17
 msgid "These records were deleted:"
 msgstr ""
 
-#: templates/empty-tournament.template.txt
+#: templates/empty-tournament.template.txt:19
 msgid "These records would be deleted:"
 msgstr ""
 
-#: templates/empty-tournament.template.txt
+#: templates/empty-tournament.template.txt:23
 msgid "%s game"
 msgid_plural "%s games"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/empty-tournament.template.txt
+#: templates/empty-tournament.template.txt:24
 msgid "%s pairing"
 msgid_plural "%s pairings"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/empty-tournament.template.txt
+#: templates/empty-tournament.template.txt:25
 msgid "%s standing"
 msgid_plural "%s standings"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/empty-tournament.template.txt
+#: templates/empty-tournament.template.txt:26
 msgid "%s player"
 msgid_plural "%s players"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/empty-tournament.template.txt
+#: templates/empty-tournament.template.txt:27
 msgid "%s team"
 msgid_plural "%s teams"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/empty-tournament.template.txt
+#: templates/empty-tournament.template.txt:31
 msgid "Empty the tournament"
 msgstr ""
 
-#: templates/player.template.txt
+#: templates/game.template.txt:162
+msgid "Comment:"
+msgstr ""
+
+#: templates/player.template.txt:104
 msgid "Write player message"
 msgstr ""
 
-#: templates/playermessage.template.txt
+#: templates/playermessage.template.txt:13
+#: templates/playermessage-mail.template.txt:13
 msgid "Player message to"
 msgstr ""
 
-#: templates/playermessage.template.txt
+#: templates/playermessage.template.txt:17
 msgid "Player messages are closed for this year."
 msgstr ""
 
-#: templates/playermessage.template.txt
-msgid ""
-"Thank you, also on behalf of all participants, for the many supporting player "
-"messages."
+#: templates/playermessage.template.txt:18
+msgid "Thank you, also on behalf of all participants, for the many supporting player messages."
 msgstr ""
 
-#: templates/playermessage.template.txt
-msgid "An e-mail with a confirmation link was sent to"
+#: templates/playermessage.template.txt:21
+msgid "An e-mail with a confirmation link was sent to <strong>%s</strong>."
 msgstr ""
 
-#: templates/playermessage.template.txt
-msgid ""
-"Your message will only be delivered after you confirm your e-mail address."
+#: templates/playermessage.template.txt:22
+msgid "Your message will only be delivered after you confirm your e-mail address."
 msgstr ""
 
-#: templates/playermessage.template.txt
-msgid ""
-"If you have not received an e-mail after 5 minutes, please check your spam "
-"folder first."
+#: templates/playermessage.template.txt:23
+msgid "If you have not received an e-mail after 5 minutes, please check your spam folder first."
 msgstr ""
 
-#: templates/playermessage.template.txt
+#: templates/playermessage.template.txt:26
 msgid "Could not send an e-mail. Please enter a valid e-mail address."
 msgstr ""
 
-#: templates/playermessage.template.txt
+#: templates/playermessage.template.txt:29
 msgid "Thank you! The message was activated."
 msgstr ""
 
-#: templates/playermessage.template.txt
+#: templates/playermessage.template.txt:30
 msgid "Write another message."
 msgstr ""
 
-#: templates/playermessage.template.txt
+#: templates/playermessage.template.txt:38
 msgid "Sender:"
 msgstr ""
 
-#: templates/playermessage.template.txt
+#: templates/playermessage.template.txt:40
 msgid "E-mail:"
 msgstr ""
 
-#: templates/playermessage.template.txt
-msgid ""
-"(The e-mail address is required because a confirmation e-mail will be sent "
-"there to activate the message. It will be deleted after the tournament.)"
+#: templates/playermessage.template.txt:41
+msgid "(The e-mail address is required because a confirmation e-mail will be sent there to activate the message. It will be deleted after the tournament.)"
 msgstr ""
 
-#: templates/playermessage.template.txt
+#: templates/playermessage.template.txt:43
 msgid "Send"
 msgstr ""
 
-#: templates/playermessage.template.txt
+#: templates/playermessage.template.txt:44
 msgid "Messages submitted by 10 p.m. are usually delivered the next day."
 msgstr ""
 
-#: templates/playermessage.template.txt
+#: templates/playermessage.template.txt:49
 msgid "Back to"
 msgstr ""
 
-#: templates/playermessage-form.template.txt
+#: templates/playermessage-form.template.txt:14
 msgid "%s message was marked as sent."
 msgid_plural "%s messages were marked as sent."
 msgstr[] ""
 msgstr[] ""
 
-#: templates/playermessage-form.template.txt
+#: templates/playermessage-form.template.txt:18
 msgid "Mark messages sent before this date as distributed:"
 msgstr ""
 
-#: templates/playermessage-form.template.txt
+#: templates/playermessage-form.template.txt:20
 msgid "Mark messages as distributed"
 msgstr ""
 
-#: templates/playermessage-form.template.txt
-msgid ""
-"Struck-through messages are not yet approved (e-mail confirmation pending). "
-"They can – if desired – also be approved manually (Verified: “yes”)."
+#: templates/playermessage-form.template.txt:23
+msgid "Struck-through messages are not yet approved (e-mail confirmation pending). They can – if desired – also be approved manually (Verified: “yes”)."
 msgstr ""
 
-#: templates/playermessage-mail.template.txt
+#: templates/playermessage-mail.template.txt:15
 msgid "Hello,"
 msgstr ""
 
-#: templates/playermessage-mail.template.txt
+#: templates/playermessage-mail.template.txt:17
 msgid "To activate your player message, click the following link:"
 msgstr ""
 
-#: templates/playermessage-mail.template.txt
-msgid ""
-"If the link is not clickable, copy the entire line into your browser address "
-"bar."
+#: templates/playermessage-mail.template.txt:21
+msgid "If the link is not clickable, copy the entire line into your browser address bar."
 msgstr ""
 
-#: templates/playermessage-mail.template.txt
+#: templates/playermessage-mail.template.txt:23
 msgid "Best regards"
 msgstr ""
 
-#: zzbrick_forms/playermessages.php
+#: templates/team-internal.template.txt:149
+#: tournaments/_functions.inc.php:32
+#: zzbrick_tables/tournaments.php:103
+msgid "Female"
+msgstr ""
+
+#: templates/team-internal.template.txt:149
+#: tournaments/_functions.inc.php:36
+#: zzbrick_tables/tournaments.php:103
+msgid "Male"
+msgstr ""
+
+#: templates/team-internal.template.txt:149
+#: zzbrick_tables/anmerkungen.php:82
+#: zzbrick_tables/partien.php:112
+#: zzbrick_tables/teams.php:110
+msgid "Status"
+msgstr ""
+
+#: templates/team-internal.template.txt:149
+msgid "Total"
+msgstr ""
+
+#: templates/team-internal.template.txt:149
+msgctxt "Status"
+msgid "St."
+msgstr ""
+
+#: templates/team-registration.template.txt:44
+#: templates/team-registration.template.txt:73
+#: templates/team-registration.template.txt:86
+msgid "No."
+msgstr ""
+
+#: templates/team-registration.template.txt:114
+msgid "First name"
+msgstr ""
+
+#: templates/team-registration.template.txt:115
+msgid "Last name"
+msgstr ""
+
+#: templates/tournamentstats.template.txt:24
+msgid "Participants"
+msgstr ""
+
+#: templates/tournamentstats.template.txt:25
+msgid "Male participants"
+msgstr ""
+
+#: templates/tournamentstats.template.txt:26
+msgid "Female participants"
+msgstr ""
+
+#: templates/tournamentstats.template.txt:31
+msgid "Transmitted boards"
+msgstr ""
+
+#: templates/tournamentstats.template.txt:34
+#: zzbrick_tables/turniere-bedenkzeiten.php:46
+msgid "Moves"
+msgstr ""
+
+#: templates/tournamentstats.template.txt:35
+msgid "M./G."
+msgstr ""
+
+#: templates/tournamentstats.template.txt:35
+msgid "Moves per game"
+msgstr ""
+
+#: templates/tournamentstats.template.txt:37
+msgid "White wins"
+msgstr ""
+
+#: templates/tournamentstats.template.txt:38
+msgid "Draws"
+msgstr ""
+
+#: templates/tournamentstats.template.txt:39
+msgid "Black wins"
+msgstr ""
+
+#: templates/tournamentstats.template.txt:41
+#: zzbrick_tables/tournaments.php:87
+#: zzbrick_tables/tournaments.php:88
+msgid "Age"
+msgstr ""
+
+#: templates/tournamentstats.template.txt:41
+msgid "Average age (approx.)"
+msgstr ""
+
+#: zzbrick_forms/playermessages.php:56
+#: zzbrick_tables/playermessages.php:78
+msgid "Processed"
+msgstr ""
+
+#: zzbrick_forms/playermessages.php:72
+#: zzbrick_forms/teams.php:67
+#: zzbrick_tables/teams.php:73
 msgid "Federation"
 msgstr ""
 
-#: zzbrick_forms/playermessages.php
-msgid "PDF Brettnachrichten"
-msgstr ""
-
-#: zzbrick_forms/rounds.inc.php
-#: zzbrick_forms/standings.php
+#: zzbrick_forms/rounds.php:17
+#: zzbrick_forms/standings.php:81
+#: zzbrick_tables/tournaments.php:59
 msgid "Rounds"
 msgstr ""
 
-#: zzbrick_forms/rounds.inc.php
-#: zzbrick_tables/standings.php
+#: zzbrick_forms/rounds.php:24
+#: zzbrick_tables/paarungen.php:33
+#: zzbrick_tables/partien.php:42
+#: zzbrick_tables/standings.php:32
 msgid "Round"
 msgstr ""
 
-#: zzbrick_forms/rounds.inc.php
+#: zzbrick_forms/rounds.php:33
+#: zzbrick_tables/tournaments.php:191
 msgid "PGN file"
 msgstr ""
 
-#: zzbrick_forms/rounds.inc.php
+#: zzbrick_forms/rounds.php:72
 msgid "Can be left blank, will be added automatically"
 msgstr ""
 
-#: zzbrick_forms/rounds.inc.php
-msgid "Games"
+#: zzbrick_forms/spieler.php:96
+msgid "Nation"
 msgstr ""
 
-#: zzbrick_forms/rounds.inc.php
-msgid "Pairings"
+#: zzbrick_forms/spieler.php:121
+#: zzbrick_forms/teams-teilnahmen.php:172
+msgid "Birth"
 msgstr ""
 
-#: zzbrick_forms/rounds.inc.php
-#: zzbrick_tables/standings.php:16
-#: zzbrick_tables/tournaments.php:183
-msgid "Standings"
+#: zzbrick_forms/spieler.php:125
+#: zzbrick_tables/teams.php:74
+msgid "Fed."
 msgstr ""
 
-#: zzbrick_forms/standings.php
+#: zzbrick_forms/spieler.php:132
+msgid "FIDE-ID"
+msgstr ""
+
+#: zzbrick_forms/standings.php:85
 msgid "Standings round %d"
 msgstr ""
 
+#: zzbrick_forms/teams.php:57
+msgid "School"
+msgstr ""
+
+#: zzbrick_forms/teams.php:58
+msgid "If empty, the school name is used here."
+msgstr ""
+
+#: zzbrick_forms/teams.php:63
+msgid "Club"
+msgstr ""
+
+#: zzbrick_forms/teams.php:64
+msgid "If empty, the club name is used here."
+msgstr ""
+
+#: zzbrick_forms/teams.php:68
+msgid "If empty, the federation name is used here."
+msgstr ""
+
+#: zzbrick_forms/teams-adressen.php:98
+msgid "Address"
+msgstr ""
+
+#: zzbrick_forms/teams-adressen.php:111
+msgid "<a href=\"../\">%s %s</a>: Addresses"
+msgstr ""
+
+#: zzbrick_forms/teams-buchungen.php:61
+msgid "(Once the registration has been submitted, the booking will be confirmed by the organizers.)"
+msgstr ""
+
+#: zzbrick_forms/teams-pdfupload.php:23
+msgid "PDF Upload"
+msgstr ""
+
+#: zzbrick_forms/teams-person.php:52
+msgid "Name"
+msgstr ""
+
+#: zzbrick_forms/teams-teilnahmen.php:185
+#: zzbrick_tables/playermessages.php:36
+msgid "E-mail"
+msgstr ""
+
+#: zzbrick_forms/teams-teilnahmen.php:201
+msgid "Phone"
+msgstr ""
+
 #: zzbrick_forms/tournaments.inc.php
-msgid "Instead of input: Transfer of the settings from the last tournament in this series"
+msgid "For rounds, there is a possibility to upload a PGN file in the <a href=\"%s\">round overview</a>."
 msgstr ""
 
 #: zzbrick_forms/tournaments.inc.php
 msgid "Please only upload files for the entire tournament here."
 msgstr ""
 
-#: zzbrick_forms/tournaments.inc.php
-msgid "For rounds, there is a possibility to upload a PGN file in the <a href="%s">round overview</a>."
+#: zzbrick_forms/tournaments.php:30
+msgid "Instead of input: Transfer of the settings from the last tournament in this series"
 msgstr ""
 
-#: zzbrick_make/playermessage.inc.php
+#: zzbrick_make/liveresults.inc.php:203
+msgid "Live result was not saved"
+msgstr ""
+
+#: zzbrick_make/playermessage.inc.php:60
 msgid "Player message to %s – %s %d"
 msgstr ""
 
-#: zzbrick_make/playermessage.inc.php
+#: zzbrick_make/playermessage.inc.php:63
 msgid "Player message"
 msgstr ""
 
-#: zzbrick_make/standings.inc.php
+#: zzbrick_make/standings.inc.php:142
+msgid "Attempted to update a round that is higher than the maximum number of rounds."
+msgstr ""
+
+#: zzbrick_make/standings.inc.php:148
 msgid "Standings update for round %d impossible: So far only %d round has been played."
 msgid_plural "Standings update for round %d impossible: So far only %d rounds have been played."
 msgstr[] ""
 msgstr[] ""
 
-#: zzbrick_make/standings.inc.php
-msgid "Attempted to update a round that is higher than the maximum number of rounds."
-msgstr ""
-
-#: zzbrick_make/standings.inc.php
+#: zzbrick_make/standings.inc.php:164
 msgid "Standings update for round %d impossible: No games were played in this round."
 msgstr ""
 
-#: zzbrick_make/standings.inc.php
-msgid "Standings for tournament %s, round %d have been successfully updated."
-msgstr ""
-
-#: zzbrick_make/standings.inc.php
-msgid "Standings for tournament %s, round %d: no updates necessary."
-msgstr ""
-
-#: zzbrick_make/standings.inc.php
+#: zzbrick_make/standings.inc.php:178
 msgid "Standings update for tournament %s, round %d already in progress."
 msgstr ""
 
-#: zzbrick_make/standings-single.inc.php
-msgid "No (possible) scores specified for standings."
+#: zzbrick_make/standings.inc.php:228
+msgid "Standings for tournament %s, round %d have been successfully updated."
 msgstr ""
 
-#: zzbrick_make/standings-team.inc.php
-msgid "Score %s not implemented."
+#: zzbrick_make/standings.inc.php:230
+msgid "Standings for tournament %s, round %d: no updates necessary."
 msgstr ""
 
-#: zzbrick_make/standings-team.inc.php
-msgid ""
-"Tournament with event_id %d has invalid standings ID %d, field team_id is "
-"empty."
-msgstr ""
-
-#: zzbrick_make/turnierzahlen.inc.php
+#: zzbrick_make/turnierzahlen.inc.php:147
 msgid "No ratings found when updating on %s."
 msgstr ""
 
-#: zzbrick_request/pgnfile.inc.php
+#: zzbrick_request/livegames.inc.php:116
+msgid "The tournament is over. All live games are integrated into the <a href=\"../\">tournament pages</a>."
+msgstr ""
+
+#: zzbrick_request/participantsearch.inc.php:28
+msgid "Bots are not allowed to perform searches."
+msgstr ""
+
+#: zzbrick_request/pgnfile.inc.php:42
 msgid "You need to be logged in to see this PGN file."
 msgstr ""
 
-#: zzbrick_request/livegames.inc.php
-msgid "The tournament is over. All live games are integrated into the <a href="../">tournament pages</a>."
-msgstr ""
-
-#: zzbrick_request/teaminternal.inc.php
+#: zzbrick_request/teaminternal.inc.php:44
 msgid "Please create a tournament first."
 msgstr ""
 
@@ -303,180 +440,862 @@ msgstr ""
 msgid "Missing score for category ID %d in tournament %s."
 msgstr ""
 
-#: zzbrick_tables/playermessages.php
-msgid "Player Messages"
+#: zzbrick_tables/anmerkungen.php:16
+#: zzbrick_tables/anmerkungen.php:23
+#: zzbrick_tables/paarungen.php:89
+#: zzbrick_tables/partien.php:126
+#: zzbrick_tables/teams.php:232
+msgid "Remarks"
 msgstr ""
 
-#: zzbrick_tables/playermessages.php
-msgid "Verified"
+#: zzbrick_tables/anmerkungen.php:19
+#: zzbrick_tables/paarungen.php:21
+#: zzbrick_tables/partien.php:19
+#: zzbrick_tables/playermessages.php:19
+#: zzbrick_tables/standings.php:19
+#: zzbrick_tables/standings-scores.php:19
+#: zzbrick_tables/teams.php:19
+#: zzbrick_tables/tournaments.php:19
+#: zzbrick_tables/tournaments-categories.php:19
+#: zzbrick_tables/tournaments-identifiers.php:19
+#: zzbrick_tables/tournaments-scores.php:19
+#: zzbrick_tables/turniere-bedenkzeiten.php:19
+msgid "ID"
 msgstr ""
 
-#: zzbrick_tables/playermessages.php
-msgid "Missing image"
+#: zzbrick_tables/anmerkungen.php:27
+#: zzbrick_tables/anmerkungen.php:79
+#: zzbrick_tables/standings.php:52
+#: zzbrick_tables/teams.php:54
+msgid "Team"
 msgstr ""
 
-#: zzbrick_tables/playermessages.php
-msgid "Processed"
-msgstr ""
-
-#: zzbrick_tables/standings.php
-msgid "D"
-msgstr ""
-
-#: zzbrick_tables/standings.php
-msgid "Drawn"
-msgstr ""
-
-#: zzbrick_tables/standings.php
+#: zzbrick_tables/anmerkungen.php:42
+#: zzbrick_tables/paarungen.php:25
+#: zzbrick_tables/partien.php:34
+#: zzbrick_tables/standings.php:23
+#: zzbrick_tables/teams.php:23
+#: zzbrick_tables/tournaments.php:23
 msgid "Event"
 msgstr ""
 
-#: zzbrick_tables/standings.php
-msgid "L"
+#: zzbrick_tables/anmerkungen.php:48
+#: zzbrick_tables/playermessages.php:46
+msgid "Participation"
 msgstr ""
 
-#: zzbrick_tables/standings.php
-msgid "Lost"
+#: zzbrick_tables/anmerkungen.php:58
+msgid "Author"
 msgstr ""
 
-#: zzbrick_tables/standings.php
-msgid "Players"
+#: zzbrick_tables/anmerkungen.php:75
+msgid "Visibility"
 msgstr ""
 
-#: zzbrick_tables/standings.php
+#: zzbrick_tables/anmerkungen.php:79
+msgid "Organiser"
+msgstr ""
+
+#: zzbrick_tables/anmerkungen.php:80
+msgid "No selection: visible only to the organiser"
+msgstr ""
+
+#: zzbrick_tables/anmerkungen.php:86
+msgid "done"
+msgstr ""
+
+#: zzbrick_tables/anmerkungen.php:86
+#: zzbrick_tables/teams.php:130
+msgid "open"
+msgstr ""
+
+#: zzbrick_tables/anmerkungen.php:89
+#: zzbrick_tables/playermessages.php:23
+msgid "Created"
+msgstr ""
+
+#: zzbrick_tables/anmerkungen.php:97
+msgid "Notification"
+msgstr ""
+
+#: zzbrick_tables/anmerkungen.php:102
+#: zzbrick_tables/partien.php:161
+#: zzbrick_tables/partien.php:170
+#: zzbrick_tables/playermessages.php:65
+#: zzbrick_tables/playermessages.php:74
+#: zzbrick_tables/teams.php:311
+#: zzbrick_tables/tournaments.php:158
+#: zzbrick_tables/tournaments.php:255
+#: zzbrick_tables/tournaments.php:275
+#: zzbrick_tables/tournaments.php:286
+#: zzbrick_tables/tournaments.php:296
+#: zzbrick_tables/tournaments.php:304
+#: zzbrick_tables/tournaments.php:313
+#: zzbrick_tables/tournaments.php:366
+msgid "no"
+msgstr ""
+
+#: zzbrick_tables/anmerkungen.php:102
+#: zzbrick_tables/partien.php:161
+#: zzbrick_tables/partien.php:170
+#: zzbrick_tables/playermessages.php:65
+#: zzbrick_tables/playermessages.php:74
+#: zzbrick_tables/teams.php:311
+#: zzbrick_tables/tournaments.php:158
+#: zzbrick_tables/tournaments.php:255
+#: zzbrick_tables/tournaments.php:275
+#: zzbrick_tables/tournaments.php:286
+#: zzbrick_tables/tournaments.php:296
+#: zzbrick_tables/tournaments.php:304
+#: zzbrick_tables/tournaments.php:313
+#: zzbrick_tables/tournaments.php:366
+msgid "yes"
+msgstr ""
+
+#: zzbrick_tables/anmerkungen.php:105
+#: zzbrick_tables/paarungen.php:95
+#: zzbrick_tables/partien.php:212
+#: zzbrick_tables/teams.php:336
+#: zzbrick_tables/tournaments-categories.php:62
+#: zzbrick_tables/tournaments-identifiers.php:46
+msgid "Last update"
+msgstr ""
+
+#: zzbrick_tables/paarungen.php:16
+msgid "Pairings"
+msgstr ""
+
+#: zzbrick_tables/paarungen.php:34
+#: zzbrick_tables/partien.php:43
+#: zzbrick_tables/tournaments.php:58
+msgid "Rd."
+msgstr ""
+
+#: zzbrick_tables/paarungen.php:40
+msgid "Place"
+msgstr ""
+
+#: zzbrick_tables/paarungen.php:49
+msgid "Start of game"
+msgstr ""
+
+#: zzbrick_tables/paarungen.php:54
+msgid "Table"
+msgstr ""
+
+#: zzbrick_tables/paarungen.php:59
+msgid "Home team"
+msgstr ""
+
+#: zzbrick_tables/paarungen.php:74
+msgid "Away Team"
+msgstr ""
+
+#: zzbrick_tables/partien.php:16
+msgid "Games"
+msgstr ""
+
+#: zzbrick_tables/partien.php:23
+msgid "Pairing"
+msgstr ""
+
+#: zzbrick_tables/partien.php:50
+msgid "Board"
+msgstr ""
+
+#: zzbrick_tables/partien.php:54
+#: zzbrick_tables/partien.php:91
+msgid "White"
+msgstr ""
+
+#: zzbrick_tables/partien.php:64
+msgid "Result"
+msgstr ""
+
+#: zzbrick_tables/partien.php:65
+msgid "Result White"
+msgstr ""
+
+#: zzbrick_tables/partien.php:72
+msgid "Result Black"
+msgstr ""
+
+#: zzbrick_tables/partien.php:77
+#: zzbrick_tables/partien.php:91
+msgid "Black"
+msgstr ""
+
+#: zzbrick_tables/partien.php:87
+msgid "Color Home Player"
+msgstr ""
+
+#: zzbrick_tables/partien.php:95
+msgid "Team Result"
+msgstr ""
+
+#: zzbrick_tables/partien.php:96
+msgid "Home Team Score"
+msgstr ""
+
+#: zzbrick_tables/partien.php:105
+msgid "Away Team Score"
+msgstr ""
+
+#: zzbrick_tables/partien.php:121
+msgid "PGN"
+msgstr ""
+
+#: zzbrick_tables/partien.php:133
+msgid "ECO"
+msgstr ""
+
+#: zzbrick_tables/partien.php:139
+msgid "Half moves"
+msgstr ""
+
+#: zzbrick_tables/partien.php:140
+msgctxt "Half moves"
+msgid "HM"
+msgstr ""
+
+#: zzbrick_tables/partien.php:145
+msgid "Time White"
+msgstr ""
+
+#: zzbrick_tables/partien.php:151
+msgid "Time Black"
+msgstr ""
+
+#: zzbrick_tables/partien.php:157
+msgid "PGN-Result?"
+msgstr ""
+
+#: zzbrick_tables/partien.php:164
+msgid "If so, deviating results from PGN files must no longer be adopted."
+msgstr ""
+
+#: zzbrick_tables/partien.php:166
+msgid "Swapped Colors?"
+msgstr ""
+
+#: zzbrick_tables/partien.php:173
+msgid "Was the game played incorrectly with the colors swapped?"
+msgstr ""
+
+#: zzbrick_tables/partien.php:176
+msgid "PGN File"
+msgstr ""
+
+#: zzbrick_tables/partien.php:200
+msgid "URL"
+msgstr ""
+
+#: zzbrick_tables/partien.php:202
+msgid "If played online, link to the server"
+msgstr ""
+
+#: zzbrick_tables/partien.php:206
+msgid "Result reported"
+msgstr ""
+
+#: zzbrick_tables/playermessages.php:16
+msgid "Player Messages"
+msgstr ""
+
+#: zzbrick_tables/playermessages.php:27
+msgid "Message"
+msgstr ""
+
+#: zzbrick_tables/playermessages.php:32
+msgid "Sender"
+msgstr ""
+
+#: zzbrick_tables/playermessages.php:42
+msgid "IP"
+msgstr ""
+
+#: zzbrick_tables/playermessages.php:56
+#: zzbrick_tables/teams.php:149
+msgid "Hash"
+msgstr ""
+
+#: zzbrick_tables/playermessages.php:62
+msgid "Verified"
+msgstr ""
+
+#: zzbrick_tables/playermessages.php:67
+msgid "OK"
+msgstr ""
+
+#: zzbrick_tables/playermessages.php:70
+msgid "Missing image"
+msgstr ""
+
+#: zzbrick_tables/playermessages.php:72
+msgctxt "Missing image"
+msgid "I."
+msgstr ""
+
+#: zzbrick_tables/playermessages.php:80
+msgctxt "Processed"
+msgid "P."
+msgstr ""
+
+#: zzbrick_tables/standings.php:16
+#: zzbrick_tables/tournaments.php:183
+msgid "Standings"
+msgstr ""
+
+#: zzbrick_tables/standings.php:38
 msgid "Rank"
 msgstr ""
 
-#: zzbrick_tables/standings.php
+#: zzbrick_tables/standings.php:44
 msgid "Rank (board)"
 msgstr ""
 
-#: zzbrick_tables/standings.php
-msgid "Round "
-msgstr ""
-
-#: zzbrick_tables/standings.php
-#: zzbrick_tables/standings-scores.php
-msgid "Scores"
-msgstr ""
-
-#: zzbrick_tables/standings.php
+#: zzbrick_tables/standings.php:51
 msgid "Team / Player"
 msgstr ""
 
-#: zzbrick_tables/standings.php
-msgid "Teams"
+#: zzbrick_tables/standings.php:63
+msgid "Person"
 msgstr ""
 
-#: zzbrick_tables/standings.php
-msgid "Type"
-msgstr ""
-
-#: zzbrick_tables/standings.php
-msgid "W"
-msgstr ""
-
-#: zzbrick_tables/standings.php
+#: zzbrick_tables/standings.php:75
 msgid "Won"
 msgstr ""
 
-#: zzbrick_tables/standings-scores.php
-#: zzbrick_tables/tournaments-scores.php
+#: zzbrick_tables/standings.php:76
+msgid "W"
+msgstr ""
+
+#: zzbrick_tables/standings.php:81
+msgid "Drawn"
+msgstr ""
+
+#: zzbrick_tables/standings.php:82
+msgid "D"
+msgstr ""
+
+#: zzbrick_tables/standings.php:87
+msgid "Lost"
+msgstr ""
+
+#: zzbrick_tables/standings.php:88
+msgid "L"
+msgstr ""
+
+#: zzbrick_tables/standings.php:94
+#: zzbrick_tables/standings-scores.php:16
+msgid "Scores"
+msgstr ""
+
+#: zzbrick_tables/standings.php:120
+msgid "Round "
+msgstr ""
+
+#: zzbrick_tables/standings.php:122
+#: zzbrick_tables/tournaments-categories.php:52
+msgid "Type"
+msgstr ""
+
+#: zzbrick_tables/standings-scores.php:23
+msgid "Standing"
+msgstr ""
+
+#: zzbrick_tables/standings-scores.php:29
+#: zzbrick_tables/standings-scores.php:32
+#: zzbrick_tables/tournaments-scores.php:39
 msgid "Score"
 msgstr ""
 
-#: zzbrick_tables/tournaments-identifiers.php
-msgid "Tournament"
+#: zzbrick_tables/teams.php:16
+#: zzbrick_tables/tournaments.php:325
+msgid "Teams"
 msgstr ""
 
-#: zzbrick_tables/tournaments-identifiers.php
-msgid "Tournament Identifiers"
+#: zzbrick_tables/teams.php:33
+msgid "Organisation"
+msgstr ""
+
+#: zzbrick_tables/teams.php:64
+msgid "If empty, the organisation name is used here."
+msgstr ""
+
+#: zzbrick_tables/teams.php:68
+msgid "Team no"
+msgstr ""
+
+#: zzbrick_tables/teams.php:71
+msgid "+ team no. if applicable"
+msgstr ""
+
+#: zzbrick_tables/teams.php:82
+msgid "Regional group"
+msgstr ""
+
+#: zzbrick_tables/teams.php:83
+msgid "Regional grp."
+msgstr ""
+
+#: zzbrick_tables/teams.php:91
+#: zzbrick_tables/tournaments-identifiers.php:33
+msgid "Identifier"
+msgstr ""
+
+#: zzbrick_tables/teams.php:98
+msgid "Before the tournament"
+msgstr ""
+
+#: zzbrick_tables/teams.php:100
+msgid "Eligibility"
+msgstr ""
+
+#: zzbrick_tables/teams.php:114
+msgid "Deletion"
+msgstr ""
+
+#: zzbrick_tables/teams.php:114
+msgid "Eligible"
+msgstr ""
+
+#: zzbrick_tables/teams.php:114
+msgid "Participant"
+msgstr ""
+
+#: zzbrick_tables/teams.php:114
+msgid "Reserve"
+msgstr ""
+
+#: zzbrick_tables/teams.php:119
+msgctxt "Sequence"
+msgid "#"
+msgstr ""
+
+#: zzbrick_tables/teams.php:122
+msgid "Rank order – only meaningful for reserves"
+msgstr ""
+
+#: zzbrick_tables/teams.php:126
+msgid "Registration"
+msgstr ""
+
+#: zzbrick_tables/teams.php:127
+msgid "Reg."
+msgstr ""
+
+#: zzbrick_tables/teams.php:130
+#: zzbrick_tables/tournaments.php:360
+msgid "Complete"
+msgstr ""
+
+#: zzbrick_tables/teams.php:130
+msgid "locked"
+msgstr ""
+
+#: zzbrick_tables/teams.php:130
+msgid "partly open"
+msgstr ""
+
+#: zzbrick_tables/teams.php:140
+msgid "Registration date"
+msgstr ""
+
+#: zzbrick_tables/teams.php:158
+msgid "Foreign key"
+msgstr ""
+
+#: zzbrick_tables/teams.php:159
+msgid "FK"
+msgstr ""
+
+#: zzbrick_tables/teams.php:161
+msgid "E.g. key from tournament software"
+msgstr ""
+
+#: zzbrick_tables/teams.php:165
+msgid "During the tournament"
+msgstr ""
+
+#: zzbrick_tables/teams.php:166
+msgid "Seeding list no."
+msgstr ""
+
+#: zzbrick_tables/teams.php:168
+msgid "Seed"
+msgstr ""
+
+#: zzbrick_tables/teams.php:171
+msgid "Additional details"
+msgstr ""
+
+#: zzbrick_tables/teams.php:173
+msgid "Arrival"
+msgstr ""
+
+#: zzbrick_tables/teams.php:174
+msgid "Arrival and departure"
+msgstr ""
+
+#: zzbrick_tables/teams.php:175
+msgid "Arrival date"
+msgstr ""
+
+#: zzbrick_tables/teams.php:186
+msgid "Arrival time"
+msgstr ""
+
+#: zzbrick_tables/teams.php:197
+msgid "Departure"
+msgstr ""
+
+#: zzbrick_tables/teams.php:198
+msgid "Departure date"
+msgstr ""
+
+#: zzbrick_tables/teams.php:209
+msgid "Departure time"
+msgstr ""
+
+#: zzbrick_tables/teams.php:220
+msgid "Game start"
+msgstr ""
+
+#: zzbrick_tables/teams.php:226
+msgid "If always different from the scheduled start time"
+msgstr ""
+
+#: zzbrick_tables/teams.php:230
+msgid "Other"
+msgstr ""
+
+#: zzbrick_tables/teams.php:231
+msgid "Remarks / contact"
+msgstr ""
+
+#: zzbrick_tables/teams.php:246
+msgid "Remark:"
+msgstr ""
+
+#: zzbrick_tables/teams.php:259
+msgid "Contact"
+msgstr ""
+
+#: zzbrick_tables/teams.php:292
+msgid "Contact:"
+msgstr ""
+
+#: zzbrick_tables/teams.php:307
+msgid "Bye"
+msgstr ""
+
+#: zzbrick_tables/teams.php:314
+msgid "Entry"
+msgstr ""
+
+#: zzbrick_tables/teams.php:315
+msgid "Entry on"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:16
+msgid "Tournaments"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:37
+msgid "Tournament format"
+msgstr ""
+
+# Tournament format, short form
+#: zzbrick_tables/tournaments.php:38
+msgid "Format"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:63
+msgid "Mode"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:76
+msgid "Time control"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:84
+msgid "Time in minutes, increment per move in seconds"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:86
+msgid "Age min"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:92
+msgid "Age on 1 January of the year"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:94
+msgid "Age max"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:99
+msgid "Sex"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:107
+msgid "DWZ min"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:108
+#: zzbrick_tables/tournaments.php:109
+msgid "DWZ"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:116
+msgid "DWZ max"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:123
+msgid "Elo min"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:124
+#: zzbrick_tables/tournaments.php:125
+msgid "Elo"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:132
+msgid "Elo max"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:139
+msgid "Ratings updated"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:145
+msgid "Score categories"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:154
+msgid "Notation required"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:162
+msgid "Live boards"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:165
+msgid "Boards with live broadcast, e.g. 1-6, 9, 11 or 1.1-1.6 (table.board)"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:169
+msgid "Identifiers"
 msgstr ""
 
 #: zzbrick_tables/tournaments.php:186
 msgid "Additional standings as filters; enter as a comma-separated list"
 msgstr ""
 
-#: zzbrick_tables/tournaments.php
-msgid "Score categories"
+#: zzbrick_tables/tournaments.php:210
+msgid "Files"
 msgstr ""
 
-#: zzbrick_tables/tournaments.php
+#: zzbrick_tables/tournaments.php:218
+#: zzbrick_tables/tournaments.php:219
+msgid "Boards"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:220
+msgid "Boards (min.)"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:227
+msgid "Players / players + substitutes"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:229
+msgid "Boards (max.)"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:237
+msgid "Pseudo rating"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:240
+msgid "Players without a rating are assigned the pseudo value to calculate a more realistic team rating average."
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:244
+msgid "Teams (max.)"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:250
+msgid "Guest players"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:251
+msgid "Guest?"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:257
+msgid "Are guest players from other clubs allowed?"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:261
 msgid "Pairing bye scoring"
 msgstr ""
 
-#: zzbrick_tables/tournaments.php
-msgid ""
-"Points awarded when a team receives a pairing-allocated bye (odd number of "
-"teams). “None” = pairing is not imported."
-msgstr ""
-
-#: zzbrick_tables/tournaments.php
-msgid "Win"
-msgstr ""
-
-#: zzbrick_tables/tournaments.php
+#: zzbrick_tables/tournaments.php:265
 msgid "Draw"
 msgstr ""
 
-#: zzbrick_tables/tournaments.php
+#: zzbrick_tables/tournaments.php:265
 msgid "None"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:265
+msgid "Win"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:267
+msgid "Points awarded when a team receives a pairing-allocated bye (odd number of teams). “None” = pairing is not imported."
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:271
+msgid "Room booking"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:278
+msgid "Should teams submit room bookings?"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:281
+msgid "Participant list"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:282
+msgid "PL?"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:289
+msgid "Should a participant list be shown?"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:292
+msgid "Player photos"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:300
+msgid "Team photos"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:309
+msgid "Player messages"
 msgstr ""
 
 #: zzbrick_tables/tournaments.php:318
 msgid "Parameters"
 msgstr ""
 
-#: zzbrick_tables/tournaments-scores.php
-msgid "Tournament scores"
+#: zzbrick_tables/tournaments.php:332
+msgid "Players"
 msgstr ""
 
-#: zzbrick_tables/tournaments-scores.php
+#: zzbrick_tables/tournaments.php:352
+msgid "Errors"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:361
+msgid "C?"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:368
+msgid "Tournament finished, locked for changes"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:371
+msgid "Round no. of the standings"
+msgstr ""
+
+#: zzbrick_tables/tournaments.php:377
+msgid "Main tournament"
+msgstr ""
+
+#: zzbrick_tables/tournaments-categories.php:16
+msgid "Categories per Tournament"
+msgstr ""
+
+#: zzbrick_tables/tournaments-categories.php:23
+#: zzbrick_tables/tournaments-identifiers.php:23
+#: zzbrick_tables/tournaments-scores.php:23
+#: zzbrick_tables/turniere-bedenkzeiten.php:23
+msgid "Tournament"
+msgstr ""
+
+#: zzbrick_tables/tournaments-categories.php:33
+#: zzbrick_tables/tournaments-scores.php:33
 msgid "Seq."
 msgstr ""
 
-#: zzbrick_tables/tournaments-scores.php
+#: zzbrick_tables/tournaments-categories.php:34
+#: zzbrick_tables/tournaments-scores.php:34
+msgid "Sequence"
+msgstr ""
+
+#: zzbrick_tables/tournaments-categories.php:38
+#: zzbrick_tables/tournaments-categories.php:89
+#: zzbrick_tables/tournaments-identifiers.php:36
+msgid "Category"
+msgstr ""
+
+#: zzbrick_tables/tournaments-categories.php:50
+msgid "Property"
+msgstr ""
+
+#: zzbrick_tables/tournaments-identifiers.php:16
+msgid "Tournament Identifiers"
+msgstr ""
+
+#: zzbrick_tables/tournaments-scores.php:16
+msgid "Tournament scores"
+msgstr ""
+
+#: zzbrick_tables/tournaments-scores.php:49
 msgid "Show"
 msgstr ""
 
-#: zzbrick_tables/tournaments-scores.php
+#: zzbrick_tables/tournaments-scores.php:53
 msgid "Always"
 msgstr ""
 
-#: zzbrick_tables/tournaments-scores.php
+#: zzbrick_tables/tournaments-scores.php:53
 msgid "On tie"
 msgstr ""
 
-#: zzform_export/pdf-name-tags.inc.php
+#: zzbrick_tables/turniere-bedenkzeiten.php:16
+msgid "Tournament time controls"
+msgstr ""
+
+#: zzbrick_tables/turniere-bedenkzeiten.php:31
+msgid "Phase"
+msgstr ""
+
+#: zzbrick_tables/turniere-bedenkzeiten.php:37
+msgid "Time"
+msgstr ""
+
+#: zzbrick_tables/turniere-bedenkzeiten.php:42
+msgid "Bonus"
+msgstr ""
+
+#: zzform_export/pdf-name-tags.inc.php:45
 msgid "No participants were selected for this export."
 msgstr ""
 
-#: zzform_export/pdf-player-messages.inc.php
-msgid "No player messages were selected for this export."
+#: zzform_export/pdf-name-tags.inc.php:55
+#: zzform_export/pdf-name-tags.inc.php:129
+msgid "No name tags are available for these people."
 msgstr ""
 
-#: zzform_export/pdf-player-messages.inc.php
-msgid "No verified player messages are available for this export."
-msgstr ""
-
-#: zzform_export/pdf-player-messages.inc.php
-msgid "Event context is missing for this export."
-msgstr ""
-
-#: zzform_export/pdf-player-messages.inc.php
-msgid "From: %s <%s>"
-msgstr ""
-
-#: zzform_export/pdf-player-messages.inc.php
-msgid "Date: %s %s"
-msgstr ""
-
-#: zzform_export/pdf-player-messages.inc.php
-msgid "%s Board %s (%s)"
-msgstr ""
-
-#: zzform_export/pdf-player-messages.inc.php
-msgid "%s %s Player Messages Round %d.pdf"
+#: zzform_export/pdf-name-tags.inc.php:178
+msgid "This name tag size is not supported for PDF export. Allowed sizes are: %s."
 msgstr ""
 
 #: zzform_export/pdf-player-messages.inc.php
@@ -487,11 +1306,30 @@ msgstr ""
 msgid "white"
 msgstr ""
 
-#: zzform_export/pdf-name-tags.inc.php
-msgid "No name tags are available for these people."
+#: zzform_export/pdf-player-messages.inc.php:38
+msgid "No player messages were selected for this export."
 msgstr ""
 
-#: zzform_export/pdf-name-tags.inc.php
-msgid ""
-"This name tag size is not supported for PDF export. Allowed sizes are: %s."
+#: zzform_export/pdf-player-messages.inc.php:71
+msgid "No verified player messages are available for this export."
+msgstr ""
+
+#: zzform_export/pdf-player-messages.inc.php:84
+msgid "Event context is missing for this export."
+msgstr ""
+
+#: zzform_export/pdf-player-messages.inc.php:126
+msgid "%s %s Player Messages Round %d.pdf"
+msgstr ""
+
+#: zzform_export/pdf-player-messages.inc.php:165
+msgid "From: %s <%s>"
+msgstr ""
+
+#: zzform_export/pdf-player-messages.inc.php:166
+msgid "Date: %s %s"
+msgstr ""
+
+#: zzform_export/pdf-player-messages.inc.php:282
+msgid "%s Board %s (%s)"
 msgstr ""

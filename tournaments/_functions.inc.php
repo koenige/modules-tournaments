@@ -29,11 +29,11 @@ function mf_tournaments_standings_filter($filter_kennung = false) {
 	// @todo nur Filter erlauben, die auch in tournaments.tabellenstand eingetragen sind
 	case 'w':
 		$filter['where'][] = 'persons.sex = "female"';
-		$filter['untertitel'] = 'weiblich';
+		$filter['untertitel'] = wrap_text('Female');
 		break;
 	case 'm':
 		$filter['where'][] = 'persons.sex = "male"';
-		$filter['untertitel'] = 'männlich';
+		$filter['untertitel'] = wrap_text('Male');
 		break;
 	case 'alt':
 		$filter['where'][] = 'YEAR(persons.date_of_birth) = (IFNULL(events.event_year, YEAR(events.date_begin)) - alter_max)';

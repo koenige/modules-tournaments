@@ -58,7 +58,7 @@ $zz['fields'][10]['explanation'] = $zz['fields'][10]['if'][9]['explanation'];
 // Status
 $zz['fields'][11]['type'] = 'display';
 $zz['fields'][11]['type_detail'] = 'select';
-$zz['fields'][11]['explanation'] = '(Nach erfolgter Meldung wird die Buchung durch die Organisatoren bestätigt.)';
+$zz['fields'][11]['explanation'] = '(Once the registration has been submitted, the booking will be confirmed by the organizers.)';
 // Buchungsdatum
 $zz['fields'][14]['type'] = 'hidden';
 $zz['fields'][14]['class'] = 'hidden';

@@ -169,7 +169,7 @@ foreach ($zz['fields'] as $no => $field) {
 	}
 }
 
-$zz['fields'][24]['title'] = 'Geburt';
+$zz['fields'][24]['title'] = 'Birth';
 $zz['fields'][24]['type'] = 'subtable';
 $zz['fields'][24]['class'] = 'number';
 $zz['fields'][24]['hide_in_form'] = true;
@@ -198,7 +198,7 @@ $zz['fields'][23]['subselect']['sql'] = 'SELECT contact_id, identification, CONC
 	WHERE categories.parameters LIKE "%mail%"
 ';
 
-$zz['fields'][22]['title'] = 'Telefon';
+$zz['fields'][22]['title'] = 'Phone';
 $zz['fields'][22]['type'] = 'subtable';
 $zz['fields'][22]['hide_in_form'] = true;
 $zz['fields'][22]['table'] = 'contactdetails';

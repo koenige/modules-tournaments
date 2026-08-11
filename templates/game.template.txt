@@ -159,7 +159,7 @@ SAN letters: <input type=text name="SAN" value="KQRBNP" size=7>
 %%% endif %%%
 %%% item eco "<abbr title='Eröffnungscode der Enzyklopädie der Schacheröffnungen'>ECO</abbr> <span class='ECO'>%s</span>" %%%
 %%% if Annotator %%%
- Kommentar: %%% item Annotator %%%
+ %%% text Comment: %%% %%% item Annotator %%%
 %%% endif %%%
 </p>
 %%% if pgn %%%

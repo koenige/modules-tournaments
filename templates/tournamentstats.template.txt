@@ -21,24 +21,24 @@
 %%% if summe_teams %%%
 <th>Teams</th>
 %%% endif %%%
-<th><abbr title="Teilnehmer">TN</abbr></th>
-<th><abbr title="Teilnehmer männlich">♂</abbr></th>
-<th><abbr title="Teilnehmer weiblich">♀</abbr></th>
+<th><abbr title="%%% text Participants %%%">TN</abbr></th>
+<th><abbr title="%%% text Male participants %%%">♂</abbr></th>
+<th><abbr title="%%% text Female participants %%%">♀</abbr></th>
 <th><abbr title="DWZ-Schnitt">∅&nbsp;DWZ</abbr></th>
 <th><abbr title="Elo-Schnitt">∅&nbsp;Elo</abbr></th>
 <th><abbr title="Partien">P.</abbr></th>
 %%% if live_bretter %%%
-<th><abbr title="Übertragene Bretter">Live</abbr></th>
+<th><abbr title="%%% text Transmitted boards %%%">Live</abbr></th>
 %%% endif %%%
 %%% if summe_zuege %%%
-<th>Züge</th>
-<th><abbr title="Züge pro Partie">∅&nbsp;Z./P.</abbr></th>
+<th>%%% text Moves %%%</th>
+<th><abbr title="%%% text Moves per game %%%">∅&nbsp;%%% text M./G. %%%</abbr></th>
 %%% endif %%%
-<th><abbr title="Siege Weiß">+W</abbr></th>
-<th><abbr title="Remis">=</abbr></th>
-<th><abbr title="Siege Schwarz">+S</abbr></th>
+<th><abbr title="%%% text White wins %%%">+W</abbr></th>
+<th><abbr title="%%% text Draws %%%">=</abbr></th>
+<th><abbr title="%%% text Black wins %%%">+S</abbr></th>
 %%% comment <th><abbr title="Nachrichten ans Brett">Nachr.</abbr></th> %%%
-<th><abbr title="Durschnittsalter (ungefähr)">Alter</abbr></th>
+<th><abbr title="%%% text Average age (approx.) %%%">%%% text Age %%%</abbr></th>
 </tr>
 </thead>
 <tfoot>

@@ -118,11 +118,11 @@ $zz['fields'][31]['subselect']['sql'] = 'SELECT participation_id
 $zz['fields'][52]['field_name'] = 'date_of_birth';
 $zz['fields'][52]['type'] = 'display';
 $zz['fields'][52]['type_detail'] = 'date';
-$zz['fields'][52]['title'] = 'Geb. Dat.';
+$zz['fields'][52]['title'] = 'Birth';
 $zz['fields'][52]['search'] = 'persons.date_of_birth';
 $zz['fields'][52]['hide_in_form'] = true;
 
-$zz['fields'][66]['title'] = 'Verb.';
+$zz['fields'][66]['title'] = 'Fed.';
 $zz['fields'][66]['field_name'] = 'verband';
 $zz['fields'][66]['search'] = 'verbaende.contact_abbr';
 $zz['fields'][66]['character_set'] = 'utf8';

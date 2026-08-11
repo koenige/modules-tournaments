@@ -61,16 +61,17 @@ $zz['fields'][4]['link'] = [
 $zz['fields'][4]['unless']['export_mode']['list_prefix'] = '<strong>';
 $zz['fields'][4]['if'][1]['link'] = false;
 $zz['fields'][4]['function'] = 'mf_tournaments_team_name';
-$zz['fields'][4]['explanation'] = 'Falls leer, wird hier Name der Organisation genommen.';
+$zz['fields'][4]['explanation'] = 'If empty, the organisation name is used here.';
 $zz['fields'][4]['fields'] = ['team', 'club_contact_id', 'team_no'];
 $zz['fields'][4]['required'] = false;
 
 $zz['fields'][5]['field_name'] = 'team_no';
 $zz['fields'][5]['list_prefix'] = ' ';
 $zz['fields'][5]['unless']['export_mode']['list_append_next'] = true;
-$zz['fields'][5]['explanation'] = '+ ggf. Nr. des Teams';
+$zz['fields'][5]['explanation'] = '+ team no. if applicable';
 
-$zz['fields'][11]['title_tab'] = 'LV';
+$zz['fields'][11]['title'] = 'Federation';
+$zz['fields'][11]['title_tab'] = 'Fed.';
 $zz['fields'][11]['field_name'] = 'verband';
 $zz['fields'][11]['type'] = 'display';
 $zz['fields'][11]['exclude_from_search'] = true;
@@ -78,7 +79,8 @@ $zz['fields'][11]['unless']['export_mode']['list_prefix'] = '</strong><br>';
 $zz['fields'][11]['list_append_next'] = true;
 $zz['fields'][11]['if']['add']['hide_in_form'] = true;
 
-$zz['fields'][10]['title_tab'] = 'Regionalg.';
+$zz['fields'][10]['title'] = 'Regional group';
+$zz['fields'][10]['title_tab'] = 'Regional grp.';
 $zz['fields'][10]['field_name'] = 'regionalgruppe';
 $zz['fields'][10]['type'] = 'display';
 $zz['fields'][10]['exclude_from_search'] = true;
@@ -93,9 +95,9 @@ $zz['fields'][6]['identifier']['concat'] = ['/', '/', '-'];
 $zz['fields'][6]['hide_in_list'] = true;
 $zz['fields'][6]['merge_ignore'] = true;
 
-$zz['fields'][6]['separator'] = 'text <div class="separator">Vor dem Turnier</div>';
+$zz['fields'][6]['separator'] = 'text <div class="separator">'.wrap_text('Before the tournament').'</div>';
 
-$zz['fields'][7]['title'] = 'Berechtigung';
+$zz['fields'][7]['title'] = 'Eligibility';
 $zz['fields'][7]['field_name'] = 'berechtigung_category_id';
 $zz['fields'][7]['type'] = 'select';
 $zz['fields'][7]['sql'] = 'SELECT category_id, category, main_category_id
@@ -109,21 +111,23 @@ $zz['fields'][8]['title'] = 'Status';
 $zz['fields'][8]['field_name'] = 'team_status';
 $zz['fields'][8]['type'] = 'select';
 $zz['fields'][8]['enum'] = ['Teilnahmeberechtigt', 'Teilnehmer', 'Nachrücker', 'Löschung'];
+$zz['fields'][8]['enum_title'] = [wrap_text('Eligible'), wrap_text('Participant'), wrap_text('Reserve'), wrap_text('Deletion')];
 $zz['fields'][8]['default'] = 'Teilnahmeberechtigt';
 $zz['fields'][8]['append_next'] = true;
 $zz['fields'][8]['group_in_list'] = true;
 
+$zz['fields'][9]['title'] = ['#', ['context' => 'Sequence']];
 $zz['fields'][9]['field_name'] = 'nachruecker_reihenfolge';
-$zz['fields'][9]['title'] = '#';
 $zz['fields'][9]['type'] = 'number';
-$zz['fields'][9]['explanation'] = 'Rangfolge – sinnvoll nur bei Nachrückern';
+$zz['fields'][9]['explanation'] = 'Rank order – only meaningful for reserves';
 $zz['fields'][9]['hide_in_list'] = true;
 
 $zz['fields'][13]['field_name'] = 'meldung';
-$zz['fields'][13]['title'] = 'Meldung';
-$zz['fields'][13]['title_tab'] = 'Mg.';
+$zz['fields'][13]['title'] = 'Registration';
+$zz['fields'][13]['title_tab'] = 'Reg.';
 $zz['fields'][13]['type'] = 'select';
 $zz['fields'][13]['enum'] = ['offen', 'teiloffen', 'gesperrt', 'komplett'];
+$zz['fields'][13]['enum_title'] = [wrap_text('open'), wrap_text('partly open'), wrap_text('locked'), wrap_text('Complete')];
 $zz['fields'][13]['unless']['export_mode']['enum_abbr'] = ['offen', 'teiloffen', 'gesperrt', 'komplett'];
 $zz['fields'][13]['unless']['export_mode']['enum_title'] = [
 	'<span class="status-open">&nbsp;</span>', '<span class="status-partly">&nbsp;</span>',
@@ -133,7 +137,7 @@ $zz['fields'][13]['default'] = 'gesperrt';
 $zz['fields'][13]['unless']['export_mode']['list_append_next'] = true;
 $zz['fields'][13]['show_values_as_list'] = true;
 
-$zz['fields'][32]['title'] = 'Meldedatum';
+$zz['fields'][32]['title'] = 'Registration date';
 $zz['fields'][32]['field_name'] = 'meldung_datum';
 $zz['fields'][32]['type'] = 'hidden';
 $zz['fields'][32]['type_detail'] = 'datetime';
@@ -151,24 +155,24 @@ $zz['fields'][33]['fields'] = ['meldung_hash'];
 $zz['fields'][33]['merge_ignore'] = true;
 
 if (wrap_access('tournaments_teams_foreign_key')) {
-	$zz['fields'][40]['title'] = 'Fremdschlüssel';
-	$zz['fields'][40]['title_tab'] = 'FS';
+	$zz['fields'][40]['title'] = 'Foreign key';
+	$zz['fields'][40]['title_tab'] = 'FK';
 	$zz['fields'][40]['field_name'] = 'fremdschluessel';
-	$zz['fields'][40]['explanation'] = 'Z. B. Schlüssel der Turnierauswertung';
+	$zz['fields'][40]['explanation'] = 'E.g. key from tournament software';
 	$zz['fields'][40]['hide_in_list_if_empty'] = true;
 }
 
-$zz['fields'][17]['separator_before'] = 'text <div class="separator">Während des Turniers</div>';
-$zz['fields'][17]['title'] = 'Setzliste Nr.';
+$zz['fields'][17]['separator_before'] = 'text <div class="separator">'.wrap_text('During the tournament').'</div>';
+$zz['fields'][17]['title'] = 'Seeding list no.';
 $zz['fields'][17]['field_name'] = 'setzliste_no';
-$zz['fields'][17]['title_tab'] = 'Setz';
+$zz['fields'][17]['title_tab'] = 'Seed';
 $zz['fields'][17]['hide_in_list'] = true;
 
-$zz['fields'][17]['separator'] = 'text <div class="separator">Rahmendaten</div>';
+$zz['fields'][17]['separator'] = 'text <div class="separator">'.wrap_text('Additional details').'</div>';
 
-$zz['fields'][34]['title_append'] = 'Anreise';
-$zz['fields'][34]['title_tab'] = 'An- und Abreise';
-$zz['fields'][34]['title'] = 'Datum Anreise';
+$zz['fields'][34]['title_append'] = 'Arrival';
+$zz['fields'][34]['title_tab'] = 'Arrival and departure';
+$zz['fields'][34]['title'] = 'Arrival date';
 $zz['fields'][34]['field_name'] = 'datum_anreise';
 $zz['fields'][34]['type'] = 'date';
 $zz['fields'][34]['hide_in_list'] = true;
@@ -179,7 +183,7 @@ $zz['fields'][34]['search'] = 'datum_anreise';
 $zz['fields'][34]['prefix'] = 'am ';
 $zz['fields'][34]['hide_in_list_if_empty'] = true;
 
-$zz['fields'][14]['title'] = 'Uhrzeit Anreise';
+$zz['fields'][14]['title'] = 'Arrival time';
 $zz['fields'][14]['field_name'] = 'uhrzeit_anreise';
 $zz['fields'][14]['type'] = 'time';
 $zz['fields'][14]['hide_in_list'] = true;
@@ -190,8 +194,8 @@ $zz['fields'][14]['list_suffix'] = '&nbsp;Uhr';
 $zz['fields'][14]['unless']['export_mode']['list_append_next'] = true;
 $zz['fields'][14]['replace_values'] = ['--' => '', 'Uhr' => '', '-:-' => ''];
 
-$zz['fields'][15]['title_append'] = 'Abreise';
-$zz['fields'][15]['title'] = 'Datum Abreise';
+$zz['fields'][15]['title_append'] = 'Departure';
+$zz['fields'][15]['title'] = 'Departure date';
 $zz['fields'][15]['field_name'] = 'datum_abreise';
 $zz['fields'][15]['type'] = 'date';
 $zz['fields'][15]['hide_in_list'] = true;
@@ -202,7 +206,7 @@ $zz['fields'][15]['list_append_next'] = true;
 $zz['fields'][15]['display_field'] = 'datum_abreise_list';
 $zz['fields'][15]['search'] = 'datum_abreise';
 
-$zz['fields'][35]['title'] = 'Uhrzeit Abreise';
+$zz['fields'][35]['title'] = 'Departure time';
 $zz['fields'][35]['field_name'] = 'uhrzeit_abreise';
 $zz['fields'][35]['type'] = 'time';
 $zz['fields'][35]['hide_in_list'] = true;
@@ -213,18 +217,19 @@ $zz['fields'][35]['list_suffix'] = '&nbsp;Uhr';
 $zz['fields'][35]['replace_values'] = ['--' => '', 'Uhr' => '', '-:-' => ''];
 
 if (wrap_setting('tournaments_team_league')) {
+	$zz['fields'][48]['title'] = 'Game start';
 	$zz['fields'][48]['field_name'] = 'spielbeginn';
 	$zz['fields'][48]['type'] = 'time';
 	$zz['fields'][48]['suffix'] = ' Uhr';
 	$zz['fields'][48]['prefix'] = 'um ';
 	$zz['fields'][48]['hide_in_list'] = true;
-	$zz['fields'][48]['explanation'] = 'Falls immer abweichend vom festgesetzten Spielbeginn';
+	$zz['fields'][48]['explanation'] = 'If always different from the scheduled start time';
 }
 
 $zz['fields'][21] = zzform_include('anmerkungen');
-$zz['fields'][21]['separator_before'] = 'text <div class="separator">Sonstiges</div>';
-$zz['fields'][21]['title_tab'] = 'Bemerkungen / Kontakt';
-$zz['fields'][21]['title'] = 'Anmerkungen';
+$zz['fields'][21]['separator_before'] = 'text <div class="separator">'.wrap_text('Other').'</div>';
+$zz['fields'][21]['title_tab'] = 'Remarks / contact';
+$zz['fields'][21]['title'] = 'Remarks';
 $zz['fields'][21]['type'] = 'subtable';
 $zz['fields'][21]['min_records'] = 0;
 $zz['fields'][21]['fields'][3]['type'] = 'foreign_key';
@@ -238,7 +243,7 @@ $zz['fields'][21]['subselect']['sql'] = 'SELECT team_id
 		ON anmerkungen.autor_person_id = persons.person_id
 	WHERE anmerkung_status = "offen"
 ';
-$zz['fields'][21]['unless']['export_mode']['subselect']['prefix'] = '<p><em>Anmerkung:</em><br>';
+$zz['fields'][21]['unless']['export_mode']['subselect']['prefix'] = '<p><em>'.wrap_text('Remark:').'</em><br>';
 $zz['fields'][21]['subselect']['field_suffix'][0] = ' '; 
 $zz['fields'][21]['subselect']['field_suffix'][1] = ': '; 
 $zz['fields'][21]['subselect']['field_suffix'][2] = '<br>'; 
@@ -251,7 +256,7 @@ $zz['fields'][21]['hide_in_list_if_empty'] = true;
 
 $zz['hooks'] = $zz['fields'][21]['hooks'];
 
-$zz['fields'][25]['title'] = 'Kontakt';
+$zz['fields'][25]['title'] = 'Contact';
 $zz['fields'][25]['type'] = 'subtable';
 $zz['fields'][25]['table'] = 'participations';
 $zz['fields'][25]['fields'] = [];
@@ -284,7 +289,7 @@ $zz['fields'][25]['subselect']['sql'] = 'SELECT team_id
 		ON contactdetails.channel_category_id = categories.category_id
 	WHERE usergroup_id = /*_ID usergroups team-organisator _*/
 	GROUP BY participation_id';
-$zz['fields'][25]['unless']['export_mode']['subselect']['prefix'] = '<p><em>Kontakt:</em><br>';
+$zz['fields'][25]['unless']['export_mode']['subselect']['prefix'] = '<p><em>'.wrap_text('Contact:').'</em><br>';
 $zz['fields'][25]['if']['export_mode']['subselect']['prefix'] = '';
 $zz['fields'][25]['if']['export_mode']['subselect']['suffix'] = '';
 $zz['fields'][25]['unless']['export_mode']['subselect']['concat_fields'] = ' ';
@@ -299,13 +304,15 @@ $zz['fields'][25]['unless']['export_mode']['subselect']['field_suffix'][1] = '<b
 $zz['fields'][25]['unless']['export_mode']['subselect']['field_suffix'][2] = '<br>';
 $zz['fields'][25]['subselect']['sql_ignore'] = ['identifier'];
 
+$zz['fields'][26]['title'] = 'Bye';
 $zz['fields'][26]['field_name'] = 'spielfrei';
 $zz['fields'][26]['type'] = 'select';
 $zz['fields'][26]['enum'] = ['ja', 'nein'];
+$zz['fields'][26]['enum_title'] = [wrap_text('yes'), wrap_text('no')];
 $zz['fields'][26]['default'] = 'nein';
 
-$zz['fields'][27]['title_append'] = 'Eintrag';
-$zz['fields'][27]['title'] = 'Eintrag am';
+$zz['fields'][27]['title_append'] = 'Entry';
+$zz['fields'][27]['title'] = 'Entry on';
 $zz['fields'][27]['field_name'] = 'eintrag_datum';
 $zz['fields'][27]['type'] = 'hidden';
 $zz['fields'][27]['type_detail'] = 'datetime';
@@ -375,7 +382,7 @@ $zz['subtitle']['event_id']['link_no_append'] = true;
 $zz['conditions'][1]['scope'] = 'record';
 $zz['conditions'][1]['where'] = 'spielfrei = "ja"';
 
-$zz['filter'][1]['title'] = 'Meldung';
+$zz['filter'][1]['title'] = 'Registration';
 $zz['filter'][1]['type'] = 'list';
 $zz['filter'][1]['where'] = 'meldung';
 $zz['filter'][1]['sql'] = 'SELECT DISTINCT meldung, meldung AS titel

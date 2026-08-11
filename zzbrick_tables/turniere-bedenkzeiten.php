@@ -8,12 +8,12 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2015, 2017, 2021 Gustaf Mossakowski
+ * @copyright Copyright © 2015, 2017, 2021, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-$zz['title'] = 'Turniere/Bedenkzeit';
+$zz['title'] = 'Tournament time controls';
 $zz['table'] = 'turniere_bedenkzeiten';
 
 $zz['fields'][1]['title'] = 'ID';
@@ -28,12 +28,13 @@ $zz['fields'][2]['sql'] = 'SELECT tournament_id, event
 	ORDER BY date_begin, identifier DESC';
 $zz['fields'][2]['display_field'] = 'event';
 
+$zz['fields'][3]['title'] = 'Phase';
 $zz['fields'][3]['field_name'] = 'phase';
 $zz['fields'][3]['type'] = 'number';
 $zz['fields'][3]['auto_value'] = 'increment';
 $zz['fields'][3]['def_val_ignore'] = true;
 
-$zz['fields'][4]['title'] = 'Zeit';
+$zz['fields'][4]['title'] = 'Time';
 $zz['fields'][4]['field_name'] = 'bedenkzeit_sec';
 $zz['fields'][4]['type'] = 'number';
 $zz['fields'][4]['unless']['multi']['factor'] = 60;
@@ -42,7 +43,7 @@ $zz['fields'][5]['title'] = 'Bonus';
 $zz['fields'][5]['field_name'] = 'zeitbonus_sec';
 $zz['fields'][5]['type'] = 'number';
 
-$zz['fields'][6]['title'] = 'Züge';
+$zz['fields'][6]['title'] = 'Moves';
 $zz['fields'][6]['field_name'] = 'zuege';
 $zz['fields'][6]['type'] = 'number';
 

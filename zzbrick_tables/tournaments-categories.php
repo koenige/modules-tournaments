@@ -47,6 +47,7 @@ $zz['fields'][3]['hide_in_list'] = true;
 
 $zz['fields'][4]['field_name'] = 'property';
 
+$zz['fields'][5]['title'] = 'Type';
 $zz['fields'][5]['field_name'] = 'type_category_id';
 $zz['fields'][5]['type'] = 'select';
 $zz['fields'][5]['sql'] = 'SELECT category_id, category

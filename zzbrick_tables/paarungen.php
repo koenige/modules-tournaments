@@ -13,7 +13,7 @@
  */
 
 
-$zz['title'] = 'Paarungen';
+$zz['title'] = 'Pairings';
 $zz['table'] = 'paarungen';
 
 if (!isset($values['where'])) $values['where'] = '';
@@ -22,7 +22,7 @@ $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'paarung_id';
 $zz['fields'][1]['type'] = 'id';
 
-$zz['fields'][2]['title'] = 'Termin';
+$zz['fields'][2]['title'] = 'Event';
 $zz['fields'][2]['field_name'] = 'event_id';
 $zz['fields'][2]['type'] = 'select';
 $zz['fields'][2]['sql'] = wrap_sql_query('tournaments_zzform_event');
@@ -30,7 +30,7 @@ $zz['fields'][2]['display_field'] = 'event';
 $zz['fields'][2]['if']['where']['hide_in_list'] = true;
 $zz['fields'][2]['if']['where']['hide_in_form'] = true;
 
-$zz['fields'][15]['title'] = 'Runde';
+$zz['fields'][15]['title'] = 'Round';
 $zz['fields'][15]['title_tab'] = 'Rd.';
 $zz['fields'][15]['field_name'] = 'runde_no';
 $zz['fields'][15]['type'] = 'number';
@@ -46,16 +46,17 @@ $zz['fields'][3]['sql'] = 'SELECT contact_id, contact
 $zz['fields'][3]['type'] = 'select';
 $zz['fields'][3]['hide_in_list'] = true;
 
+$zz['fields'][4]['title'] = 'Start of game';
 $zz['fields'][4]['field_name'] = 'spielbeginn';
 $zz['fields'][4]['type'] = 'time';
 $zz['fields'][4]['hide_in_list'] = true;
 
-$zz['fields'][5]['title'] = 'Tisch';
+$zz['fields'][5]['title'] = 'Table';
 $zz['fields'][5]['field_name'] = 'tisch_no';
 $zz['fields'][5]['type'] = 'number';
 $zz['fields'][5]['auto_value'] = 'increment';
 
-$zz['fields'][6]['title'] = 'Heimteam';
+$zz['fields'][6]['title'] = 'Home team';
 $zz['fields'][6]['field_name'] = 'heim_team_id';
 $zz['fields'][6]['type'] = 'select';
 $zz['fields'][6]['sql'] = 'SELECT team_id
@@ -70,7 +71,7 @@ $zz['fields'][6]['display_field'] = 'heimteam';
 $zz['fields'][6]['search'] = 'heimteams.identifier';
 $zz['fields'][6]['character_set'] = 'latin1';
 
-$zz['fields'][7]['title'] = 'Auswärtsteam';
+$zz['fields'][7]['title'] = 'Away Team';
 $zz['fields'][7]['field_name'] = 'auswaerts_team_id';
 $zz['fields'][7]['type'] = 'select';
 $zz['fields'][7]['sql'] = 'SELECT team_id
@@ -85,6 +86,7 @@ $zz['fields'][7]['display_field'] = 'auswaertsteam';
 $zz['fields'][7]['search'] = 'auswaertsteams.identifier';
 $zz['fields'][7]['character_set'] = 'latin1';
 
+$zz['fields'][8]['title'] = 'Remarks';
 $zz['fields'][8]['field_name'] = 'kommentar';
 $zz['fields'][8]['type'] = 'memo';
 $zz['fields'][8]['hide_in_list'] = true;

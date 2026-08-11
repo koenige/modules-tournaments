@@ -13,13 +13,14 @@
  */
 
 
-$zz['title'] = 'Partien';
+$zz['title'] = 'Games';
 $zz['table'] = 'partien';
 
 $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'partie_id';
 $zz['fields'][1]['type'] = 'id';
 
+$zz['fields'][2]['title'] = 'Pairing';
 $zz['fields'][2]['field_name'] = 'paarung_id';
 $zz['fields'][2]['type'] = 'write_once';
 $zz['fields'][2]['type_detail'] = 'select';
@@ -38,7 +39,7 @@ $zz['fields'][3]['display_field'] = 'event';
 $zz['fields'][3]['if']['where']['hide_in_list'] = true;
 $zz['fields'][3]['if']['where']['hide_in_form'] = true;
 
-$zz['fields'][4]['title'] = 'Runde';
+$zz['fields'][4]['title'] = 'Round';
 $zz['fields'][4]['title_tab'] = 'Rd.';
 $zz['fields'][4]['field_name'] = 'runde_no';
 $zz['fields'][4]['type'] = 'write_once';
@@ -46,11 +47,11 @@ $zz['fields'][4]['type_detail'] = 'number';
 $zz['fields'][4]['if']['where']['hide_in_list'] = true;
 $zz['fields'][4]['if']['where']['hide_in_form'] = true;
 
-$zz['fields'][5]['title'] = 'Brett';
+$zz['fields'][5]['title'] = 'Board';
 $zz['fields'][5]['field_name'] = 'brett_no';
 $zz['fields'][5]['type'] = 'number';
 
-$zz['fields'][6]['title'] = 'Weiß';
+$zz['fields'][6]['title'] = 'White';
 $zz['fields'][6]['field_name'] = 'weiss_person_id';
 $zz['fields'][6]['display_field'] = 'weiss';
 $zz['fields'][6]['type'] = 'select';
@@ -60,20 +61,20 @@ $zz['fields'][6]['sql'] = 'SELECT person_id, contact
 	ORDER BY identifier';
 $zz['fields'][6]['search'] = 'CONCAT(weiss.t_vorname, " ", IFNULL(CONCAT(weiss.t_namenszusatz, " "), ""), weiss.t_nachname)';
 
-$zz['fields'][7]['title_tab'] = 'Ergebnis';
-$zz['fields'][7]['title'] = 'Ergebnis Weiß';
+$zz['fields'][7]['title_tab'] = 'Result';
+$zz['fields'][7]['title'] = 'Result White';
 $zz['fields'][7]['field_name'] = 'weiss_ergebnis';
 $zz['fields'][7]['type'] = 'number';
 $zz['fields'][7]['null'] = true;
 $zz['fields'][7]['list_append_next'] = true;
 $zz['fields'][7]['list_suffix'] = ' : ';
 
-$zz['fields'][9]['title'] = 'Ergebnis Schwarz';
+$zz['fields'][9]['title'] = 'Result Black';
 $zz['fields'][9]['field_name'] = 'schwarz_ergebnis';
 $zz['fields'][9]['type'] = 'number';
 $zz['fields'][9]['null'] = true;
 
-$zz['fields'][8]['title'] = 'Schwarz';
+$zz['fields'][8]['title'] = 'Black';
 $zz['fields'][8]['field_name'] = 'schwarz_person_id';
 $zz['fields'][8]['display_field'] = 'schwarz';
 $zz['fields'][8]['type'] = 'select';
@@ -83,15 +84,16 @@ $zz['fields'][8]['sql'] = 'SELECT person_id, contact
 	ORDER BY identifier';
 $zz['fields'][8]['search'] = 'CONCAT(schwarz.t_vorname, " ", IFNULL(CONCAT(schwarz.t_namenszusatz, " "), ""), schwarz.t_nachname)';
 
-$zz['fields'][10]['title'] = 'Farbe Heimspieler';
+$zz['fields'][10]['title'] = 'Color Home Player';
 $zz['fields'][10]['field_name'] = 'heim_spieler_farbe';
 $zz['fields'][10]['type'] = 'select';
 $zz['fields'][10]['enum'] = ['weiß','schwarz'];
+$zz['fields'][10]['enum_title'] = [wrap_text('White'), wrap_text('Black')];
 $zz['fields'][10]['hide_in_list_if_empty'] = true;
 $zz['fields'][10]['if'][2]['hide_in_form'] = true;
 
-$zz['fields'][11]['title_tab'] = 'Erg. Team';
-$zz['fields'][11]['title'] = 'Teamwertung Heim';
+$zz['fields'][11]['title_tab'] = 'Team Result';
+$zz['fields'][11]['title'] = 'Home Team Score';
 $zz['fields'][11]['field_name'] = 'heim_wertung';
 $zz['fields'][11]['type'] = 'number';
 $zz['fields'][11]['null'] = true;
@@ -100,7 +102,7 @@ $zz['fields'][11]['list_suffix'] = ' : ';
 $zz['fields'][11]['hide_in_list_if_empty'] = true;
 $zz['fields'][11]['if'][2]['hide_in_form'] = true;
 
-$zz['fields'][12]['title'] = 'Teamwertung Auswärts';
+$zz['fields'][12]['title'] = 'Away Team Score';
 $zz['fields'][12]['field_name'] = 'auswaerts_wertung';
 $zz['fields'][12]['type'] = 'number';
 $zz['fields'][12]['null'] = true;
@@ -121,6 +123,7 @@ $zz['fields'][15]['field_name'] = 'pgn';
 $zz['fields'][15]['hide_in_list'] = true;
 $zz['fields'][15]['type'] = 'memo';
 
+$zz['fields'][14]['title'] = 'Remarks';
 $zz['fields'][14]['field_name'] = 'kommentar';
 $zz['fields'][14]['type'] = 'memo';
 $zz['fields'][14]['format'] = 'markdown';
@@ -133,42 +136,44 @@ $zz['fields'][16]['type'] = 'text';
 $zz['fields'][16]['replace_values'] = ['*' => ''];
 $zz['fields'][16]['hide_in_list_if_empty'] = true;
 
-$zz['fields'][17]['title'] = 'Halbzüge';
-$zz['fields'][17]['title_tab'] = 'HZ';
+$zz['fields'][17]['title'] = 'Half moves';
+$zz['fields'][17]['title_tab'] = ['HM', ['context' => 'Half moves']];
 $zz['fields'][17]['field_name'] = 'halbzuege';
 $zz['fields'][17]['type'] = 'number';
 $zz['fields'][17]['hide_in_list_if_empty'] = true;
 
-$zz['fields'][19]['title'] = 'Zeit Weiß';
+$zz['fields'][19]['title'] = 'Time White';
 $zz['fields'][19]['field_name'] = 'weiss_zeit';
 $zz['fields'][19]['type'] = 'time';
 $zz['fields'][19]['time_format'] = 'H:i:s';
 $zz['fields'][19]['hide_in_list_if_empty'] = true;
 
-$zz['fields'][20]['title'] = 'Zeit Schwarz';
+$zz['fields'][20]['title'] = 'Time Black';
 $zz['fields'][20]['field_name'] = 'schwarz_zeit';
 $zz['fields'][20]['type'] = 'time';
 $zz['fields'][20]['time_format'] = 'H:i:s';
 $zz['fields'][20]['hide_in_list_if_empty'] = true;
 
-$zz['fields'][18]['title'] = 'PGN-Ergebnis?';
+$zz['fields'][18]['title'] = 'PGN-Result?';
 $zz['fields'][18]['field_name'] = 'block_ergebnis_aus_pgn';
 $zz['fields'][18]['type'] = 'select';
 $zz['fields'][18]['enum'] = ['ja', 'nein'];
+$zz['fields'][18]['enum_title'] = [wrap_text('yes'), wrap_text('no')];
 $zz['fields'][18]['default'] = 'nein';
 $zz['fields'][18]['hide_in_list'] = true;
-$zz['fields'][18]['explanation'] = 'Falls ja, dürfen abweichende Ergebnisse aus PGN-Dateien nicht mehr übernommen werden.';
+$zz['fields'][18]['explanation'] = 'If so, deviating results from PGN files must no longer be adopted.';
 
-$zz['fields'][24]['title'] = 'Vertauschte Farben?';
+$zz['fields'][24]['title'] = 'Swapped Colors?';
 $zz['fields'][24]['field_name'] = 'vertauschte_farben';
 $zz['fields'][24]['type'] = 'select';
 $zz['fields'][24]['enum'] = ['ja', 'nein'];
+$zz['fields'][24]['enum_title'] = [wrap_text('yes'), wrap_text('no')];
 $zz['fields'][24]['default'] = 'nein';
 $zz['fields'][24]['hide_in_list'] = true;
-$zz['fields'][24]['explanation'] = 'Wurde fälschlich mit vertauschten Farben gespielt?';
+$zz['fields'][24]['explanation'] = 'Was the game played incorrectly with the colors swapped?';
 
 if (wrap_setting('tournaments_upload_pgn')) {
-	$zz['fields'][23]['title'] = 'PGN-Datei';
+	$zz['fields'][23]['title'] = 'PGN File';
 	$zz['fields'][23]['field_name'] = 'pgn';
 	$zz['fields'][23]['type'] = 'upload_image';
 	$zz['fields'][23]['path'] = [
@@ -194,11 +199,11 @@ if (wrap_setting('tournaments_upload_pgn')) {
 
 $zz['fields'][25]['title'] = 'URL';
 $zz['fields'][25]['field_name'] = 'url';
-$zz['fields'][25]['explanation'] = 'Falls online gespielt, Link zum Server';
+$zz['fields'][25]['explanation'] = 'If played online, link to the server';
 $zz['fields'][25]['type'] = 'url';
 $zz['fields'][25]['hide_in_list'] = true;
 
-$zz['fields'][98]['title'] = 'Ergebnis gemeldet';
+$zz['fields'][98]['title'] = 'Result reported';
 $zz['fields'][98]['field_name'] = 'ergebnis_gemeldet_um';
 $zz['fields'][98]['type'] = 'hidden';
 $zz['fields'][98]['type_detail'] = 'datetime';

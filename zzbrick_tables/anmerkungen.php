@@ -8,18 +8,19 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012, 2014-2015, 2017, 2019-2022, 2024 Gustaf Mossakowski
+ * @copyright Copyright © 2012, 2014-2015, 2017, 2019-2022, 2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
 
-$zz['title'] = 'Anmerkungen';
+$zz['title'] = 'Remarks';
 $zz['table'] = 'anmerkungen';
 
 $zz['fields'][1]['title'] = 'ID';
 $zz['fields'][1]['field_name'] = 'anmerkung_id';
 $zz['fields'][1]['type'] = 'id';
 
+$zz['fields'][2]['title'] = 'Remarks';
 $zz['fields'][2]['field_name'] = 'anmerkung';
 $zz['fields'][2]['type'] = 'memo';
 
@@ -54,7 +55,7 @@ $zz['fields'][9]['sql'] = 'SELECT participation_id, contact, event
 ';
 $zz['fields'][9]['display_field'] = 'contact';
 
-$zz['fields'][4]['title'] = 'Autor';
+$zz['fields'][4]['title'] = 'Author';
 $zz['fields'][4]['field_name'] = 'autor_person_id';
 $zz['fields'][4]['type'] = 'hidden';
 $zz['fields'][4]['type_detail'] = 'select';
@@ -71,17 +72,21 @@ if (!empty($_SESSION)) {
 	$zz['fields'][4]['default'] = $_SESSION['person_id'];
 }
 
+$zz['fields'][5]['title'] = 'Visibility';
 $zz['fields'][5]['field_name'] = 'sichtbarkeit';
 $zz['fields'][5]['type'] = 'select';
 $zz['fields'][5]['set'] = ['Team', 'Organisator'];
-$zz['fields'][5]['explanation'] = 'Keine Auswahl: nur für Veranstalter selbst sichtbar';
+$zz['fields'][5]['set_title'] = [wrap_text('Team'), wrap_text('Organiser')];
+$zz['fields'][5]['explanation'] = 'No selection: visible only to the organiser';
 
 $zz['fields'][6]['title'] = 'Status';
 $zz['fields'][6]['field_name'] = 'anmerkung_status';
 $zz['fields'][6]['type'] = 'select';
 $zz['fields'][6]['enum'] = ['offen', 'erledigt'];
+$zz['fields'][6]['enum_title'] = [wrap_text('open'), wrap_text('done')];
 $zz['fields'][6]['default'] = 'offen';
 
+$zz['fields'][7]['title'] = 'Created';
 $zz['fields'][7]['field_name'] = 'erstellt';
 $zz['fields'][7]['type'] = 'hidden';
 $zz['fields'][7]['type_detail'] = 'datetime';
@@ -89,10 +94,12 @@ $zz['fields'][7]['default'] = date('Y-m-d H:i:s');
 $zz['fields'][7]['display_field'] = 'erstellt_de';
 $zz['fields'][7]['exclude_from_search'] = true;
 
+$zz['fields'][10]['title'] = 'Notification';
 $zz['fields'][10]['field_name'] = 'benachrichtigung';
 $zz['fields'][10]['type'] = 'option';
 $zz['fields'][10]['type_detail'] = 'select';
 $zz['fields'][10]['enum'] = ['ja', 'nein'];
+$zz['fields'][10]['enum_title'] = [wrap_text('yes'), wrap_text('no')];
 $zz['fields'][10]['default'] = 'nein';
 
 $zz['fields'][99]['field_name'] = 'last_update';

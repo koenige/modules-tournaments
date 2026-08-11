@@ -54,18 +54,18 @@ $zz['fields'][2]['hide_in_list'] = true;
 
 switch ($brick['data']['turnierform']) {
 case 'm-s':
-	$zz['fields'][3]['title'] = 'Schule';
-	$zz['fields'][4]['explanation'] = 'Falls leer, wird hier Name der Schule genommen.';
+	$zz['fields'][3]['title'] = 'School';
+	$zz['fields'][4]['explanation'] = 'If empty, the school name is used here.';
 	$zz['fields'][10] = false; // Regionalgruppe
 	$zz['fields'][11] = false; // Verband
 	break;
 case 'm-v':
-	$zz['fields'][3]['title'] = 'Verein';
-	$zz['fields'][4]['explanation'] = 'Falls leer, wird hier Name des Vereins genommen.';
+	$zz['fields'][3]['title'] = 'Club';
+	$zz['fields'][4]['explanation'] = 'If empty, the club name is used here.';
 	break;
 case 'm-a':
-	$zz['fields'][3]['title'] = 'Verband';
-	$zz['fields'][4]['explanation'] = 'Falls leer, wird hier Name des Verbands genommen.';
+	$zz['fields'][3]['title'] = 'Federation';
+	$zz['fields'][4]['explanation'] = 'If empty, the federation name is used here.';
 	$zz['fields'][10] = false; // Regionalgruppe
 	$zz['fields'][11] = false; // Verband
 	break;

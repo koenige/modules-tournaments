@@ -13,7 +13,7 @@
  */
 
 
-$zz['title'] = 'Turniere';
+$zz['title'] = 'Tournaments';
 $zz['table'] = '/*_PREFIX_*/tournaments';
 
 $zz['fields'][1]['title'] = 'ID';
@@ -34,8 +34,8 @@ $zz['fields'][2]['link'] = [
 ];
 $zz['fields'][2]['dont_show_where_class'] = true;
 
-$zz['fields'][3]['title'] = 'Turnierform';
-$zz['fields'][3]['title_tab'] = 'Form';
+$zz['fields'][3]['title'] = 'Tournament format';
+$zz['fields'][3]['title_tab'] = 'Format';
 $zz['fields'][3]['field_name'] = 'turnierform_category_id';
 $zz['fields'][3]['type'] = 'select';
 $zz['fields'][3]['sql'] = 'SELECT category_id, category, main_category_id
@@ -56,11 +56,11 @@ $zz['fields'][3]['search'] = 'turnierformen.category_short';
 $zz['fields'][3]['character_set'] = 'utf8';
 
 $zz['fields'][20]['title_tab'] = 'Rd.';
-$zz['fields'][20]['title'] = 'Runden';
+$zz['fields'][20]['title'] = 'Rounds';
 $zz['fields'][20]['field_name'] = 'runden';
 $zz['fields'][20]['type'] = 'number';
 
-$zz['fields'][4]['title'] = 'Modus';
+$zz['fields'][4]['title'] = 'Mode';
 $zz['fields'][4]['field_name'] = 'modus_category_id';
 $zz['fields'][4]['type'] = 'select';
 $zz['fields'][4]['sql'] = 'SELECT category_id, category, main_category_id
@@ -73,7 +73,7 @@ $zz['fields'][4]['search'] = 'modus.category_short';
 $zz['fields'][4]['character_set'] = 'utf8';
 
 $zz['fields'][49] = zzform_include('turniere-bedenkzeiten');
-$zz['fields'][49]['title'] = 'Bedenkzeit';
+$zz['fields'][49]['title'] = 'Time control';
 $zz['fields'][49]['type'] = 'subtable';
 $zz['fields'][49]['min_records'] = 1;
 $zz['fields'][49]['max_records'] = 10;
@@ -81,26 +81,30 @@ $zz['fields'][49]['form_display'] = 'horizontal';
 $zz['fields'][49]['hide_in_list'] = true;
 $zz['fields'][49]['fields'][2]['type'] = 'foreign_key';
 $zz['fields'][49]['sql'] .= $zz['fields'][49]['sqlorder'];
-$zz['fields'][49]['explanation'] = 'Zeit in Minuten, Bonus pro Zug in Sekunden';
+$zz['fields'][49]['explanation'] = 'Time in minutes, increment per move in seconds';
 
-$zz['fields'][5]['title_append'] = 'Alter';
-$zz['fields'][5]['title_tab'] = 'Alter';
+$zz['fields'][5]['title'] = 'Age min';
+$zz['fields'][5]['title_append'] = 'Age';
+$zz['fields'][5]['title_tab'] = 'Age';
 $zz['fields'][5]['field_name'] = 'alter_min';
 $zz['fields'][5]['append_next'] = true;
 $zz['fields'][5]['list_append_next'] = true;
-$zz['fields'][5]['explanation'] = 'Alter am 01.01. des Jahres';
+$zz['fields'][5]['explanation'] = 'Age on 1 January of the year';
 
+$zz['fields'][6]['title'] = 'Age max';
 $zz['fields'][6]['field_name'] = 'alter_max';
 $zz['fields'][6]['prefix'] = ' – ';
 $zz['fields'][6]['list_prefix'] = ' – ';
 
+$zz['fields'][7]['title'] = 'Sex';
 $zz['fields'][7]['field_name'] = 'geschlecht';
 $zz['fields'][7]['type'] = 'select';
 $zz['fields'][7]['set'] = ['m', 'w'];
-$zz['fields'][7]['set_title'] = ['männlich', 'weiblich'];
+$zz['fields'][7]['set_title'] = [wrap_text('Male'), wrap_text('Female')];
 $zz['fields'][7]['default'] = ['m', 'w'];
 $zz['fields'][7]['hide_in_list'] = true;
 
+$zz['fields'][8]['title'] = 'DWZ min';
 $zz['fields'][8]['title_append'] = 'DWZ';
 $zz['fields'][8]['title_tab'] = 'DWZ';
 $zz['fields'][8]['type'] = 'number';
@@ -109,12 +113,14 @@ $zz['fields'][8]['append_next'] = true;
 $zz['fields'][8]['list_append_next'] = true;
 $zz['fields'][8]['hide_in_list'] = true;
 
+$zz['fields'][9]['title'] = 'DWZ max';
 $zz['fields'][9]['field_name'] = 'dwz_max';
 $zz['fields'][9]['type'] = 'number';
 $zz['fields'][9]['prefix'] = ' – ';
 $zz['fields'][9]['list_prefix'] = ' – ';
 $zz['fields'][9]['hide_in_list'] = true;
 
+$zz['fields'][10]['title'] = 'Elo min';
 $zz['fields'][10]['title_append'] = 'Elo';
 $zz['fields'][10]['title_tab'] = 'Elo';
 $zz['fields'][10]['type'] = 'number';
@@ -123,6 +129,7 @@ $zz['fields'][10]['append_next'] = true;
 $zz['fields'][10]['list_append_next'] = true;
 $zz['fields'][10]['hide_in_list'] = true;
 
+$zz['fields'][11]['title'] = 'Elo max';
 $zz['fields'][11]['field_name'] = 'elo_max';
 $zz['fields'][11]['type'] = 'number';
 $zz['fields'][11]['prefix'] = ' – ';
@@ -144,19 +151,22 @@ $zz['fields'][21]['hide_in_list'] = true;
 $zz['fields'][21]['fields'][2]['type'] = 'foreign_key';
 $zz['fields'][21]['sql'] .= $zz['fields'][21]['sqlorder'];
 
+$zz['fields'][24]['title'] = 'Notation required';
 $zz['fields'][24]['field_name'] = 'notationspflicht';
 $zz['fields'][24]['type'] = 'select';
 $zz['fields'][24]['enum'] = ['ja', 'nein'];
+$zz['fields'][24]['enum_title'] = [wrap_text('yes'), wrap_text('no')];
 $zz['fields'][24]['default'] = 'ja';
 $zz['fields'][24]['hide_in_list'] = true;
 
+$zz['fields'][23]['title'] = 'Live boards';
 $zz['fields'][23]['field_name'] = 'livebretter';
 $zz['fields'][23]['type'] = 'text';
-$zz['fields'][23]['explanation'] = 'Bretter mit Liveübertragung, bspw. 1-6, 9, 11 oder 1.1-1.6 (Tisch.Brett)';
+$zz['fields'][23]['explanation'] = 'Boards with live broadcast, e.g. 1-6, 9, 11 or 1.1-1.6 (table.board)';
 $zz['fields'][23]['hide_in_list'] = true;
 
 $zz['fields'][28] = zzform_include('tournaments-identifiers');
-$zz['fields'][28]['title'] = 'Kennungen';
+$zz['fields'][28]['title'] = 'Identifiers';
 $zz['fields'][28]['class'] = 'kennungen';
 $zz['fields'][28]['type'] = 'subtable';
 $zz['fields'][28]['min_records'] = 1;
@@ -178,7 +188,7 @@ $zz['fields'][27]['help'] = 'tournaments/Additional Standings';
 $zz['fields'][27]['separator'] = true;
 
 if (wrap_setting('tournaments_upload_pgn')) {
-	$zz['fields'][25]['title'] = 'PGN-Datei';
+	$zz['fields'][25]['title'] = 'PGN file';
 	$zz['fields'][25]['field_name'] = 'pgnfile';
 	$zz['fields'][25]['dont_show_missing'] = true;
 	$zz['fields'][25]['type'] = 'upload_image';
@@ -197,7 +207,7 @@ if (wrap_setting('tournaments_upload_pgn')) {
 	$zz['fields'][25]['optional_image'] = true;
 	$zz['fields'][25]['image'][0]['title'] = 'pgn';
 	$zz['fields'][25]['image'][0]['field_name'] = 'pgn';
-	$zz['fields'][25]['title_tab'] = 'Dateien';
+	$zz['fields'][25]['title_tab'] = 'Files';
 	$zz['fields'][25]['if']['add']['hide_in_form'] = true;
 }
 
@@ -205,18 +215,18 @@ if (wrap_setting('tournaments_upload_pgn')) {
 // @todo show related files of a tournament in list view, automatically somehow
 $zz['fields'][22] = [];
 
-$zz['fields'][13]['title_tab'] = 'Bretter';
-$zz['fields'][13]['title_append'] = 'Bretter';
-$zz['fields'][13]['title'] = 'Bretter (min.)';
+$zz['fields'][13]['title_tab'] = 'Boards';
+$zz['fields'][13]['title_append'] = 'Boards';
+$zz['fields'][13]['title'] = 'Boards (min.)';
 $zz['fields'][13]['field_name'] = 'bretter_min';
 $zz['fields'][13]['type'] = 'number';
 $zz['fields'][13]['append_next'] = true;
 $zz['fields'][13]['list_append_next'] = true;
 $zz['fields'][13]['hide_in_list'] = true;
 $zz['fields'][13]['if'][2] = false;
-$zz['fields'][13]['explanation'] = 'Spieler / Spieler + Ersatzspieler';
+$zz['fields'][13]['explanation'] = 'Players / players + substitutes';
 
-$zz['fields'][16]['title'] = 'Bretter (max.)';
+$zz['fields'][16]['title'] = 'Boards (max.)';
 $zz['fields'][16]['field_name'] = 'bretter_max';
 $zz['fields'][16]['type'] = 'number';
 $zz['fields'][16]['prefix'] = ' – ';
@@ -224,11 +234,10 @@ $zz['fields'][16]['list_prefix'] = ' – ';
 $zz['fields'][16]['hide_in_list'] = true;
 $zz['fields'][16]['if'][2] = false;
 
-$zz['fields'][14]['title'] = 'Pseudo-DWZ';
+$zz['fields'][14]['title'] = 'Pseudo rating';
 $zz['fields'][14]['field_name'] = 'pseudo_dwz';
 $zz['fields'][14]['type'] = 'number';
-$zz['fields'][14]['explanation'] = 'Spieler, die keine DWZ haben, werden mit der 
-Pseudozahl geführt, um einen realistischeren Mannschafts-DWZ-Schnitt zu berechnen.';
+$zz['fields'][14]['explanation'] = 'Players without a rating are assigned the pseudo value to calculate a more realistic team rating average.';
 $zz['fields'][14]['hide_in_list'] = true;
 $zz['fields'][14]['if'][2] = false;
 
@@ -238,12 +247,14 @@ $zz['fields'][52]['type'] = 'number';
 $zz['fields'][52]['hide_in_list'] = true;
 $zz['fields'][52]['if'][2] = false;
 
-$zz['fields'][15]['title_tab'] = 'Gast?';
+$zz['fields'][15]['title'] = 'Guest players';
+$zz['fields'][15]['title_tab'] = 'Guest?';
 $zz['fields'][15]['field_name'] = 'gastspieler';
 $zz['fields'][15]['type'] = 'select';
 $zz['fields'][15]['enum'] = ['ja', 'nein'];
+$zz['fields'][15]['enum_title'] = [wrap_text('yes'), wrap_text('no')];
 $zz['fields'][15]['default'] = 'nein';
-$zz['fields'][15]['explanation'] = 'Sind Gastspieler von anderen Vereinen erlaubt?';
+$zz['fields'][15]['explanation'] = 'Are guest players from other clubs allowed?';
 $zz['fields'][15]['hide_in_list'] = true;
 $zz['fields'][15]['if'][2] = false;
 
@@ -257,39 +268,49 @@ $zz['fields'][50]['explanation'] = 'Points awarded when a team receives a pairin
 $zz['fields'][50]['hide_in_list'] = true;
 $zz['fields'][50]['if'][2] = false;
 
+$zz['fields'][29]['title'] = 'Room booking';
 $zz['fields'][29]['field_name'] = 'zimmerbuchung';
 $zz['fields'][29]['type'] = 'select';
 $zz['fields'][29]['enum'] = ['ja', 'nein'];
+$zz['fields'][29]['enum_title'] = [wrap_text('yes'), wrap_text('no')];
 $zz['fields'][29]['default'] = 'ja';
 $zz['fields'][29]['hide_in_list'] = true;
-$zz['fields'][29]['explanation'] = 'Sollen für die Teams Zimmerbuchungen abgegeben werden?';
+$zz['fields'][29]['explanation'] = 'Should teams submit room bookings?';
 $zz['fields'][29]['if'][2] = false;
 
-$zz['fields'][19]['title_tab'] = 'TN?';
+$zz['fields'][19]['title'] = 'Participant list';
+$zz['fields'][19]['title_tab'] = 'PL?';
 $zz['fields'][19]['field_name'] = 'teilnehmerliste';
 $zz['fields'][19]['type'] = 'select';
 $zz['fields'][19]['enum'] = ['ja', 'nein'];
+$zz['fields'][19]['enum_title'] = [wrap_text('yes'), wrap_text('no')];
 $zz['fields'][19]['default'] = 'nein';
 $zz['fields'][19]['hide_in_list'] = true;
-$zz['fields'][19]['explanation'] = 'Soll eine Teilnehmerliste angezeigt werden?';
+$zz['fields'][19]['explanation'] = 'Should a participant list be shown?';
 $zz['fields'][19]['if'][2] = false;
 
+$zz['fields'][44]['title'] = 'Player photos';
 $zz['fields'][44]['field_name'] = 'spielerphotos';
 $zz['fields'][44]['type'] = 'select';
 $zz['fields'][44]['enum'] = ['ja', 'nein'];
+$zz['fields'][44]['enum_title'] = [wrap_text('yes'), wrap_text('no')];
 $zz['fields'][44]['hide_in_list'] = true;
 $zz['fields'][44]['default'] = 'nein';
 
+$zz['fields'][45]['title'] = 'Team photos';
 $zz['fields'][45]['field_name'] = 'teamphotos';
 $zz['fields'][45]['type'] = 'select';
 $zz['fields'][45]['enum'] = ['ja', 'nein'];
+$zz['fields'][45]['enum_title'] = [wrap_text('yes'), wrap_text('no')];
 $zz['fields'][45]['hide_in_list'] = true;
 $zz['fields'][45]['default'] = 'nein';
 $zz['fields'][45]['if'][2] = false;
 
+$zz['fields'][46]['title'] = 'Player messages';
 $zz['fields'][46]['field_name'] = 'spielernachrichten';
 $zz['fields'][46]['type'] = 'select';
 $zz['fields'][46]['enum'] = ['ja', 'nein'];
+$zz['fields'][46]['enum_title'] = [wrap_text('yes'), wrap_text('no')];
 $zz['fields'][46]['default'] = 'nein';
 $zz['fields'][46]['hide_in_list'] = true;
 $zz['fields'][46]['separator'] = true;
@@ -308,6 +329,7 @@ $zz['fields'][40]['hide_in_form'] = true;
 $zz['fields'][40]['hide_zeros'] = true;
 $zz['fields'][40]['exclude_from_search'] = true;
 
+$zz['fields'][41]['title'] = 'Players';
 $zz['fields'][41]['field_name'] = 'spieler';
 $zz['fields'][41]['type'] = 'display';
 $zz['fields'][41]['type_detail'] = 'number';
@@ -327,6 +349,7 @@ if (!empty($zz['fields'][43])) {
 	$zz['fields'][43]['if']['add']['hide_in_form'] = true;
 }
 
+$zz['fields'][47]['title'] = 'Errors';
 $zz['fields'][47]['field_name'] = 'fehler';
 $zz['fields'][47]['type'] = 'memo';
 $zz['fields'][47]['rows'] = 4;
@@ -334,15 +357,18 @@ $zz['fields'][47]['format'] = 'markdown';
 $zz['fields'][47]['hide_in_list'] = true;
 $zz['fields'][47]['if']['add']['hide_in_form'] = true;
 
-$zz['fields'][48]['title_tab'] = 'K?';
+$zz['fields'][48]['title'] = 'Complete';
+$zz['fields'][48]['title_tab'] = 'C?';
 $zz['fields'][48]['field_name'] = 'komplett';
 $zz['fields'][48]['type'] = 'select';
 $zz['fields'][48]['dont_copy'] = true;
 $zz['fields'][48]['enum'] = ['ja', 'nein'];
+$zz['fields'][48]['enum_title'] = [wrap_text('yes'), wrap_text('no')];
 $zz['fields'][48]['default'] = 'nein';
-$zz['fields'][48]['explanation'] = 'Turnier abgeschlossen, gesperrt für Änderungen';
+$zz['fields'][48]['explanation'] = 'Tournament finished, locked for changes';
 $zz['fields'][48]['if']['add']['hide_in_form'] = true;
 
+$zz['fields'][51]['title'] = 'Round no. of the standings';
 $zz['fields'][51]['field_name'] = 'tabellenstand_runde_no';
 $zz['fields'][51]['hide_in_list'] = true;
 $zz['fields'][51]['hide_in_form'] = true;

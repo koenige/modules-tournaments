@@ -33,11 +33,13 @@ $zz['fields'][6]['field_name'] = 'sender';
 $zz['fields'][6]['list_append_next'] = true;
 $zz['fields'][6]['list_suffix'] = '<br>';
 
+$zz['fields'][5]['title'] = 'E-mail';
 $zz['fields'][5]['field_name'] = 'email';
 $zz['fields'][5]['type'] = 'mail';
 $zz['fields'][5]['list_append_next'] = true;
 $zz['fields'][5]['list_suffix'] = '<br>';
 
+$zz['fields'][2]['title'] = 'IP';
 $zz['fields'][2]['field_name'] = 'ip';
 $zz['fields'][2]['type'] = 'write_once';
 
@@ -67,7 +69,7 @@ $zz['fields'][11]['hide_in_list'] = true;
 
 $zz['fields'][12]['title'] = 'Missing image';
 $zz['fields'][12]['field_name'] = 'missing_image';
-$zz['fields'][12]['title_tab'] = 'B.';
+$zz['fields'][12]['title_tab'] = ['I.', ['context' => 'Missing image']];
 $zz['fields'][12]['type'] = 'select';
 $zz['fields'][12]['enum'] = ['yes', 'no'];
 $zz['fields'][12]['default'] = 'no';
@@ -75,7 +77,7 @@ $zz['fields'][12]['hide_in_list'] = true;
 
 $zz['fields'][13]['title'] = 'Processed';
 $zz['fields'][13]['field_name'] = 'processed';
-$zz['fields'][13]['title_tab'] = 'V.';
+$zz['fields'][13]['title_tab'] = ['P.', ['context' => 'Processed']];
 $zz['fields'][13]['hide_in_list'] = true;
 
 

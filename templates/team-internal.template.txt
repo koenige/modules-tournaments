@@ -146,7 +146,7 @@ Noch nicht angegeben.
 <table>
 <thead>
 <tr><th>Gruppe</th><th>Buchung</th><th>Kosten</th><th>Tage</th>
-<th><abbr title="weiblich">W</abbr></th> <th><abbr title="männlich">M</abbr></th> <th>Summe</th><th><abbr title="Status">St.</abbr></th>
+<th><abbr title="%%% text Female %%%">♀</abbr></th> <th><abbr title="%%% text Male %%%">♂</abbr></th> <th>%%% text Total %%%</th><th><abbr title="%%% text Status %%%">%%% text St. context=Status %%%</abbr></th>
 </tr>
 </thead>
 <tfoot>

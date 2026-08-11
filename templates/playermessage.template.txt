@@ -18,7 +18,8 @@
 <p>%%% text Thank you, also on behalf of all participants, for the many supporting player messages. %%%</p>
 
 %%% elseif mail_sent %%%
-<p>%%% text An e-mail with a confirmation link was sent to %%% <strong>%%% item mail %%%</strong>. %%% text Your message will only be delivered after you confirm your e-mail address. %%%<br>
+<p>%%% text "An e-mail with a confirmation link was sent to <strong>%s</strong>." mail %%%
+%%% text Your message will only be delivered after you confirm your e-mail address. %%%<br>
 %%% text If you have not received an e-mail after 5 minutes, please check your spam folder first. %%%</p>
 
 %%% elseif mail_address_invalid %%%
