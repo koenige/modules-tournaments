@@ -43,6 +43,8 @@ $zz['fields'][3]['sql'] = 'SELECT category_id, category, description, main_categ
 $zz['fields'][3]['show_hierarchy'] = 'main_category_id';
 $zz['fields'][3]['show_hierarchy_subtree'] = wrap_category_id('tournaments');
 $zz['fields'][3]['display_field'] = 'category';
+$zz['fields'][3]['search'] = 'categories.category';
+$zz['fields'][3]['character_set'] = 'utf8';
 $zz['fields'][3]['hide_in_list'] = true;
 
 $zz['fields'][4]['field_name'] = 'property';
