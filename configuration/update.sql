@@ -182,7 +182,5 @@
 /* 2026-08-12-4 */	UPDATE categories SET parameters = REPLACE(parameters, '&color=', '&tournaments_pdf_color=') WHERE parameters LIKE '%&color=%';
 /* 2026-08-12-5 */	UPDATE usergroups SET parameters = REPLACE(parameters, '&color[', '&tournaments_pdf_color[') WHERE parameters LIKE '%&color[%';
 /* 2026-08-12-6 */	UPDATE usergroups SET parameters = REPLACE(parameters, '&color=', '&tournaments_pdf_color=') WHERE parameters LIKE '%&color=%';
-/* 2026-08-12-7 */	UPDATE teams SET parameters = REPLACE(parameters, '&color[', '&tournaments_pdf_color[') WHERE parameters LIKE '%&color[%';
-/* 2026-08-12-8 */	UPDATE teams SET parameters = REPLACE(parameters, '&color=', '&tournaments_pdf_color=') WHERE parameters LIKE '%&color=%';
-/* 2026-08-12-9 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&ftp_pgn[', '&tournaments_ftp_pgn[') WHERE urkunde_parameter LIKE '%&ftp_pgn[%';
-/* 2026-08-12-10 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&ftp_other[', '&tournaments_ftp_other[') WHERE urkunde_parameter LIKE '%&ftp_other[%';
+/* 2026-08-12-7 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&ftp_pgn[', '&tournaments_ftp_pgn[') WHERE urkunde_parameter LIKE '%&ftp_pgn[%';
+/* 2026-08-12-8 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&ftp_other[', '&tournaments_ftp_other[') WHERE urkunde_parameter LIKE '%&ftp_other[%';
