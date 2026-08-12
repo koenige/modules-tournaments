@@ -268,8 +268,8 @@ function mf_tournaments_export_pdf_place_cards_team($ops) {
 		$teams[$team_id]['club_line'] = $team['country'] !== $teams[$team_id]['team'] ? $team['country'] : '';
 		$teams[$team_id]['ratings'] = [];
 		parse_str($team['parameters'], $team['parameters']);
-		if (empty($team['parameters']['color'])) $team['parameters']['color'] = '#CC0000';
-		$teams[$team_id]['colors'] = mf_tournaments_colors_hex2dec($team['parameters']['color']);
+		if (empty($team['parameters']['tournaments_pdf_color'])) $team['parameters']['tournaments_pdf_color'] = '#CC0000';
+		$teams[$team_id]['colors'] = mf_tournaments_colors_hex2dec($team['parameters']['tournaments_pdf_color']);
 		if ($teams[$team_id]['club_line'])
 			$teams['has_club_line'] = true;
 	}

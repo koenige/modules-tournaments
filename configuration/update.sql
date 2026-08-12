@@ -176,3 +176,13 @@
 /* 2026-08-11-18 */	UPDATE categories SET parameters = REPLACE(parameters, '&single=1', '&tournaments_type_single=1') WHERE parameters LIKE '%&single=1%';
 /* 2026-08-11-19 */	UPDATE categories SET parameters = REPLACE(parameters, '&team=1', '&tournaments_type_team=1') WHERE parameters LIKE '%&team=1%';
 /* 2026-08-11-20 */	UPDATE categories SET parameters = REPLACE(parameters, '&team=0', '') WHERE parameters LIKE '%&team=0%';
+/* 2026-08-12-1 */	UPDATE usergroups SET parameters = REPLACE(parameters, '&pdf_group_line=', '&tournaments_pdf_group_line=') WHERE parameters LIKE '%&pdf_group_line=%';
+/* 2026-08-12-2 */	UPDATE categories SET parameters = REPLACE(parameters, '&aks[', '&tournaments_pdf_age_groups[') WHERE parameters LIKE '%&aks[%';
+/* 2026-08-12-3 */	UPDATE categories SET parameters = REPLACE(parameters, '&color[', '&tournaments_pdf_color[') WHERE parameters LIKE '%&color[%';
+/* 2026-08-12-4 */	UPDATE categories SET parameters = REPLACE(parameters, '&color=', '&tournaments_pdf_color=') WHERE parameters LIKE '%&color=%';
+/* 2026-08-12-5 */	UPDATE usergroups SET parameters = REPLACE(parameters, '&color[', '&tournaments_pdf_color[') WHERE parameters LIKE '%&color[%';
+/* 2026-08-12-6 */	UPDATE usergroups SET parameters = REPLACE(parameters, '&color=', '&tournaments_pdf_color=') WHERE parameters LIKE '%&color=%';
+/* 2026-08-12-7 */	UPDATE teams SET parameters = REPLACE(parameters, '&color[', '&tournaments_pdf_color[') WHERE parameters LIKE '%&color[%';
+/* 2026-08-12-8 */	UPDATE teams SET parameters = REPLACE(parameters, '&color=', '&tournaments_pdf_color=') WHERE parameters LIKE '%&color=%';
+/* 2026-08-12-9 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&ftp_pgn[', '&tournaments_ftp_pgn[') WHERE urkunde_parameter LIKE '%&ftp_pgn[%';
+/* 2026-08-12-10 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&ftp_other[', '&tournaments_ftp_other[') WHERE urkunde_parameter LIKE '%&ftp_other[%';

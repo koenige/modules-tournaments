@@ -19,8 +19,8 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 	$event['path'] = str_replace('/', '-', $event['identifier']);
 	
 	parse_str($event['tournament_parameter'], $parameter);
-	if (!empty($parameter['ftp_pgn'][0])) {
-		$ftp = parse_url($parameter['ftp_pgn'][0]);
+	if (!empty($parameter['tournaments_ftp_pgn'][0])) {
+		$ftp = parse_url($parameter['tournaments_ftp_pgn'][0]);
 	} else {
 		$ftp['user'] = $event['path'];
 	}

@@ -133,19 +133,19 @@ function mf_tournaments_pdf_logo($pdf, $logo, $card) {
  * @return array
  */
 function mf_tournaments_pdf_colors($parameters, $role) {
-	if (empty($parameters['color']))
+	if (empty($parameters['tournaments_pdf_color']))
 		$color = '#CC0000';
 	else {
 		$color = '';
-		if (is_array($parameters['color'])) {
+		if (is_array($parameters['tournaments_pdf_color'])) {
 			if ($role) {
-				foreach ($parameters['color'] as $index => $my_color) {
+				foreach ($parameters['tournaments_pdf_color'] as $index => $my_color) {
 					if ($index AND strstr($role, $index)) $color = $my_color;
 				}
 			}
-			if (!$color) $color = $parameters['color'][0];
+			if (!$color) $color = $parameters['tournaments_pdf_color'][0];
 		} else {
-			$color = $parameters['color'];
+			$color = $parameters['tournaments_pdf_color'];
 		}
 	}
 	return mf_tournaments_colors_hex2dec($color);
@@ -161,8 +161,8 @@ function mf_tournaments_pdf_colors($parameters, $role) {
 function mf_tournaments_pdf_agegroups($parameters, $age) {
 	$text = '';
 	if (!$age AND $age !== 0) return $text;
-	if (empty($parameters['aks'])) return $text;
-	foreach ($parameters['aks'] as $ak) {
+	if (empty($parameters['tournaments_pdf_age_groups'])) return $text;
+	foreach ($parameters['tournaments_pdf_age_groups'] as $ak) {
 		if ($ak >= $age) {
 			$text = $ak;
 			break;
@@ -203,11 +203,11 @@ function mf_tournaments_pdf_graphic($graphics, $card) {
  * @return string
  */
 function mf_tournaments_pdf_group_line($line) {
-	if (!empty($line['parameters']['pdf_group_line'])
-		AND array_key_exists($line['parameters']['pdf_group_line'], $line)
-		AND !empty($line[$line['parameters']['pdf_group_line']])) {
-		// e. g. pdf_group_line=event, pdf_group_line=role
-		return $line[$line['parameters']['pdf_group_line']];
+	if (!empty($line['parameters']['tournaments_pdf_group_line'])
+		AND array_key_exists($line['parameters']['tournaments_pdf_group_line'], $line)
+		AND !empty($line[$line['parameters']['tournaments_pdf_group_line']])) {
+		// e. g. tournaments_pdf_group_line=event, tournaments_pdf_group_line=role
+		return $line[$line['parameters']['tournaments_pdf_group_line']];
 	} elseif ($line['role'] AND $line['club']) {
 		// club is filled out, put role into group_line
 		return $line['role'];
@@ -229,8 +229,8 @@ function mf_tournaments_pdf_club_line($line) {
 		return $line['team'];
 	if ($line['club'])
 		return $line['club'];
-	if (!empty($line['parameters']['pdf_group_line'])) {
-		switch ($line['parameters']['pdf_group_line']) {
+	if (!empty($line['parameters']['tournaments_pdf_group_line'])) {
+		switch ($line['parameters']['tournaments_pdf_group_line']) {
 		case 'role':
 			 // do not show role twice
 			$line['role'] = false;

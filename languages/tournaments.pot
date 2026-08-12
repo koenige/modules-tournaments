@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zugzwang Project -- tournaments module\n"
-"POT-Creation-Date: 2026-07-30 20:49+0000\n"
+"POT-Creation-Date: 2026-08-11 21:05+0000\n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -1290,11 +1290,11 @@ msgid "No participants were selected for this export."
 msgstr ""
 
 #: zzform_export/pdf-name-tags.inc.php:55
-#: zzform_export/pdf-name-tags.inc.php:129
+#: zzform_export/pdf-name-tags.inc.php:130
 msgid "No name tags are available for these people."
 msgstr ""
 
-#: zzform_export/pdf-name-tags.inc.php:178
+#: zzform_export/pdf-name-tags.inc.php:179
 msgid "This name tag size is not supported for PDF export. Allowed sizes are: %s."
 msgstr ""
 

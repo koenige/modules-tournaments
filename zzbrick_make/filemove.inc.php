@@ -84,8 +84,8 @@ function mod_tournaments_make_filemove() {
 			parse_str($tournament['parameters'], $tournament['parameters']);
 
 		// move tournament info to other server already before tournament starts
-		if (!empty($tournament['parameters']['ftp_other'])) {
-			mod_tournaments_make_filemove_ftp_other($tournament, $tournament['parameters']['ftp_other']);
+		if (!empty($tournament['parameters']['tournaments_ftp_other'])) {
+			mod_tournaments_make_filemove_ftp_other($tournament, $tournament['parameters']['tournaments_ftp_other']);
 		}
 
 		if (empty($tournament['current_round'])) continue;
@@ -101,8 +101,8 @@ function mod_tournaments_make_filemove() {
 			mod_tournaments_make_filemove_final_pgn($tournament);
 		}
 		mod_tournaments_make_filemove_bulletin_pgn($tournament);
-		if (!empty($tournament['parameters']['ftp_pgn'])) {
-			mod_tournaments_make_filemove_ftp_pgn($tournament, $tournament['parameters']['ftp_pgn']);
+		if (!empty($tournament['parameters']['tournaments_ftp_pgn'])) {
+			mod_tournaments_make_filemove_ftp_pgn($tournament, $tournament['parameters']['tournaments_ftp_pgn']);
 		}
 	}
 	$page['text'] = '<p>PGN-Dateien verschoben</p>';
@@ -288,8 +288,8 @@ function mod_tournaments_make_filemove_ftp_pgn($tournament, $ftp_paths) {
  * upload other files to FTP server
  *
  * examples:
- * - ftp_other[0][source]=/2017/dvm-u20/tournament_c24.json
- * - ftp_other[0][dest]=ftp://dsjdvm2017:bla@54.194.223.217/%s/2017-dvm-u20.json
+ * - tournaments_ftp_other[0][source]=/2017/dvm-u20/tournament_c24.json
+ * - tournaments_ftp_other[0][dest]=ftp://dsjdvm2017:bla@54.194.223.217/%s/2017-dvm-u20.json
  * @param array $tournament
  * @param array $ftp_other
  * @return void
