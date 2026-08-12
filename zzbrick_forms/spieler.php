@@ -186,9 +186,9 @@ $zz['sql'] = 'SELECT participations.*
 		) AS age
 		, participation_status.category_short
 		, IFNULL(participation_status.description, participation_status.category) AS status_category
-		, (CASE WHEN LOCATE("&type=", contacts_categories.parameters) > 0 THEN
-			SUBSTRING_INDEX(SUBSTRING_INDEX(contacts_categories.parameters, "&type=", -1), "&", 1)
-			ELSE "*" END
+		, SUBSTRING_INDEX(CASE WHEN LOCATE("&alias=", contacts_categories.parameters) > 0 THEN
+			SUBSTRING_INDEX(SUBSTRING_INDEX(contacts_categories.parameters, "&alias=", -1), "&", 1)
+			ELSE contacts_categories.path END, "/", -1
 		) AS contact_scope
 	FROM participations
 	LEFT JOIN persons USING (contact_id)
