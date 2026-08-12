@@ -85,7 +85,7 @@ bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absage
 <td>%%% item e_mail %%% %%% item telefon "<br>%s" %%%</td>
 </tr>
 %%% loop end %%%
-%%% unless virtual %%%
+%%% unless contacts_virtual %%%
 %%% loop betreuer %%%
 <tr class="even"><td>* <strong>Betreuung vor Ort</strong></td> 
 <td>%%% item person %%%</td> <td>%%% item geburtsjahr %%%</td>
@@ -111,7 +111,7 @@ bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absage
 </table>
 </div>
 
-%%% unless virtual %%%
+%%% unless contacts_virtual %%%
 <h3>3. An- und Abreise %%% if bearbeiten_sonstige %%%<small>(<a href="reisedaten/">Bearbeiten</a>)</small>%%% endif %%%</h3>
 
 <div class="results">
@@ -184,7 +184,7 @@ Noch nicht angegeben.
 %%% endif %%%
 %%% endif %%%
 
-%%% if virtual %%%
+%%% if contacts_virtual %%%
 <h3>3. Meldung komplett</h3>
 %%% else %%%
 <h3>5. Meldung komplett</h3>
@@ -201,7 +201,7 @@ danach kann die Meldung nicht mehr bearbeitet werden!</strong></p>
 <p><strong>Es fehlen noch Daten in der Meldung:</strong></p>
 <ol>
 <li><a href="aufstellung/">Aufstellung</a>: %%% if aufstellung_komplett %%%<span class="komplett">Alles da, super!</span>%%% else %%%<span class="unvollstaendig">Hier fehlt noch was.</span>%%% endif %%%</li>
-%%% unless virtual %%%
+%%% unless contacts_virtual %%%
 <li><a href="kontakt/">Betreuung vor Ort</a>: %%% if betreuer_komplett %%%<span class="komplett">Alles da, super!</span>%%% else %%%
 <span class="unvollstaendig">Hier fehlt noch was.</span>
  %%% item betreuer_nicht_18 "Es muß ein volljähriger Betreuer dabei sein!" %%%

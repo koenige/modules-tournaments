@@ -312,8 +312,8 @@ function mf_tournaments_team_club_board_members($contact_ids) {
  * @return bool
  */
 function mf_tournaments_team_registration_complete($data) {
-	if ((!empty($data['betreuer_komplett']) OR !empty($data['virtual']))
-		AND (!empty($data['reisedaten_komplett']) OR !empty($data['virtual']))
+	if ((!empty($data['betreuer_komplett']) OR !empty($data['contacts_virtual']))
+		AND (!empty($data['reisedaten_komplett']) OR !empty($data['contacts_virtual']))
 		AND !empty($data['aufstellung_komplett'])
 		AND (empty($data['zimmerbuchung']) OR !empty($data['buchung_komplett']))
 	) {

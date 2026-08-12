@@ -22,6 +22,6 @@ sich bitte an uns unter
 wir fügen die Person dann gerne für Sie hinzu.</p>
 
 %%% else %%%
-<p class="fuss"><strong><a href="../">Zurück zur Team-Übersicht</a>%%% unless virtual %%%
+<p class="fuss"><strong><a href="../">Zurück zur Team-Übersicht</a>%%% unless contacts_virtual %%%
  | <a href="../reisedaten/">Weiter zum Schritt 3: Reisedaten</a>%%% endif %%%</strong></p>
 %%% endif %%%
