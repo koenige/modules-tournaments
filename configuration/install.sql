@@ -298,7 +298,7 @@ INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`
 INSERT INTO _relations (`master_db`, `master_table`, `master_field`, `detail_db`, `detail_table`, `detail_id_field`, `detail_field`, `delete`) VALUES ((SELECT DATABASE()), 'categories', 'category_id', (SELECT DATABASE()), 'tournaments_categories', 'tournament_category_id', 'type_category_id', 'no-delete');
 
 INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `parameters`, `sequence`, `last_update`) VALUES ('Tournaments', NULL, NULL, 'tournaments', '&alias=tournaments&use_subtree=1', NULL, NOW());
-INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `parameters`, `sequence`, `last_update`) VALUES ('Status', NULL, (SELECT category_id FROM categories c WHERE path = 'tournaments'), 'tournaments/status', '&alias=tournaments/status&own_type_category=1&form_display=set&min_records=1&max_records=10', NULL, NOW());
+INSERT INTO categories (`category`, `description`, `main_category_id`, `path`, `parameters`, `sequence`, `last_update`) VALUES ('Status', NULL, (SELECT category_id FROM categories c WHERE path = 'tournaments'), 'tournaments/status', '&alias=tournaments/status&own_type_category=1&zzform_def[form_display]=set&zzform_def[min_records]=1&zzform_def[max_records]=10', NULL, NOW());
 
 
 -- tournaments_scores --
