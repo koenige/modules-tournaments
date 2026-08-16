@@ -163,7 +163,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 		LEFT JOIN usergroups USING (usergroup_id)
 		LEFT JOIN categories
 			ON categories.category_id = contactdetails.channel_category_id
-			AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&zzform_def[type]=phone%%")
+			AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&zzform[type]=phone%%")
 		WHERE team_id IN (%s)
 		GROUP BY participation_id, contacts.contact_id
 		ORDER BY %s';
@@ -297,7 +297,7 @@ function mf_tournaments_team_club_board_members($contact_ids) {
 		LEFT JOIN usergroups USING (usergroup_id)
 		LEFT JOIN categories
 			ON categories.category_id = contactdetails.channel_category_id
-			AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&zzform_def[type]=phone%%")
+			AND (ISNULL(categories.parameters) OR categories.parameters LIKE "%%&zzform[type]=phone%%")
 		WHERE club_contact_id IN (%s)
 		AND usergroup_id IN (/*_ID usergroups verein-jugend _*/, /*_ID usergroups verein-vorsitz _*/)
 		GROUP BY participation_id';
