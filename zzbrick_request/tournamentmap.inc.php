@@ -105,7 +105,7 @@ function mod_tournaments_tournamentmap_json($params, $settings, $event) {
 		LEFT JOIN categories
 			ON contacts.contact_category_id = categories.category_id
 		WHERE NOT ISNULL(contacts.contact)
-		AND categories.parameters LIKE "%&organisation=1%"
+		AND categories.parameters LIKE "%&contacts_organisation=1%"
 		ORDER BY ok.identifier';
 	$organisationen = wrap_db_fetch($sql, 'contact_id');
 
