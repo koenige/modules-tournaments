@@ -79,7 +79,7 @@ function mf_tournaments_nametag_data($ops) {
 	    LEFT JOIN registrations
 	    	ON IFNULL(registrationvarchars.registration_id, registrationtexts.registration_id) = registrations.registration_id
 	    WHERE forms.event_id IN (%s)
-	    AND parameters LIKE "%%&name_tag=%%"
+	    AND parameters LIKE "%%&events_name_tag_line=%%"
 	';
 	$sql = sprintf($sql, implode(',', array_keys($events)));
 	$formfields = wrap_db_fetch($sql, ['participation_id', 'formfield_id']);
@@ -152,11 +152,11 @@ function mf_tournaments_nametag_data($ops) {
 			foreach ($formfields[$participation_id] as $formfield) {
 				if (!$formfield['text']) continue;
 				parse_str($formfield['parameters'], $formfield['parameters']);
-				if (empty($line[$formfield['parameters']['name_tag']]))
-					$line[$formfield['parameters']['name_tag']] = '';
+				if (empty($line[$formfield['parameters']['events_name_tag_line']]))
+					$line[$formfield['parameters']['events_name_tag_line']] = '';
 				else
-					$line[$formfield['parameters']['name_tag']] .= "\n";
-				$line[$formfield['parameters']['name_tag']] .= $formfield['formfield'].': '.str_replace("\n", ", ", $formfield['text']);
+					$line[$formfield['parameters']['events_name_tag_line']] .= "\n";
+				$line[$formfield['parameters']['events_name_tag_line']] .= $formfield['formfield'].': '.str_replace("\n", ", ", $formfield['text']);
 			}
 		}
 		$data[$participation_id] = $line;
