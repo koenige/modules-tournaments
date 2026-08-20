@@ -184,3 +184,5 @@
 /* 2026-08-12-6 */	UPDATE usergroups SET parameters = REPLACE(parameters, '&color=', '&tournaments_pdf_color=') WHERE parameters LIKE '%&color=%';
 /* 2026-08-12-7 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&ftp_pgn[', '&tournaments_ftp_pgn[') WHERE urkunde_parameter LIKE '%&ftp_pgn[%';
 /* 2026-08-12-8 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&ftp_other[', '&tournaments_ftp_other[') WHERE urkunde_parameter LIKE '%&ftp_other[%';
+/* 2026-08-19-1 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&pgn_preparation_function=', '&tournaments_pgn_preparation_function=') WHERE urkunde_parameter LIKE '%&pgn_preparation_function=%';
+/* 2026-08-19-2 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&pgn_match_round_table_board=', '&tournaments_pgn_match_round_table_board=') WHERE urkunde_parameter LIKE '%&pgn_match_round_table_board=%';
