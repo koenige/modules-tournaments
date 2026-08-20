@@ -22,19 +22,14 @@
  * @return array $event
  */
 function mf_tournaments_certificate($event) {
-	$sql = 'SELECT runden
-			, tournaments.tabellenstaende, alter_max AS age_max
-			, IF(tournaments.geschlecht = "w", 1, NULL) AS weiblich
+	$sql = 'SELECT runden AS tournaments_rounds
+			, tournaments.tabellenstaende AS tournaments_standings
+			, alter_max AS certificates_age_max
+			, IF(tournaments.geschlecht = "w", 1, NULL) AS certificates_female
 		FROM tournaments
 		WHERE event_id = %d';
 	$sql = sprintf($sql, $event['event_id']);
 	$event += wrap_db_fetch($sql);
-
-	if (!empty($event['tournament_parameter'])) {
-		parse_str($event['tournament_parameter'], $parameter);
-		$event += $parameter;
-	}
-	unset($event['tournament_parameter']);
 	return $event;
 }
 
@@ -58,10 +53,10 @@ function mf_tournaments_certificate_applies($event) {
  */
 function mf_tournaments_certificate_types($event) {
 	$possible_types = ['platz'];
-	if (empty($event['tabellenstaende'])) return $possible_types;
+	if (empty($event['tournaments_standings'])) return $possible_types;
 
 	// @todo currently, only 'w' for female is supported
-	$tabellenstaende = explode(',', $event['tabellenstaende']);
+	$tabellenstaende = explode(',', $event['tournaments_standings']);
 	foreach ($tabellenstaende as $tabellenstand) {
 		if (!$tabellenstand) continue;
 		$possible_types[] = 'platz-'.$tabellenstand;
@@ -81,7 +76,7 @@ function mf_tournaments_certificate_data($event, $certificate) {
 		case 'w':
 			if (wrap_setting('certificates_placement_count_female'))
 				wrap_setting('certificates_placement_count', wrap_setting('certificates_placement_count_female'));
-			$event['weiblich'] = true;
+			$event['certificates_female'] = true;
 			break;
 	}
 	$filter = mf_tournaments_standings_filter($certificate['type_filter'] ?? false);
@@ -130,7 +125,7 @@ function mf_tournaments_certificate_data_team($event, $certificate) {
 			AND standings.runde_no = %d
 		WHERE teams.event_id = %d
 		ORDER BY rank_no, team, team_no';
-	$sql = sprintf($sql, $event['runden'], $event['event_id']);
+	$sql = sprintf($sql, $event['tournaments_rounds'], $event['event_id']);
 	return wrap_db_fetch($sql, 'team_id');
 	// @todo $certificate['sql_where']
 	// @todo ORDER BY
@@ -169,7 +164,7 @@ function mf_tournaments_certificate_data_single($event, $certificate) {
 		%s
 		%s
 	';
-	$sql = sprintf($sql, $event['runden']
+	$sql = sprintf($sql, $event['tournaments_rounds']
 		, $event['event_id']
 		, $certificate['sql_where'] ? ' AND '.implode(' AND ', $certificate['sql_where']) : ''
 		, $order_by_limit
