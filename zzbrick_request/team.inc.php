@@ -46,7 +46,7 @@ function mod_tournaments_team($vars, $settings, $data) {
 
 	$data = mf_tournaments_clubs_to_federations($data, 'contact_id');
 	$data[str_replace('-', '_', $data['turnierform'])] = true;
-	$data += mf_contacts_contactdetails($data['contact_id']);
+	$data += mf_contacts_contactdetails($data['contact_id'], ['published' => 1]);
 
 	$sql = 'SELECT bretter_min, bretter_max, alter_max, alter_min
 			, geschlecht
