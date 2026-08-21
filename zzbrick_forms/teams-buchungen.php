@@ -43,7 +43,7 @@ $zz['fields'][3]['sql'] = sprintf('SELECT costs.cost_id, product
 		AND type_category_id = /*_ID categories costs/buchungen _*/
 	LEFT JOIN categories
 		ON costs_categories.category_id = categories.category_id
-	WHERE categories.parameters LIKE "%%&teilnehmer=1%%"
+	WHERE categories.parameters LIKE "%%&events_fee_participant=1%%"
 	AND event_id = %d
 ', $brick['data']['event_id']);
 $zz['fields'][5]['default'] = $brick['data']['duration_days'];
