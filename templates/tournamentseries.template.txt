@@ -67,7 +67,7 @@
 %%% unless internal %%%
 </div>
 <div class="infocol infocol2">
-%%% request tournamentnews * %%%
+%%% show tournament-news * %%%
 %%% endif %%%
 
 %%% if pgn & path tournaments_pgns %%%

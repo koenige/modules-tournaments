@@ -13,31 +13,25 @@
  */
 
 
-function mod_tournaments_tournamentnews($params, $settings) {
+function mod_tournaments_show_tournament_news($params, $settings) {
 	$sql = 'SELECT articles.article_id
 		FROM articles
 		LEFT JOIN articles_events USING (article_id)
 		LEFT JOIN events USING (event_id)
-		LEFT JOIN articles_categories
-			ON articles_categories.article_id = articles.article_id
-			AND articles_categories.type_category_id = /*_ID categories publications _*/
 		WHERE events.identifier = "%d/%s"
 		AND articles.published = "yes"
-		AND articles_categories.category_id = /*_ID categories publications/tournament-news _*/
+		AND publication_id = /*_ID publications tournament-news _*/
 		ORDER BY date DESC';
 	$sql = sprintf($sql
 		, $params[0]
 		, wrap_db_escape($params[1])
 	);
 	$data = wrap_db_fetch($sql, 'article_id');
-	if (!$data) {
-		$page['text'] = ' ';
-		return $page;
-	}
+	if (!$data) return false;
 
 	wrap_include('data', 'zzwrap');
 	$data = wrap_data('articles', $data, $settings);
 	
-	$page['text'] = wrap_template('tournamentnews', $data);
+	$page['text'] = wrap_template('tournament-news', $data);
 	return $page;
 }
