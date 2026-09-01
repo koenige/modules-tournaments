@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2012-2025 Gustaf Mossakowski
+ * @copyright Copyright © 2012-2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -66,7 +66,7 @@ function mod_tournaments_teaminternal($vars, $settings, $data) {
 		LEFT JOIN categories
 			ON eventtexts.eventtext_category_id = categories.category_id
 		WHERE event_id = %d
-		AND published = "yes"';
+		AND eventtexts.published = "yes"';
 	$sql = sprintf($sql, $data['event_id']);
 	$texts = wrap_db_fetch($sql, 'eventtext_id');
 	foreach ($texts as $text) {
