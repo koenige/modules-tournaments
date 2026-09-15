@@ -123,11 +123,11 @@ function mf_tournaments_pgn_db($event_id, $round_no = false, $brett_no = false, 
 		LEFT JOIN contacts_identifiers weiss_fide_id
 			ON weiss_fide_id.contact_id = white_persons.contact_id
 			AND weiss_fide_id.current = "yes"
-			AND weiss_fide_id.identifier_category_id = /*_ID categories identifiers/id_fide _*/
+			AND weiss_fide_id.identifier_category_id = /*_ID categories identifiers/id-fide _*/
 		LEFT JOIN contacts_identifiers schwarz_fide_id
 			ON schwarz_fide_id.contact_id = black_persons.contact_id
 			AND schwarz_fide_id.current = "yes"
-			AND schwarz_fide_id.identifier_category_id = /*_ID categories identifiers/id_fide _*/
+			AND schwarz_fide_id.identifier_category_id = /*_ID categories identifiers/id-fide _*/
 		WHERE events.event_id = (%d)
 		%s
 		ORDER BY events.identifier, partien.runde_no, paarungen.tisch_no, partien.brett_no

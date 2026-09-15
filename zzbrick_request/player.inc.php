@@ -37,11 +37,11 @@ function mod_tournaments_player($vars, $settings, $event) {
 			, SUBSTRING_INDEX(events.identifier, "/", -1) AS turnier_kennung
 			, (SELECT identifier FROM contacts_identifiers zps
 				WHERE zps.contact_id = contacts.contact_id AND current = "yes"
-				AND identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+				AND identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 			) AS player_pass_dsb
 			, (SELECT identifier FROM contacts_identifiers fide
 				WHERE fide.contact_id = contacts.contact_id AND current = "yes"
-				AND identifier_category_id = /*_ID categories identifiers/id_fide _*/
+				AND identifier_category_id = /*_ID categories identifiers/id-fide _*/
 			) AS player_id_fide
 			, livebretter
 			, IF(spielerphotos = "ja", 1, NULL) AS spielerphotos

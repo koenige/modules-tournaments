@@ -74,10 +74,10 @@ function mod_tournaments_federations($params, $settings, $event) {
 				ON participations.club_contact_id = contacts.contact_id
 			LEFT JOIN contacts_identifiers ok
 				ON ok.contact_id = contacts.contact_id AND ok.current = "yes"
-				AND ok.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+				AND ok.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 			LEFT JOIN contacts_identifiers lvk
 				ON CONCAT(SUBSTRING(ok.identifier, 1, 1), "00") = lvk.identifier
-				AND lvk.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+				AND lvk.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 			LEFT JOIN contacts landesverbaende
 				ON lvk.contact_id = landesverbaende.contact_id AND lvk.current = "yes"
 			LEFT JOIN countries
@@ -99,10 +99,10 @@ function mod_tournaments_federations($params, $settings, $event) {
 				ON teams.club_contact_id = contacts.contact_id
 			LEFT JOIN contacts_identifiers ok
 				ON ok.contact_id = contacts.contact_id AND ok.current = "yes"
-				AND ok.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+				AND ok.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 			LEFT JOIN contacts_identifiers lvk
 				ON CONCAT(SUBSTRING(ok.identifier, 1, 1), "00") = lvk.identifier
-				AND lvk.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+				AND lvk.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 			LEFT JOIN contacts landesverbaende
 				ON lvk.contact_id = landesverbaende.contact_id AND lvk.current = "yes"
 			LEFT JOIN countries
@@ -159,10 +159,10 @@ function mod_tournaments_federations($params, $settings, $event) {
 						ON participations.club_contact_id = organisationen.contact_id
 					LEFT JOIN contacts_identifiers ok
 						ON ok.contact_id = organisationen.contact_id AND ok.current = "yes"
-						AND ok.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+						AND ok.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 					LEFT JOIN contacts_identifiers lvk
 						ON CONCAT(SUBSTRING(ok.identifier, 1, 1), "00") = lvk.identifier
-						AND lvk.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+						AND lvk.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 					LEFT JOIN contacts landesverbaende
 						ON lvk.contact_id = landesverbaende.contact_id AND lvk.current = "yes"
 					WHERE runde_no = %d

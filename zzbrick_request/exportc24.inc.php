@@ -111,7 +111,7 @@ function mod_tournaments_exportc24($vars, $settings, $event) {
 		LEFT JOIN contacts_identifiers
 			ON participations.contact_id = contacts_identifiers.contact_id
 			AND contacts_identifiers.current = "yes"
-			AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/id_fide _*/
+			AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/id-fide _*/
 		LEFT JOIN fide_players
 			ON contacts_identifiers.identifier = fide_players.player_id
 		WHERE event_id = %d

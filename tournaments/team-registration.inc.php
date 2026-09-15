@@ -149,12 +149,12 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 			, (SELECT identifier FROM contacts_identifiers
 				WHERE contacts_identifiers.contact_id = contacts.contact_id
 				AND contacts_identifiers.current = "yes"
-				AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+				AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 			) AS player_pass_dsb
 			, (SELECT identifier FROM contacts_identifiers
 				WHERE contacts_identifiers.contact_id = contacts.contact_id
 				AND contacts_identifiers.current = "yes"
-				AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/id_dsb _*/
+				AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/id-dsb _*/
 			) AS player_id_dsb
 		FROM participations
 		LEFT JOIN persons USING (contact_id)

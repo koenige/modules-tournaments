@@ -44,7 +44,7 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 		LEFT JOIN contacts_identifiers v_ok
 			ON v_ok.contact_id = organisationen.contact_id
 			AND v_ok.current = "yes"
-			AND v_ok.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+			AND v_ok.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 		LEFT JOIN tournaments USING (event_id)
 		WHERE teams.team_id = %d';
 	$sql = sprintf($sql, $data['team_id']);

@@ -101,7 +101,7 @@ function mod_tournaments_tournamentmap_json($params, $settings, $event) {
 			ON IFNULL(places.contact_id, contacts.contact_id) = addresses.contact_id
 		LEFT JOIN contacts_identifiers ok
 			ON ok.contact_id = contacts.contact_id AND current = "yes"
-			AND identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+			AND identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 		LEFT JOIN categories
 			ON contacts.contact_category_id = categories.category_id
 		WHERE NOT ISNULL(contacts.contact)
@@ -127,11 +127,11 @@ function mod_tournaments_tournamentmap_json($params, $settings, $event) {
 		LEFT JOIN teams USING (team_id)
 		LEFT JOIN contacts_identifiers zps
 			ON participations.contact_id = zps.contact_id
-			AND zps.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+			AND zps.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 			AND zps.current = "yes"
 		LEFT JOIN contacts_identifiers fide
 			ON participations.contact_id = fide.contact_id
-			AND fide.identifier_category_id = /*_ID categories identifiers/id_fide _*/
+			AND fide.identifier_category_id = /*_ID categories identifiers/id-fide _*/
 			AND fide.current = "yes"
 		WHERE main_event_id = %d
 		AND (ISNULL(teams.team_id) OR teams.meldung = "komplett" OR teams.meldung = "teiloffen")

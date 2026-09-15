@@ -34,7 +34,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 		LEFT JOIN contacts_contacts USING (contact_id)
 		LEFT JOIN contacts_identifiers ok
 			ON ok.contact_id = contacts.contact_id
-			AND ok.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+			AND ok.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 		LEFT JOIN countries USING (country_id)
 		WHERE (contacts.identifier = "%s" OR ok.identifier = "%s00")
 		AND ok.current = "yes"
@@ -123,7 +123,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 			LEFT JOIN contacts_identifiers vereine
 				ON contacts.contact_id = vereine.contact_id
 				AND vereine.current = "yes"
-				AND vereine.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+				AND vereine.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 			WHERE teams.event_id IN (%s)
 			AND (IF(NOT ISNULL(vereine.identifier), SUBSTRING(vereine.identifier, 1, 1) = "%s", contacts.country_id = %d))
 			AND teams.team_status IN ("Teilnehmer", "Teilnahmeberechtigt")
@@ -169,7 +169,7 @@ function mod_tournaments_federation($params, $settings, $data) {
 				ON participations.club_contact_id = contacts.contact_id 
 			LEFT JOIN contacts_identifiers vereine
 				ON contacts.contact_id = vereine.contact_id AND vereine.current = "yes"
-				AND vereine.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+				AND vereine.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 			WHERE participations.event_id IN (%s)
 			AND (IF(NOT ISNULL(vereine.identifier), SUBSTRING(vereine.identifier, 1, 1) = "%s", contacts.country_id = %d))
 			AND participations.usergroup_id = /*_ID usergroups spieler _*/
@@ -253,7 +253,7 @@ function mod_tournaments_federation_map($data) {
 		LEFT JOIN contacts_identifiers vereine
 			ON contacts.contact_id = vereine.contact_id
 			AND vereine.current = "yes"
-			AND vereine.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+			AND vereine.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 		WHERE participations.event_id IN (%s)
 		AND (teams.meldung = "komplett" OR teams.meldung = "teiloffen")
 		AND (IF(NOT ISNULL(vereine.identifier), SUBSTRING(vereine.identifier, 1, 1) = "%s", contacts.country_id = %d))

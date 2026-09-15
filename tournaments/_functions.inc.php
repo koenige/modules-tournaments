@@ -206,7 +206,7 @@ function mf_tournaments_federations($id_field_name = 'country_id') {
 		JOIN countries USING (country_id)
 		WHERE contact_category_id = /*_ID categories contact/federation _*/
 		AND contacts_identifiers.current = "yes"
-		AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+		AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 		AND contacts_contacts.main_contact_id = /*_SETTING clubs_confederation_contact_id _*/
 		AND contacts_contacts.relation_category_id = /*_ID categories relation/member _*/
 		ORDER BY country';

@@ -111,7 +111,7 @@ $zz['fields'][31]['subselect']['sql'] = 'SELECT participation_id
 	LEFT JOIN contacts_identifiers
 		ON contacts_identifiers.contact_id = participations.contact_id
 		AND contacts_identifiers.current = "yes"
-		AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/id_fide _*/
+		AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/id-fide _*/
 	LEFT JOIN fide_players
 		ON contacts_identifiers.identifier = fide_players.player_id';
 
@@ -174,7 +174,7 @@ $zz['sql'] = 'SELECT participations.*
 		, landesverbaende.contact_abbr AS landesverband
 		, (SELECT identifier FROM contacts_identifiers
 			WHERE contacts_identifiers.contact_id = contacts.contact_id
-			AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/id_fide _*/
+			AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/id-fide _*/
 			AND current = "yes"
 		) AS player_id_fide
 		, IFNULL(
@@ -202,11 +202,11 @@ $zz['sql'] = 'SELECT participations.*
 		ON organisationen.contact_id = participations.club_contact_id
 	LEFT JOIN contacts_identifiers ok
 		ON ok.contact_id = organisationen.contact_id AND current = "yes"
-		AND ok.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+		AND ok.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 	LEFT JOIN contacts_identifiers vk
 		ON SUBSTRING(ok.identifier, 1, 3) = vk.identifier
 		AND vk.current = "yes"
-		AND vk.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+		AND vk.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 	LEFT JOIN contacts verbaende
 		ON verbaende.contact_id = vk.contact_id
 	LEFT JOIN contacts landesverbaende

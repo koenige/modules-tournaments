@@ -77,11 +77,11 @@ foreach ($zz['fields'] as $no => $field) {
 				LEFT JOIN contacts_identifiers club_identifiers
 					ON dwz_spieler.ZPS = club_identifiers.identifier
 					AND club_identifiers.current = "yes"
-					AND club_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+					AND club_identifiers.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 				LEFT JOIN contacts_identifiers player_identifiers
 					ON player_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", IF(dwz_spieler.Mgl_Nr < 100, LPAD(dwz_spieler.Mgl_Nr, 3, "0"), dwz_spieler.Mgl_Nr))
 					AND player_identifiers.current = "yes"
-					AND player_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+					AND player_identifiers.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 				LEFT JOIN contacts
 					ON player_identifiers.contact_id = contacts.contact_id
 				LEFT JOIN participations
@@ -111,7 +111,7 @@ foreach ($zz['fields'] as $no => $field) {
 				LEFT JOIN contacts_identifiers
 					ON contacts_identifiers.identifier = CONCAT(dwz_spieler.ZPS, "-", IF(dwz_spieler.Mgl_Nr < 100, LPAD(dwz_spieler.Mgl_Nr, 3, "0"), dwz_spieler.Mgl_Nr))
 					AND contacts_identifiers.current = "yes"
-					AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass_dsb _*/
+					AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/pass-dsb _*/
 				ORDER BY Spielername';
 			$zz['fields'][$no]['sql_ignore'][] = 'voller_name';
 			$zz['fields'][$no]['key_field_name'] = 'contact_id';
