@@ -90,7 +90,7 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
  *
  * Parses and validates board numbers from $postdata['rank'], then:
  * - 'new': add a new player (by DSB match via matching_id, or manual add if allowed)
- * - 'dsb_id_<id>': add an existing club player by DSB id
+ * - 'nuliga_id_<id>': add an existing club player by nuLiga person ID
  * - 'tln_<id>': update rank of an existing participation or delete it when rank is empty
  *
  * Updates the database via helpers (insert/update/delete) and augments $data with
@@ -98,9 +98,9 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
  * made and no further user interaction is required, returns a redirect response.
  *
  * Expected $postdata (subset):
- * - rank[code]: string|int board number per code ('new'|'dsb_id_<id>'|'tln_<id>')
+ * - rank[code]: string|int board number per code ('new'|'nuliga_id_<id>'|'tln_<id>')
  * - guest_player[code]: 'on'|'off'
- * - matching_id: string|int (DSB player id when a match is chosen)
+ * - matching_id: string (nuLiga person ID when a match is chosen)
  * - first_name, last_name, sex, date_of_birth
  * - ergaenzen: truthy to add a non-DSB player
  * - cancel: truthy to abort current 'new' flow
@@ -142,7 +142,7 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 			$data['post_guest_player'] = mf_tournaments_guest_player($data, $postdata, $code, false);
 			// Neuer Spieler nicht aus Vereinsliste wird ergänzt
 			if (!empty($postdata['matching_id']) AND $rank_no) {
-				$player = mf_ratings_players_dsb(['player_id_dsb' => $postdata['matching_id']]);
+				$player = mf_ratings_players_dsb(['player_id_nuliga_person' => $postdata['matching_id']]);
 				if ($player) {
 					$player['date_of_birth'] = zz_check_date($postdata['date_of_birth']);
 					$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
@@ -151,10 +151,10 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 				}
 				continue;
 			} elseif (!empty($postdata['matching_id']) AND empty($postdata['cancel'])) {
-				$player = mf_ratings_players_dsb(['player_id_dsb' => $postdata['matching_id']]);
+				$player = mf_ratings_players_dsb(['player_id_nuliga_person' => $postdata['matching_id']]);
 				$data['new_match_without_rank'] = true;
 				$data['new_player_pass_dsb'] = $player['player_pass_dsb'];
-				$data['new_player_id_dsb'] = $player['player_id_dsb'];
+				$data['new_player_id_nuliga_person'] = $player['player_id_nuliga_person'];
 				$data['new_first_name'] = $player['first_name'];
 				$data['new_last_name'] = $player['last_name'];
 				$data['new_sex'] = $player['sex'];
@@ -208,10 +208,10 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 					}
 				}
 			}
-		} elseif (str_starts_with($code, 'dsb_id_') AND $rank_no) {
-			$player_id_dsb = substr($code, 7);
-			if (!array_key_exists($player_id_dsb, $data['club_players'])) continue;
-			$player = mf_ratings_players_dsb(['player_id_dsb' => $player_id_dsb]);
+		} elseif (str_starts_with($code, 'nuliga_id_') AND $rank_no) {
+			$player_id_nuliga_person = substr($code, strlen('nuliga_id_'));
+			if (!array_key_exists($player_id_nuliga_person, $data['club_players'])) continue;
+			$player = mf_ratings_players_dsb(['player_id_nuliga_person' => $player_id_nuliga_person]);
 			if ($player) {
 				$player['guest_player'] = mf_tournaments_guest_player($data, $postdata, $code);
 				$success = mf_tournaments_team_player_insert($player, $data, $rank_no);
@@ -305,7 +305,7 @@ function mod_tournaments_make_teamregistration_playersearch($data, $post) {
 	if ($post['date_of_birth'] AND $date = zz_check_date($post['date_of_birth']))
 		$filters['date_of_birth'] = $date;
 	if ($data['club_players'])
-		$filters['player_id_dsb_excluded'] = array_keys($data['club_players']);
+		$filters['player_id_nuliga_person_excluded'] = array_keys($data['club_players']);
 	$filters['last_name'] = $post['last_name'];
 	$filters['first_name'] = $post['first_name'];
 	
@@ -323,10 +323,10 @@ function mod_tournaments_make_teamregistration_club_players($data) {
 
 	$filters = [];
 	$filters['club_code_dsb'] = $data['zps_code'];
-	$filters['player_id_dsb_excluded'] = [];
+	$filters['player_id_nuliga_person_excluded'] = [];
 	foreach ($data['spieler'] as $player) {
-		if (empty($player['player_id_dsb'])) continue;
-		$filters['player_id_dsb_excluded'][] = $player['player_id_dsb'];
+		if (empty($player['player_id_nuliga_person'])) continue;
+		$filters['player_id_nuliga_person_excluded'][] = $player['player_id_nuliga_person'];
 	}
 	if ($data['alter_min']) $filters['min_age'] = $data['alter_min'];
 	if ($data['alter_max']) $filters['max_age'] = $data['alter_max'];

@@ -154,8 +154,8 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 			, (SELECT identifier FROM contacts_identifiers
 				WHERE contacts_identifiers.contact_id = contacts.contact_id
 				AND contacts_identifiers.current = "yes"
-				AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/id-dsb _*/
-			) AS player_id_dsb
+				AND contacts_identifiers.identifier_category_id = /*_ID categories identifiers/id-nuliga-person _*/
+			) AS player_id_nuliga_person
 		FROM participations
 		LEFT JOIN persons USING (contact_id)
 		LEFT JOIN contacts USING (contact_id)

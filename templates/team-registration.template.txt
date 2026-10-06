@@ -70,12 +70,12 @@
 %%% else %%%
 %%% loop club_players %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
-<td><input type="number" class="rangno" name="rank[dsb_id_%%% item player_id_dsb %%%]" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
+<td><input type="number" class="rangno" name="rank[nuliga_id_%%% item player_id_nuliga_person %%%]" title="%%% text No. %%%" placeholder="%%% text No. %%%"></td>
 <td>%%% item player_pass_dsb %%%</td>
 <td>%%% item first_name %%% %%% item last_name %%%</td> <td>%%% switch sex %%%%%% case male %%%M%%% case female %%%W%%% case diverse %%%D%%%switch end %%%</td>
 <td>%%% item birth_year %%%</td> <td>%%% item dsb_dwz %%%</td>
 %%% if main__guest_players_allowed %%%
-<td><input type='checkbox' name='guest_player[dsb_id_%%% item player_id_dsb %%%]'%%% item gastspieler " checked" %%%></td>
+<td><input type='checkbox' name='guest_player[nuliga_id_%%% item player_id_nuliga_person %%%]'%%% item gastspieler " checked" %%%></td>
 %%% endif %%%
 %%% loop end %%%
 %%% endif %%%
@@ -91,7 +91,7 @@
 <select name="matching_id">
 <option value="">Nichts ausgewählt</option>
 %%% loop new_matches %%%
-<option value="%%% item player_id_dsb %%%">%%% item first_name %%% %%% item last_name %%% (%%% item birth_year %%%) – %%% item club_contact %%%</option>
+<option value="%%% item player_id_nuliga_person %%%">%%% item first_name %%% %%% item last_name %%% (%%% item birth_year %%%) – %%% item club_contact %%%</option>
 %%% loop end %%%
 </select>
 <input type="hidden" name="date_of_birth" value="%%% item post_date_of_birth format=htmlspecialchars %%%">
@@ -103,7 +103,7 @@
 <td>%%% item new_player_pass_dsb %%%</td>
 <td>%%% item new_first_name %%% %%% item new_last_name %%%
 <p class="error explanation">Bitte geben Sie eine Ranglistennummer an!</p>
-<input type="hidden" name="matching_id" value="%%% item new_player_id_dsb %%%">
+<input type="hidden" name="matching_id" value="%%% item new_player_id_nuliga_person %%%">
 </td> <td>%%% switch new_sex %%%%%% case male %%%M%%% case female %%%W%%% case diverse %%%D%%%switch end %%%</td>
 <td><input type="hidden" name="date_of_birth" value="%%% item post_date_of_birth format=htmlspecialchars %%%">
 %%% item new_birth_year %%%</td> <td>%%% item new_dsb_dwz %%%</td>
