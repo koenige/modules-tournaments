@@ -182,7 +182,8 @@ function mf_tournaments_games_update($ops) {
 	$sql = 'SELECT identifier FROM events WHERE event_id = %d';
 	$sql = sprintf($sql, $event_id);
 	$identifier = wrap_db_fetch($sql, '', 'single value');
-	$url = wrap_path('tournaments_job_games', $identifier.'/'.$runde_no, ['check_rights' => false]);
+	$path_value = ($runde_no === '') ? $identifier : $identifier.'/'.$runde_no;
+	$url = wrap_path('tournaments_job_games', $path_value, ['check_rights' => false]);
 	wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien')]);
 }
 

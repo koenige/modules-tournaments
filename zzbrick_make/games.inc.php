@@ -25,6 +25,11 @@
 function mod_tournaments_make_games($vars, $settings, $event) {
 	wrap_setting('cache', false);
 	if (count($vars) < 2) return false;
+	if (count($vars) >= 3 && $vars[2] === '') {
+		$page['text'] = wrap_text('PGN import: Round missing from the job URL.');
+		$page['status'] = 404;
+		return $page;
+	}
 
 	ignore_user_abort(1);
 	ini_set('max_execution_time', 60);

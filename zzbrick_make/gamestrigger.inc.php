@@ -45,6 +45,7 @@ function mod_tournaments_make_gamestrigger() {
 
 	$data = [];
 	foreach ($tournaments as $event_id => $tournament) {
+		if (!$tournament['runde_no']) continue;
 		// @todo maybe disable next two lines to reduce server load
 		$url = wrap_path('tournaments_job_games', $tournament['identifier'].'/'.$tournament['runde_no'], ['check_rights' => false]);
 		wrap_job($url, ['trigger' => 1, 'job_category_id' => wrap_category_id('jobs/partien')]);
