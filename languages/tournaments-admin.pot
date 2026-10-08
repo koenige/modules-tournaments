@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zugzwang Project -- tournaments module\n"
-"POT-Creation-Date: 2026-08-19 14:47+0000\n"
+"POT-Creation-Date: 2026-10-08 08:18+0000\n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -541,7 +541,7 @@ msgstr ""
 msgid "Folder %s for file move does not exist."
 msgstr ""
 
-#: zzbrick_make/lineup.inc.php:345
+#: zzbrick_make/lineup.inc.php:343
 msgid "Could not set match (pairing ID %d, board no.: %d)"
 msgstr ""
 

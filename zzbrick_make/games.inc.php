@@ -382,7 +382,12 @@ function cms_partienupdate_pgnfind(&$games, $partie) {
 		unset($games[$index]);
 		return $pgn;
 	}
-	
+
+	$pgn = cms_partienupdate_pgnfind_fuzzy($games, $white, $black);
+	if ($pgn) return $pgn;
+	$pgn = cms_partienupdate_pgnfind_fuzzy($games, $black, $white, true);
+	if ($pgn) return $pgn;
+
 	// Round with Board?
 	if (wrap_setting('tournaments_pgn_match_round_table_board') AND !empty($partie['Round_With_Board'])) {
 		foreach ($games as $index => $game) {
@@ -395,6 +400,34 @@ function cms_partienupdate_pgnfind(&$games, $partie) {
 		}
 	}
 	
+	return [];
+}
+
+/**
+ * Find a game when PGN names use ? for corrupted umlauts (1–2 normalized characters)
+ *
+ * @param array $games
+ * @param string $white normalized name from the database
+ * @param string $black
+ * @param bool $vertauschte_farben swapped colours
+ * @return array
+ */
+function cms_partienupdate_pgnfind_fuzzy(&$games, $white, $black, $vertauschte_farben = false) {
+	foreach ($games as $index => $game) {
+		if (empty($game['head'])) continue;
+		if (strpos($game['head']['White'] ?? '', '?') === false
+			AND strpos($game['head']['Black'] ?? '', '?') === false) {
+			continue;
+		}
+		$pgn_white = cms_partienupdate_normalize_name_regex($game['head']['White'] ?? '');
+		$pgn_black = cms_partienupdate_normalize_name_regex($game['head']['Black'] ?? '');
+		if (!preg_match($pgn_white, $white) OR !preg_match($pgn_black, $black)) continue;
+		$pgn['head'] = $game['head'];
+		$pgn['moves'] = $game['moves'];
+		if ($vertauschte_farben) $pgn['vertauschte_farben'] = true;
+		unset($games[$index]);
+		return $pgn;
+	}
 	return [];
 }
 
@@ -414,6 +447,25 @@ function cms_partienupdate_normalize_name($name) {
 	if (in_array($name, array_keys($names))) return $names[$name];
 	$names[$name] = strtolower(wrap_filename(str_replace('-', '', $name), ''));
 	return $names[$name];
+}
+
+/**
+ * Regex for a normalized name; ? in the PGN source matches one or two characters
+ *
+ * @param string $name
+ * @return string anchored PCRE pattern
+ */
+function cms_partienupdate_normalize_name_regex($name) {
+	if (strpos($name, '?') === false) {
+		return '/^'.preg_quote(cms_partienupdate_normalize_name($name), '/').'$/u';
+	}
+	$parts = preg_split('/\?/u', $name);
+	$pattern = '';
+	foreach ($parts as $index => $part) {
+		if ($index > 0) $pattern .= '.{1,2}';
+		$pattern .= preg_quote(cms_partienupdate_normalize_name($part), '/');
+	}
+	return '/^'.$pattern.'$/u';
 }
 
 /**
