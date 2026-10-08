@@ -67,7 +67,6 @@ function mod_tournaments_make_lineup_active($params) {
 	$team_identifier = implode('/', $params);
 	if (!empty($teamdata[$team_identifier])) {
 		$page['text'] = $teamdata[$team_identifier];
-		$page['content_type'] = 'json';
 		return $page;
 	}
 	array_pop($params);
@@ -147,7 +146,6 @@ function mod_tournaments_make_lineup_active($params) {
 	$data += $round;
 	$data['current_round'] = $current_round;
 	$page['text'] = $teamdata[$team_identifier] = json_encode($data);
-	$page['content_type'] = 'json';
 	return $page;
 }
 
