@@ -28,6 +28,7 @@
 </nav>
 
 <p><a href="%%% path events_event identifier %%%">Turnier auf der öffentlichen Website</a></p>
+<p><small>Aktuelle Runde (<code>mf_tournaments_current_round</code>): <strong>%%% item round_no %%%</strong></small></p>
 </div>
 
 %%% endif %%%
