@@ -93,7 +93,14 @@ function mf_tournaments_final_standings($event_ids) {
 		FROM events
 		LEFT JOIN tournaments USING (event_id)
 		WHERE event_id IN (%s)
-		AND ((ISNULL(events.date_end) AND events.date_begin < CURDATE()) OR events.date_end < CURDATE())';
+		AND (
+			tournaments.tabellenstand_runde_no = tournaments.runden
+			AND (SELECT COUNT(*) FROM partien
+				WHERE partien.event_id = events.event_id
+				AND ISNULL(partien.weiss_ergebnis)) = 0
+			OR (ISNULL(events.date_end) AND events.date_begin < CURDATE())
+			OR events.date_end < CURDATE()
+		)';
 	$sql = sprintf($sql, implode(',', $event_ids));
 	$turniere = wrap_db_fetch($sql, 'event_id');
 	$standings = [];
