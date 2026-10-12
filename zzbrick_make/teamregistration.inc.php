@@ -208,8 +208,9 @@ function mod_tournaments_make_teamregistration($vars, $settings, $data) {
 					}
 				}
 			}
-		} elseif (str_starts_with($code, 'nuliga_id_') AND $rank_no) {
+		} elseif (str_starts_with($code, 'nuliga_id_') AND $rank_no AND $data['add']) {
 			$player_id_nuliga_person = substr($code, strlen('nuliga_id_'));
+			if (empty($data['club_players']) OR !is_array($data['club_players'])) continue;
 			if (!array_key_exists($player_id_nuliga_person, $data['club_players'])) continue;
 			$player = mf_ratings_players_dsb(['player_id_nuliga_person' => $player_id_nuliga_person]);
 			if ($player) {
