@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zugzwang Project -- tournaments module\n"
-"POT-Creation-Date: 2026-10-08 08:18+0000\n"
+"POT-Creation-Date: 2026-10-13 09:14+0000\n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -482,6 +482,7 @@ msgid "Link to ratings on website of World Chess Federation (FIDE)"
 msgstr ""
 
 #: configuration/settings.cfg:530
+#: configuration/settings.cfg:538
 msgid "Link to ratings on website of German Chess Federation (DSB)"
 msgstr ""
 
@@ -489,47 +490,47 @@ msgstr ""
 msgid "Link to ratings on website of German Chess Federation (DSB) for tournaments before 2011"
 msgstr ""
 
-#: configuration/settings.cfg:538
+#: configuration/settings.cfg:542
 msgid "Send mails with remarks to tournament registrations to this mail address"
 msgstr ""
 
-#: configuration/settings.cfg:547
+#: configuration/settings.cfg:551
 msgid "Request to enter addresses of participants"
 msgstr ""
 
-#: configuration/settings.cfg:551
+#: configuration/settings.cfg:555
 msgid "Show archive of main tournament, too"
 msgstr ""
 
-#: configuration/settings.cfg:557
+#: configuration/settings.cfg:561
 msgid "Include tournament in tournament statistics page; set to 0 to exclude"
 msgstr ""
 
-#: configuration/settings.cfg:563
+#: configuration/settings.cfg:567
 msgid "Team tournament is a league, e. g. not played en bloc but every n weeks"
 msgstr ""
 
-#: configuration/settings.cfg:568
+#: configuration/settings.cfg:572
 msgid "Folder for team files"
 msgstr ""
 
-#: configuration/settings.cfg:573
+#: configuration/settings.cfg:577
 msgid "It is a single tournament"
 msgstr ""
 
-#: configuration/settings.cfg:581
+#: configuration/settings.cfg:585
 msgid "It is a team tournament"
 msgstr ""
 
-#: configuration/settings.cfg:590
+#: configuration/settings.cfg:594
 msgid "Team registration upload: only show if this field is set in form data (only under tournament-uploads/*)"
 msgstr ""
 
-#: configuration/settings.cfg:596
+#: configuration/settings.cfg:600
 msgid "Allow to upload PGN files"
 msgstr ""
 
-#: configuration/settings.cfg:601
+#: configuration/settings.cfg:605
 msgid "Mark team registration upload as non-required"
 msgstr ""
 

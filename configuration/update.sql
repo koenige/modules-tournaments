@@ -186,3 +186,4 @@
 /* 2026-08-12-8 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&ftp_other[', '&tournaments_ftp_other[') WHERE urkunde_parameter LIKE '%&ftp_other[%';
 /* 2026-08-19-1 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&pgn_preparation_function=', '&tournaments_pgn_preparation_function=') WHERE urkunde_parameter LIKE '%&pgn_preparation_function=%';
 /* 2026-08-19-2 */	UPDATE tournaments SET urkunde_parameter = REPLACE(urkunde_parameter, '&pgn_match_round_table_board=', '&tournaments_pgn_match_round_table_board=') WHERE urkunde_parameter LIKE '%&pgn_match_round_table_board=%';
+/* 2026-10-13-1 */	ALTER TABLE `tournaments_identifiers` CHANGE `identifier` `identifier` varchar(36) COLLATE 'latin1_general_cs' NOT NULL AFTER `tournament_id`;

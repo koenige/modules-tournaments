@@ -123,6 +123,9 @@
 %%% if fide_tournament_link %%%
 <p><a href="%%% item fide_tournament_link %%%">Elo-Auswertung beim Weltschachbund FIDE</a></p>
 %%% endif %%%
+%%% if dwzalt_tournament_link %%%
+<p><a href="%%% item dwzalt_tournament_link %%%">DWZ-Auswertung beim Deutschen Schachbund</a> (Der DSB hat leider alle Links kaputt gemacht, wir arbeiten dran)</p>
+%%% endif %%%
 %%% if dwz_tournament_link %%%
 <p><a href="%%% item dwz_tournament_link %%%">DWZ-Auswertung beim Deutschen Schachbund</a></p>
 %%% endif %%%
