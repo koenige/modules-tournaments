@@ -67,6 +67,7 @@ spielfrei
 </tbody>
 </table>
 </form>
+%%% script default/form-submit-once.js %%%
 %%% else %%%
 <p class="note"><strong>Hinweis:</strong> Das Turnier hat noch nicht begonnen oder es liegen noch keine Rundendaten vor.
 Nach Beginn ist es möglich, hier die Ergebnisse live einzutragen.</p>

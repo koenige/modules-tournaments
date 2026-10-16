@@ -58,6 +58,7 @@
 </table>
 <input type="submit">
 </form>
+%%% script default/form-submit-once.js %%%
 </div>
 
 %%% elseif lineup_complete %%%
@@ -135,6 +136,7 @@
 %%% endif %%%
 <input type="submit">
 </form>
+%%% script default/form-submit-once.js %%%
 </div>
 
 %%% endif %%%

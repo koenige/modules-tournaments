@@ -19,6 +19,7 @@
 <br><input type="text" value="%%% item current_time format=date_plain %%% %%% item current_time format=time %%%" name="sent_date" id="sent_date"></label></p>
 <p><input type="submit" value="%%% text Mark messages as distributed %%%"></p>
 </form>
+%%% script default/form-submit-once.js %%%
 <hr>
 <p>%%% text Struck-through messages are not yet approved (e-mail confirmation pending). They can – if desired – also be approved manually (Verified: “yes”). %%%</p>
 

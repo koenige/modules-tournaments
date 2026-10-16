@@ -30,3 +30,4 @@
 <form method="POST">
 <input type="submit" name="delete" value="%%% text Empty the tournament %%%">
 </form>
+%%% script default/form-submit-once.js %%%

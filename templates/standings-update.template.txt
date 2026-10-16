@@ -27,6 +27,7 @@ zu sehen.</p>
 %%% loop end %%%
 </ul>
 </form>
+%%% script default/form-submit-once.js %%%
 
 %%% else %%%
 <p class="note"><strong>Hinweis:</strong> Es sind noch keine Partien vorhanden.</p>

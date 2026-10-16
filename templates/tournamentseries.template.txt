@@ -80,6 +80,7 @@
 <h2>Suche nach %%% unless e %%%Team oder %%% endif %%%Spieler</h2>
 <form method="GET" action="./suche/" id="suche" accept-charset="utf-8">
 <p><input type="search" size="30" name="q" value=""><input type="submit" value="suche"></p></form>
+%%% script default/form-submit-once.js %%%
 <p><a href="%%% if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% endif %%%lv/">Übersicht der %%% if setting tournaments_type_single %%%Spieler%%% else %%%Teams%%% endif %%% nach Landesverbänden</a></p>
 %%% if teilnehmerliste %%%
 <p><a href="%%% if series_path %%%/%%% item year %%%/%%% item series_path %%%/%%% endif %%%herkunftsorte/">Übersicht der Herkunftsorte der Teilnehmer</a></p>

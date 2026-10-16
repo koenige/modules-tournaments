@@ -47,4 +47,5 @@
 <form method="POST" action="%%% setting request_uri %%%">
 <input type="submit" name="submit" value="Ordner aktualisieren">
 </form>
+%%% script default/form-submit-once.js %%%
 </div>

@@ -147,6 +147,7 @@ M<input type="hidden" name="sex" value="male">
 </table>
 </div>
 </form>
+%%% script default/form-submit-once.js %%%
 </div>
 <p class="fuss"><strong><a href="../">Zurück zur Team-Übersicht</a> | <a href="../kontakt/">Weiter zum 2. Schritt: Kontaktdaten</a></strong></p>
 

@@ -43,6 +43,7 @@
 <input type="submit" value="%%% text Send %%%">
 <p>%%% text Messages submitted by 10 p.m. are usually delivered the next day. %%%</p>
 </form>
+%%% script default/form-submit-once.js %%%
 
 %%% endif %%%
 

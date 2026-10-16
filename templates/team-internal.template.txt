@@ -33,7 +33,9 @@ bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absage
 <textarea rows="6" cols="80" name="bemerkungen">
 </textarea>
 <p><input type="submit" value="Angaben übermitteln"></p>
-</form></div>
+</form>
+%%% script default/form-submit-once.js %%%
+</div>
 
 %%% elseif lineup %%%
 %%% make lineup * %%% 
@@ -216,6 +218,7 @@ danach kann die Meldung nicht mehr bearbeitet werden!</strong></p>
 </ol>
 %%% endif %%%
 </form>
+%%% script default/form-submit-once.js %%%
 
 %%% else %%%
 <p><em>(Außerhalb der Meldefrist kann diese Meldung nicht mehr verändert werden.)</em></p>

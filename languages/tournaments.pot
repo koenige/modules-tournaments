@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zugzwang Project -- tournaments module\n"
-"POT-Creation-Date: 2026-10-13 09:14+0000\n"
+"POT-Creation-Date: 2026-10-16 12:13+0000\n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -131,7 +131,7 @@ msgstr ""
 msgid "Messages submitted by 10 p.m. are usually delivered the next day."
 msgstr ""
 
-#: templates/playermessage.template.txt:49
+#: templates/playermessage.template.txt:50
 msgid "Back to"
 msgstr ""
 
@@ -149,7 +149,7 @@ msgstr ""
 msgid "Mark messages as distributed"
 msgstr ""
 
-#: templates/playermessage-form.template.txt:23
+#: templates/playermessage-form.template.txt:24
 msgid "Struck-through messages are not yet approved (e-mail confirmation pending). They can – if desired – also be approved manually (Verified: “yes”)."
 msgstr ""
 
@@ -169,30 +169,30 @@ msgstr ""
 msgid "Best regards"
 msgstr ""
 
-#: templates/team-internal.template.txt:149
+#: templates/team-internal.template.txt:151
 #: tournaments/_functions.inc.php:32
 #: zzbrick_tables/tournaments.php:103
 msgid "Female"
 msgstr ""
 
-#: templates/team-internal.template.txt:149
+#: templates/team-internal.template.txt:151
 #: tournaments/_functions.inc.php:36
 #: zzbrick_tables/tournaments.php:103
 msgid "Male"
 msgstr ""
 
-#: templates/team-internal.template.txt:149
+#: templates/team-internal.template.txt:151
 #: zzbrick_tables/anmerkungen.php:82
 #: zzbrick_tables/partien.php:112
 #: zzbrick_tables/teams.php:110
 msgid "Status"
 msgstr ""
 
-#: templates/team-internal.template.txt:149
+#: templates/team-internal.template.txt:151
 msgid "Total"
 msgstr ""
 
-#: templates/team-internal.template.txt:149
+#: templates/team-internal.template.txt:151
 msgctxt "Status"
 msgid "St."
 msgstr ""

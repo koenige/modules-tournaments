@@ -80,6 +80,7 @@ und dann die Daten direkt aus der DWZ-Datenbank zu bekommen.</p>
 <form method="POST" action="">
 <input type="submit" name="update" value="Turnierzahlen schreiben">
 </form>
+%%% script default/form-submit-once.js %%%
 
 %%% else %%%
 <p>Keine Aktualisierung nötig.</p>
