@@ -93,7 +93,7 @@
 %%% path tournaments_statistics year series_path %%%
 %%% else %%%
 %%% path tournaments_statistics identifier %%%
-%%% endif %%%">Statistiken zu den Turnieren</a></p>
+%%% endif %%%">%%% text Tournament statistics %%%</a></p>
 %%% endif %%%
 %%% endif %%%
 %%% else %%%

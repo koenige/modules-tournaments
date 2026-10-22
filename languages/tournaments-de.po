@@ -11,7 +11,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zugzwang Project -- tournaments module\n"
-"POT-Creation-Date: 2026-08-11 21:05+0000\n"
+"POT-Creation-Date: 2026-10-22 22:29+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Gustaf Mossakowski <gustaf@koenige.org>\n"
 "Language-Team: \n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: templates/empty-tournament.template.txt:11
 msgid "Empty Tournament"
@@ -164,7 +164,7 @@ msgstr ""
 "Nachrichten, die bis 22 Uhr abgesendet werden, werden in der Regel am "
 "nächsten Tag zugestellt."
 
-#: templates/playermessage.template.txt:49
+#: templates/playermessage.template.txt:50
 msgid "Back to"
 msgstr "Zurück zu"
 
@@ -182,7 +182,7 @@ msgstr "Nachrichten vor diesem Datum als »verteilt« markieren:"
 msgid "Mark messages as distributed"
 msgstr "Nachrichten als »verteilt« markieren"
 
-#: templates/playermessage-form.template.txt:23
+#: templates/playermessage-form.template.txt:24
 msgid ""
 "Struck-through messages are not yet approved (e-mail confirmation pending). "
 "They can – if desired – also be approved manually (Verified: “yes”)."
@@ -213,26 +213,26 @@ msgstr ""
 msgid "Best regards"
 msgstr "Viele Grüße"
 
-#: templates/team-internal.template.txt:149 tournaments/_functions.inc.php:32
+#: templates/team-internal.template.txt:151 tournaments/_functions.inc.php:32
 #: zzbrick_tables/tournaments.php:103
 msgid "Female"
 msgstr "weiblich"
 
-#: templates/team-internal.template.txt:149 tournaments/_functions.inc.php:36
+#: templates/team-internal.template.txt:151 tournaments/_functions.inc.php:36
 #: zzbrick_tables/tournaments.php:103
 msgid "Male"
 msgstr "männlich"
 
-#: templates/team-internal.template.txt:149 zzbrick_tables/anmerkungen.php:82
+#: templates/team-internal.template.txt:151 zzbrick_tables/anmerkungen.php:82
 #: zzbrick_tables/partien.php:112 zzbrick_tables/teams.php:110
 msgid "Status"
 msgstr "Status"
 
-#: templates/team-internal.template.txt:149
+#: templates/team-internal.template.txt:151
 msgid "Total"
 msgstr "Summe"
 
-#: templates/team-internal.template.txt:149
+#: templates/team-internal.template.txt:151
 msgctxt "Status"
 msgid "St."
 msgstr "St."
@@ -250,6 +250,11 @@ msgstr "Vorname"
 #: templates/team-registration.template.txt:115
 msgid "Last name"
 msgstr "Nachname"
+
+#: templates/tournament.template.txt:134
+#: templates/tournamentseries.template.txt:96
+msgid "Tournament statistics"
+msgstr "Turnierstatistiken"
 
 #: templates/tournamentstats.template.txt:24
 msgid "Participants"
@@ -419,6 +424,10 @@ msgid ""
 msgstr ""
 "Anstelle der Eingabe: Übernahme der Einstellungen des letzten Turniers in "
 "dieser Reihe"
+
+#: zzbrick_make/games.inc.php:29
+msgid "PGN import: Round missing from the job URL."
+msgstr "PGN-Import: Runde fehlt in der Job-URL."
 
 #: zzbrick_make/liveresults.inc.php:203
 msgid "Live result was not saved"

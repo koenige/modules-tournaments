@@ -129,6 +129,11 @@
 %%% if dwz_tournament_link %%%
 <p><a href="%%% item dwz_tournament_link %%%">DWZ-Auswertung beim Deutschen Schachbund</a></p>
 %%% endif %%%
+%%% if path tournaments_statistics & series_path %%%
+%%% unless main_event_id %%%
+<p><a href="%%% path tournaments_statistics year series_path %%%">%%% text Tournament statistics %%%</a></p>
+%%% endif %%%
+%%% endif %%%
 </div>
 
 </div>

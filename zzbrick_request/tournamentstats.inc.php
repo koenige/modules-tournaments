@@ -55,14 +55,23 @@ function mod_tournaments_tournamentstats($params, $setting, $data) {
 			ON events_categories.category_id = eventtypes.category_id
 		LEFT JOIN categories series
 			ON events.series_category_id = series.category_id
-		WHERE main_event_id = %d
+		WHERE (events.main_event_id = %d OR events.event_id = %d)
 		AND events.event_category_id = /*_ID categories event/event _*/
 		AND eventtypes.parameters LIKE "%%&tournament=1%%"
 		AND (ISNULL(tournaments.urkunde_parameter) OR tournaments.urkunde_parameter NOT LIKE "%%tournaments_statistics=0%%")
-		ORDER BY series.sequence
+		ORDER BY IF(events.event_id = %d, 0, 1), series.sequence
 	';
-	$sql = sprintf($sql, $data['event_id']);
+	$sql = sprintf($sql, $data['event_id'], $data['event_id'], $data['event_id']);
 	$data['turniere'] = wrap_db_fetch($sql, 'event_id');
+	if (empty($data['turniere'])) return false;
+	if (!empty($data['turniere'][$data['event_id']])) {
+		$main = $data['turniere'][$data['event_id']];
+		if (!$main['tn_total'] AND !$main['teams']) {
+			unset($data['turniere'][$data['event_id']]);
+		} else {
+			$data['turniere'][$data['event_id']]['event'] = $data['event'];
+		}
+	}
 	if (empty($data['turniere'])) return false;
 	$data['summe_total'] = 0;
 	$data['summe_w'] = 0;
@@ -185,8 +194,7 @@ function mod_tournaments_tournamentstats($params, $setting, $data) {
 	// no players, no teams at all = no statistics!
 	if (empty($data['summe_total']) AND empty($data['summe_teams'])) return false;
 
-	$event_ids = array_keys($data['turniere']);
-	$event_ids[] = $data['event_id'];
+	$event_ids = array_unique(array_merge(array_keys($data['turniere']), [$data['event_id']]));
 	$sql = 'SELECT COUNT(*) AS persons_total
 			, SUM(is_player) AS persons_players
 			, SUM(is_non_player) AS persons_not_playing
@@ -235,7 +243,10 @@ function mod_tournaments_tournamentstats($params, $setting, $data) {
 			ON events_categories.category_id = eventtypes.category_id
 		LEFT JOIN events main_events
 			ON events.main_event_id = main_events.event_id
-		WHERE main_events.series_category_id = /*_ID categories series/%s _*/
+		WHERE (
+			main_events.series_category_id = /*_ID categories series/%s _*/
+			OR events.series_category_id = /*_ID categories series/%s _*/
+		)
 		AND eventtypes.parameters LIKE "%%&tournament=1%%"
 		AND (ISNULL(tournaments.urkunde_parameter) OR tournaments.urkunde_parameter NOT LIKE "%%tournaments_statistics=0%%")
 		AND (
@@ -244,7 +255,8 @@ function mod_tournaments_tournamentstats($params, $setting, $data) {
 		)
 		ORDER BY IFNULL(events.event_year, YEAR(events.date_begin))
 	';
-	$sql = sprintf($sql, wrap_db_escape($params[1]));
+	$series_path = wrap_db_escape($params[1]);
+	$sql = sprintf($sql, $series_path, $series_path);
 	$data['all_years'] = wrap_db_fetch($sql, 'year');
 	$data = array_merge($data, wrap_get_prevnext_flat($data['all_years'], $data['year'], false));
 	if (!empty($data['_next_year'])) {
