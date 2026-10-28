@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zugzwang Project -- tournaments module\n"
-"POT-Creation-Date: 2026-10-13 09:14+0000\n"
+"POT-Creation-Date: 2026-10-28 18:28+0000\n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -157,7 +157,7 @@ msgstr ""
 msgid "Download a team PDF file from the data folder"
 msgstr ""
 
-#: configuration/routes.cfg:107
+#: configuration/routes.cfg:108
 msgid "Internal application of a single team"
 msgstr ""
 
