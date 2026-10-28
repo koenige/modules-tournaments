@@ -113,7 +113,12 @@ function mod_tournaments_livegames_series($data) {
 	}
 	if (!$has_rounds) return false;
 	if (!$data['tournaments'])
-		wrap_quit(410, wrap_text('The tournament is over. All live games are integrated into the <a href="../">tournament pages</a>.'));
+		wrap_quit(410, [
+			'msg' => wrap_text(
+				'The tournament is over. All live games are integrated into the <a href="../">tournament pages</a>.'
+			),
+			'html' => true
+		]);
 
 	$data['tournaments']['last_update'] = '';
 	foreach ($data['tournaments'] as $event_id => $turnier) {

@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zugzwang Project -- tournaments module\n"
-"POT-Creation-Date: 2026-10-22 22:29+0000\n"
+"POT-Creation-Date: 2026-10-28 14:11+0000\n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -429,7 +429,7 @@ msgstr ""
 msgid "No ratings found when updating on %s."
 msgstr ""
 
-#: zzbrick_request/livegames.inc.php:116
+#: zzbrick_request/livegames.inc.php:118
 msgid "The tournament is over. All live games are integrated into the <a href=\"../\">tournament pages</a>."
 msgstr ""
 
