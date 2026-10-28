@@ -53,7 +53,7 @@ bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absage
 %%% loop spieler %%%
 <tr class='%%% loopposition uneven "un" %%%even'>
 <td class="number">%%% item pflicht "<strong> * " %%%%%% item position %%%%%% item pflicht "</strong>" %%%</td>
-<td>%%% item person %%%</td>
+<td>%%% if path contacts_profile[person] %%%<a href="%%% path contacts_profile[person] person_identifier %%%">%%% item person %%%</a>%%% else %%%%%% item person %%%%%% endif %%%</td>
 <td>%%% item t_fidetitel %%%</td>
 <td class="number">%%% item geburtsjahr %%%</td>
 <td class="number">%%% item t_dwz %%%</td>
@@ -76,13 +76,13 @@ bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absage
 </thead>
 <tbody>
 %%% loop verein-vorsitz %%%
-<tr class="uneven"><td>Verein: Vorsitz</td> <td>%%% item person %%%</td>
+<tr class="uneven"><td>Verein: Vorsitz</td> <td>%%% if path contacts_profile[person] %%%<a href="%%% path contacts_profile[person] person_identifier %%%">%%% item person %%%</a>%%% else %%%%%% item person %%%%%% endif %%%</td>
 <td>%%% item geburtsjahr %%%</td>
 <td>%%% item e_mail %%% %%% item telefon "<br>%s" %%%</td>
 </tr>
 %%% loop end %%%
 %%% loop verein-jugend %%%
-<tr class="uneven"><td>Verein: Jugend</td> <td>%%% item person %%%</td>
+<tr class="uneven"><td>Verein: Jugend</td> <td>%%% if path contacts_profile[person] %%%<a href="%%% path contacts_profile[person] person_identifier %%%">%%% item person %%%</a>%%% else %%%%%% item person %%%%%% endif %%%</td>
 <td>%%% item geburtsjahr %%%</td>
 <td>%%% item e_mail %%% %%% item telefon "<br>%s" %%%</td>
 </tr>
@@ -90,13 +90,13 @@ bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absage
 %%% unless contacts_virtual %%%
 %%% loop betreuer %%%
 <tr class="even"><td>* <strong>Betreuung vor Ort</strong></td> 
-<td>%%% item person %%%</td> <td>%%% item geburtsjahr %%%</td>
+<td>%%% if path contacts_profile[person] %%%<a href="%%% path contacts_profile[person] person_identifier %%%">%%% item person %%%</a>%%% else %%%%%% item person %%%%%% endif %%%</td> <td>%%% item geburtsjahr %%%</td>
 <td>%%% item e_mail %%% %%% item telefon "<br>%s" %%%</td>
 </tr>
 %%% loop end %%%
 %%% endif %%%
 %%% loop team-organisator %%%
-<tr class="uneven"><td>Meldung vorab</td> <td>%%% item person %%%</td>
+<tr class="uneven"><td>Meldung vorab</td> <td>%%% if path contacts_profile[person] %%%<a href="%%% path contacts_profile[person] person_identifier %%%">%%% item person %%%</a>%%% else %%%%%% item person %%%%%% endif %%%</td>
 <td>%%% item geburtsjahr %%%</td>
 <td>%%% item e_mail %%% %%% item telefon "<br>%s" %%%</td>
 </tr>
@@ -104,7 +104,7 @@ bekommen. Du kannst hier zu einem späteren Zeitpunkt endgültig zu- oder absage
 %%% if gast %%%
 %%% loop gast %%%
 <tr class="even"><td>Gast vor Ort</td> 
-<td>%%% item person %%%</td> <td>%%% item geburtsjahr %%%</td>
+<td>%%% if path contacts_profile[person] %%%<a href="%%% path contacts_profile[person] person_identifier %%%">%%% item person %%%</a>%%% else %%%%%% item person %%%%%% endif %%%</td> <td>%%% item geburtsjahr %%%</td>
 <td>%%% item e_mail %%% %%% item telefon "<br>%s" %%%</td>
 </tr>
 %%% loop end %%%

@@ -124,6 +124,7 @@ function mf_tournaments_team_participants($team_ids, $event, $check = true, $ord
 	$sql = 'SELECT team_id, participation_id, persons.person_id, contacts.contact_id
 			, usergroups.usergroup
 			, usergroups.identifier AS group_identifier
+			, contacts.identifier AS person_identifier
 			, contact AS person
 			, (CASE WHEN sex = "female" THEN "W"
 				WHEN sex = "male" THEN "M"
@@ -282,6 +283,7 @@ function mf_tournaments_team_club_board_members($contact_ids) {
 	$sql = 'SELECT club_contact_id, participation_id, person_id, contacts.contact_id
 			, usergroups.usergroup
 			, usergroups.identifier AS group_identifier
+			, contacts.identifier AS person_identifier
 			, contact AS person
 			, YEAR(date_of_birth) AS geburtsjahr
 			, (SELECT identification FROM contactdetails
