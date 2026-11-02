@@ -23,18 +23,19 @@ function mod_tournaments_teamfile($params) {
 	if (count($params) !== 3) return [];
 	$filename = implode('/', $params).'.pdf';
 	$team = $params[2];
-	switch (substr($team, strrpos($team, '-') + 1)) {
-		case 'ehrenkodex':
-			$team = substr($team, 0, strrpos($team, '-'));
-			$suffix = ' (Ehrenkodex)';
-			break;
-		case 'gast':
-			$team = substr($team, 0, strrpos($team, '-'));
-			$suffix = ' (Gast)';
-			break;
-		default:
-			$suffix = '';
-			break;
+	$suffix = '';
+	$sql = 'SELECT category, parameters
+		FROM categories
+		WHERE main_category_id = /*_ID categories tournament-uploads _*/';
+	$categories = wrap_db_fetch($sql, 'category_id');
+	foreach ($categories as $category) {
+		if (empty($category['parameters'])) continue;
+		parse_str($category['parameters'], $parameters);
+		if (empty($parameters['tournaments_path_suffix'])) continue;
+		if (!str_ends_with($team, $parameters['tournaments_path_suffix'])) continue;
+		$team = substr($team, 0, -strlen($parameters['tournaments_path_suffix']));
+		$suffix = sprintf(' (%s)', $category['category']);
+		break;
 	}
 	$sql = 'SELECT team_id, team, event, IFNULL(event_year, YEAR(date_begin)) AS year
 		FROM teams LEFT JOIN events USING (event_id) WHERE teams.identifier = "%d/%s/%s"';
