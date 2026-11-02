@@ -23,18 +23,22 @@ function mod_tournaments_teamfile($params) {
 	if (count($params) !== 3) return [];
 	$filename = implode('/', $params).'.pdf';
 	$team = $params[2];
-	$suffix = '';
-	$sql = 'SELECT category, parameters
+	$category_name = '';
+	$sql = 'SELECT category_id, category, parameters
 		FROM categories
-		WHERE main_category_id = /*_ID categories tournament-uploads _*/';
+		WHERE main_category_id = /*_ID categories tournament-uploads _*/
+		ORDER BY sequence';
 	$categories = wrap_db_fetch($sql, 'category_id');
 	foreach ($categories as $category) {
 		if (empty($category['parameters'])) continue;
 		parse_str($category['parameters'], $parameters);
-		if (empty($parameters['tournaments_path_suffix'])) continue;
+		if (empty($parameters['tournaments_path_suffix'])) {
+			if ($category_name === '') $category_name = $category['category'];
+			continue;
+		}
 		if (!str_ends_with($team, $parameters['tournaments_path_suffix'])) continue;
 		$team = substr($team, 0, -strlen($parameters['tournaments_path_suffix']));
-		$suffix = sprintf(' (%s)', $category['category']);
+		$category_name = $category['category'];
 		break;
 	}
 	$sql = 'SELECT team_id, team, event, IFNULL(event_year, YEAR(date_begin)) AS year
@@ -42,7 +46,7 @@ function mod_tournaments_teamfile($params) {
 	$sql = sprintf($sql, $params[0], $params[1], $team);
 	$team = wrap_db_fetch($sql);
 	if (!$team) return false;
-	$file['send_as'] = 'Meldebogen '.$team['event'].' '.$team['year'].' '.$team['team'].$suffix.'.pdf';
+	$file['send_as'] = sprintf('%s %s %s %s.pdf', $category_name, $team['event'], $team['year'], $team['team']);
 
 	$rights = sprintf('event:%d/%s', $params[1], $params[2]);
 	$access = false;
