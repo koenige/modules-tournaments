@@ -8,7 +8,7 @@
  * https://www.zugzwang.org/modules/tournaments
  *
  * @author Gustaf Mossakowski <gustaf@koenige.org>
- * @copyright Copyright © 2022, 2024 Gustaf Mossakowski
+ * @copyright Copyright © 2022, 2024, 2026 Gustaf Mossakowski
  * @license http://opensource.org/licenses/lgpl-3.0.html LGPL-3.0
  */
 
@@ -16,10 +16,9 @@
 /**
  * read a list of teams that are user’s own teams
  *
- * @param array $status
  * @return array
  */
-function mf_tournaments_team_own($status = ['Teilnehmer', 'Teilnahmeberechtigt']) {
+function mf_tournaments_team_own() {
 	if (empty($_SESSION['usergroup'][wrap_id('usergroups', 'team-organisator')])
 		AND empty($_SESSION['usergroup'][wrap_id('usergroups', 'betreuer')])
 	) {
@@ -34,12 +33,9 @@ function mf_tournaments_team_own($status = ['Teilnehmer', 'Teilnahmeberechtigt']
 			/*_ID usergroups team-organisator _*/, /*_ID usergroups betreuer _*/
 		)
 		AND person_id = %d
-		AND team_status IN ("%s")
+		AND team_status IN ("Teilnehmer", "Teilnahmeberechtigt")
 	';
-	$sql = sprintf($sql
-		, $_SESSION['person_id']
-		, implode('","', $status)
-	);
+	$sql = sprintf($sql, $_SESSION['person_id']);
 	$participations = wrap_db_fetch($sql, 'participation_id');
 	$teams = [];
 	foreach ($participations as $participation) {
