@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zugzwang Project -- tournaments module\n"
-"POT-Creation-Date: 2026-10-28 18:28+0000\n"
+"POT-Creation-Date: 2026-11-02 23:55+0000\n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -81,22 +81,18 @@ msgid "Application of a single team: upload files"
 msgstr ""
 
 #: configuration/access.cfg:115
-msgid "Download PDF team registration forms"
-msgstr ""
-
-#: configuration/access.cfg:119
 msgid "Add and edit teams of a tournament"
 msgstr ""
 
-#: configuration/access.cfg:126
+#: configuration/access.cfg:122
 msgid "Change foreign key for team of an external tournament software"
 msgstr ""
 
-#: configuration/access.cfg:131
+#: configuration/access.cfg:127
 msgid "Access registration data of team tournaments, including PDFs"
 msgstr ""
 
-#: configuration/access.cfg:138
+#: configuration/access.cfg:134
 msgid "Edit tournament details"
 msgstr ""
 

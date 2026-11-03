@@ -48,16 +48,9 @@ function mod_tournaments_teamfile($params) {
 	if (!$team) return false;
 	$file['send_as'] = sprintf('%s %s %s %s.pdf', $category_name, $team['event'], $team['year'], $team['team']);
 
-	$rights = sprintf('event:%d/%s', $params[1], $params[2]);
-	$access = false;
-	if (wrap_access('tournaments_team_pdfs', $rights)) {
-		$access = true;
-	} else {
-		wrap_include('zzbrick_rights/access', 'tournaments');
-		$own_teams = mf_tournaments_team_own();
-		if (in_array($team['team_id'], $own_teams)) $access = true;;
-	}
-	if (!$access) wrap_quit(403);
+	$rights = sprintf('team_id:%d', $team['team_id']);
+	if (!wrap_access('tournaments_team_registration', $rights))
+		wrap_quit(403);
 
 	$file['caching'] = false;
 	$file['name'] = wrap_setting('tournaments_teams_dir').'/'.$filename;
