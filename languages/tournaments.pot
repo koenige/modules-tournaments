@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zugzwang Project -- tournaments module\n"
-"POT-Creation-Date: 2026-10-28 14:11+0000\n"
+"POT-Creation-Date: 2026-11-09 23:57+0000\n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -372,10 +372,12 @@ msgid "Phone"
 msgstr ""
 
 #: zzbrick_forms/tournaments.inc.php
+#: zzbrick_forms/tournaments.php:38
 msgid "For rounds, there is a possibility to upload a PGN file in the <a href=\"%s\">round overview</a>."
 msgstr ""
 
 #: zzbrick_forms/tournaments.inc.php
+#: zzbrick_forms/tournaments.php:37
 msgid "Please only upload files for the entire tournament here."
 msgstr ""
 

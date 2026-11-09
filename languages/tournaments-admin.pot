@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zugzwang Project -- tournaments module\n"
-"POT-Creation-Date: 2026-11-02 23:55+0000\n"
+"POT-Creation-Date: 2026-11-09 23:57+0000\n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -141,19 +141,19 @@ msgstr ""
 msgid "Statistics for a tournament series"
 msgstr ""
 
-#: configuration/routes.cfg:91
+#: configuration/routes.cfg:92
 msgid "Team on public website"
 msgstr ""
 
-#: configuration/routes.cfg:96
+#: configuration/routes.cfg:97
 msgid "Tournament details (dispatches to tournament, series, or team)"
 msgstr ""
 
-#: configuration/routes.cfg:102
+#: configuration/routes.cfg:103
 msgid "Download a team PDF file from the data folder"
 msgstr ""
 
-#: configuration/routes.cfg:108
+#: configuration/routes.cfg:109
 msgid "Internal application of a single team"
 msgstr ""
 
@@ -499,34 +499,34 @@ msgid "Show archive of main tournament, too"
 msgstr ""
 
 #: configuration/settings.cfg:561
-msgid "Include tournament in tournament statistics page; set to 0 to exclude"
+msgid "Include tournament or series in the tournament statistics page; set to 0 to exclude"
 msgstr ""
 
-#: configuration/settings.cfg:567
+#: configuration/settings.cfg:570
 msgid "Team tournament is a league, e. g. not played en bloc but every n weeks"
 msgstr ""
 
-#: configuration/settings.cfg:572
+#: configuration/settings.cfg:575
 msgid "Folder for team files"
 msgstr ""
 
-#: configuration/settings.cfg:577
+#: configuration/settings.cfg:580
 msgid "It is a single tournament"
 msgstr ""
 
-#: configuration/settings.cfg:585
+#: configuration/settings.cfg:588
 msgid "It is a team tournament"
 msgstr ""
 
-#: configuration/settings.cfg:594
+#: configuration/settings.cfg:597
 msgid "Team registration upload: only show if this field is set in form data (only under tournament-uploads/*)"
 msgstr ""
 
-#: configuration/settings.cfg:600
+#: configuration/settings.cfg:603
 msgid "Allow to upload PGN files"
 msgstr ""
 
-#: configuration/settings.cfg:605
+#: configuration/settings.cfg:608
 msgid "Mark team registration upload as non-required"
 msgstr ""
 

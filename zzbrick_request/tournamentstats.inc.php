@@ -21,6 +21,7 @@
  */
 function mod_tournaments_tournamentstats($params, $setting, $data) {
 	if (count($params) !== 2) return false;
+	if (!wrap_setting('tournaments_statistics')) return false;
 
 	// @todo weitere Status zu normal, zeitueberschreitung hinzufügen: adjudication, rules infraction
 	// Alle Turniere
