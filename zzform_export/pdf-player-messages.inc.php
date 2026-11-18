@@ -99,7 +99,7 @@ function mf_tournaments_playermessages_export_pdf($data) {
 	$pdf->FontCjk = 'NotoSansJP-Regular';
 	$pdf->FontCjkSc = 'NotoSansSC-Regular';
 	$pdf->FontCjkKr = 'NotoSansKR-Regular';
-	$pdf->FontBraille = 'DejaVuSans';
+	$pdf->FontFallback = 'DejaVuSans';
 	$pdf->FontArabic = 'NotoSansArabic-Regular';
 	$pdf->FontThai = 'NotoSansThai-Regular';
 	$pdf->SetFont('FiraSans-Regular', '', 11);
