@@ -17,28 +17,28 @@ $zz = zzform_include('teams');
 
 $zz['details'][0]['title'] = 'Spieler';
 $zz['details'][0]['link'] = [
-	'area' => 'events_internal_event',
+	'route' => 'events_internal_event',
 	'fields' => ['event_identifier'],
 	'string1' => 'spieler/?filter[team]=', 'field2' => 'team_id'
 ];
 
 $zz['details'][1]['title'] = 'Betreuer';
 $zz['details'][1]['link'] = [
-	'area' => 'events_internal_event',
+	'route' => 'events_internal_event',
 	'fields' => ['event_identifier'],
 	'string1' => 'teilnahmen/?filter[team]=', 'field2' => 'team_id'
 ];
 
 $zz['details'][2]['title'] = 'Buchungen';
 $zz['details'][2]['link'] = [
-	'area' => 'events_internal_event',
+	'route' => 'events_internal_event',
 	'fields' => ['event_identifier'],
 	'string1' => 'buchungen/?filter[team]=', 'field2' => 'team_id'
 ];
 
 $zz['details'][3]['title'] = 'Links';
 $zz['details'][3]['link'] = [
-	'area' => 'events_internal_event',
+	'route' => 'events_internal_event',
 	'fields' => ['event_identifier'],
 	'string1' => 'links/?filter[team]=', 'field2' => 'team_id'
 ];

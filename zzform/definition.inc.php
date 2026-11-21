@@ -46,7 +46,7 @@ function mf_tournaments_upload_fields(&$zz, $no, $data) {
 		];
 		$zz['fields'][$no]['input_filetypes'] = ['pdf'];
 		$zz['fields'][$no]['path_web'] = [
-			'area' => 'tournaments_team_file',
+			'route' => 'tournaments_team_file',
 			'fields' => ['identifier']
 		];
 		if ($path_suffix)

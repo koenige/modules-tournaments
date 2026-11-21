@@ -43,7 +43,7 @@ if (wrap_setting('tournaments_upload_pgn')) { // 11 = author
 	];
 	$zz['fields'][11]['input_filetypes'] = ['pgn'];
 	$zz['fields'][11]['path_web'] = [
-		'area' => 'tournaments_pgns_raw',
+		'route' => 'tournaments_pgns_raw',
 		'fields' => ['main_event_identifier', 'runde_no']
 	];
 	$zz['fields'][11]['link'] = $zz['fields'][11]['path_web'];
@@ -149,13 +149,13 @@ if (wrap_access('tournaments_games', $brick['data']['event_rights']) OR wrap_acc
 	if (wrap_setting('tournaments_type_single')) {
 		$zz['details'][0]['title'] = 'Games';
 		$zz['details'][0]['link'] = [
-			'area' => 'events_internal_event',
+			'route' => 'events_internal_event',
 			'fields' => ['identifier']
 		];
 	} elseif (wrap_setting('tournaments_type_team')) {
 		$zz['details'][0]['title'] = 'Pairings';
 		$zz['details'][0]['link'] = [
-			'area' => 'events_internal_event',
+			'route' => 'events_internal_event',
 			'fields' => ['identifier']
 		];
 	}
@@ -163,7 +163,7 @@ if (wrap_access('tournaments_games', $brick['data']['event_rights']) OR wrap_acc
 if (wrap_access('tournaments_standings', $brick['data']['event_rights'])) {
 	$zz['details'][1]['title'] = 'Standings';
 	$zz['details'][1]['link'] = [
-		'area' => 'events_internal_event',
+		'route' => 'events_internal_event',
 		'fields' => ['main_event_identifier'],
 		'string1' => 'tabelle/', 'field2' => 'runde_no', 'string2' => '/'
 	];

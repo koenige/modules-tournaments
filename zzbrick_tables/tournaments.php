@@ -29,7 +29,7 @@ $zz['fields'][2]['search'] = 'CONCAT(/*_PREFIX_*/events.event, " ", IFNULL(event
 $zz['fields'][2]['unique'] = true;
 $zz['fields'][2]['if']['where']['hide_in_form'] = true;
 $zz['fields'][2]['link'] = [
-	'area' => 'events_internal_event',
+	'route' => 'events_internal_event',
 	'fields' => ['event_identifier']
 ];
 $zz['fields'][2]['dont_show_where_class'] = true;
@@ -199,7 +199,7 @@ if (wrap_setting('tournaments_upload_pgn')) {
 	];
 	$zz['fields'][25]['input_filetypes'] = ['pgn'];
 	$zz['fields'][25]['path_web'] = [
-		'area' => 'tournaments_pgns_raw',
+		'route' => 'tournaments_pgns_raw',
 		'fields' => ['event_identifier'],
 		'strings' => ['gesamt']
 	];

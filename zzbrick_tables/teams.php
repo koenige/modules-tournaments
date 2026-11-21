@@ -49,13 +49,13 @@ $zz['fields'][3]['search'] = 'vereine.contact';
 $zz['fields'][3]['character_set'] = 'utf8';
 $zz['fields'][3]['sql_fieldnames_ignore'] = ['contacts.contact_id'];
 $zz['fields'][3]['hide_in_list'] = true;
-$zz['fields'][3]['add_details'] = ['area' => 'contacts_general'];
+$zz['fields'][3]['add_details'] = ['route' => 'contacts_general'];
 
 $zz['fields'][4]['field_name'] = 'team';
 $zz['fields'][4]['append_next'] = true;
 $zz['fields'][4]['list_append_next'] = true;
 $zz['fields'][4]['link'] = [
-	'area' => 'tournaments_team_registration',
+	'route' => 'tournaments_team_registration',
 	'fields' => ['identifier']
 ];
 $zz['fields'][4]['unless']['export_mode']['list_prefix'] = '<strong>';
@@ -297,7 +297,7 @@ $zz['fields'][25]['if']['export_mode']['subselect']['concat_fields'] = ', ';
 $zz['fields'][25]['unless']['export_mode']['subselect']['concat_rows'] = '<br>'; 
 $zz['fields'][25]['if']['export_mode']['subselect']['concat_rows'] = '; '; 
 $zz['fields'][25]['unless']['export_mode']['subselect']['field_link'][0] = [
-	'area' => 'contacts_profile[person]',
+	'route' => 'contacts_profile[person]',
 	'fields' => ['identifier']
 ];
 $zz['fields'][25]['unless']['export_mode']['subselect']['field_suffix'][1] = '<br>';
