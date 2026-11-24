@@ -56,17 +56,17 @@ function mod_tournaments_liveboards($params, $settings, $data) {
 	}
 	if (!$tournaments) mf_tournaments_live_over();
 
-	$urls = [];
+	$links = [];
 	foreach ($tournaments as $event_id => $tournament) {
 		// without a live round, live.pgn would contain all games
 		if (!mf_tournaments_live_round($event_id)) continue;
 		$url = wrap_path('tournaments_pgns', [$tournament['identifier'], 'live'], ['check_rights' => false]);
 		if (!$url) continue;
-		$urls[] = $url;
+		$links[] = ['url' => $url, 'id' => $tournament['identifier']];
 	}
-	if (!$urls) return false;
+	if (!$links) return false;
 
 	wrap_package_activate('chess');
 	wrap_include('zzbrick_request/pgnviewer', 'chess');
-	return mod_chess_pgnviewer($urls);
+	return mod_chess_pgnviewer($links);
 }
