@@ -55,12 +55,15 @@ function mod_tournaments_livegames($params, $settings, $data) {
 			AND usergroup_id = /*_ID usergroups spieler _*/) AS teilnehmer
 			, (SELECT MAX(runde_no) FROM partien
 			WHERE partien.event_id = tournaments.event_id) AS aktuelle_runde_no
+			, IF((DATE_SUB(CURDATE(), INTERVAL /*_SETTING tournaments_live_games_show_for_days _*/ DAY) <= events.date_end), 1, NULL) AS current
 		FROM tournaments
+		LEFT JOIN events USING (event_id)
 		WHERE tournaments.event_id = %d
 		AND NOT ISNULL(livebretter)';
 	$sql = sprintf($sql, $data['event_id']);
 	$tournament = wrap_db_fetch($sql);
 	if (!$tournament) return false;
+	if (!mf_tournaments_live_current($tournament)) mf_tournaments_live_over();
 	
 	$data += $tournament;
 	return mod_tournaments_livegames_tournament($data);
@@ -101,7 +104,7 @@ function mod_tournaments_livegames_series($data) {
 	foreach ($data['tournaments'] AS $event_id => $turnier) {
 		if (empty($turnier['aktuelle_runde_no'])) continue;
 		$has_rounds = true;
-		if (!$turnier['current']) {
+		if (!mf_tournaments_live_current($turnier)) {
 			unset($data['tournaments'][$event_id]);
 			continue;
 		}
@@ -112,13 +115,7 @@ function mod_tournaments_livegames_series($data) {
 		}
 	}
 	if (!$has_rounds) return false;
-	if (!$data['tournaments'])
-		wrap_quit(410, [
-			'msg' => wrap_text(
-				'The tournament is over. All live games are integrated into the <a href="../">tournament pages</a>.'
-			),
-			'html' => true
-		]);
+	if (!$data['tournaments']) mf_tournaments_live_over();
 
 	$data['tournaments']['last_update'] = '';
 	foreach ($data['tournaments'] as $event_id => $turnier) {

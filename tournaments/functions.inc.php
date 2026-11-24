@@ -62,6 +62,31 @@ function mf_tournaments_live_round($event_id) {
 }
 
 /**
+ * check if live games of a tournament are still shown
+ *
+ * @param array $tournament with key 'current'
+ * @return bool
+ */
+function mf_tournaments_live_current($tournament) {
+	if (wrap_setting('tournaments_live_games_ignore_end')) return true;
+	return !empty($tournament['current']);
+}
+
+/**
+ * quit with 410 if live games are not shown anymore
+ *
+ * @return void
+ */
+function mf_tournaments_live_over() {
+	wrap_quit(410, [
+		'msg' => wrap_text(
+			'The tournament is over. All live games are integrated into the <a href="../">tournament pages</a>.'
+		),
+		'html' => true
+	]);
+}
+
+/**
  * Wertet aus, ob Tisch/Brett-Kombination in Livebrettern ist
  *
  * @param string $livebretter
